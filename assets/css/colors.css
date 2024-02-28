@@ -1,0 +1,20 @@
+:root {
+  --primary-color: #6366F1;
+  --primary-color-text: #111827;
+  --background-card: #ffffff;
+  --background-view: #f9fafb;
+  --border: #dfe7ef;
+  --hover: #f6f9fc;
+  --focus-ring: 0 0 0 0.2rem #C7D2FE;
+}
+
+
+.dark {
+  --primary-color: #6366F1;
+  --primary-color-text: #ffffff;
+  --background-card: #1f2937;
+  --background-view: #111827;
+  --border: rgba(255,255,255,.1);
+  --hover: rgba(255,255,255,.03);
+  --focus-ring: 0 0 0 0.2rem rgba(129, 140, 248, 0.2)
+}

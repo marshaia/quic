@@ -1,17 +1,91 @@
 <!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
+<html lang="en" class="w-full h-full">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
-      <%= assigns[:page_title] || "Quic" %>
+    <.live_title suffix=" · QUIC">
+      <%= assigns[:page_title] || "" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
+    <script>
+    function changeTheme() {
+      theme = localStorage.getItem('theme')
+      if (theme && theme === 'dark') {
+        localStorage.theme = 'light'
+        document.documentElement.classList.remove('dark')
+      }
+      else {
+        localStorage.theme = 'dark'
+        document.documentElement.classList.add('dark')
+      }
+    }
+
+    function checkTheme () {
+      theme = localStorage.getItem('theme')
+      if (theme && theme === 'dark') document.documentElement.classList.add('dark')
+      else document.documentElement.classList.remove('dark')
+    }
+
+    checkTheme()
+    </script>
   </head>
-  <body class="bg-white antialiased">
+  <body class="antialiased bg-[var(--background-view)]">
+    <%!-- NAVBAR --%>
+    <header class="w-full px-4 sm:px-6 lg:px-20 bg-[var(--background-card)] border-b border-[var(--border)]">
+      <div class="flex items-center justify-between py-3 text-sm">
+        <div class="flex items-center gap-4">
+          <a href="/">
+            <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
+            <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
+          </a>
+          <p class="text-lg font-medium">QUIC</p>
+          <%!-- <p class="px-2 font-medium leading-6 rounded-full bg-brand/5 text-brand">
+            v<%= Application.spec(:phoenix, :vsn) %>
+          </p> --%>
+        </div>
+        <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
+
+          <%= if @current_author do %>
+            <%= @current_author.email %>
+            <.link
+              href={~p"/authors/settings"}
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            >
+              Settings
+            </.link>
+            <.link
+              href={~p"/authors/log_out"}
+              method="delete"
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            >
+              Log out
+            </.link>
+        <% else %>
+            <%!-- <.link
+              href={~p"/authors/register"}
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            >
+              Register
+            </.link> --%>
+            <.link
+              href={~p"/authors/log_in"}
+              class="text-sm font-semibold text-white loginBtn"
+            >
+              Log in
+            </.link>
+        <% end %>
+        
+          <button onclick="changeTheme()">
+            <.icon name="hero-moon" />
+          </button>
+        </div>
+      </div>
+    </header>
+
+      
     <%= @inner_content %>
   </body>
 </html>

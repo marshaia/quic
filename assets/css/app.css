@@ -2,4 +2,57 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@import "colors.css";
+@import "buttons.css";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;700;900&display=swap');
+
+
+
 /* This file is for your main application CSS */
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 100%;
+  color: var(--primary-color-text);
+}
+
+/* h1 { font-size: 10vw;}
+h2 { font-size: 7vw; }
+h3 { font-size: 6vw; }
+h4 { font-size: 5vw; }
+h5 { font-size: 4vw; }
+h6 { font-size: 3vw; } 
+p { font-size: 2.5vw;} */
+
+h1 { @apply text-8xl}
+h2 { @apply text-7xl }
+h3 { @apply text-6xl }
+h4 { @apply text-5xl }
+h5 { @apply text-4xl }
+h6 { @apply text-3xl } 
+p  { @apply text-base}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply text-[var(--primary-color-text)] font-medium
+}
+
+p {
+  @apply text-[var(--primary-color-text)]
+}
+
+
+/* If the screen size is 768px wide or more, set the font-size of <div> to 80px */
+/* @media screen and (min-width: 601px) {
+  h1 { @apply text-8xl}
+  h2 { @apply text-7xl }
+  h3 { @apply text-6xl }
+  h4 { @apply text-5xl }
+  h5 { @apply text-4xl }
+  h6 { @apply text-3xl } 
+  p  { @apply text-base}
+} */
