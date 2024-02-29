@@ -12,6 +12,8 @@ defmodule Quic.Accounts.Author do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
+    has_many :quizzes, Quic.Quizzes.Quiz, foreign_key: :author_id
+
     timestamps(type: :utc_datetime)
   end
 
@@ -41,9 +43,10 @@ defmodule Quic.Accounts.Author do
   def registration_changeset(author, attrs, opts \\ []) do
     author
     |> cast(attrs, [:email, :password, :username, :display_name])
-    |> validate_username(opts)
     |> validate_email(opts)
     |> validate_password(opts)
+    |> validate_username(opts)
+    |> validate_display_name()
   end
 
   defp validate_email(changeset, opts) do
@@ -57,9 +60,15 @@ defmodule Quic.Accounts.Author do
   defp validate_username(changeset, opts) do
     changeset
     |> validate_required([:username])
-    #|> validate_format(:username, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
-    #|> validate_length(:email, max: 160)
+    |> validate_length(:username, min: 5, max: 20)
+    |> validate_format(:username, ~r/^[A-Za-z0-9_]+$/, message: "only letters (uppercase and/or lowercase), numbers, and underscores")
     |> maybe_validate_unique_username(opts)
+  end
+
+  defp validate_display_name(changeset) do
+    changeset
+    |> validate_required([:display_name])
+    |> validate_length(:display_name, max: 40)
   end
 
   defp validate_password(changeset, opts) do

@@ -9,6 +9,8 @@ defmodule Quic.Quizzes.Quiz do
     field :description, :string
     field :total_points, :integer
 
+    belongs_to :author, Quic.Quizzes.Quiz, foreign_key: :author_id
+
     timestamps(type: :utc_datetime)
   end
 

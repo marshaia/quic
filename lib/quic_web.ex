@@ -94,6 +94,7 @@ defmodule QuicWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import QuicWeb.CoreComponents
+      import QuicWeb.MyComponents
       import QuicWeb.Gettext
 
       # Shortcut for generating JS commands

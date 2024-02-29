@@ -53,6 +53,7 @@ defmodule QuicWeb.QuizLive.FormComponent do
   end
 
   def handle_event("save", %{"quiz" => quiz_params}, socket) do
+    quiz_params = Map.put(quiz_params, "author_id", socket.assigns.current_author.id)
     save_quiz(socket, socket.assigns.action, quiz_params)
   end
 

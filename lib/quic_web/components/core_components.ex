@@ -116,8 +116,8 @@ defmodule QuicWeb.CoreComponents do
       role="alert"
       class={[
         "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
+        @kind == :info && "bg-emerald-50 dark:bg-emerald-600 ring-emerald-500 fill-cyan-900",
+        @kind == :error && "bg-rose-50 dark:bg-rose-600 shadow-md ring-rose-500 fill-rose-900"
       ]}
       {@rest}
     >
@@ -490,7 +490,7 @@ defmodule QuicWeb.CoreComponents do
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
           class="relative text-sm leading-6 border-t divide-y divide-zinc-100 border-zinc-200 text-[var(--primary-color-text)]"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-[var(--primary-color)]">
+          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-[var(--background-card)]">
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
