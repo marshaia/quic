@@ -13,6 +13,12 @@
         <span>Home</span>
       </.link>
 
+      <.link href={~p"/quizzes"} 
+      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "quiz"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <.icon name="hero-pencil" class="hidden md:flex text-xl tracking-wider font-extralight"/>
+        <span>Quizzes</span>
+      </.link>
+
     </section>
 
 
