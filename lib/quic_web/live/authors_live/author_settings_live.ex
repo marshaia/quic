@@ -6,8 +6,10 @@ defmodule QuicWeb.AuthorSettingsLive do
   def render(assigns) do
     ~H"""
     <.header class="text-center">
-      Account Settings
-      <:subtitle>Manage your account email address and password settings</:subtitle>
+      <h4>Account Settings</h4>
+      <:subtitle>
+        <p>Manage your account email address and password settings</p>
+      </:subtitle>
     </.header>
 
     <div class="space-y-12 divide-y">
@@ -29,7 +31,7 @@ defmodule QuicWeb.AuthorSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
+            <.button phx-disable-with="Changing..." class="call2actionBtn">Change Email</.button>
           </:actions>
         </.simple_form>
       </div>
@@ -65,7 +67,7 @@ defmodule QuicWeb.AuthorSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <.button phx-disable-with="Changing..." class="call2actionBtn">Change Password</.button>
           </:actions>
         </.simple_form>
       </div>

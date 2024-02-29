@@ -1,5 +1,5 @@
 .sidebar {
-  @apply bg-[var(--background-card)] w-64 p-4 rounded-md h-[calc(100vh-6rem)]
+  @apply flex flex-col bg-[var(--background-card)] w-64 p-4 rounded-md h-[calc(100vh-6rem)] border border-[var(--border)]
 }
 
 .sidebar-group {

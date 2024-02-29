@@ -1,9 +1,11 @@
 <.header>
-  Quiz <%= @quiz.id %>
-  <:subtitle>This is a quiz record from your database.</:subtitle>
+  <h4 class="text-[var(--primary-color)]"><%= @quiz.name %></h4>
+  <:subtitle>
+    <p>This is a quiz record from your database.</p>
+  </:subtitle>
   <:actions>
     <.link patch={~p"/quizzes/#{@quiz}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit quiz</.button>
+      <.button class="call2actionBtn">Edit quiz</.button>
     </.link>
   </:actions>
 </.header>
