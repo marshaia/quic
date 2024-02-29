@@ -27,13 +27,13 @@ defmodule QuicWeb.AuthorAuth do
   """
   def log_in_author(conn, author, params \\ %{}) do
     token = Accounts.generate_author_session_token(author)
-    #author_return_to = get_session(conn, :author_return_to)
+    author_return_to = get_session(conn, :author_return_to)
 
     conn
     |> renew_session()
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: ~p"/authors") #(to: author_return_to || signed_in_path(conn))
+    |> redirect(to: author_return_to || signed_in_path(conn))
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
@@ -223,5 +223,5 @@ defmodule QuicWeb.AuthorAuth do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(_conn), do: ~p"/"
+  defp signed_in_path(_conn), do: ~p"/authors"
 end

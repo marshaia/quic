@@ -1,5 +1,5 @@
 defmodule QuicWeb.AuthorLoginLive do
-  use QuicWeb, :author_live_view
+  use QuicWeb, :live_view
 
   def render(assigns) do
     ~H"""
