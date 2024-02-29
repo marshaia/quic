@@ -1,0 +1,15 @@
+.sidebar {
+  @apply bg-[var(--background-card)] w-64 p-4 rounded-md h-[calc(100vh-6rem)]
+}
+
+.sidebar-group {
+  @apply flex flex-col gap-2
+}
+
+.sidebar-item {
+  @apply flex gap-2 pl-5 p-2 hover:bg-[var(--hover)] rounded-md 
+}
+
+.main-page {
+  @apply p-4 overflow-y-auto h-[calc(100vh-6rem)]
+}

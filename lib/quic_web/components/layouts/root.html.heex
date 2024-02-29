@@ -37,30 +37,38 @@
     <header class="w-full px-4 sm:px-6 lg:px-20 bg-[var(--background-card)] border-b border-[var(--border)]">
       <div class="flex items-center justify-between py-3 text-sm">
         <div class="flex items-center gap-4">
-          <a href="/">
-            <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
-            <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
-          </a>
+          <%= if @current_author do %>
+            <a href="/authors">
+              <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
+              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
+            </a>
+          <% else %>
+            <a href="/">
+              <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
+              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
+            </a>
+          <% end %>
+          
           <p class="text-lg font-medium">QUIC</p>
-          <%!-- <p class="px-2 font-medium leading-6 rounded-full bg-brand/5 text-brand">
-            v<%= Application.spec(:phoenix, :vsn) %>
-          </p> --%>
         </div>
+
         <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
 
+          <button onclick="changeTheme()">
+            <.icon name="hero-moon" />
+          </button>
+
           <%= if @current_author do %>
-            <%= @current_author.email %>
+            <%!-- <%= @current_author.email %> --%>
             <.link
               href={~p"/authors/settings"}
-              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-            >
-              Settings
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700">
+              <.icon name="hero-cog-8-tooth" class="text-[var(--primary-color-text)]"/>
             </.link>
             <.link
               href={~p"/authors/log_out"}
               method="delete"
-              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-            >
+              class="text-sm font-semibold text-white loginBtn">
               Log out
             </.link>
         <% else %>
@@ -72,20 +80,16 @@
             </.link> --%>
             <.link
               href={~p"/authors/log_in"}
-              class="text-sm font-semibold text-white loginBtn"
-            >
+              class="text-sm font-semibold text-white loginBtn">
               Log in
             </.link>
         <% end %>
-        
-          <button onclick="changeTheme()">
-            <.icon name="hero-moon" />
-          </button>
         </div>
       </div>
     </header>
 
-      
+  
     <%= @inner_content %>
+      
   </body>
 </html>

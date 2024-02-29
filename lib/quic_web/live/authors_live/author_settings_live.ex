@@ -1,5 +1,5 @@
 defmodule QuicWeb.AuthorSettingsLive do
-  use QuicWeb, :live_view
+  use QuicWeb, :author_live_view
 
   alias Quic.Accounts
 
@@ -99,6 +99,7 @@ defmodule QuicWeb.AuthorSettingsLive do
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
+      |> assign(:page_title, "Settings")
 
     {:ok, socket}
   end

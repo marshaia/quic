@@ -1,0 +1,37 @@
+<%!-- MAIN CONTENT --%>
+<main class="w-full h-full p-4 sm:px-6 lg:px-20 flex gap-4">
+  
+  <%!-- SIDE BAR --%>
+  <nav class="sidebar">
+
+    <%!-- GENERAL --%>
+    <section class="sidebar-group">
+      <span class="font-semibold text-sm">GENERAL</span>
+      <.link href={~p"/authors"} 
+      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <.icon name="hero-home" class="hidden md:flex text-xl tracking-wider font-extralight"/>
+        <span>Home</span>
+      </.link>
+
+    </section>
+
+
+    <%!-- PERSONAL --%>
+    <section class="sidebar-group mt-10">
+      <span class="font-semibold text-sm">PERSONAL</span>
+      <.link href={~p"/authors/settings"} 
+      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "settings"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <.icon name="hero-cog-8-tooth" class="hidden md:flex text-xl tracking-wider font-extralight"/>
+        <span>Settings</span>
+      </.link>
+    </section>
+  </nav>
+
+
+  <%!-- MAIN CONTENT --%>
+  <main class="flex-1 main-page no-scrollbar">
+    <.flash_group flash={@flash} />
+    <%= @inner_content %>
+  </main>
+
+</main>

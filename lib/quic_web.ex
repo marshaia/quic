@@ -58,6 +58,15 @@ defmodule QuicWeb do
     end
   end
 
+  def author_live_view do
+    quote do
+      use Phoenix.LiveView,
+        layout: {QuicWeb.Layouts, :author}
+
+      unquote(html_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

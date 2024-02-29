@@ -18,7 +18,7 @@ defmodule QuicWeb.Router do
   end
 
   scope "/", QuicWeb do
-    pipe_through :browser
+    pipe_through [:browser]
 
     get "/", PageController, :home
   end
@@ -63,6 +63,8 @@ defmodule QuicWeb.Router do
 
   scope "/", QuicWeb do
     pipe_through [:browser, :require_authenticated_author]
+
+    get "/authors", AuthorController, :home
 
     live_session :require_authenticated_author,
       on_mount: [{QuicWeb.AuthorAuth, :ensure_authenticated}] do
