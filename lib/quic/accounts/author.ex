@@ -13,6 +13,7 @@ defmodule Quic.Accounts.Author do
     field :confirmed_at, :naive_datetime
 
     has_many :quizzes, Quic.Quizzes.Quiz, foreign_key: :author_id
+    many_to_many :teams, Quic.Teams.Team, join_through: "teams_authors"
 
     timestamps(type: :utc_datetime)
   end
@@ -185,4 +186,5 @@ defmodule Quic.Accounts.Author do
       add_error(changeset, :current_password, "is not valid")
     end
   end
+
 end

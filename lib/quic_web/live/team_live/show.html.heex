@@ -1,9 +1,11 @@
 <.header>
-  Team <%= @team.id %>
-  <:subtitle>This is a team record from your database.</:subtitle>
+   <h4 class="text-[var(--primary-color)]"><%= @team.name %></h4>
+  <:subtitle>
+    <p>This is a team record from your database.</p>
+  </:subtitle>
   <:actions>
     <.link patch={~p"/teams/#{@team}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit team</.button>
+      <.button class="call2actionBtn">Edit team</.button>
     </.link>
   </:actions>
 </.header>
@@ -11,6 +13,7 @@
 <.list>
   <:item title="Name"><%= @team.name %></:item>
   <:item title="Description"><%= @team.description %></:item>
+  <%!-- <:item title="Description"><%= @team %></:item> --%>
 </.list>
 
 <.back navigate={~p"/teams"}>Back to teams</.back>

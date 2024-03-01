@@ -8,8 +8,10 @@ defmodule QuicWeb.TeamLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
-        <:subtitle>Use this form to manage team records in your database.</:subtitle>
+      <h6><%= @title %></h6>
+        <:subtitle>
+        <p>Use this form to manage quiz records in your database.</p>
+        </:subtitle>
       </.header>
 
       <.simple_form
@@ -22,7 +24,7 @@ defmodule QuicWeb.TeamLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="text" label="Description" />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Team</.button>
+          <.button phx-disable-with="Saving..." class="call2actionBtn">Save Team</.button>
         </:actions>
       </.simple_form>
     </div>
@@ -69,7 +71,8 @@ defmodule QuicWeb.TeamLive.FormComponent do
   end
 
   defp save_team(socket, :new, team_params) do
-    case Teams.create_team(team_params) do
+    #case Teams.create_team(team_params, socket.assigns.current_author.id) do
+    case Teams.create_team_with_author(team_params, socket.assigns.current_author.id) do
       {:ok, team} ->
         notify_parent({:saved, team})
 

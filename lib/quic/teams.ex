@@ -5,7 +5,7 @@ defmodule Quic.Teams do
 
   import Ecto.Query, warn: false
   alias Quic.Repo
-
+  alias Quic.Accounts.Author
   alias Quic.Teams.Team
 
   @doc """
@@ -17,9 +17,18 @@ defmodule Quic.Teams do
       [%Team{}, ...]
 
   """
-  def list_teams do
+  def list_all_teams do
     Repo.all(Team)
   end
+
+
+  def list_all_author_teams(id) do
+    author = Repo.get(Author, id) |> Repo.preload(:teams)
+    author.teams
+  end
+
+
+
 
   @doc """
   Gets a single team.
@@ -52,6 +61,14 @@ defmodule Quic.Teams do
   def create_team(attrs \\ %{}) do
     %Team{}
     |> Team.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_team_with_author(attrs \\ %{}, id) do
+    author = Repo.get(Author, id)
+
+    %Team{}
+    |> Team.changeset(attrs, author)
     |> Repo.insert()
   end
 

@@ -6,7 +6,7 @@ defmodule QuicWeb.TeamLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :teams, Teams.list_teams())}
+    {:ok, stream(socket, :teams, Teams.list_all_author_teams(socket.assigns.current_author.id))}
   end
 
   @impl true
