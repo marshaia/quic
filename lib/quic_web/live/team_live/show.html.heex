@@ -10,6 +10,26 @@
   </:actions>
 </.header>
 
+
+
+<%!-- <.live_component
+  module={QuicWeb.TeamLive.UserSearchComponent}
+  id={"user_search_live_component"}
+  users={@searched_users}
+  form={%{}}
+/> --%>
+
+<form phx-change="search_users">
+  <div>
+    <input type="text" name="text" value={@input_text}>
+  </div>
+</form>
+
+<p> <%= inspect @searched_users %> </p>
+
+
+
+
 <.list>
   <:item title="Name"><%= @team.name %></:item>
   <:item title="Description"><%= @team.description %></:item>

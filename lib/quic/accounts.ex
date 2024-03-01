@@ -26,6 +26,17 @@ defmodule Quic.Accounts do
     Repo.get_by(Author, email: email)
   end
 
+  @doc"""
+  Gets an author with display_name or username matching the input
+  """
+  def get_author_by_name_or_username(input) when is_binary(input) do
+    query = from u in "authors",
+      where: ilike(u.display_name, ^"%#{input}%"),
+      select: {u.username, u.display_name}
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a author by email and password.
 
