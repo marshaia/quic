@@ -13,7 +13,11 @@
 <.list>
   <:item title="Name"><%= @team.name %></:item>
   <:item title="Description"><%= @team.description %></:item>
-  <%!-- <:item title="Description"><%= @team %></:item> --%>
+  <:item title="Members">
+      <%= for x <- @team.authors do %>
+        <%= x.display_name %>
+      <% end %>
+  </:item>
 </.list>
 
 <.back navigate={~p"/teams"}>Back to teams</.back>

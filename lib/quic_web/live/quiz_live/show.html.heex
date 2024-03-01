@@ -14,6 +14,7 @@
   <:item title="Name"><%= @quiz.name %></:item>
   <:item title="Description"><%= @quiz.description %></:item>
   <:item title="Total points"><%= @quiz.total_points %></:item>
+  <:item title="Author"><%= @quiz.author.display_name %></:item>
 </.list>
 
 <.back navigate={~p"/quizzes"}>Back to quizzes</.back>

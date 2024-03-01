@@ -73,7 +73,7 @@ defmodule QuicWeb.QuizLive.FormComponent do
   end
 
   defp save_quiz(socket, :new, quiz_params) do
-    case Quizzes.create_quiz(quiz_params) do
+    case Quizzes.create_quiz_with_author(quiz_params, socket.assigns.current_author.id) do
       {:ok, quiz} ->
         notify_parent({:saved, quiz})
 

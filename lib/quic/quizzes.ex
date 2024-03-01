@@ -4,6 +4,7 @@ defmodule Quic.Quizzes do
   """
 
   import Ecto.Query, warn: false
+  alias Quic.Accounts.Author
   alias Quic.Repo
 
   alias Quic.Quizzes.Quiz
@@ -35,7 +36,7 @@ defmodule Quic.Quizzes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_quiz!(id), do: Repo.get!(Quiz, id)
+  def get_quiz!(id), do: Repo.get!(Quiz, id) |> Repo.preload(:author)
 
   @doc """
   Creates a quiz.
@@ -52,6 +53,13 @@ defmodule Quic.Quizzes do
   def create_quiz(attrs \\ %{}) do
     %Quiz{}
     |> Quiz.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_quiz_with_author(attrs \\ %{}, id) do
+    author = Repo.get!(Author, id)
+    %Quiz{}
+    |> Quiz.changeset(attrs, author)
     |> Repo.insert()
   end
 
