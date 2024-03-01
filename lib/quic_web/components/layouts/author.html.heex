@@ -1,33 +1,39 @@
 <%!-- MAIN CONTENT --%>
-<main class="w-full h-full p-4 sm:px-6 lg:px-20 flex gap-4">
+<main class="flex w-full h-full gap-4 p-4 sm:px-6 lg:px-20">
   
   <%!-- SIDE BAR --%>
   <nav class="sidebar">
 
     <%!-- GENERAL --%>
     <section class="sidebar-group">
-      <span class="font-semibold text-sm">GENERAL</span>
+      <span class="text-sm font-semibold">GENERAL</span>
       <.link href={~p"/authors"} 
       class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-home" class="hidden md:flex text-xl tracking-wider font-extralight"/>
+        <.icon name="hero-home" class="hidden text-xl tracking-wider md:flex font-extralight"/>
         <span>Home</span>
       </.link>
 
       <.link href={~p"/quizzes"} 
       class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "quiz"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-pencil" class="hidden md:flex text-xl tracking-wider font-extralight"/>
+        <.icon name="hero-pencil" class="hidden text-xl tracking-wider md:flex font-extralight"/>
         <span>Quizzes</span>
+      </.link>
+
+      <.link href={~p"/teams"} 
+      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "team"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <.icon name="hero-users" class="hidden text-xl tracking-wider md:flex font-extralight"/>
+        <span>Teams</span>
       </.link>
 
     </section>
 
 
     <%!-- PERSONAL --%>
-    <section class="sidebar-group mt-10">
-      <span class="font-semibold text-sm">PERSONAL</span>
+    <section class="mt-10 sidebar-group">
+      <span class="text-sm font-semibold">PERSONAL</span>
       <.link href={~p"/authors/settings"} 
       class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "settings"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-cog-8-tooth" class="hidden md:flex text-xl tracking-wider font-extralight"/>
+        <.icon name="hero-cog-8-tooth" class="hidden text-xl tracking-wider md:flex font-extralight"/>
         <span>Settings</span>
       </.link>
     </section>
@@ -39,7 +45,7 @@
     <.link
       href={~p"/authors/log_out"}
       method="delete"
-      class="text-sm text-center font-semibold text-white normalBtn">
+      class="text-sm font-semibold text-center text-white normalBtn">
       Log out
     </.link>
   </nav>

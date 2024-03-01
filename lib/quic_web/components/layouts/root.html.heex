@@ -33,24 +33,23 @@
     </script>
   </head>
   <body class="antialiased bg-[var(--background-view)]">
+
     <%!-- NAVBAR --%>
     <header class="w-full px-4 sm:px-6 lg:px-20 bg-[var(--background-card)] border-b border-[var(--border)]">
       <div class="flex items-center justify-between py-3 text-sm">
-        <div class="flex items-center gap-4">
-          <%= if @current_author do %>
-            <a href="/authors">
-              <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
-              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
-            </a>
-          <% else %>
-            <a href="/">
-              <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
-              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
-            </a>
-          <% end %>
+        <%= if @current_author do %>
+          <a href="/authors" class="flex items-center gap-4">
+            <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
+            <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
+            <p class="text-lg font-medium">QUIC</p>
+          </a>
+        <% else %>
+          <a href="/" class="flex items-center gap-4">
+            <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
+            <p class="text-lg font-medium">QUIC</p>
+          </a>
+        <% end %>
           
-          <p class="text-lg font-medium">QUIC</p>
-        </div>
 
         <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
 

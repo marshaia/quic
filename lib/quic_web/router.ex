@@ -71,12 +71,21 @@ defmodule QuicWeb.Router do
       live "/authors/settings", AuthorSettingsLive, :edit
       live "/authors/settings/confirm_email/:token", AuthorSettingsLive, :confirm_email
 
+      # QUIZZES
       live "/quizzes", QuizLive.Index, :index
       live "/quizzes/new", QuizLive.Index, :new
       live "/quizzes/:id/edit", QuizLive.Index, :edit
 
       live "/quizzes/:id", QuizLive.Show, :show
       live "/quizzes/:id/show/edit", QuizLive.Show, :edit
+
+      # TEAMS
+      live "/teams", TeamLive.Index, :index
+      live "/teams/new", TeamLive.Index, :new
+      live "/teams/:id/edit", TeamLive.Index, :edit
+
+      live "/teams/:id", TeamLive.Show, :show
+      live "/teams/:id/show/edit", TeamLive.Show, :edit
     end
   end
 

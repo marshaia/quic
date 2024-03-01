@@ -25,13 +25,13 @@ h5 { font-size: 4vw; }
 h6 { font-size: 3vw; } 
 p { font-size: 2.5vw;} */
 
-h1 { @apply text-8xl}
-h2 { @apply text-7xl }
-h3 { @apply text-6xl }
-h4 { @apply text-5xl }
-h5 { @apply text-4xl }
-h6 { @apply text-3xl } 
-p  { @apply text-base}
+h1 { @apply text-6xl}
+h2 { @apply text-5xl }
+h3 { @apply text-4xl }
+h4 { @apply text-3xl }
+h5 { @apply text-2xl }
+h6 { @apply text-lg } 
+p  { @apply text-sm}
 
 h1,
 h2,

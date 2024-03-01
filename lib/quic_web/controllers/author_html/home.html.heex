@@ -1,1 +1,40 @@
-<h1>author home page </h1>
+
+<div class="flex flex-col h-full items-center text-center justify-evenly">
+
+  <%!-- GREETINGS --%>
+  <div>
+    <h3> 
+      <span class="text-[var(--primary-color)]">Hi, </span>
+      <%= @current_author.display_name %>
+    </h3>
+
+    <h6 class="mt-4 font-light">What do you wanna do today?</h6>
+  </div>
+  
+
+  <%!-- SEARCH BAR --%>
+  <div>
+    search bar
+  </div>
+
+
+
+  <%!-- SHORTCUTS --%>
+  <div class="flex flex-col sm:flex-row gap-10">
+    <.link navigate={~p"/authors"}>
+      <.home_box icon="hero-user" icon_class="w-10 h-10 text-red-500" text="testing box"/>
+    </.link>
+
+
+    <.link navigate={~p"/authors"}>
+      <.home_box icon="hero-user" icon_class="w-10 h-10 text-blue-500" text="testing box"/>
+    </.link>
+
+
+    <.link navigate={~p"/authors"}>
+      <.home_box icon="hero-user" icon_class="w-10 h-10 text-green-500" text="testing box"/>
+    </.link>
+  </div>
+
+
+</div>
