@@ -12,20 +12,24 @@
 
 
 
-<%!-- <.live_component
-  module={QuicWeb.TeamLive.UserSearchComponent}
-  id={"user_search_live_component"}
-  users={@searched_users}
-  form={%{}}
-/> --%>
-
 <form phx-change="search_users">
-  <div>
-    <input type="text" name="text" value={@input_text}>
-  </div>
+    <input
+      class="input"
+      type="text" name="text" value={@input_text}>
 </form>
 
-<p> <%= inspect @searched_users %> </p>
+
+
+<div :for={user <- @searched_users}>
+    <.link 
+    class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 hover:bg-[--hover]"
+    phx-click="clicked_user" phx-value-username={user.username}>
+      <p class="font-semibold"><%= user.display_name %></p>
+      <p class="text-sm"><%= user.username %></p>
+    </.link>
+</div>
+
+
 
 
 

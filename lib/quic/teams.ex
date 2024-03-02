@@ -90,6 +90,16 @@ defmodule Quic.Teams do
     |> Repo.update()
   end
 
+
+  def insert_author_in_team(team \\ %Team{}, username) do
+    author = Quic.Accounts.get_author_by_username(username)
+
+    team
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(:authors, [author | team.authors])
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a team.
 

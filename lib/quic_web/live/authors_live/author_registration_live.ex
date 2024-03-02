@@ -32,10 +32,10 @@ defmodule QuicWeb.AuthorRegistrationLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
-        <.input field={@form[:username]} type="text" label="Username" required />
-        <.input field={@form[:display_name]} type="text" label="Email" required />
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <.input field={@form[:username]} type="text" label="Username" placeholder="pg12345" required />
+        <.input field={@form[:display_name]} type="text" label="Display Name" placeholder="Jane Doe" required />
+        <.input field={@form[:email]} type="email" label="Email" placeholder="email@domain.com" required />
+        <.input field={@form[:password]} type="password" label="Password" placeholder="*****" required />
 
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full bg-[var(--primary-color)]">Create an account</.button>

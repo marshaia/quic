@@ -59,6 +59,14 @@ p {
 } */
 
 
+.input {
+  @apply bg-[var(--background-card)] 
+  border border-[var(--border)] focus:border-[var(--primary-color)] 
+  text-[var(--primary-color-text)] text-sm
+  rounded-md p-2
+}
+
+
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {

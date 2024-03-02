@@ -45,4 +45,24 @@ defmodule QuicWeb.MyComponents do
   end
 
 
+
+  @doc """
+  Renders a box with the author information.
+
+  ## Examples
+      <.author_box username="pg12345" display_name="John Doe" />
+  """
+  attr :username, :string, required: true, doc: "the username of the author"
+  attr :display_name, :string, required: true, doc: "the display_name of the author"
+
+  def author_box(assigns) do
+    ~H"""
+    <div class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 hover:bg-[--hover]">
+      <p class="font-semibold"><%= @username %></p>
+      <p class="text-sm"><%= @display_name %></p>
+    </div>
+    """
+  end
+
+
 end
