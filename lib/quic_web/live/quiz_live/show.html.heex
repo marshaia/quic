@@ -7,6 +7,10 @@
     <.link patch={~p"/quizzes/#{@quiz}/show/edit"} phx-click={JS.push_focus()}>
       <.button class="call2actionBtn">Edit quiz</.button>
     </.link>
+
+    <%!-- <.link navigate={~p"/quizzes/#{@quiz}/show/edit"}>
+      <.button class="call2actionBtn">Edit quiz</.button>
+    </.link> --%>
   </:actions>
 </.header>
 
@@ -15,6 +19,7 @@
   <:item title="Description"><%= @quiz.description %></:item>
   <:item title="Total points"><%= @quiz.total_points %></:item>
   <:item title="Author"><%= @quiz.author.display_name %></:item>
+  <:item title="Author"><%= inspect @quiz.questions %></:item>
 </.list>
 
 <.back navigate={~p"/quizzes"}>Back to quizzes</.back>

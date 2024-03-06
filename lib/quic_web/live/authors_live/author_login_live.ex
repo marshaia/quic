@@ -38,6 +38,11 @@ defmodule QuicWeb.AuthorLoginLive do
   def mount(_params, _session, socket) do
     email = live_flash(socket.assigns.flash, :email)
     form = to_form(%{"email" => email}, as: "author")
-    {:ok, assign(socket, form: form), temporary_assigns: [form: form]}
+
+    socket = socket
+    |> assign(form: form)
+    |> assign(page_title: "Login")
+
+    {:ok, socket, temporary_assigns: [form: form]}
   end
 end

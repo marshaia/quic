@@ -86,6 +86,14 @@ defmodule QuicWeb.Router do
 
       live "/teams/:id", TeamLive.Show, :show
       live "/teams/:id/show/edit", TeamLive.Show, :edit
+
+      # QUESTIONS
+      live "/questions", QuestionLive.Index, :index
+      live "/questions/new", QuestionLive.Index, :new
+      live "/questions/:id/edit", QuestionLive.Index, :edit
+
+      live "/questions/:id", QuestionLive.Show, :show
+      live "/questions/:id/show/edit", QuestionLive.Show, :edit
     end
   end
 

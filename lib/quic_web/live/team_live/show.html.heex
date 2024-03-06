@@ -13,20 +13,21 @@
 
 
 <form phx-change="search_users">
-    <input
-      class="input"
-      type="text" name="text" value={@input_text}>
+  <input
+    class="input"
+    type="text" name="text" value={@input_text} />
 </form>
 
 
 
 <div :for={user <- @searched_users}>
-    <.link 
-    class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 hover:bg-[--hover]"
+    <.button 
+    class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 active:hover:bg-[--hover]"
+    disabled={Enum.any?(@team.authors, fn member -> member.username === user.username end)}
     phx-click="clicked_user" phx-value-username={user.username}>
       <p class="font-semibold"><%= user.display_name %></p>
       <p class="text-sm"><%= user.username %></p>
-    </.link>
+    </.button>
 </div>
 
 

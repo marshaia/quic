@@ -10,6 +10,7 @@ defmodule Quic.Quizzes.Quiz do
     field :total_points, :integer
 
     belongs_to :author, Quic.Accounts.Author, foreign_key: :author_id
+    has_many :questions, Quic.Questions.Question, foreign_key: :quiz_id
 
     timestamps(type: :utc_datetime)
   end

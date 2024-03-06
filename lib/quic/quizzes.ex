@@ -36,7 +36,7 @@ defmodule Quic.Quizzes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_quiz!(id), do: Repo.get!(Quiz, id) |> Repo.preload(:author)
+  def get_quiz!(id), do: Repo.get!(Quiz, id) |> Repo.preload(:author) |> Repo.preload(:questions)
 
   @doc """
   Creates a quiz.
