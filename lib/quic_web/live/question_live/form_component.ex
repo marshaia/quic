@@ -51,7 +51,7 @@ defmodule QuicWeb.QuestionLive.FormComponent do
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do
-    question_params = assign(socket, quiz_id: socket.assigns.quiz.id)
+    socket = assign(socket, quiz_id: socket.assigns.quiz_id)
     save_question(socket, socket.assigns.action, question_params)
   end
 

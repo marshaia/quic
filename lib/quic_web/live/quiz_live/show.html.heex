@@ -19,8 +19,22 @@
   <:item title="Description"><%= @quiz.description %></:item>
   <:item title="Total points"><%= @quiz.total_points %></:item>
   <:item title="Author"><%= @quiz.author.display_name %></:item>
-  <:item title="Author"><%= inspect @quiz.questions %></:item>
 </.list>
+
+
+
+<h6 class="mt-5">Questions</h6>
+<.link patch={~p"/quizzes/#{@quiz.id}/question/new"} phx-click={JS.push_focus()}>
+  <.button class="call2actionBtn">New Question</.button>
+</.link>
+<div :for={question <- @quiz.questions} class="p-2 mt-4 bg-red-400">
+  <.link navigate={~p"/quizzes/#{@quiz.id}/question/#{question.id}"}>
+      <%= question.title %> --- <% question.description %>
+  </.link>
+</div>
+
+
+
 
 <.back navigate={~p"/quizzes"}>Back to quizzes</.back>
 

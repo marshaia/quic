@@ -65,6 +65,7 @@ defmodule QuicWeb.Router do
     pipe_through [:browser, :require_authenticated_author]
 
     get "/authors", AuthorController, :home
+    get "/quizzes/:quiz_id/question/:question_id", QuestionsController, :show
 
     live_session :require_authenticated_author,
       on_mount: [{QuicWeb.AuthorAuth, :ensure_authenticated}] do
@@ -79,6 +80,17 @@ defmodule QuicWeb.Router do
       live "/quizzes/:id", QuizLive.Show, :show
       live "/quizzes/:id/show/edit", QuizLive.Show, :edit
 
+      # # QUESTIONS
+      # live "/questions", QuestionLive.Index, :index
+      # live "/quizzes/:quiz_id/questions/new", QuestionLive.Index, :new
+      # live "/questions/:id/edit", QuestionLive.Index, :edit
+
+      # live "/questions/:id", QuestionLive.Show, :show
+      # live "/questions/:id/show/edit", QuestionLive.Show, :edit
+
+
+
+
       # TEAMS
       live "/teams", TeamLive.Index, :index
       live "/teams/new", TeamLive.Index, :new
@@ -87,13 +99,6 @@ defmodule QuicWeb.Router do
       live "/teams/:id", TeamLive.Show, :show
       live "/teams/:id/show/edit", TeamLive.Show, :edit
 
-      # QUESTIONS
-      live "/questions", QuestionLive.Index, :index
-      live "/questions/new", QuestionLive.Index, :new
-      live "/questions/:id/edit", QuestionLive.Index, :edit
-
-      live "/questions/:id", QuestionLive.Show, :show
-      live "/questions/:id/show/edit", QuestionLive.Show, :edit
     end
   end
 

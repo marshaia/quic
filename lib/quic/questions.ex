@@ -4,6 +4,7 @@ defmodule Quic.Questions do
   """
 
   import Ecto.Query, warn: false
+  alias Quic.Quizzes
   alias Quic.Repo
 
   alias Quic.Questions.Question
@@ -52,6 +53,13 @@ defmodule Quic.Questions do
   def create_question(attrs \\ %{}) do
     %Question{}
     |> Question.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_question_with_quiz(attrs \\ %{}, id) do
+    quiz = Quizzes.get_quiz!(id)
+    %Question{}
+    |> Question.changeset(attrs, quiz)
     |> Repo.insert()
   end
 

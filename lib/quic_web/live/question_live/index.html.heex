@@ -31,13 +31,25 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="question-modal" show on_cancel={JS.patch(~p"/questions")}>
+<.modal :if={@live_action === :edit} id="question-modal" show on_cancel={JS.patch(~p"/quizzes/#{@quiz_id}/question/#{@question.id}")}>
   <.live_component
     module={QuicWeb.QuestionLive.FormComponent}
     id={@question.id || :new}
     title={@page_title}
     action={@live_action}
     question={@question}
-    patch={~p"/questions"}
+    patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}"}
+  />
+</.modal>
+
+
+<.modal :if={@live_action === :new} id="question-modal" show on_cancel={JS.patch(~p"/quizzes/#{@quiz_id}")}>
+  <.live_component
+    module={QuicWeb.QuestionLive.FormComponent}
+    id={@question.id || :new}
+    title={@page_title}
+    action={@live_action}
+    question={@question}
+    patch={~p"/quizzes/#{@quiz_id}"}
   />
 </.modal>

@@ -10,7 +10,8 @@ defmodule QuicWeb.QuestionLive.Index do
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
+  def handle_params(%{"quiz_id" => quiz_id} = params, _url, socket) do
+    socket = assign(socket, :quiz_id, quiz_id)
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 

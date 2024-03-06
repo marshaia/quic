@@ -20,4 +20,12 @@ defmodule Quic.Questions.Question do
     |> cast(attrs, [:title, :description, :points])
     |> validate_required([:title, :description, :points])
   end
+
+  @doc false
+  def changeset(question, attrs, quiz) do
+    question
+    |> cast(attrs, [:title, :description, :points])
+    |> put_assoc(:quiz, quiz)
+    |> validate_required([:title, :description, :points])
+  end
 end

@@ -1,0 +1,30 @@
+<.header>
+  <h4 class="text-[var(--primary-color)]"><%= @question.title %></h4>
+  <:subtitle>
+    <p>This is a question record from your database.</p>
+  </:subtitle>
+  <:actions>
+    <%!-- <.link patch={~p"/questions/#{@question}/show/edit"} phx-click={JS.push_focus()}>
+      <.button class="call2actionBtn">Edit question</.button>
+    </.link> --%>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @question.title %></:item>
+  <:item title="Description"><%= @question.description %></:item>
+  <:item title="Points"><%= @question.points %></:item>
+</.list>
+
+<.back navigate={~p"/quizzes/#{@quiz_id}"}>Back to questions</.back>
+
+<%!-- <.modal :if={@live_action == :edit} id="question-modal" show on_cancel={JS.patch(~p"/questions/#{@question}")}>
+  <.live_component
+    module={QuicWeb.QuestionLive.FormComponent}
+    id={@question.id}
+    title={@page_title}
+    action={@live_action}
+    question={@question}
+    patch={~p"/questions/#{@question}"}
+  />
+</.modal> --%>
