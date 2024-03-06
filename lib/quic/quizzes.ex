@@ -109,4 +109,10 @@ defmodule Quic.Quizzes do
   def change_quiz(%Quiz{} = quiz, attrs \\ %{}) do
     Quiz.changeset(quiz, attrs)
   end
+
+
+  def is_owner?(quiz_id, author) do
+    quiz = get_quiz!(quiz_id)
+    author && quiz && author.id === quiz.author_id
+  end
 end

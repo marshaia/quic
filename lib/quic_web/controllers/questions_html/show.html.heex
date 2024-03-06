@@ -4,9 +4,9 @@
     <p>This is a question record from your database.</p>
   </:subtitle>
   <:actions>
-    <%!-- <.link patch={~p"/questions/#{@question}/show/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question}/edit"} phx-click={JS.push_focus()}>
       <.button class="call2actionBtn">Edit question</.button>
-    </.link> --%>
+    </.link>
   </:actions>
 </.header>
 
@@ -18,13 +18,13 @@
 
 <.back navigate={~p"/quizzes/#{@quiz_id}"}>Back to questions</.back>
 
-<%!-- <.modal :if={@live_action == :edit} id="question-modal" show on_cancel={JS.patch(~p"/questions/#{@question}")}>
+<%!-- <div>
   <.live_component
     module={QuicWeb.QuestionLive.FormComponent}
     id={@question.id}
     title={@page_title}
-    action={@live_action}
+    action={:edit}
     question={@question}
-    patch={~p"/questions/#{@question}"}
+    patch={~p"/quizzes/#{@quiz_id}/question/#{@question}"}
   />
-</.modal> --%>
+</div> --%>

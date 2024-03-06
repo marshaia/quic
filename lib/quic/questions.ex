@@ -36,7 +36,7 @@ defmodule Quic.Questions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_question!(id), do: Repo.get!(Question, id)
+  def get_question!(id), do: Repo.get!(Question, id) |> Repo.preload(:quiz)
 
   @doc """
   Creates a question.

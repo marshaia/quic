@@ -2,8 +2,8 @@
   Question <%= @question.id %>
   <:subtitle>This is a question record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/questions/#{@question}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit question</.button>
+    <.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question}/edit"} phx-click={JS.push_focus()}>
+      <.button class="call2actionBtn">Edit question</.button>
     </.link>
   </:actions>
 </.header>
