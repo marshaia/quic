@@ -14,11 +14,20 @@
 
 
 
-<%!-- <.simple_form>
-
-
-
-</.simple_form> --%>
+<.simple_form
+  :let={f}
+  for={@changeset}
+  id="question-form"
+  phx-change="validate"
+  phx-submit="save"
+>
+  <.input field={f[:title]} type="text" label="Title" />
+  <.input field={f[:description]} type="text" label="Description" />
+  <.input field={f[:points]} type="number" label="Points" />
+  <:actions>
+    <.button class="call2actionBtn" phx-disable-with="Saving...">Save Question</.button>
+  </:actions>
+</.simple_form>
 
 
 
