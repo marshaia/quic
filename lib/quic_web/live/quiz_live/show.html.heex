@@ -27,9 +27,17 @@
 <.link patch={~p"/quizzes/#{@quiz.id}/question/new"}>
   <.button class="call2actionBtn">New Question</.button>
 </.link>
-<div :for={question <- @quiz.questions} class="p-2 mt-4 bg-red-400">
+<div :for={question <- @quiz.questions} class="p-2 mt-4 bg-[var(--background-card)] rounded-md">
   <.link navigate={~p"/quizzes/#{@quiz.id}/question/#{question.id}"}>
       <%= question.title %> --- <% question.description %>
+
+      <.link
+        phx-click={JS.push("delete", value: %{id: question.id}) |> hide("##{question.id}")}
+        data-confirm="Are you sure you want to delete this question?"
+        class="redLink"
+      >
+        Delete
+      </.link>
   </.link>
 </div>
 
