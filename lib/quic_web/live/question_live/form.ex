@@ -58,9 +58,12 @@ defmodule QuicWeb.QuestionLive.Form do
 
   defp save_question(socket, :edit, question_params) do
     quiz_id = socket.assigns.quiz_id
+    old_question_points = get_old_question_points(socket.assigns.question.id)
 
     case Questions.update_question(socket.assigns.question, question_params) do
       {:ok, question} ->      # notify_parent({:saved, question})
+
+        Quizzes.update_quiz_points_when_question_edited(quiz_id, old_question_points, question.points)
 
         {:noreply,
          socket
@@ -79,7 +82,9 @@ defmodule QuicWeb.QuestionLive.Form do
 
     case Questions.create_question_with_quiz(question_params, quiz_id) do
       {:ok, question} ->
-        # notify_parent({:saved, question})
+        #notify_parent({:saved, question})
+
+        Quizzes.update_quiz_points(quiz_id, question.points)
 
         {:noreply,
          socket
@@ -89,6 +94,11 @@ defmodule QuicWeb.QuestionLive.Form do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
+  end
+
+  defp get_old_question_points(question_id) do
+    %{points: points} = Questions.get_question!(question_id)
+    points
   end
 
 end

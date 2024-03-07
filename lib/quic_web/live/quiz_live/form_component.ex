@@ -23,7 +23,7 @@ defmodule QuicWeb.QuizLive.FormComponent do
       >
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="text" label="Description" />
-        <.input field={@form[:total_points]} type="number" label="Total points" />
+        <%!-- <.input field={@form[:total_points]} type="number" label="Total points" /> --%>
         <:actions>
           <.button phx-disable-with="Saving..." class="call2actionBtn">Save Quiz</.button>
         </:actions>
@@ -73,6 +73,7 @@ defmodule QuicWeb.QuizLive.FormComponent do
   end
 
   defp save_quiz(socket, :new, quiz_params) do
+    quiz_params = Map.put(quiz_params, "total_points", 0)
     case Quizzes.create_quiz_with_author(quiz_params, socket.assigns.current_author.id) do
       {:ok, quiz} ->
         notify_parent({:saved, quiz})

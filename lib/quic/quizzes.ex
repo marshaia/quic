@@ -81,6 +81,35 @@ defmodule Quic.Quizzes do
     |> Repo.update()
   end
 
+
+  def update_quiz_points(quiz_id, points) do
+    quiz = get_quiz!(quiz_id)
+    newTotal = quiz.total_points + points
+
+    quiz
+    |> Quiz.changeset(%{total_points: newTotal})
+    |> Repo.update()
+  end
+
+  def update_quiz_points_when_question_edited(quiz_id, old_points, new_points) do
+    quiz = get_quiz!(quiz_id)
+    newTotal = quiz.total_points - old_points + new_points
+
+    quiz
+    |> Quiz.changeset(%{total_points: newTotal})
+    |> Repo.update()
+  end
+
+
+  def update_quiz_points_when_question_deleted(quiz_id, points) do
+    quiz = get_quiz!(quiz_id)
+    newTotal = quiz.total_points - points
+
+    quiz
+    |> Quiz.changeset(%{total_points: newTotal})
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a quiz.
 

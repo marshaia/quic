@@ -19,6 +19,7 @@ defmodule Quic.Questions.Question do
     question
     |> cast(attrs, [:title, :description, :points])
     |> validate_required([:title, :description, :points])
+    |> validate_points()
   end
 
   @doc false
@@ -27,5 +28,12 @@ defmodule Quic.Questions.Question do
     |> cast(attrs, [:title, :description, :points])
     |> put_assoc(:quiz, quiz)
     |> validate_required([:title, :description, :points])
+    |> validate_points()
+  end
+
+  def validate_points(changeset) do
+    changeset
+    |> validate_required([:points])
+    |> validate_number(:points, greater_than: -1, message: "question points must be equal or greater than 0")
   end
 end
