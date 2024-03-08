@@ -19,7 +19,7 @@ defmodule QuicWeb.SessionLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:code]} type="text" label="Code" />
+        <%!-- <.input field={@form[:code]} type="text" label="Code" /> --%>
         <%!-- <.input field={@form[:start_date]} type="date" label="Start date" />
         <.input field={@form[:end_date]} type="date" label="End date" /> --%>
         <%!-- <.input
