@@ -14,6 +14,7 @@ defmodule Quic.Accounts.Author do
 
     has_many :quizzes, Quic.Quizzes.Quiz, foreign_key: :author_id
     many_to_many :teams, Quic.Teams.Team, join_through: "teams_authors"
+    has_many :sessions, Quic.Sessions.Session, foreign_key: :monitor_id
 
     timestamps(type: :utc_datetime)
   end

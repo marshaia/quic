@@ -6,7 +6,7 @@ defmodule QuicWeb.QuizLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :quizzes, Quizzes.list_quizzes())}
+    {:ok, stream(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
   end
 
   @impl true

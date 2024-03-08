@@ -1,12 +1,14 @@
 defmodule QuicWeb.SessionLive.Index do
-  use QuicWeb, :live_view
+  use QuicWeb, :author_live_view
 
   alias Quic.Sessions
   alias Quic.Sessions.Session
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :sessions, Sessions.list_sessions())}
+    #{:ok, stream(socket, :sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))}
+    #{:ok, stream(socket, :sessions, Sessions.list_sessions())}
+    {:ok, stream(socket, :sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))}
   end
 
   @impl true

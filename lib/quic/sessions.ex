@@ -6,6 +6,7 @@ defmodule Quic.Sessions do
   import Ecto.Query, warn: false
   alias Quic.Repo
 
+  alias Quic.Accounts.Author
   alias Quic.Sessions.Session
 
   @doc """
@@ -19,6 +20,11 @@ defmodule Quic.Sessions do
   """
   def list_sessions do
     Repo.all(Session)
+  end
+
+  def list_all_author_sessions(id) do
+    author = Repo.get(Author, id) |> Repo.preload(:sessions)
+    author.sessions
   end
 
   @doc """

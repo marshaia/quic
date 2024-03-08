@@ -25,6 +25,12 @@
         <span>Teams</span>
       </.link>
 
+      <.link href={~p"/sessions"} 
+      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "session"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <.icon name="hero-bolt" class="hidden text-xl tracking-wider md:flex font-extralight"/>
+        <span>Sessions</span>
+      </.link>
+
     </section>
 
 

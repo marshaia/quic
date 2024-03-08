@@ -22,6 +22,11 @@ defmodule Quic.Quizzes do
     Repo.all(Quiz)
   end
 
+  def list_all_author_quizzes(id) do
+    author = Repo.get(Author, id) |> Repo.preload(:quizzes)
+    author.quizzes
+  end
+
   @doc """
   Gets a single quiz.
 

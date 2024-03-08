@@ -20,15 +20,15 @@ defmodule QuicWeb.SessionLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:code]} type="text" label="Code" />
-        <.input field={@form[:start_date]} type="date" label="Start date" />
-        <.input field={@form[:end_date]} type="date" label="End date" />
-        <.input
+        <%!-- <.input field={@form[:start_date]} type="date" label="Start date" />
+        <.input field={@form[:end_date]} type="date" label="End date" /> --%>
+        <%!-- <.input
           field={@form[:status]}
           type="select"
           label="Status"
           prompt="Choose a value"
           options={Ecto.Enum.values(Quic.Sessions.Session, :status)}
-        />
+        /> --%>
         <.input
           field={@form[:type]}
           type="select"

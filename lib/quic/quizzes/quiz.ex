@@ -11,6 +11,7 @@ defmodule Quic.Quizzes.Quiz do
 
     belongs_to :author, Quic.Accounts.Author, foreign_key: :author_id
     has_many :questions, Quic.Questions.Question, foreign_key: :quiz_id
+    #has_many :sessions, Quic.Sessions.Session, foreign_key: :quiz_id
 
     timestamps(type: :utc_datetime)
   end
