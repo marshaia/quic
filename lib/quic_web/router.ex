@@ -57,6 +57,10 @@ defmodule QuicWeb.Router do
       live "/authors/log_in", AuthorLoginLive, :new
       live "/authors/reset_password", AuthorForgotPasswordLive, :new
       live "/authors/reset_password/:token", AuthorResetPasswordLive, :edit
+
+
+      # PARTICIPANT
+
     end
 
     post "/authors/log_in", AuthorSessionController, :create
@@ -99,6 +103,24 @@ defmodule QuicWeb.Router do
 
       live "/teams/:id", TeamLive.Show, :show
       live "/teams/:id/show/edit", TeamLive.Show, :edit
+
+
+      # SESSIONS
+      live "/sessions", SessionLive.Index, :index
+      live "/sessions/new", SessionLive.Index, :new
+      live "/sessions/:id/edit", SessionLive.Index, :edit
+
+      live "/sessions/:id", SessionLive.Show, :show
+      live "/sessions/:id/show/edit", SessionLive.Show, :edit
+
+
+      # PARTICIPANT
+      live "/participants", ParticipantLive.Index, :index
+      live "/participants/new", ParticipantLive.Index, :new
+      live "/participants/:id/edit", ParticipantLive.Index, :edit
+
+      live "/participants/:id", ParticipantLive.Show, :show
+      live "/participants/:id/show/edit", ParticipantLive.Show, :edit
     end
 
     get "/quizzes/:quiz_id/question/:question_id", QuestionsController, :show
