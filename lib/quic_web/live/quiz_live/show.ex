@@ -21,7 +21,7 @@ defmodule QuicWeb.QuizLive.Show do
   def handle_event("delete", %{"id" => id}, socket) do
     question = Questions.get_question!(id)
     {:ok, _} = Questions.delete_question(question)
-    Quizzes.update_quiz_points_when_question_deleted(socket.assigns.quiz.id, question.points)
+    Quizzes.update_quiz_points(socket.assigns.quiz.id)
 
     {:noreply, assign(socket, :quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))}
   end
