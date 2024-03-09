@@ -133,4 +133,11 @@ defmodule Quic.Quizzes do
     quiz = get_quiz!(quiz_id)
     author && quiz && author.id === quiz.author_id
   end
+
+  def is_allowed_to_access?(quiz_id, author) do
+    author_quizzes = list_all_author_quizzes(author.id)
+    cond1 = Enum.any?(author_quizzes, fn quiz -> quiz.id === quiz_id end)
+
+    cond1
+  end
 end

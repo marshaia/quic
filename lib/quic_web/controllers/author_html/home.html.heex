@@ -1,5 +1,5 @@
 
-<div class="flex flex-col h-full items-center text-center justify-evenly">
+<div class="flex flex-col items-center h-full text-center justify-evenly">
 
   <%!-- GREETINGS --%>
   <div>
@@ -20,9 +20,9 @@
 
 
   <%!-- SHORTCUTS --%>
-  <div class="flex flex-col sm:flex-row gap-10">
-    <.link navigate={~p"/authors"}>
-      <.home_box icon="hero-user" icon_class="w-10 h-10 text-red-500" text="testing box"/>
+  <div class="flex flex-col gap-10 sm:flex-row">
+    <.link navigate={~p"/sessions/new"}>
+      <.home_box icon="hero-bolt" icon_class="w-10 h-10 text-yellow-600" text="Launch Session"/>
     </.link>
 
 
