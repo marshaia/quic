@@ -16,9 +16,9 @@
     class="w-80"
     actionClass="justify-center"
   >
-    <.input field={f[:code]} type="text" placeholder="CODE" /> <!-- maxlength="5" -->
+    <.input field={f[:code]} id="join-session-input" type="text" placeholder="CODE" /> <!-- maxlength="5" -->
     <:actions>
-      <.button class="call2actionBtn" phx-disable-with="Joining...">Join Session</.button>
+      <.button class="call2actionBtn" id="join-session-button"  phx-disable-with="Joining...">Join Session</.button>
     </:actions>
   </.simple_form>
 
