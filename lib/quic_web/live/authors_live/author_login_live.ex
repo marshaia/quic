@@ -15,7 +15,7 @@ defmodule QuicWeb.AuthorLoginLive do
         </:subtitle>
       </.header>
 
-      <.simple_form for={@form} id="login_form" action={~p"/authors/log_in"} phx-update="ignore">
+      <.simple_form for={@form} id="login_form" action={~p"/authors/log_in"} phx-update="ignore" actionClass="justify-between">
         <.input field={@form[:email]} type="email" label="Email" placeholder="email@domain.com" required />
         <.input field={@form[:password]} type="password" label="Password" placeholder="*****" required />
 

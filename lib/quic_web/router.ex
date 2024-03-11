@@ -109,10 +109,10 @@ defmodule QuicWeb.Router do
       live "/sessions", SessionLive.Index, :index
       live "/sessions/new", SessionLive.CreateSessionForm
       live "/sessions/new/quiz/:quiz_id", SessionLive.CreateSessionForm
-      live "/sessions/:id/edit", SessionLive.Index, :edit
+      #live "/sessions/:id/edit", SessionLive.Index, :edit
 
       live "/sessions/:id", SessionLive.Show, :show
-      live "/sessions/:id/show/edit", SessionLive.Show, :edit
+      #live "/sessions/:id/show/edit", SessionLive.Show, :edit
 
 
       # PARTICIPANT

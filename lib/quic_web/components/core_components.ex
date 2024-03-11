@@ -196,6 +196,8 @@ defmodule QuicWeb.CoreComponents do
     include: ~w(autocomplete name rel action enctype method novalidate target multipart),
     doc: "the arbitrary HTML attributes to apply to the form tag"
 
+  attr :actionClass, :string, default: "", doc: "an extra class to the action buttons section"
+
   slot :inner_block, required: true
   slot :actions, doc: "the slot for form actions, such as a submit button"
 
@@ -204,7 +206,7 @@ defmodule QuicWeb.CoreComponents do
     <.form :let={f} for={@for} as={@as} {@rest}>
       <div class="mt-10 space-y-8">
         <%= render_slot(@inner_block, f) %>
-        <div :for={action <- @actions} class="flex items-center justify-between gap-6 mt-2">
+        <div :for={action <- @actions} class={"flex items-center #{@actionClass} gap-6 mt-2"}>
           <%= render_slot(action, f) %>
         </div>
       </div>
