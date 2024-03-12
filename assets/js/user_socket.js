@@ -70,10 +70,8 @@ function joinChannel(session_code) {
 }
 
 
-
-
-// Example: Join the channel when a button is clicked
-document.getElementById("join-session-button").addEventListener("click", () => {
+join_btn = document.getElementById("join-session-button")
+if(join_btn) join_btn.addEventListener("click", () => {
   code = document.getElementById("join-session-input").value.toUpperCase()
   if (code.length === 5) joinChannel(code)  
 });
