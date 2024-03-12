@@ -2,14 +2,18 @@ defmodule QuicWeb.SessionChannel do
   use QuicWeb, :channel
 
   @impl true
-  def join("session:" <> id, _payload, socket) do
-    # verify authorization (monitor vs participant)
+  def join("session:" <> id = channel, _payload, socket) do
     # verify session code validity
+    # verify authorization (monitor vs participant)
     # add user to session channel and respond
-    #send(self(), :after_join)
-    socket = socket |> assign(session_id: id, channel: "session:")
+    socket = socket |> assign(session_id: id, channel: channel)
 
-    Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"joined_session", %{"session" => "joined :D"}})
+    #send(self(), :after_join)
+    if id === "ASDFG" do
+      Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"joined_session", %{"session" => "joined session - #{id}"}})
+    else
+      Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"error_joining_session", %{"error" => "invalid session code"}})
+    end
 
     {:ok, socket}
     # if authorized?(payload) do
@@ -20,10 +24,12 @@ defmodule QuicWeb.SessionChannel do
   end
 
   # @impl true
-  # def handle_in(:after_join, _payload, socket) do
-  #   broadcast(socket, "server_message", %{body: "joined"})
+  # def handle_info(:after_join, socket) do
+  #   # broadcast(socket, "server_message", %{body: "joined"})
   #   {:noreply, socket}
   # end
+
+  # def handle_info(_, socket), do: {:noreply, socket}
 
 
   # Channels can be used in a request/response fashion
