@@ -22,17 +22,17 @@
   <%!-- SHORTCUTS --%>
   <div class="flex flex-col gap-10 sm:flex-row">
     <.link navigate={~p"/sessions/new"}>
-      <.home_box icon="hero-bolt" icon_class="w-10 h-10 text-yellow-600" text="Launch Session"/>
+      <.home_box icon="hero-bolt" icon_class="w-10 h-10 text-[var(--second-color)]" text="Launch Session"/>
     </.link>
 
 
-    <.link navigate={~p"/authors"}>
-      <.home_box icon="hero-user" icon_class="w-10 h-10 text-blue-500" text="testing box"/>
+    <.link navigate={~p"/quizzes"}>
+      <.home_box icon="hero-pencil" icon_class="w-10 h-10 text-[var(--fifth-color)]" text="Go To Quizzes"/>
     </.link>
 
 
-    <.link navigate={~p"/authors"}>
-      <.home_box icon="hero-user" icon_class="w-10 h-10 text-green-500" text="testing box"/>
+    <.link navigate={~p"/teams"}>
+      <.home_box icon="hero-users" icon_class="w-10 h-10 text-[var(--green)]" text="Go To Teams"/>
     </.link>
   </div>
 

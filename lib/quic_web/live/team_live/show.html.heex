@@ -18,8 +18,7 @@
     type="text" name="text" value={@input_text} />
 </form>
 
-
-
+<%= if String.length(@input_text) > 0 do %>
 <div :for={user <- @searched_users}>
     <.button 
     class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 active:hover:bg-[--hover]"
@@ -29,6 +28,7 @@
       <p class="text-sm"><%= user.username %></p>
     </.button>
 </div>
+<% end %>
 
 
 

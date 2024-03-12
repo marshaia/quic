@@ -5,7 +5,7 @@ defmodule QuicWeb.AuthorLoginLive do
     ~H"""
     <div class="max-w-md mx-auto">
       <.header class="text-center">
-        <h6>Sign in to account</h6>
+        <h5>Sign in to account</h5>
         <:subtitle>
           <span class="text-[var(--primary-color-text)]">Don't have an account?</span>
           <.link navigate={~p"/authors/register"} class="font-semibold text-brand hover:underline">

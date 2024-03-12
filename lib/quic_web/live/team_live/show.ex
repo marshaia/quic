@@ -30,7 +30,8 @@ defmodule QuicWeb.TeamLive.Show do
   @impl true
   def handle_event("clicked_user", %{"username" => username} = _params, socket) do
     Teams.insert_author_in_team(socket.assigns.team, username)
-    {:noreply, socket}
+    team = Teams.get_team!(socket.assigns.team.id)
+    {:noreply, assign(socket, team: team)}
   end
 
   defp page_title(:show), do: "Show Team"

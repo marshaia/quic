@@ -11,10 +11,16 @@ defmodule QuicWeb.QuizLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    {:noreply,
-     socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:quiz, Quizzes.get_quiz!(id))}
+    if Quizzes.is_allowed_to_access?(id, socket.assigns.current_author) do
+      {:noreply, socket
+                |> assign(:page_title, page_title(socket.assigns.live_action))
+                |> assign(:quiz, Quizzes.get_quiz!(id))}
+    else
+      {:noreply, socket
+            |> put_flash(:error, "You can only access Quizzes shared with/owned by you!")
+            |> push_navigate(to: ~p"/quizzes/")}
+    end
+
   end
 
   @impl true
@@ -24,6 +30,10 @@ defmodule QuicWeb.QuizLive.Show do
     Quizzes.update_quiz_points(socket.assigns.quiz.id)
 
     {:noreply, assign(socket, :quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))}
+  end
+
+  def isOwner?(quiz_id, author) do
+    Quizzes.is_owner?(quiz_id, author)
   end
 
   defp page_title(:show), do: "Show Quiz"

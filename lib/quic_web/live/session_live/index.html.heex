@@ -1,5 +1,5 @@
 <.header>
-  Listing Sessions
+  <h4>Listing Sessions</h4>
   <:actions>
     <.link patch={~p"/sessions/new"}>
       <.button class="call2actionBtn">New Session</.button>
@@ -21,10 +21,11 @@
     <div class="sr-only">
       <.link navigate={~p"/sessions/#{session}"}>Show</.link>
     </div>
-    <.link patch={~p"/sessions/#{session}/edit"}>Edit</.link>
+    <%!-- <.link patch={~p"/sessions/#{session}/edit"}>Edit</.link> --%>
   </:action>
   <:action :let={{id, session}}>
     <.link
+      class="redLink"
       phx-click={JS.push("delete", value: %{id: session.id}) |> hide("##{id}")}
       data-confirm="Are you sure?"
     >
@@ -33,7 +34,7 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="session-modal" show on_cancel={JS.patch(~p"/sessions")}>
+<%!-- <.modal :if={@live_action in [:new, :edit]} id="session-modal" show on_cancel={JS.patch(~p"/sessions")}>
   <.live_component
     module={QuicWeb.SessionLive.FormComponent}
     id={@session.id || :new}
@@ -42,4 +43,4 @@
     session={@session}
     patch={~p"/sessions"}
   />
-</.modal>
+</.modal> --%>

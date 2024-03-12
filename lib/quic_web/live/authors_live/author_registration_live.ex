@@ -9,7 +9,7 @@ defmodule QuicWeb.AuthorRegistrationLive do
     ~H"""
     <div class="max-w-md mx-auto">
       <.header class="text-center">
-        <h6>Register for an account</h6>
+        <h5>Register for an account</h5>
         <:subtitle>
           <span class="text-[var(--primary-color-text)]">Already registered?</span>
           <.link navigate={~p"/authors/log_in"} class="font-semibold text-brand hover:underline">

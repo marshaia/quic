@@ -2,12 +2,12 @@
 
   <%!-- greeter --%>
   <div class="px-4 sm:px-6 lg:px-8 text-center py-20 bg-[var(--background-card)]">
-    <div class="flex justify-center gap-4">
+    <div class="flex justify-center gap-4 items-center">
       <.icon name="hero-computer-desktop" class="text-[var(--primary-color)] w-20 h-20"/>
-      <h2>QUIC</h2>
+      <h1>QUIC</h1>
     </div>
     
-    <p class="mt-3">A Quiz Creation Tool To Support Programming Classes</p>
+    <h6 class="mt-3 font-normal">A Quiz Creation Tool To Support Programming Classes</h6>
 
     <div class="flex md:flex-row flex-col items-center mt-10 gap-4 justify-center">
       <.link
@@ -31,15 +31,25 @@
     <div class="max-w-6xl mx-auto">
 
       <div class="flex md:flex-row flex-col gap-10 justify-between">
-        <div>
-          <h5>What is QUIC?</h5>
+        <section>
+          <div class="flex gap-2 items-center"> 
+            <.icon name="hero-question-mark-circle" class="text-[var(--third-color)] w-7 h-7"/>
+            <h4>What is QUIC?</h4>  
+          </div>
+          
           <p>QUIC is a ...</p>
-        </div>
+        </section>
 
-        <div>
-          <h5>A little bit of context</h5>
+        <div class="border-b md:border-l border-[var(--border)]"></div>
+
+        <section>
+          <div class="flex gap-2 items-center"> 
+            <.icon name="hero-academic-cap" class="text-[var(--fifth-color)] w-7 h-7"/>
+            <h4>A little bit of context</h4>  
+          </div>
+          
           <p>QUIC is a ...</p>
-        </div>
+        </section>
       </div>
       
       

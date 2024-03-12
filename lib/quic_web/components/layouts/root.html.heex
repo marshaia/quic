@@ -11,15 +11,14 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
     <script>
-    function changeTheme() {
-      theme = localStorage.getItem('theme')
-      if (theme && theme === 'dark') {
-        localStorage.theme = 'light'
-        document.documentElement.classList.remove('dark')
-      }
-      else {
+    function changeThemeToDark(toDark) {
+      if (toDark) {
         localStorage.theme = 'dark'
         document.documentElement.classList.add('dark')
+      }
+      else {
+        localStorage.theme = 'light'
+        document.documentElement.classList.remove('dark')
       }
     }
 
@@ -28,6 +27,7 @@
       if (theme && theme === 'dark') document.documentElement.classList.add('dark')
       else document.documentElement.classList.remove('dark')
     }
+
 
     checkTheme()
     </script>
@@ -38,13 +38,13 @@
     <header class="w-full px-4 sm:px-6 lg:px-20 bg-[var(--background-card)] border-b border-[var(--border)]">
       <div class="flex items-center justify-between py-3 text-sm">
         <%= if @current_author do %>
-          <a href="/authors" class="flex items-center gap-4">
+          <a href="/authors" class="flex items-center gap-2">
             <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
             <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
             <p class="text-lg font-medium">QUIC</p>
           </a>
         <% else %>
-          <a href="/" class="flex items-center gap-4">
+          <a href="/" class="flex items-center gap-2">
             <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
             <p class="text-lg font-medium">QUIC</p>
           </a>
@@ -53,8 +53,11 @@
 
         <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
 
-          <button onclick="changeTheme()">
-            <.icon name="hero-moon" />
+          <button onclick="changeThemeToDark(true)">
+              <.icon name="hero-moon" />
+         </button>
+         <button onclick="changeThemeToDark(false)">
+              <.icon name="hero-sun" />
           </button>
 
           <%= if @current_author do %>

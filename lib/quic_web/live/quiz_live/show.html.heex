@@ -4,9 +4,11 @@
     <p>This is a quiz record from your database.</p>
   </:subtitle>
   <:actions>
+    <%= if isOwner?(@quiz.id, @current_author) do %>
     <.link patch={~p"/quizzes/#{@quiz}/show/edit"} phx-click={JS.push_focus()}>
       <.button class="call2actionBtn">Edit quiz</.button>
     </.link>
+    <% end %>
 
     <%!-- <.link navigate={~p"/quizzes/#{@quiz}/show/edit"}>
       <.button class="call2actionBtn">Edit quiz</.button>
@@ -31,6 +33,7 @@
   <.link navigate={~p"/quizzes/#{@quiz.id}/question/#{question.id}"}>
       <%= question.title %> --- <% question.description %>
 
+      <%= if isOwner?(@quiz.id, @current_author) do %>
       <.link
         phx-click={JS.push("delete", value: %{id: question.id}) |> hide("##{question.id}")}
         data-confirm="Are you sure you want to delete this question?"
@@ -38,6 +41,8 @@
       >
         Delete
       </.link>
+      <% end %>
+      
   </.link>
 </div>
 
