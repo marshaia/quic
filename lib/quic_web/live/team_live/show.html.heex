@@ -22,9 +22,9 @@
 <div :for={user <- @searched_users}>
     <.button 
     class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 active:hover:bg-[--hover]"
-    disabled={Enum.any?(@team.authors, fn member -> member.username === user.username end)}
+    disabled={is_user_already_in_team(@team.authors, user.username)}
     phx-click="clicked_user" phx-value-username={user.username}>
-      <p class="font-semibold"><%= user.display_name %></p>
+      <p class={["font-semibold", (if is_user_already_in_team(@team.authors, user.username), do: "text-red-400")]}><%= user.display_name %></p>
       <p class="text-sm"><%= user.username %></p>
     </.button>
 </div>

@@ -1,6 +1,8 @@
 defmodule QuicWeb.SessionChannel do
   use QuicWeb, :channel
 
+  alias QuicWeb.SessionServer
+
   @impl true
   def join("session:" <> id = channel, _payload, socket) do
     # verify session code validity
@@ -11,6 +13,7 @@ defmodule QuicWeb.SessionChannel do
     #send(self(), :after_join)
     if id === "ASDFG" do
       Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"joined_session", %{"session" => "joined session - #{id}"}})
+      SessionServer.start_session(id)
     else
       Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"error_joining_session", %{"error" => "invalid session code"}})
     end

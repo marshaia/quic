@@ -24,14 +24,20 @@ defmodule QuicWeb.TeamLive.Show do
   @impl true
   def handle_event("search_users", %{"text" => input} = _params, socket) do
     users = Accounts.get_author_by_name_or_username(input)
-    {:noreply, assign(socket, searched_users: users)}
+    {:noreply, assign(socket, searched_users: users, input_text: input)}
   end
 
   @impl true
   def handle_event("clicked_user", %{"username" => username} = _params, socket) do
     Teams.insert_author_in_team(socket.assigns.team, username)
     team = Teams.get_team!(socket.assigns.team.id)
-    {:noreply, assign(socket, team: team)}
+    {:noreply, socket
+              |> assign(team: team)
+              |> put_flash(:info, "Successfully added #{username} to #{socket.assigns.team.name}!")}
+  end
+
+  def is_user_already_in_team(authors, username) do
+    Enum.any?(authors, fn member -> member.username === username end)
   end
 
   defp page_title(:show), do: "Show Team"
