@@ -11,6 +11,8 @@ defmodule Quic.Sessions do
 
   alias Quic.Sessions.CodeGenerator
 
+  require Logger
+
   @doc """
   Returns the list of sessions.
 
@@ -50,7 +52,8 @@ defmodule Quic.Sessions do
   end
 
   def get_open_sessions() do
-    Repo.get_by(Session, status: :open)
+    query = from s in "sessions", where: s.status == "open", select: s.code
+    Repo.all(query)
   end
 
 
@@ -66,15 +69,14 @@ defmodule Quic.Sessions do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_session(attrs \\ %{}) do
-    random_code = generate_valid_code()
-
-    attrs = Map.put(attrs, "code", random_code)
-          |> Map.put("status", :open)
-          |> Map.put("start_date", DateTime.utc_now())
+  def create_session(attrs \\ %{}, monitor) do
+    attrs = Map.put(attrs, "code", generate_valid_code())
+            |> Map.put("status", :open)
+            |> Map.put("start_date", DateTime.utc_now())
 
     %Session{}
     |> Session.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:monitor, monitor)
     |> Repo.insert()
   end
 
@@ -82,9 +84,9 @@ defmodule Quic.Sessions do
     code = CodeGenerator.generate_code(5)
 
     case get_open_sessions() do
-      nil -> code
-      sessions ->
-        if Enum.any?(sessions, fn session -> session.code === code end) do
+      [] -> code
+      codes ->
+        if Enum.any?(codes, fn c -> c === code end) do
           generate_valid_code()
         else
           code

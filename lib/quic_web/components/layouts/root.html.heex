@@ -11,6 +11,9 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
     <script>
+    localStorage.setItem("author_email", "<%= if @current_author, do: @current_author.email %>")
+
+    
     function changeThemeToDark(toDark) {
       if (toDark) {
         localStorage.theme = 'dark'
@@ -79,11 +82,13 @@
             >
               Register
             </.link> --%>
+            <%= if !String.contains?(@page_title, "Live Session") do %>
             <.link
               href={~p"/authors/log_in"}
               class="text-sm font-semibold text-white loginBtn">
               Log in
             </.link>
+            <% end %>
         <% end %>
         </div>
       </div>

@@ -1,6 +1,3 @@
-// NOTE: The contents of this file will only be executed if
-// you uncomment its entry in "assets/js/app.js".
-
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
 
@@ -54,8 +51,17 @@ import {Socket} from "phoenix"
 
 let channel;
 
+
+pathname = window.location.pathname
+if (pathname.startsWith("/sessions/")) {
+  code = window.session_code
+  email = localStorage.getItem("author_email")
+  joinChannel(code, email, true)
+}
+
+
 // Function for a Participant to join the channel of a Session
-function joinChannelParticipant(session_code, username, isMonitor) {
+function joinChannel(session_code, username, isMonitor) {
   let socket = new Socket("/socket", {params: {session: session_code, username: username, isMonitor: isMonitor }})
   socket.connect()
 
@@ -78,10 +84,18 @@ function joinChannelParticipant(session_code, username, isMonitor) {
 
 
 // Event Listeners
+// Participant Join Session Button
 join_btn = document.getElementById("join-session-button")
 if(join_btn) join_btn.addEventListener("click", () => {
   code = document.getElementById("join-session-input-code").value.toUpperCase()
   username = document.getElementById("join-session-input-username").value
-  if (code.length === 5 && username.length > 0) joinChannelParticipant(code, username, false)
+  if (code.length === 5 && username.length > 0) joinChannel(code, username, false)
+});
+
+
+// Author Log Out Button
+log_out_btn = document.getElementById("log-out-button")
+if(log_out_btn) log_out_btn.addEventListener("click", () => {
+  localStorage.removeItem("author_email")
 });
 

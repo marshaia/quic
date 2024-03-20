@@ -12,13 +12,22 @@
 
 <.list>
   <:item title="Code"><%= @session.code %></:item>
-  <:item title="Start date"><%= @session.start_date %></:item>
+  <:item title="Start date"><%= DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %></:item>
   <:item title="End date"><%= @session.end_date %></:item>
   <:item title="Status"><%= @session.status %></:item>
   <:item title="Type"><%= @session.type %></:item>
+  <:item title="Participants">
+    <span :for={p <- @session.participants}>
+      <%= p.name %>
+    </span>
+  </:item>
 </.list>
 
 <.back navigate={~p"/sessions"}>Back to sessions</.back>
+
+<script>
+  window.session_code = "<%= @session.code %>"
+</script>
 
 <%!-- <.modal :if={@live_action == :edit} id="session-modal" show on_cancel={JS.patch(~p"/sessions/#{@session}")}>
   <.live_component

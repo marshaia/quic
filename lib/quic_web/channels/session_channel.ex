@@ -31,6 +31,7 @@ defmodule QuicWeb.SessionChannel do
         {:ok, participant} = SessionParticipant.create_participant(session, username)
         socket = assign(socket, :participant, participant)
         Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"joined_session", %{"participant" => participant}})
+        Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":monitor", {"participant_joined"})
         {:ok, socket}
       end
 

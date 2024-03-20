@@ -5,7 +5,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   def mount(%{"code" => code, "id" => participant_id}, _session, socket) do
     {:ok, socket
         |> assign(participant: Participants.get_participant!(participant_id))
-        |> assign(:page_title, "Session #{code}")
+        |> assign(:page_title, "Live Session #{code}")
         |> assign(:session_code, code)}
   end
 end

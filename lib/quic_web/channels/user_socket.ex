@@ -1,8 +1,6 @@
 defmodule QuicWeb.UserSocket do
   use Phoenix.Socket
 
-  require Logger
-
   # A Socket handler
   #
   # It's possible to control the websocket connection and
@@ -40,11 +38,9 @@ defmodule QuicWeb.UserSocket do
   # Returning `nil` makes this socket anonymous.
   @impl true
   def id(socket) do
-    if socket.assigns.isMonitor === true do
-      Logger.error("user_socket.ex says: is IS a monitor")
-      "session:#{socket.assigns.session_code}:monitor:#{socket.assigns.username}"
+    if socket.assigns.isMonitor === "true" do
+      "session:#{socket.assigns.session_code}:monitor" #:#{socket.assigns.username}"
     else
-      Logger.error("user_socket.ex says: is NOT a monitor")
       "session:#{socket.assigns.session_code}:participant:#{socket.assigns.username}"
     end
   end

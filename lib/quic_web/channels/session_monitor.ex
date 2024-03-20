@@ -11,6 +11,6 @@ defmodule QuicWeb.SessionMonitor do
   end
 
   def session_belongs_to_monitor?(session, username) do
-    session.monitor.username === username
+    session.monitor.email === username
   end
 end

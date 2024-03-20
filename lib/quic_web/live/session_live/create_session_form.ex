@@ -50,7 +50,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   end
 
   def handle_event("save", %{"session" => session_params}, socket) do
-    case Sessions.create_session(session_params) do
+    case Sessions.create_session(session_params, socket.assigns.current_author) do
       {:ok, session} ->
         #notify_parent({:saved, session})
 
