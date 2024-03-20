@@ -5,7 +5,7 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   def mount(_params, _session, socket) do
     {:ok, socket
           |> assign(:page_title, "Join Session")
-          |> assign(:message, "")
+          |> assign(:participant, %{})
           |> assign(:code, "")
           |> assign(:changeset,  %{"code" => ""})}
   end
@@ -21,8 +21,10 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   end
 
 
-  def handle_info({"joined_session", %{"session" => session}}, socket) do
-    {:noreply, assign(socket, :message, session)}
+  def handle_info({"joined_session", %{"participant" => user}}, socket) do
+    {:noreply, socket
+              |> assign(:participant, user)
+              |> push_navigate(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}", opts: %{participant: user})}
   end
 
   def handle_info({"error_joining_session", %{"error" => msg}}, socket) do

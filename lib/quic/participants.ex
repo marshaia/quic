@@ -49,9 +49,12 @@ defmodule Quic.Participants do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_participant(attrs \\ %{}) do
+  def create_participant(attrs \\ %{}, session) do
+    attrs = Map.put(attrs, "total_points", 0)
+
     %Participant{}
     |> Participant.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:session, session)
     |> Repo.insert()
   end
 

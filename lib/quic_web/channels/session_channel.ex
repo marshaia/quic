@@ -3,6 +3,7 @@ defmodule QuicWeb.SessionChannel do
   use QuicWeb, :channel
 
   alias QuicWeb.SessionMonitor
+  alias QuicWeb.SessionParticipant
 
   @impl true
   def join("session:" <> code = channel, payload, socket) do
@@ -11,9 +12,7 @@ defmodule QuicWeb.SessionChannel do
 
     # 1) verify session code validity
     if SessionMonitor.exists_session?(code) do
-      Logger.error("session exists and its open !!!! ")
       session = SessionMonitor.get_session(code)
-      #Logger.error(inspect(session), pretty: true)
 
       # 2) verify user authorization
       if isMonitor do
@@ -29,6 +28,9 @@ defmodule QuicWeb.SessionChannel do
       # If it's a Participant, insert them in the DB in the associated Session
       else
         # 3) add user to session channel and respond
+        {:ok, participant} = SessionParticipant.create_participant(session, username)
+        socket = assign(socket, :participant, participant)
+        Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"joined_session", %{"participant" => participant}})
         {:ok, socket}
       end
 
@@ -55,8 +57,6 @@ defmodule QuicWeb.SessionChannel do
   #   {:noreply, socket}
   # end
 
-  # def handle_info(_, socket), do: {:noreply, socket}
-
 
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
@@ -77,4 +77,6 @@ defmodule QuicWeb.SessionChannel do
   # defp authorized?(_payload) do
   #   true
   # end
+  @impl true
+  def handle_info(_, socket), do: {:noreply, socket}
 end

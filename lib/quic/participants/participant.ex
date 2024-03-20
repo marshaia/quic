@@ -18,6 +18,7 @@ defmodule Quic.Participants.Participant do
   def changeset(participant, attrs) do
     participant
     |> cast(attrs, [:name, :total_points, :current_question])
-    |> validate_required([:name, :total_points, :current_question])
+    #|> validate_required([:name, :total_points, :current_question])
+    |> validate_required([:name, :total_points])
   end
 end
