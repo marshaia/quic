@@ -26,7 +26,7 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   end
 
   def handle_info({"error_joining_session", %{"error" => msg}}, socket) do
-    {:noreply, assign(socket, :message, msg)}
+    {:noreply, socket |> put_flash(:error, msg)}
   end
 
   def handle_info(_, socket), do: {:noreply, socket}

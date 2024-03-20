@@ -17,7 +17,10 @@
     class="w-80"
     actionClass="justify-center"
   >
-    <.input field={f[:code]} id="join-session-input" type="text" maxlength="5" minlength="5" style="text-transform: uppercase;" placeholder="CODE" />
+
+    <.input field={f[:code]} id="join-session-input-code" type="text" maxlength="5" minlength="5" style="text-transform: uppercase;" placeholder="CODE" label="Session Code" required/>
+    <.input field={f[:username]} id="join-session-input-username" type="text" placeholder="a12345" minlength="1" label="Your Name" required/>
+
     <:actions>
       <.button class="call2actionBtn" id="join-session-button"  phx-disable-with="Joining...">Join Session</.button>
     </:actions>

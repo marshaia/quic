@@ -43,10 +43,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
 
   @impl true
   def handle_event("validate", %{"session" => session_params}, socket) do
-    changeset =
-      socket.assigns.session
-      |> Sessions.change_session(session_params)
-      |> Map.put(:action, :validate)
+    changeset = Sessions.change_session(%Session{}, session_params)
+                |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}
   end

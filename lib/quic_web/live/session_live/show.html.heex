@@ -1,10 +1,12 @@
 <.header>
-  Session <%= @session.id %>
+  <h4>Session 
+    <span class="text-[var(--primary-color)]"><%= @session.code %></span>
+  </h4>
   <:subtitle>This is a session record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/sessions/#{@session}/show/edit"} phx-click={JS.push_focus()}>
+    <%!-- <.link patch={~p"/sessions/#{@session}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit session</.button>
-    </.link>
+    </.link> --%>
   </:actions>
 </.header>
 
@@ -18,7 +20,7 @@
 
 <.back navigate={~p"/sessions"}>Back to sessions</.back>
 
-<.modal :if={@live_action == :edit} id="session-modal" show on_cancel={JS.patch(~p"/sessions/#{@session}")}>
+<%!-- <.modal :if={@live_action == :edit} id="session-modal" show on_cancel={JS.patch(~p"/sessions/#{@session}")}>
   <.live_component
     module={QuicWeb.SessionLive.FormComponent}
     id={@session.id}
@@ -27,4 +29,4 @@
     session={@session}
     patch={~p"/sessions/#{@session}"}
   />
-</.modal>
+</.modal> --%>

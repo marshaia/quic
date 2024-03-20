@@ -5,8 +5,8 @@ defmodule Quic.Repo.Migrations.CreateSessions do
     create table(:sessions, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :code, :string
-      add :start_date, :date
-      add :end_date, :date
+      add :start_date, :utc_datetime
+      add :end_date, :utc_datetime
       add :status, :string
       add :type, :string
 

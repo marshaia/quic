@@ -9,6 +9,8 @@ defmodule Quic.Sessions do
   alias Quic.Accounts.Author
   alias Quic.Sessions.Session
 
+  alias Quic.Sessions.CodeGenerator
+
   @doc """
   Returns the list of sessions.
 
@@ -43,6 +45,15 @@ defmodule Quic.Sessions do
   """
   def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
 
+  def get_session_by_code(code) do
+    Repo.get_by(Session, code: code) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
+  end
+
+  def get_open_sessions() do
+    Repo.get_by(Session, status: :open)
+  end
+
+
   @doc """
   Creates a session.
 
@@ -56,9 +67,30 @@ defmodule Quic.Sessions do
 
   """
   def create_session(attrs \\ %{}) do
+    random_code = generate_valid_code()
+
+    attrs = Map.put(attrs, "code", random_code)
+          |> Map.put("status", :open)
+          |> Map.put("start_date", DateTime.utc_now())
+
     %Session{}
     |> Session.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def generate_valid_code() do
+    code = CodeGenerator.generate_code(5)
+
+    case get_open_sessions() do
+      nil -> code
+      sessions ->
+        if Enum.any?(sessions, fn session -> session.code === code end) do
+          generate_valid_code()
+        else
+          code
+        end
+    end
+
   end
 
   @doc """

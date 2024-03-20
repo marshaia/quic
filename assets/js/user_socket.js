@@ -6,7 +6,6 @@ import {Socket} from "phoenix"
 
 // And connect to the path in "lib/quic_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
-let socket = new Socket("/socket", {params: {token: window.userToken}})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -51,29 +50,38 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 //     end
 //
 // Finally, connect to the socket:
-socket.connect()
+// socket.connect()
 
 let channel;
 
-// Function to join the channel
-function joinChannel(session_code) {
-  channel = socket.channel("session:" + session_code, {"user": "joana maia"})
+// Function for a Participant to join the channel of a Session
+function joinChannelParticipant(session_code, username, isMonitor) {
+  let socket = new Socket("/socket", {params: {session: session_code, username: username, isMonitor: isMonitor }})
+  socket.connect()
+
+  window.channel_socket = socket;
+
+  channel = socket.channel(
+    "session:" + session_code, 
+    {"username": username, "isMonitor": isMonitor}
+    )
 
   channel.join()
-    .receive("ok", () => {console.log("Joined the channel " + session_code)})
-    .receive("error", () => console.log("Unable to join the channel"));
+    .receive("ok", () => {console.log("--> Joined channel " + session_code + " <--")})
+    .receive("error", () => socket.disconnect());
 
 
-  channel.on("server_message", payload => {
+  channel.on("participant_joined_session", payload => {
     console.log("js server message --> " + JSON.stringify(payload))
   });
 }
 
 
+// Event Listeners
 join_btn = document.getElementById("join-session-button")
 if(join_btn) join_btn.addEventListener("click", () => {
-  code = document.getElementById("join-session-input").value.toUpperCase()
-  if (code.length === 5) joinChannel(code)  
+  code = document.getElementById("join-session-input-code").value.toUpperCase()
+  username = document.getElementById("join-session-input-username").value
+  if (code.length === 5 && username.length > 0) joinChannelParticipant(code, username, false)
 });
 
-export default socket

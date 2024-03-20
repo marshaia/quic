@@ -16,6 +16,13 @@ defmodule Quic.Application do
       {Finch, name: Quic.Finch},
       # Start a worker by calling: Quic.Worker.start_link(arg)
       # {Quic.Worker, arg},
+
+      # Starts the Registry to register the session servers for the various Quiz Sessions
+      # {Registry, keys: :unique, name: QuicWeb.SessionRegistry},
+
+      # Starts the session manager that orchestrates the session servers
+      # QuicWeb.SessionServer,
+
       # Start to serve requests, typically the last entry
       QuicWeb.Endpoint
     ]

@@ -1,6 +1,8 @@
 defmodule QuicWeb.UserSocket do
   use Phoenix.Socket
 
+  require Logger
+
   # A Socket handler
   #
   # It's possible to control the websocket connection and
@@ -25,8 +27,8 @@ defmodule QuicWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(%{"username" => username, "session" => code, "isMonitor" => isMonitor} = _params, socket, _connect_info) do
+    {:ok, assign(socket, username: username, isMonitor: isMonitor, session_code: code)}
   end
 
 
@@ -37,5 +39,13 @@ defmodule QuicWeb.UserSocket do
   #     Elixir.QuicWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(_socket), do: nil
+  def id(socket) do
+    if socket.assigns.isMonitor === true do
+      Logger.error("user_socket.ex says: is IS a monitor")
+      "session:#{socket.assigns.session_code}:monitor:#{socket.assigns.username}"
+    else
+      Logger.error("user_socket.ex says: is NOT a monitor")
+      "session:#{socket.assigns.session_code}:participant:#{socket.assigns.username}"
+    end
+  end
 end
