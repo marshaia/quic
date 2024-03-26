@@ -10,7 +10,8 @@ defmodule QuicWeb.SessionMonitor do
     Sessions.get_session_by_code(code)
   end
 
-  def session_belongs_to_monitor?(session, username) do
-    session.monitor.email === username
+  def session_belongs_to_monitor?(code, email) do
+    session = Sessions.get_session_by_code(code)
+    session.monitor.email === email
   end
 end

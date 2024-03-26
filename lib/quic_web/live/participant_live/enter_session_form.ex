@@ -25,7 +25,8 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   def handle_info({"joined_session", %{"participant" => user}}, socket) do
     {:noreply, socket
               |> assign(:participant, user)
-              |> push_navigate(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}", opts: %{participant: user})}
+              #|> push_navigate(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}", opts: %{participant: user})
+              |> redirect(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}")}
   end
 
   def handle_info({"error_joining_session", %{"error" => msg}}, socket) do

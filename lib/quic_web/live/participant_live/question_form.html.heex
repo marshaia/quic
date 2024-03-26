@@ -16,6 +16,12 @@
   <button id="participant-send-msg-monitor-btn" class="mt-2 call2actionBtn">Send</button>
 </div>
 
+
+<div class="p-4 mt-10">
+  <p class="font-bold">Monitor says:</p>
+  <p><%= @monitor_msg %></p>
+</div>
+
 <script>
   localStorage.setItem("participant_token", "<%= @participant.id %>")
   localStorage.setItem("session_code", "<%= @session_code %>")

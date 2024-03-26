@@ -98,6 +98,7 @@ if(p_send_msg_monitor) p_send_msg_monitor.addEventListener("click", () => {
   text = document.getElementById("participant-send-msg-monitor-input").value
   id = localStorage.getItem("participant_token")
   code = localStorage.getItem("session_code")
+  console.log("entrei no event clicker")
   if (text.length > 0) {
     joinChannel(code, id, false)
     channel.push("participant_msg_to_monitor", 
@@ -114,5 +115,22 @@ if(p_send_msg_monitor) p_send_msg_monitor.addEventListener("click", () => {
 log_out_btn = document.getElementById("log-out-button")
 if(log_out_btn) log_out_btn.addEventListener("click", () => {
   localStorage.removeItem("author_email")
+});
+
+// Monitor send message to Participants
+m_send_msg_participant = document.getElementById("monitor-send-msg-participant-btn")
+if(m_send_msg_participant) m_send_msg_participant.addEventListener("click", () => {
+  text = document.getElementById("monitor-send-msg-participant-input").value
+  email = localStorage.getItem("author_email")
+  code = window.session_code
+  if (text.length > 0) {
+    joinChannel(code, email, true)
+    channel.push("monitor_msg_to_all_participants", 
+      {
+        "session_code" : code,
+        "email" : email,
+        "message": text
+      })
+  }
 });
 

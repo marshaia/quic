@@ -18,7 +18,7 @@ defmodule QuicWeb.SessionChannel do
       # 2) verify user authorization
       if isMonitor do
         # if it's a Monitor, verify their authorization towards the session, i.e., if the Session belongs to them
-        if SessionMonitor.session_belongs_to_monitor?(session, username) do
+        if SessionMonitor.session_belongs_to_monitor?(session.code, username) do
           # 3) add user to session channel and respond
           {:ok, socket}
         else
@@ -64,6 +64,17 @@ defmodule QuicWeb.SessionChannel do
     Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", {"participant_message", %{"participant_name" => name, "message" => msg}})
     {:noreply, socket}
   end
+
+
+  @impl true
+  def handle_in("monitor_msg_to_all_participants", %{"session_code" => code, "email" => email, "message" => msg}, socket) do
+    if SessionMonitor.exists_session?(code) and SessionMonitor.session_belongs_to_monitor?(code, email) do
+      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"monitor_message", %{"message" => msg}})
+    end
+
+    {:noreply, socket}
+  end
+
   # @impl true
   # def handle_info(:after_join, socket) do
   #   # broadcast(socket, "server_message", %{body: "joined"})
