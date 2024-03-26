@@ -60,7 +60,7 @@ if (pathname.startsWith("/sessions/")) {
 }
 
 
-// Function for a Participant to join the channel of a Session
+// Function for a User to join the channel of a Session
 function joinChannel(session_code, username, isMonitor) {
   let socket = new Socket("/socket", {params: {session: session_code, username: username, isMonitor: isMonitor }})
   socket.connect()
@@ -70,10 +70,10 @@ function joinChannel(session_code, username, isMonitor) {
   channel = socket.channel(
     "session:" + session_code, 
     {"username": username, "isMonitor": isMonitor}
-    )
+  )
 
   channel.join()
-    .receive("ok", () => {console.log("--> Joined channel " + session_code + " <--")})
+    .receive("ok", () => {window.channel = channel})
     .receive("error", () => socket.disconnect());
 
 
@@ -90,6 +90,23 @@ if(join_btn) join_btn.addEventListener("click", () => {
   code = document.getElementById("join-session-input-code").value.toUpperCase()
   username = document.getElementById("join-session-input-username").value
   if (code.length === 5 && username.length > 0) joinChannel(code, username, false)
+});
+
+// Participant send message to Monitor
+p_send_msg_monitor = document.getElementById("participant-send-msg-monitor-btn")
+if(p_send_msg_monitor) p_send_msg_monitor.addEventListener("click", () => {
+  text = document.getElementById("participant-send-msg-monitor-input").value
+  id = localStorage.getItem("participant_token")
+  code = localStorage.getItem("session_code")
+  if (text.length > 0) {
+    joinChannel(code, id, false)
+    channel.push("participant_msg_to_monitor", 
+      {
+        "participant_id": id,
+        "session_code" : code,
+        "message": text
+      })
+  }
 });
 
 

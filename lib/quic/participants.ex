@@ -37,6 +37,15 @@ defmodule Quic.Participants do
   """
   def get_participant!(id), do: Repo.get!(Participant, id)
 
+  def get_participant_session_code!(id)  do
+    try do
+      participant = Repo.get!(Participant, id) |> Repo.preload(:session)
+      participant.session.code
+    rescue
+      _ -> nil
+    end
+  end
+
   @doc """
   Creates a participant.
 

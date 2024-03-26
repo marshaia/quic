@@ -23,6 +23,14 @@
   </:item>
 </.list>
 
+
+<%!-- participant message --%>
+<div class="p-4 my-10">
+  <p class="font-bold">Participant Message:</p>
+  <p class="text-red-500"> <%= @participant_message %> </p>
+</div>
+
+
 <.back navigate={~p"/sessions"}>Back to sessions</.back>
 
 <script>

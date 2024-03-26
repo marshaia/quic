@@ -15,8 +15,9 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
     {:noreply, assign(socket, :code, code)}
   end
 
-  def handle_event("save", %{"code" => code}, socket) do
+  def handle_event("save", %{"code" => code, "username" => username}, socket) do
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
+    Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code) <> ":participant:" <> username)
     {:noreply, assign(socket, :code, code)}
   end
 

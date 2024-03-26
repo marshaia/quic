@@ -10,7 +10,13 @@
 <p>Waiting for the Session to start...</p>
 
 
+<div class="flex flex-col p-4 my-10 w-96">
+  <label>Send Message to Monitor:</label>
+  <textarea type="text" id="participant-send-msg-monitor-input"/>
+  <button id="participant-send-msg-monitor-btn" class="mt-2 call2actionBtn">Send</button>
+</div>
 
 <script>
   localStorage.setItem("participant_token", "<%= @participant.id %>")
+  localStorage.setItem("session_code", "<%= @session_code %>")
 </script>
