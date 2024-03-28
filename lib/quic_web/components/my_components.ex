@@ -65,4 +65,56 @@ defmodule QuicWeb.MyComponents do
   end
 
 
+
+  attr :page_title, :string, required: true, doc: "title of the current page"
+  def side_bar_items_general(assigns) do
+    ~H"""
+    <div class="sidebar-group">
+      <span class="text-sm font-semibold">GENERAL</span>
+
+      <.link href={"/authors"} class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+      <Heroicons.home class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+          <span>Home</span>
+      </.link>
+
+      <.link href={"/quizzes"}
+        class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "quiz"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <Heroicons.pencil class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+          <span>Quizzes</span>
+      </.link>
+
+      <.link href={"/teams"}
+        class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "team"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <Heroicons.users class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+          <span>Teams</span>
+      </.link>
+
+      <.link href={"/sessions"}
+        class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "session"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <Heroicons.bolt class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+          <span>Sessions</span>
+      </.link>
+
+    </div>
+
+
+    """
+  end
+
+
+  attr :page_title, :string, required: true, doc: "the current page title"
+  def side_bar_items_personal(assigns) do
+    ~H"""
+    <section class="mt-10 sidebar-group">
+      <span class="text-sm font-semibold">PERSONAL</span>
+      <.link href={"/authors/settings"}
+      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "settings"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <Heroicons.cog_8_tooth class="hidden text-xl tracking-wider w-7 h-7 md:flex font-extralight"/>
+        <span>Settings</span>
+      </.link>
+    </section>
+    """
+  end
+
+
 end

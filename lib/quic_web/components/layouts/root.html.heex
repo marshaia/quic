@@ -32,6 +32,12 @@
     }
 
     checkTheme()
+
+
+    function toggleSidebar () {
+      sidebar = document.getElementById("responsive-sidebar")
+      if (sidebar) sidebar.classList.toggle("hidden")
+    }
     </script>
   </head>
   <body class="antialiased bg-[var(--background-view)]">
@@ -39,18 +45,38 @@
     <%!-- NAVBAR --%>
     <header class="w-full px-4 sm:px-6 lg:px-20 bg-[var(--background-card)] border-b border-[var(--border)]">
       <div class="flex items-center justify-between py-3 text-sm">
+
+        <%!-- responsive side bar open/close button --%>
+        <style>
+        @media screen and (min-width: 768px) {
+          .hidden-on-medium-and-above { display: none; }
+        } 
+        </style>
         <%= if @current_author do %>
-          <a href="/authors" class="flex items-center gap-2">
-            <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
-            <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
-            <p class="text-lg font-medium">QUIC</p>
-          </a>
-        <% else %>
-          <a href="/" class="flex items-center gap-2">
-            <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
-            <p class="text-lg font-medium">QUIC</p>
-          </a>
+          <button type="button" onclick="toggleSidebar()" class="hidden-on-medium-and-above">
+            <Heroicons.bars_3 class="w-7 h-7" />
+          </button>
         <% end %>
+        
+
+
+        <div class="flex gap-4">        
+          <%= if @current_author do %>
+            <a href="/authors" class="flex items-center gap-2">
+              <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
+              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
+              <p class="text-lg font-medium">QUIC</p>
+            </a>
+          <% else %>
+            <a href="/" class="flex items-center gap-2">
+              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)]"/>
+              <p class="text-lg font-medium">QUIC</p>
+            </a>
+          <% end %>
+        </div>
+        
+
+        
           
 
         <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">

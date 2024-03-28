@@ -1,52 +1,36 @@
-<%!-- MAIN CONTENT --%>
-<main class="flex w-full h-full gap-4 p-4 sm:px-6 lg:px-20">
+
+<%!-- SIDE BAR MEDIUM-SMALL SCREENS--%>
+<nav id="responsive-sidebar" class="hidden">
+  <%!-- GENERAL --%>
+  <.side_bar_items_general page_title={@page_title} />
+  <%!-- PERSONAL --%>
+  <.side_bar_items_personal page_title={@page_title} />
+
+  <div class="flex-1"></div>
   
-  <%!-- SIDE BAR --%>
+  <.link
+    id="log-out-button"
+    href={~p"/authors/log_out"}
+    method="delete"
+    class="text-sm font-semibold text-center text-white normalBtn">
+    Log out
+  </.link>
+</nav>
+
+
+
+
+<%!-- MAIN CONTENT --%>
+<main class="flex w-full h-full gap-4 p-4 sm:px-6 lg:px-20 content">
+  
+  <%!-- SIDE BAR LARGE SCREENS--%>
   <nav class="sidebar">
-
     <%!-- GENERAL --%>
-    <section class="sidebar-group">
-      <span class="text-sm font-semibold">GENERAL</span>
-      <.link href={~p"/authors"} 
-      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-home" class="hidden text-xl tracking-wider md:flex font-extralight"/>
-        <span>Home</span>
-      </.link>
-
-      <.link href={~p"/quizzes"} 
-      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "quiz"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-pencil" class="hidden text-xl tracking-wider md:flex font-extralight"/>
-        <span>Quizzes</span>
-      </.link>
-
-      <.link href={~p"/teams"} 
-      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "team"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-users" class="hidden text-xl tracking-wider md:flex font-extralight"/>
-        <span>Teams</span> 
-      </.link>
-
-      <.link href={~p"/sessions"} 
-      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "session"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-bolt" class="hidden text-xl tracking-wider md:flex font-extralight"/>
-        <span>Sessions</span>
-      </.link>
-
-    </section>
-
-
+    <.side_bar_items_general page_title={@page_title} />
     <%!-- PERSONAL --%>
-    <section class="mt-10 sidebar-group">
-      <span class="text-sm font-semibold">PERSONAL</span>
-      <.link href={~p"/authors/settings"} 
-      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "settings"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <.icon name="hero-cog-8-tooth" class="hidden text-xl tracking-wider md:flex font-extralight"/>
-        <span>Settings</span>
-      </.link>
-    </section>
-
+    <.side_bar_items_personal page_title={@page_title} />
 
     <div class="flex-1"></div>
-
     
     <.link
       id="log-out-button"
@@ -65,3 +49,4 @@
   </main>
 
 </main>
+
