@@ -47,4 +47,9 @@ defmodule QuicWeb.SessionLive.Index do
 
     {:noreply, stream_delete(socket, :sessions, session)}
   end
+
+  @impl true
+  def handle_event("show_page", %{"id" => id}, socket) do
+    {:noreply, redirect(socket, to: "/sessions/#{id}")}
+  end
 end
