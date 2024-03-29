@@ -14,7 +14,8 @@ defmodule QuicWeb.QuizLive.Show do
     if Quizzes.is_allowed_to_access?(id, socket.assigns.current_author) do
       {:noreply, socket
                 |> assign(:page_title, page_title(socket.assigns.live_action))
-                |> assign(:quiz, Quizzes.get_quiz!(id))}
+                |> assign(:quiz, Quizzes.get_quiz!(id))
+                |> assign(:current_path, "quizzes/#{id}")}
     else
       {:noreply, socket
             |> put_flash(:error, "You can only access Quizzes shared with/owned by you!")

@@ -16,7 +16,8 @@ defmodule QuicWeb.QuestionLive.Form do
           |> assign(:quiz_id, quiz_id)
           |> assign(:question, question)
           |> assign(:changeset, changeset)
-          |> assign(:page_title, "Quiz - Edit Question")}
+          |> assign(:page_title, "Quiz - Edit Question")
+          |> assign(:current_path, "/quizzes/#{quiz_id}/#{question_id}")}
     else
       {:ok, socket
             |> put_flash(:error, "You can only edit your own quizzes' questions!")

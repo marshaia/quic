@@ -17,7 +17,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
       {:ok, socket
             |> assign(:changeset, session)
             |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
-            |> assign(:page_title, "New Session")}
+            |> assign(:page_title, "New Session")
+            |> assign(:current_path, "/sessions/new")}
 
     else
       {:ok, socket
@@ -38,7 +39,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
 
     {:ok, socket
           |> assign(:changeset, session)
-          |> assign(:page_title, "New Session")}
+          |> assign(:page_title, "New Session")
+          |> assign(:current_path, "/sessions/new")}
   end
 
   @impl true

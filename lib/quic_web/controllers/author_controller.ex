@@ -4,6 +4,6 @@ defmodule QuicWeb.AuthorController do
   def home(conn, _params) do
     conn
     |> put_layout(html: :author)
-    |> render(:home, page_title: "Home")
+    |> render(:home, page_title: "Home", current_path: "/authors")
   end
 end

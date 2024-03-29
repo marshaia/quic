@@ -1,5 +1,5 @@
 .sidebar {
-  @apply flex-col bg-[var(--background-card)] w-64 p-4 rounded-md h-[calc(100vh-5.3rem)] border border-[var(--border)]
+  @apply flex-col bg-[var(--background-card)] w-64 md:p-4 rounded-md h-[calc(100vh-5.3rem)] border border-[var(--border)]
   md:flex hidden
 }
 
@@ -8,14 +8,9 @@
 }
 
 .sidebar-item {
-  @apply flex gap-2 pl-5 p-2 hover:bg-[var(--hover)] rounded-md 
+  @apply flex gap-2 hover:bg-[var(--hover)] rounded-md 
 }
 
 .main-page {
-  @apply p-4 overflow-y-auto h-[calc(100vh-5.3rem)] z-0
-}
-
-.sidebar-responsive {
-  @apply flex-col bg-[var(--background-card)] w-50 p-4 h-[calc(100vh-5.3rem)] 
-  border border-[var(--border)] 
+  @apply p-4 overflow-y-auto h-[calc(100vh-5.3rem)]
 }

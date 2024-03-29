@@ -18,7 +18,8 @@ defmodule QuicWeb.SessionLive.Show do
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:participant_message, "")
-     |> assign(:session, session)}
+     |> assign(:session, session)
+     |> assign(:current_path, "/sessions/#{id}")}
   end
 
 

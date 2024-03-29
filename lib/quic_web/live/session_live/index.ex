@@ -32,6 +32,7 @@ defmodule QuicWeb.SessionLive.Index do
     socket
     |> assign(:page_title, "Listing Sessions")
     |> assign(:session, nil)
+    |> assign(:current_path, "/sessions")
   end
 
   @impl true

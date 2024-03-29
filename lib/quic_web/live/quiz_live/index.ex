@@ -30,6 +30,7 @@ defmodule QuicWeb.QuizLive.Index do
     socket
     |> assign(:page_title, "Listing Quizzes")
     |> assign(:quiz, nil)
+    |> assign(:current_path, "/quizzes")
   end
 
   @impl true

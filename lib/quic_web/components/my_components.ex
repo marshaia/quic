@@ -1,6 +1,7 @@
 defmodule QuicWeb.MyComponents do
   use Phoenix.Component
   import QuicWeb.CoreComponents
+  alias Phoenix.LiveView.JS
 
   # alias Phoenix.LiveView.JS
   # import QuicWeb.Gettext
@@ -73,25 +74,25 @@ defmodule QuicWeb.MyComponents do
       <span class="text-sm font-semibold">GENERAL</span>
 
       <.link href={"/authors"} class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-      <Heroicons.home class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+      <Heroicons.home class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
           <span>Home</span>
       </.link>
 
       <.link href={"/quizzes"}
         class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "quiz"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.pencil class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+        <Heroicons.pencil class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
           <span>Quizzes</span>
       </.link>
 
       <.link href={"/teams"}
         class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "team"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.users class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+        <Heroicons.users class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
           <span>Teams</span>
       </.link>
 
       <.link href={"/sessions"}
         class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "session"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.bolt class="hidden text-xl tracking-wider w-7 md:flex font-extralight"/>
+        <Heroicons.bolt class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
           <span>Sessions</span>
       </.link>
 
@@ -109,10 +110,65 @@ defmodule QuicWeb.MyComponents do
       <span class="text-sm font-semibold">PERSONAL</span>
       <.link href={"/authors/settings"}
       class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "settings"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.cog_8_tooth class="hidden text-xl tracking-wider w-7 h-7 md:flex font-extralight"/>
+        <Heroicons.cog_8_tooth class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
         <span>Settings</span>
       </.link>
     </section>
+    """
+  end
+
+
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :on_cancel, JS, default: %JS{}
+  slot :inner_block, required: true
+
+  def sidebar_responsive(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      phx-mounted={@show && show_modal(@id)}
+      phx-remove={hide_modal(@id)}
+      data-cancel={JS.exec(@on_cancel, "phx-remove")}
+      class="relative z-50 hidden"
+    >
+      <div id={"#{@id}-bg"} class="fixed inset-0 transition-opacity bg-zinc-50/90 dark:bg-slate-900/90" aria-hidden="true" />
+      <div
+        class="fixed inset-0 overflow-y-auto"
+        aria-labelledby={"#{@id}-title"}
+        aria-describedby={"#{@id}-description"}
+        role="dialog"
+        aria-modal="true"
+        tabindex="0"
+      >
+        <div class="flex items-center justify-center min-h-full">
+          <div class="p-10 w-80 sm:p-6 lg:py-8">
+            <.focus_wrap
+              id={"#{@id}-container"}
+              phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
+              phx-key="escape"
+              phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
+              class="relative hidden transition bg-[var(--background-card)] shadow-lg shadow-zinc-700/10 ring-zinc-700/10"
+            >
+              <%!-- CANCEL BUTTON --%>
+              <div class="absolute top-6 right-5">
+                <button
+                  phx-click={JS.exec("data-cancel", to: "##{@id}")}
+                  type="button"
+                  class="flex-none p-3 -m-3 opacity-20 hover:opacity-40"
+                  aria-label="close"
+                >
+                  <.icon name="hero-x-mark-solid" class="w-5 h-5" />
+                </button>
+              </div>
+              <div id={"#{@id}-content"} class="p-14">
+                <%= render_slot(@inner_block) %>
+              </div>
+            </.focus_wrap>
+          </div>
+        </div>
+      </div>
+    </div>
     """
   end
 

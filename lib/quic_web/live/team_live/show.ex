@@ -17,7 +17,8 @@ defmodule QuicWeb.TeamLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:team, Teams.get_team!(id))}
+     |> assign(:team, Teams.get_team!(id))
+     |> assign(:current_path, "/teams/#{id}")}
   end
 
 

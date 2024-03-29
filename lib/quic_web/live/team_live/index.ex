@@ -30,6 +30,7 @@ defmodule QuicWeb.TeamLive.Index do
     socket
     |> assign(:page_title, "Listing Teams")
     |> assign(:team, nil)
+    |> assign(:current_path, "/teams")
   end
 
   @impl true
