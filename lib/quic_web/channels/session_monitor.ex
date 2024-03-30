@@ -14,4 +14,13 @@ defmodule QuicWeb.SessionMonitor do
     session = Sessions.get_session_by_code(code)
     session.monitor.email === email
   end
+
+  def close_session(code) do
+    session = get_session(code)
+    Sessions.update_session(session, %{status: :closed})
+    # case Sessions.update_session(session, %{status: :closed}) do
+    #   {:ok, _session} -> :success
+    #   {:error, _changeset} -> :error
+    # end
+  end
 end

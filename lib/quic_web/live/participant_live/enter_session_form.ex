@@ -3,8 +3,6 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   alias Quic.Participants
   alias Quic.Participants.Participant
 
-  require Logger
-
   def mount(_params, _session, socket) do
     {:ok, socket
           |> assign(:page_title, "Join Session")
@@ -20,8 +18,6 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
     if String.length(code) === 5, do: Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
 
     changeset = %Participant{} |> Participants.change_participant_validate(%{"name" => name},code)
-
-    Logger.error("errors :: #{inspect(changeset.errors)}")
 
     if Enum.count(changeset.errors) > 0 do
         [name: {msg, []}] = changeset.errors
@@ -45,7 +41,6 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   def handle_info({"joined_session", %{"participant" => user}}, socket) do
     {:noreply, socket
               |> assign(:participant, user)
-              #|> push_navigate(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}", opts: %{participant: user})
               |> redirect(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}")}
   end
 

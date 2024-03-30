@@ -8,12 +8,16 @@
       <.button>Edit session</.button>
     </.link> --%>
     <%= if @session.status === :open do %>
-      <.link phx-click="close-session" data-confirm="Are you sure? A closed session cannot be opened again!">
-        <.button class="redBtn flex items-center gap-2">
+      <%!-- <.link phx-click="close-session" data-confirm="Are you sure? A closed session cannot be opened again!">
+        <.button id="monitor-close-session-btn" class="redBtn flex items-center gap-2">
           <Heroicons.x_mark class="w-5 h-5" />
           <span>CLOSE</span>
         </.button>
-      </.link>
+      </.link> --%>
+      <.button id="monitor-close-session-btn" class="redBtn flex items-center gap-2">
+        <Heroicons.x_mark class="w-5 h-5" />
+        <span>CLOSE</span>
+      </.button>
     <% end %>
   </:actions>
 </.header>

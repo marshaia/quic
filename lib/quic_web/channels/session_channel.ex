@@ -43,9 +43,13 @@ defmodule QuicWeb.SessionChannel do
 
     # if the code isn't valid
     else
-      Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"error_joining_session", %{"error" => "Invalid Session Code"}})
-      # QuicWeb.Endpoint.broadcast("session:#{code}:participant:#{username}", "disconnect", %{})
-      {:error, %{reason: "Session doesn't exist"}}
+      if isMonitor do
+        {:ok, socket}
+      else
+        Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"error_joining_session", %{"error" => "Invalid Session Code"}})
+        # QuicWeb.Endpoint.broadcast("session:#{code}:participant:#{username}", "disconnect", %{})
+        {:error, %{reason: "Session doesn't exist"}}
+      end
     end
 
     # #send(self(), :after_join)
@@ -70,6 +74,25 @@ defmodule QuicWeb.SessionChannel do
   def handle_in("monitor_msg_to_all_participants", %{"session_code" => code, "email" => email, "message" => msg}, socket) do
     if SessionMonitor.exists_session?(code) and SessionMonitor.session_belongs_to_monitor?(code, email) do
       Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"monitor_message", %{"message" => msg}})
+    end
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_in("monitor-close-session", %{"session_code" => code, "email" => email}, socket) do
+    if SessionMonitor.exists_session?(code) and SessionMonitor.session_belongs_to_monitor?(code, email) do
+      case SessionMonitor.close_session(code) do
+        {:ok, _} ->
+          Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "monitor-session-closed")
+          Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, "monitor-closed-session")
+
+          {:error, _} ->
+            Logger.error("RECEBNI EROOOOOOOOOOOOO")
+            Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "monitor-unable-to-close-session")
+      end
+
+      {:noreply, socket}
     end
 
     {:noreply, socket}

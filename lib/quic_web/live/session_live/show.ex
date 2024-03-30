@@ -22,18 +22,6 @@ defmodule QuicWeb.SessionLive.Show do
      |> assign(:current_path, "/sessions/#{id}")}
   end
 
-  @impl true
-  def handle_event("close-session", _params, socket) do
-    case Sessions.update_session(socket.assigns.session, %{status: :closed}) do
-      {:ok, session} ->
-        {:noreply, socket
-                  |> assign(:session, session)
-                  |> put_flash(:info, "Session closed successfully!")}
-
-      {:error, _changeset} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
-    end
-  end
-
 
 
 
@@ -56,7 +44,22 @@ defmodule QuicWeb.SessionLive.Show do
   end
 
   @impl true
+  def handle_info("monitor-session-closed", socket) do
+    {:noreply, socket
+              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+              |> put_flash(:info, "Session closed successfully!")}
+  end
+
+  @impl true
+  def handle_info("monitor-unable-to-close-session", socket) do
+    {:noreply, socket
+              |> put_flash(:info, "Something went wrong. Please try again!")}
+  end
+
+  @impl true
   def handle_info(_, socket), do: {:noreply, socket}
+
+
 
 
 

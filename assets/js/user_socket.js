@@ -116,6 +116,10 @@ log_out_btn = document.getElementById("log-out-button")
 if(log_out_btn) log_out_btn.addEventListener("click", () => {
   localStorage.removeItem("author_email")
 });
+log_out_btn_responsive = document.getElementById("log-out-button-responsive")
+if(log_out_btn_responsive) log_out_btn_responsive.addEventListener("click", () => {
+  localStorage.removeItem("author_email")
+});
 
 // Monitor send message to Participants
 m_send_msg_participant = document.getElementById("monitor-send-msg-participant-btn")
@@ -134,3 +138,19 @@ if(m_send_msg_participant) m_send_msg_participant.addEventListener("click", () =
   }
 });
 
+// Monitor Closes Session 
+m_close_session_btn = document.getElementById("monitor-close-session-btn")
+if(m_close_session_btn) m_close_session_btn.addEventListener("click", () => {
+  res = window.confirm("Are you sure? A closed session cannot be opened again!")
+  if (res) {
+    email = localStorage.getItem("author_email")
+    code = window.session_code
+    
+    // joinChannel(code, email, true)
+    channel.push("monitor-close-session", 
+      {
+        "session_code" : code,
+        "email" : email,
+      })
+  }  
+});
