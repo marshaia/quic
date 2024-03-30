@@ -59,7 +59,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
         {:noreply,
          socket
          |> put_flash(:info, "Session created successfully")
-         |> push_navigate(to: ~p"/sessions/#{session.id}")}
+         |> redirect(to: ~p"/sessions/#{session.id}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}

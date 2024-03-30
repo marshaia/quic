@@ -7,6 +7,14 @@
     <%!-- <.link patch={~p"/sessions/#{@session}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit session</.button>
     </.link> --%>
+    <%= if @session.status === :open do %>
+      <.link phx-click="close-session" data-confirm="Are you sure? A closed session cannot be opened again!">
+        <.button class="redBtn flex items-center gap-2">
+          <Heroicons.x_mark class="w-5 h-5" />
+          <span>CLOSE</span>
+        </.button>
+      </.link>
+    <% end %>
   </:actions>
 </.header>
 

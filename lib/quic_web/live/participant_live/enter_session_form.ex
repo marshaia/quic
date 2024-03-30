@@ -1,21 +1,41 @@
 defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   use QuicWeb, :live_view
+  alias Quic.Participants
+  alias Quic.Participants.Participant
 
+  require Logger
 
   def mount(_params, _session, socket) do
     {:ok, socket
           |> assign(:page_title, "Join Session")
           |> assign(:participant, %{})
           |> assign(:code, "")
-          |> assign(:changeset,  %{"code" => ""})}
+          |> assign(:changeset,  %{"code" => "", "name" => ""})
+          |> assign(:error_name, "")}
   end
 
-  def handle_event("validate", %{"code" => code}, socket) do
+  def handle_event("validate", %{"code" => code, "name" => name}, socket) do
+    socket = assign(socket, :error_name, "")
+
     if String.length(code) === 5, do: Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
-    {:noreply, assign(socket, :code, code)}
+
+    changeset = %Participant{} |> Participants.change_participant_validate(%{"name" => name},code)
+
+    Logger.error("errors :: #{inspect(changeset.errors)}")
+
+    if Enum.count(changeset.errors) > 0 do
+        [name: {msg, []}] = changeset.errors
+        {:noreply, socket |> assign(error_name: msg, changeset: %{"code" => code, "name" => name})}
+
+    else
+      {:noreply, socket}
+    end
+
+
+    #assign(socket, :changeset, changeset)}
   end
 
-  def handle_event("save", %{"code" => code, "username" => username}, socket) do
+  def handle_event("save", %{"code" => code, "name" => username}, socket) do
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code) <> ":participant:" <> username)
     {:noreply, assign(socket, :code, code)}

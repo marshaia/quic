@@ -113,4 +113,8 @@ defmodule Quic.Participants do
   def change_participant(%Participant{} = participant, attrs \\ %{}) do
     Participant.changeset(participant, attrs)
   end
+
+  def change_participant_validate(%Participant{} = participant, attrs \\ %{}, code) do
+    Participant.changeset_validate(participant, attrs, code)
+  end
 end

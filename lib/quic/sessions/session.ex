@@ -6,7 +6,7 @@ defmodule Quic.Sessions.Session do
   @foreign_key_type :binary_id
   schema "sessions" do
     field :code, :string
-    field :status, Ecto.Enum, values: [:open, :ongoing, :closed]
+    field :status, Ecto.Enum, values: [:open, :closed]
     field :type, Ecto.Enum, values: [:teacher_paced, :student_paced]
     field :start_date, :utc_datetime
     field :end_date, :utc_datetime

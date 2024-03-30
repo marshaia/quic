@@ -48,7 +48,7 @@ defmodule Quic.Sessions do
   def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
 
   def get_session_by_code(code) do
-    Repo.get_by(Session, code: code) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
+    Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
   end
 
   def get_open_sessions() do
