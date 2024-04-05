@@ -562,10 +562,10 @@ defmodule QuicWeb.CoreComponents do
 
   def back(assigns) do
     ~H"""
-    <div>
+    <div class="mt-16">
       <.link
         navigate={@navigate}
-        class="rounded-full text-sm font-semibold leading-6 text-[var(--primary-color-text)] hover:text-zinc-600 border border-2 border-red-900 p-2"
+        class="text-sm font-semibold leading-6 text-[var(--primary-color-text)] hover:text-zinc-600"
       >
         <.icon name="hero-arrow-left-solid" class="w-3 h-3" />
         <%= render_slot(@inner_block) %>

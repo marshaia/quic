@@ -173,4 +173,28 @@ defmodule QuicWeb.MyComponents do
   end
 
 
+
+
+  @doc """
+  Renders a back navigation link.
+
+  ## Examples
+
+      <.my_back navigate={~p"/posts"}>Back to posts</.back>
+  """
+  attr :navigate, :any, required: true
+  slot :inner_block, required: true
+
+  def my_back(assigns) do
+    ~H"""
+    <div class="mt-2">
+      <a href={@navigate} style="padding: 2px 8px 2px 8px; border: 2px solid black; border-radius: 25px;">
+        <.icon name="hero-arrow-left-solid" class="w-4 h-4" />
+        <span class="text-sm font-bold"><%= render_slot(@inner_block) %></span>
+      </a>
+    </div>
+    """
+  end
+
+
 end

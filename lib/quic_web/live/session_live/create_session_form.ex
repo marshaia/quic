@@ -1,24 +1,20 @@
 defmodule QuicWeb.SessionLive.CreateSessionForm do
-  alias Quic.Quizzes
+  require Logger
   use QuicWeb, :author_live_view
 
   alias Quic.Sessions
+  alias Quic.Quizzes
   alias Quic.Sessions.Session
 
-  require Logger
 
 
   @impl true
   def mount(%{"quiz_id" => quiz_id}, _session, socket) do
     if Quizzes.is_allowed_to_access?(quiz_id, socket.assigns.current_author) do
-      session = Sessions.change_session(%Session{})
-      |> Ecto.Changeset.put_assoc(:monitor, socket.assigns.current_author)
-      |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
-      |> Ecto.Changeset.put_assoc(:participants, [])
-
       {:ok, socket
-            |> assign(:changeset, session)
             |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
+            |> assign(:search_quiz_input, "")
+            |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
             |> assign(:page_title, "New Session")
             |> assign(:current_path, "/sessions/new")
             |> assign(:back, "/quizzes/#{quiz_id}")}
@@ -35,28 +31,42 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
 
   @impl true
   def mount(_params, _session, socket) do
-    session = Sessions.change_session(%Session{})
-      |> Ecto.Changeset.put_assoc(:monitor, socket.assigns.current_author)
-      |> Ecto.Changeset.put_assoc(:quiz, nil)
-      |> Ecto.Changeset.put_assoc(:participants, [])
-
     {:ok, socket
-          |> assign(:changeset, session)
           |> assign(:quiz, nil)
+          |> assign(:search_quiz_input, "")
+          |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
           |> assign(:page_title, "New Session")
           |> assign(:current_path, "/sessions/new")
           |> assign(:back, "/sessions")}
   end
 
-  @impl true
-  def handle_event("validate", %{"session" => session_params}, socket) do
-    changeset = Sessions.change_session(%Session{}, session_params)
-                |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, :changeset, changeset)}
+  @impl true
+  def handle_event("form_type_changed", %{"type" => type}, socket) do
+    Sessions.change_session(%Session{}, %{type: type}) |> Map.put(:action, :validate)
+    {:noreply, socket |> assign(session_type: type)}
   end
 
-  def handle_event("save", %{"session" => session_params}, socket) do
+  @impl true
+  def handle_event("form_quiz_changed", %{"quiz_name" => name}, socket) do
+    result = filter_author_quizzes(socket.assigns.current_author.id, name)
+    {:noreply, socket |> assign(search_quiz_input: name, filtered_quizzes: result)}
+  end
+
+  @impl true
+  def handle_event("clicked_quiz", %{"id" => quiz_id} = _params, socket) do
+    {:noreply, socket
+              |> assign(quiz: Quizzes.get_quiz!(quiz_id))
+              |> assign(:search_quiz_input, "")
+              |> put_flash(:info, "Quiz selected successfully!")}
+  end
+
+  @impl true
+  def handle_event("save", _params, socket) do
+    session_params = %{
+      "type" => socket.assigns.session_type,
+      "quiz_id" => socket.assigns.quiz
+    }
     case Sessions.create_session(session_params, socket.assigns.current_author) do
       {:ok, session} ->
         #notify_parent({:saved, session})
@@ -67,12 +77,13 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
          |> redirect(to: ~p"/sessions/#{session.id}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        {:noreply, socket |> assign(:changeset, changeset) |> put_flash(:error, "Something went wrong :(")}
     end
   end
 
-  def handle_event("form_changed", params, socket) do
-    Logger.error("recebiiiiii ------> #{inspect(params)}")
-    {:noreply, socket}
+
+  defp filter_author_quizzes(author_id, input) do
+    Enum.filter(Quizzes.list_all_author_quizzes(author_id), fn quiz -> String.match?(quiz.name, ~r/#{input}/i) end)
   end
+
 end

@@ -1,14 +1,12 @@
 
-<h4>New Session Form</h4>
+<.my_back navigate={@back}>Back</.my_back>
+
+<h4 class="mt-10">New Session Form</h4>
 
 <p>
   Monitor: 
   <span class="text-[var(--primary-color)]">@<%= @current_author.username%></span>
 </p>
-
-<%= if assigns[:quiz] do %>
-  <p> quiz chosen: <%= @quiz.name %> </p>
-<% end %>
 
 <%!-- <.simple_form
   :let={f}
@@ -17,18 +15,6 @@
   phx-change="validate"
   phx-submit="save"
 >
-  <.input field={@form[:code]} type="text" label="Code" />
-  <.input field={@form[:start_date]} type="date" label="Start date" />
-  <.input field={@form[:end_date]} type="date" label="End date" />
-  <.input
-    field={@form[:status]}
-    type="select"
-    label="Status"
-    prompt="Choose a value"
-    options={Ecto.Enum.values(Quic.Sessions.Session, :status)}
-  />
-
-
   <.input
     field={f[:type]}
     type="select"
@@ -44,7 +30,7 @@
 
 
 <h6 class="mt-10 mb-4 font-bold">Session Type</h6>
-<form phx-change="form_changed">
+<form phx-change="form_type_changed" id="create-session-form">
   <div class="flex flex-col gap-10 md:flex-row">
     <div class="p-4 rounded-md bg-[var(--background-card)]">
       <input type="radio" id="teacher_paced_radio" name="type" value={:teacher_paced}>
@@ -61,15 +47,37 @@
   
 
   <h6 class="mt-10 mb-4 font-bold">Select Quiz</h6>
-  <div :if={@quiz !== nil} class="flex gap-4 p-4 max-w-md rounded-md bg-[var(--background-card)]">
+  <%= if assigns[:quiz] do %>
+  <div class="flex gap-4 p-4 max-w-md rounded-md bg-[var(--background-card)]">
     <Heroicons.pencil class="w-5 h-5 text-[var(--primary-color)]"/>
     <div>
       <span class="font-bold"><%= @quiz.name %></span>
       <p><%= @quiz.description %></p>
     </div>
   </div>
+  <% end %>
 </form>
 
 
-<.back navigate={@back}>Back</.back>
+<form phx-change="form_quiz_changed">
+  <label for="quiz_name">Search</label>
+  <input type="text" id="quiz_name" name="quiz_name" />
+</form>
 
+<%= if String.length(@search_quiz_input) > 0 do  %>
+    <div :for={quiz <- @filtered_quizzes}>
+      <.button 
+      class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 active:hover:bg-[--hover]"
+      disabled={if @quiz !== nil, do: @quiz.id === quiz.id}
+      phx-click="clicked_quiz" phx-value-id={quiz.id}>
+        <%!-- <p class={["font-semibold", (if is_user_already_in_team(@team.authors, user.username), do: "text-red-400")]}><%= user.display_name %></p> --%>
+        <p class="text-sm"><%= quiz.name %></p>
+      </.button>
+    </div>
+  <% end %>
+
+
+
+<button class="call2actionBtn" phx-click="save">
+  <p class="text-white">Create Session</p>
+</button>
