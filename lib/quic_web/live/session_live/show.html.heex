@@ -9,12 +9,12 @@
     </.link> --%>
     <%= if @session.status === :open do %>
       <%!-- <.link phx-click="close-session" data-confirm="Are you sure? A closed session cannot be opened again!">
-        <.button id="monitor-close-session-btn" class="redBtn flex items-center gap-2">
+        <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
           <Heroicons.x_mark class="w-5 h-5" />
           <span>CLOSE</span>
         </.button>
       </.link> --%>
-      <.button id="monitor-close-session-btn" class="redBtn flex items-center gap-2">
+      <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
         <Heroicons.x_mark class="w-5 h-5" />
         <span>CLOSE</span>
       </.button>
@@ -25,7 +25,7 @@
 <.list>
   <:item title="Code"><%= @session.code %></:item>
   <:item title="Start date"><%= DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %></:item>
-  <:item title="End date"><%= @session.end_date %></:item>
+  <:item title="End date" :if={@session.end_date}><%= DateTime.to_date(@session.end_date) %> @ <%= DateTime.to_time(@session.end_date) %></:item>
   <:item title="Status"><%= @session.status %></:item>
   <:item title="Type"><%= @session.type %></:item>
   <:item title="Participants">

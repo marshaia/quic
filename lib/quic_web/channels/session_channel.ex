@@ -35,13 +35,13 @@ defmodule QuicWeb.SessionChannel do
           {:ok, participant} = SessionParticipant.create_participant(session, username)
           socket = assign(socket, :participant, participant)
           Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":participant:" <> participant.name, {"joined_session", %{"participant" => participant}})
-          Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":monitor", {"participant_joined"})
+          Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":monitor", {"participant_joined", %{"name" => participant.name}})
           {:ok, socket}
         end
       end
 
 
-    # if the code isn't valid
+    # if the code isn't valid, i.e., the session isn't open
     else
       if isMonitor do
         {:ok, socket}

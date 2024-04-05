@@ -34,8 +34,8 @@ defmodule QuicWeb.SessionLive.Show do
   end
 
   @impl true
-  def handle_info({"participant_joined"}, socket) do
-    {:noreply, assign(socket, :session, Sessions.get_session!(socket.assigns.session.id))}
+  def handle_info({"participant_joined", %{"name" => name}}, socket) do
+    {:noreply, socket |> put_flash(:info, "#{name} just joined the session!") |> assign(:session, Sessions.get_session!(socket.assigns.session.id))}
   end
 
   @impl true

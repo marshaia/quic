@@ -17,7 +17,7 @@ defmodule QuicWeb.SessionMonitor do
 
   def close_session(code) do
     session = get_session(code)
-    Sessions.update_session(session, %{status: :closed})
+    Sessions.update_session(session, %{"status" => :closed, "end_date" => DateTime.utc_now()})
     # case Sessions.update_session(session, %{status: :closed}) do
     #   {:ok, _session} -> :success
     #   {:error, _changeset} -> :error

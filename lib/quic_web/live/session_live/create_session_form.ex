@@ -5,6 +5,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   alias Quic.Sessions
   alias Quic.Sessions.Session
 
+  require Logger
+
 
   @impl true
   def mount(%{"quiz_id" => quiz_id}, _session, socket) do
@@ -18,7 +20,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
             |> assign(:changeset, session)
             |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
             |> assign(:page_title, "New Session")
-            |> assign(:current_path, "/sessions/new")}
+            |> assign(:current_path, "/sessions/new")
+            |> assign(:back, "/quizzes/#{quiz_id}")}
 
     else
       {:ok, socket
@@ -34,13 +37,15 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   def mount(_params, _session, socket) do
     session = Sessions.change_session(%Session{})
       |> Ecto.Changeset.put_assoc(:monitor, socket.assigns.current_author)
-      #|> Ecto.Changeset.put_assoc(:quiz, nil)
+      |> Ecto.Changeset.put_assoc(:quiz, nil)
       |> Ecto.Changeset.put_assoc(:participants, [])
 
     {:ok, socket
           |> assign(:changeset, session)
+          |> assign(:quiz, nil)
           |> assign(:page_title, "New Session")
-          |> assign(:current_path, "/sessions/new")}
+          |> assign(:current_path, "/sessions/new")
+          |> assign(:back, "/sessions")}
   end
 
   @impl true
@@ -64,5 +69,10 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
     end
+  end
+
+  def handle_event("form_changed", params, socket) do
+    Logger.error("recebiiiiii ------> #{inspect(params)}")
+    {:noreply, socket}
   end
 end
