@@ -28,6 +28,7 @@
   <:item title="End date" :if={@session.end_date}><%= DateTime.to_date(@session.end_date) %> @ <%= DateTime.to_time(@session.end_date) %></:item>
   <:item title="Status"><%= @session.status %></:item>
   <:item title="Type"><%= @session.type %></:item>
+  <:item title="Quiz"><%= @session.quiz.name %></:item>
   <:item title="Participants">
     <span :for={p <- @session.participants}>
       <%= p.name %>

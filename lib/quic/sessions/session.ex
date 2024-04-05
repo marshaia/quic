@@ -21,7 +21,7 @@ defmodule Quic.Sessions.Session do
   @doc false
   def changeset(session, attrs) do
     session
-    |> cast(attrs, [:code, :start_date, :end_date, :status, :type, :quiz])
+    |> cast(attrs, [:code, :start_date, :end_date, :status, :type])
     #|> validate_required([:code, :start_date, :end_date, :status, :type])
     |> validate_required([:type])
   end

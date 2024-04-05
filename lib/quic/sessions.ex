@@ -69,7 +69,7 @@ defmodule Quic.Sessions do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_session(attrs \\ %{}, monitor) do
+  def create_session(attrs \\ %{}, monitor, quiz) do
     attrs = Map.put(attrs, "code", generate_valid_code())
             |> Map.put("status", :open)
             |> Map.put("start_date", DateTime.utc_now())
@@ -77,6 +77,7 @@ defmodule Quic.Sessions do
     %Session{}
     |> Session.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:monitor, monitor)
+    |> Ecto.Changeset.put_assoc(:quiz, quiz)
     |> Repo.insert()
   end
 

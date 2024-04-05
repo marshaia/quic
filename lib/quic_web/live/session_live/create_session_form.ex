@@ -13,6 +13,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
     if Quizzes.is_allowed_to_access?(quiz_id, socket.assigns.current_author) do
       {:ok, socket
             |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
+            |> assign(:session_type, nil)
             |> assign(:search_quiz_input, "")
             |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
             |> assign(:page_title, "New Session")
@@ -33,6 +34,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   def mount(_params, _session, socket) do
     {:ok, socket
           |> assign(:quiz, nil)
+          |> assign(:session_type, nil)
           |> assign(:search_quiz_input, "")
           |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
           |> assign(:page_title, "New Session")
@@ -63,22 +65,23 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
 
   @impl true
   def handle_event("save", _params, socket) do
-    session_params = %{
-      "type" => socket.assigns.session_type,
-      "quiz_id" => socket.assigns.quiz
-    }
-    case Sessions.create_session(session_params, socket.assigns.current_author) do
+    if socket.assigns.quiz === nil || socket.assigns.session_type === nil do
+      {:noreply, socket |> put_flash(:error, "A Session needs to have both a Type and a Quiz associated!")}
+    else
+      session_params = %{"type" => socket.assigns.session_type}
+      case Sessions.create_session(session_params, socket.assigns.current_author, socket.assigns.quiz) do
       {:ok, session} ->
         #notify_parent({:saved, session})
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "Session created successfully")
-         |> redirect(to: ~p"/sessions/#{session.id}")}
+      {:noreply, socket
+                |> put_flash(:info, "Session created successfully")
+                |> redirect(to: ~p"/sessions/#{session.id}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, socket |> assign(:changeset, changeset) |> put_flash(:error, "Something went wrong :(")}
+      end
     end
+
   end
 
 
