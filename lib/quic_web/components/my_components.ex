@@ -25,26 +25,6 @@ defmodule QuicWeb.MyComponents do
     """
   end
 
-  @doc """
-  Renders a square box with an icon on top and some text underneath.
-
-  ## Examples
-      <.home_box icon="hero-computer-desktop" text="QUIC" />
-  """
-  attr :icon, :string, required: true, doc: "the heroicon to be displayed"
-  attr :icon_class, :string, default: "", doc: "the heroicon classes to implement"
-  attr :text, :string, required: true, doc: "the text to put underneath the icon"
-  attr :text_class, :string, default: "", doc: "the text classes to implement"
-
-  def home_box(assigns) do
-    ~H"""
-    <div class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4">
-      <.icon name={@icon} class={@icon_class}/>
-      <p class={@text_class}><%= @text %></p>
-    </div>
-    """
-  end
-
 
 
   @doc """
@@ -74,25 +54,25 @@ defmodule QuicWeb.MyComponents do
       <span class="text-sm font-semibold">GENERAL</span>
 
       <.link href={"/authors"} class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-      <Heroicons.home class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
+      <Heroicons.home class="sidebar-icon"/>
           <span>Home</span>
       </.link>
 
       <.link href={"/quizzes"}
         class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "quiz"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.pencil_square class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
+        <Heroicons.pencil_square class="sidebar-icon"/>
           <span>Quizzes</span>
       </.link>
 
       <.link href={"/teams"}
         class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "team"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.users class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
+        <Heroicons.users class="sidebar-icon"/>
           <span>Teams</span>
       </.link>
 
       <.link href={"/sessions"}
         class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "session"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.bolt class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
+        <Heroicons.bolt class="sidebar-icon"/>
           <span>Sessions</span>
       </.link>
 
@@ -110,7 +90,7 @@ defmodule QuicWeb.MyComponents do
       <span class="text-sm font-semibold">PERSONAL</span>
       <.link href={"/authors/settings"}
       class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "settings"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.cog_8_tooth class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
+        <Heroicons.cog_8_tooth class="sidebar-icon"/>
         <span>Settings</span>
       </.link>
     </section>
@@ -158,7 +138,7 @@ defmodule QuicWeb.MyComponents do
                   class="flex-none p-3 -m-3 opacity-20 hover:opacity-40"
                   aria-label="close"
                 >
-                  <.icon name="hero-x-mark-solid" class="w-5 h-5" />
+                  <Heroicons.x_mark class="w-5 h-5" />
                 </button>
               </div>
               <div id={"#{@id}-content"} class="p-14">
@@ -188,8 +168,8 @@ defmodule QuicWeb.MyComponents do
   def my_back(assigns) do
     ~H"""
     <div class="mt-2">
-      <a href={@navigate} style="padding: 2px 8px 2px 8px; border: 2px solid black; border-radius: 25px;">
-        <.icon name="hero-arrow-left-solid" class="w-4 h-4" />
+      <a href={@navigate} class="flex items-center gap-2 px-2 py-1.5 border-2 border-[var(--primary-color-text)] rounded-full">
+        <Heroicons.arrow_left class="w-4 h-4" />
         <span class="text-sm font-bold"><%= render_slot(@inner_block) %></span>
       </a>
     </div>

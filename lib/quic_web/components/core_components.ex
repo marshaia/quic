@@ -75,7 +75,7 @@ defmodule QuicWeb.CoreComponents do
                   class="flex-none p-3 -m-3 opacity-20 hover:opacity-40"
                   aria-label={gettext("close")}
                 >
-                  <.icon name="hero-x-mark-solid" class="w-5 h-5" />
+                  <Heroicons.x_mark class="w-5 h-5" />
                 </button>
               </div>
               <div id={"#{@id}-content"}>
@@ -122,13 +122,13 @@ defmodule QuicWeb.CoreComponents do
       {@rest}
     >
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
-        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="w-4 h-4" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="w-4 h-4" />
+        <Heroicons.information_circle :if={@kind == :info} class="w-4 h-4" />
+        <Heroicons.exclamation_circle :if={@kind == :error} class="w-4 h-4" />
         <%= @title %>
       </p>
       <p class="mt-2 text-sm leading-5"><%= msg %></p>
       <button type="button" class="absolute p-2 group top-1 right-1" aria-label={gettext("close")}>
-        <.icon name="hero-x-mark-solid" class="w-5 h-5 opacity-40 group-hover:opacity-70" />
+      <Heroicons.x_mark class="w-5 h-5 opacity-40 group-hover:opacity-70" />
       </button>
     </div>
     """
@@ -158,7 +158,7 @@ defmodule QuicWeb.CoreComponents do
         hidden
       >
         <%= gettext("Attempting to reconnect") %>
-        <.icon name="hero-arrow-path" class="w-3 h-3 ml-1 animate-spin" />
+        <Heroicons.arrow_path class="w-3 h-3 ml-1 animate-spin" />
       </.flash>
 
       <.flash
@@ -170,7 +170,7 @@ defmodule QuicWeb.CoreComponents do
         hidden
       >
         <%= gettext("Hang in there while we get back on track") %>
-        <.icon name="hero-arrow-path" class="w-3 h-3 ml-1 animate-spin" />
+        <Heroicons.arrow_path class="w-3 h-3 ml-1 animate-spin" />
       </.flash>
     </div>
     """
@@ -233,7 +233,7 @@ defmodule QuicWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg py-2 px-3",
+        "phx-submit-loading:opacity-75 rounded-full",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
         @class
       ]}
@@ -414,7 +414,7 @@ defmodule QuicWeb.CoreComponents do
   def error(assigns) do
     ~H"""
     <p class="flex gap-3 mt-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
-      <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
+    <Heroicons.exclamation_circle class="mt-0.5 h-5 w-5 flex-none" />
       <%= render_slot(@inner_block) %>
     </p>
     """
@@ -567,7 +567,7 @@ defmodule QuicWeb.CoreComponents do
         navigate={@navigate}
         class="text-sm font-semibold leading-6 text-[var(--primary-color-text)] hover:text-zinc-600"
       >
-        <.icon name="hero-arrow-left-solid" class="w-3 h-3" />
+      <Heroicons.arrow_left class="w-3 h-3" />
         <%= render_slot(@inner_block) %>
       </.link>
     </div>

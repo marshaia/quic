@@ -22,17 +22,26 @@
   <%!-- SHORTCUTS --%>
   <div class="flex flex-col gap-10 sm:flex-row">
     <.link navigate={~p"/sessions/new"}>
-      <.home_box icon="hero-bolt" icon_class="w-10 h-10 text-[var(--second-color)]" text="Launch Session"/>
+      <div class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4">
+        <Heroicons.bolt class="w-10 h-10 text-[var(--second-color)]" />
+        <p>Launch Session</p>
+      </div>
     </.link>
 
 
     <.link navigate={~p"/quizzes"}>
-      <.home_box icon="hero-pencil" icon_class="w-10 h-10 text-[var(--fifth-color)]" text="Go To Quizzes"/>
+      <div class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4">
+        <Heroicons.pencil class="w-10 h-10 text-[var(--fifth-color)]" />
+        <p>Go To Quizzes</p>
+      </div>
     </.link>
 
 
     <.link navigate={~p"/teams"}>
-      <.home_box icon="hero-users" icon_class="w-10 h-10 text-[var(--green)]" text="Go To Teams"/>
+      <div class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4">
+        <Heroicons.users class="w-10 h-10 text-[var(--green)]" />
+        <p>Go To Teams</p>
+      </div>
     </.link>
   </div>
 

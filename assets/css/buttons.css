@@ -1,5 +1,5 @@
 .baseBtn {
-  @apply p-2 px-4 rounded-full
+  @apply py-2 px-4 rounded-full
 }
 
 .loginBtn {
@@ -23,5 +23,5 @@
 }
 
 .redLink {
-  @apply p-2 rounded-md text-white redBtn
+  @apply text-white redBtn
 }

@@ -4,20 +4,20 @@
   <div class="flex-1"></div>
 
   <%= if @session.status === :open do %>
-    <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
+    <.button id="monitor-close-session-btn" class="flex items-center gap-2 px-3 bg-red-700 hover:bg-red-900">
       <Heroicons.x_mark class="w-5 h-5" />
       <span>CLOSE</span>
     </.button>
   <% end %>
 </div>
 
-<%!-- justif-around OR justify-stretch --%>
-<div class="flex flex-col justify-between gap-10 mt-5 md:flex-row"> 
+
+<div class="flex flex-col justify-between gap-10 my-5 md:flex-row"> 
   <%!-- SESSION SPECS --%>
   <div class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4">
     <div class="flex justify-between">
       <div class="flex items-center gap-2">
-        <div class="w-4 h-4" style="border-radius: 9999px; background-color: #22c55e;"/>
+        <div class={["w-4 h-4 rounded-full", (if @session.status === :open, do: "bg-[var(--green)]", else: "bg-red-700")]} />
         <p><%= @session.status %></p>     
       </div>
 
@@ -27,9 +27,9 @@
       </div>
     </div>
 
-    <div class="flex flex-col items-center justify-center gap-4">
-      <h4 class="text-[var(--primary-color)]"><%= @session.code %></h4>
-      <p class="text-[var(--border)] flex gap-2">
+    <div class="flex flex-col items-center justify-center gap-4 mt-3">
+      <h3 class="text-[var(--primary-color)]"><%= @session.code %></h3>
+      <p class="flex gap-2">
         <Heroicons.computer_desktop class="w-5 h-5" />
         <%= if @session.type === :teacher_paced do %>
           Teacher Paced
@@ -38,7 +38,7 @@
         <% end %>
       </p>
 
-      <p class="text-[var(--border)] flex gap-2">
+      <p class="flex gap-2">
         <Heroicons.clock class="w-5 h-5" />
         <% DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %>
       </p>
@@ -46,28 +46,28 @@
   </div>
 
   <%!-- SESSION QUIZ --%>
-  <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)]" navigate={~p"/quizzes/#{@session.quiz.id}"}>
+  <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" navigate={~p"/quizzes/#{@session.quiz.id}"}>
     <div class="flex items-center gap-2">
       <Heroicons.pencil_square class="w-5 h-5 text-[var(--third-color)]" />
       <h6 class="font-bold"><%= @session.quiz.name %></h6>
     </div>
 
-    <p class="mt-2"><%= @session.quiz.description %></p>
+    <p><%= @session.quiz.description %></p>
 
     <div class="flex-1"></div>
     
     <div class="flex items-center justify-between">
-      <div class="flex gap-2">
+      <div class="flex gap-1">
         <Heroicons.list_bullet class="w-5 h-5" />
         <p><%= Enum.count(@session.quiz.questions) %> question</p>
       </div>
 
-      <div class="flex gap-2">
+      <div class="flex gap-1">
         <Heroicons.trophy class="w-5 h-5" />
         <p><%= @session.quiz.total_points %> Points</p>
       </div>
 
-      <div class="flex gap-2">
+      <div class="flex gap-1">
         <Heroicons.user_circle class="w-5 h-5" />
         <p>
           <%= if @session.quiz.author.id === @current_author.id do %>
@@ -84,10 +84,32 @@
 
 
 <%!-- PARTICIPANTS --%>
-<h6 class="mt-10">Participants</h6>
+<h6 class="mt-10 font-bold">Participants</h6>
 <%= if Enum.count(@session.participants) === 0 do %>
-<p>No participants so far...</p>
+<p class="mt-1">No participants so far...</p>
 <% else %>
+
+<table class="w-full mt-3 overflow-x-auto rounded-t-3xl">
+  <tr class="bg-[var(--border)] h-10">
+    <th>#</th>
+    <th>Participant</th>
+    <th>Progress</th>
+    <th>Points</th>
+    <th></th>
+  </tr>
+  
+  <tr :for={participant <- @session.participants} class="h-10 text-center hover:bg-[var(--hover)]">
+    <td class="border-b border-b-[var(--border)] text-[var(--primary-color)] font-bold">1</td>
+    <td class="border-b border-b-[var(--border)]"><%= participant.name %></td>
+    <td class="border-b border-b-[var(--border)]"><%= if participant.current_question === nil, do: 0, else: participant.current_question %></td>
+    <td class="border-b border-b-[var(--border)]"><%= participant.total_points %></td>
+    <td class="border-b border-b-[var(--border)]">
+      <.button class="p-1 border border-[var(--primary-color-text)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]">
+        <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
+      </.button>
+    </td>
+  </tr>
+</table>
 
 <% end %>
 

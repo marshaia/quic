@@ -87,12 +87,12 @@
           <%= if @current_author do %>
             <a href="/authors" class="flex items-center gap-2">
               <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
-              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)] w-5 h-5"/>
+              <Heroicons.computer_desktop class="text-[var(--primary-color)] w-6 h-6"/>
               <p class="text-lg font-medium">QUIC</p>
             </a>
           <% else %>
             <a href="/" class="flex items-center gap-2">
-              <.icon name="hero-computer-desktop" class="text-[var(--primary-color)] w-5 h-5"/>
+              <Heroicons.computer_desktop class="text-[var(--primary-color)] w-6 h-6"/>
               <p class="text-lg font-medium">QUIC</p>
             </a>
           <% end %>
@@ -105,10 +105,10 @@
         <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
 
           <button onclick="changeThemeToDark(true)">
-              <.icon name="hero-moon" class="w-5 h-5"/>
+              <Heroicons.moon class="w-6 h-6"/>
          </button>
          <button onclick="changeThemeToDark(false)">
-              <.icon name="hero-sun" />
+              <Heroicons.sun class="w-6 h-6"/>
           </button>
 
           <%= if @current_author do %>
