@@ -6,7 +6,7 @@
   <%= if @session.status === :open do %>
     <.button id="monitor-close-session-btn" class="flex items-center gap-2 px-3 bg-red-700 hover:bg-red-900">
       <Heroicons.x_mark class="w-5 h-5" />
-      <span>CLOSE</span>
+      <span>Close Session</span>
     </.button>
   <% end %>
 </div>
@@ -82,7 +82,6 @@
 
 
 
-
 <%!-- PARTICIPANTS --%>
 <h6 class="mt-10 font-bold">Participants</h6>
 <%= if Enum.count(@session.participants) === 0 do %>
@@ -98,8 +97,8 @@
     <th></th>
   </tr>
   
-  <tr :for={participant <- @session.participants} class="h-10 text-center hover:bg-[var(--hover)]">
-    <td class="border-b border-b-[var(--border)] text-[var(--primary-color)] font-bold">1</td>
+  <tr :for={{participant, index} <- Enum.with_index(@session.participants)} class="h-10 text-center hover:bg-[var(--hover)]">
+    <td class="border-b border-b-[var(--border)] text-[var(--primary-color)] font-bold"><%= index + 1 %></td>
     <td class="border-b border-b-[var(--border)]"><%= participant.name %></td>
     <td class="border-b border-b-[var(--border)]"><%= if participant.current_question === nil, do: 0, else: participant.current_question %></td>
     <td class="border-b border-b-[var(--border)]"><%= participant.total_points %></td>

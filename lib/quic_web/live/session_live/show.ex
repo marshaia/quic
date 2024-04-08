@@ -1,6 +1,6 @@
 defmodule QuicWeb.SessionLive.Show do
   use QuicWeb, :author_live_view
-  require Logger
+
   alias Quic.Sessions
 
   @impl true
@@ -11,6 +11,7 @@ defmodule QuicWeb.SessionLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     session = Sessions.get_session!(id)
+
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code)
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
 
