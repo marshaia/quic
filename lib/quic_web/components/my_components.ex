@@ -80,7 +80,7 @@ defmodule QuicWeb.MyComponents do
 
       <.link href={"/quizzes"}
         class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "quiz"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-        <Heroicons.pencil class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
+        <Heroicons.pencil_square class="w-4 text-xl tracking-wider md:w-7 font-extralight"/>
           <span>Quizzes</span>
       </.link>
 

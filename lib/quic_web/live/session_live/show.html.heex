@@ -1,28 +1,125 @@
-<.header>
+
+<div class="flex">
+  <.my_back navigate={~p"/sessions"}>Back to sessions</.my_back>
+  <div class="flex-1"></div>
+
+  <%= if @session.status === :open do %>
+    <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
+      <Heroicons.x_mark class="w-5 h-5" />
+      <span>CLOSE</span>
+    </.button>
+  <% end %>
+</div>
+
+<%!-- justif-around OR justify-stretch --%>
+<div class="flex flex-col justify-between gap-10 mt-5 md:flex-row"> 
+  <%!-- SESSION SPECS --%>
+  <div class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4">
+    <div class="flex justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4" style="border-radius: 9999px; background-color: #22c55e;"/>
+        <p><%= @session.status %></p>     
+      </div>
+
+      <div class="flex items-center gap-2">
+        <p><%= Enum.count(@session.participants) %></p>
+        <Heroicons.user_group class="w-5 h-5" />
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center justify-center gap-4">
+      <h4 class="text-[var(--primary-color)]"><%= @session.code %></h4>
+      <p class="text-[var(--border)] flex gap-2">
+        <Heroicons.computer_desktop class="w-5 h-5" />
+        <%= if @session.type === :teacher_paced do %>
+          Teacher Paced
+        <% else %>
+          Student Paced
+        <% end %>
+      </p>
+
+      <p class="text-[var(--border)] flex gap-2">
+        <Heroicons.clock class="w-5 h-5" />
+        <% DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %>
+      </p>
+    </div>
+  </div>
+
+  <%!-- SESSION QUIZ --%>
+  <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)]" navigate={~p"/quizzes/#{@session.quiz.id}"}>
+    <div class="flex items-center gap-2">
+      <Heroicons.pencil_square class="w-5 h-5 text-[var(--third-color)]" />
+      <h6 class="font-bold"><%= @session.quiz.name %></h6>
+    </div>
+
+    <p class="mt-2"><%= @session.quiz.description %></p>
+
+    <div class="flex-1"></div>
+    
+    <div class="flex items-center justify-between">
+      <div class="flex gap-2">
+        <Heroicons.list_bullet class="w-5 h-5" />
+        <p><%= Enum.count(@session.quiz.questions) %> question</p>
+      </div>
+
+      <div class="flex gap-2">
+        <Heroicons.trophy class="w-5 h-5" />
+        <p><%= @session.quiz.total_points %> Points</p>
+      </div>
+
+      <div class="flex gap-2">
+        <Heroicons.user_circle class="w-5 h-5" />
+        <p>
+          <%= if @session.quiz.author.id === @current_author.id do %>
+          You
+          <% else %>
+            <%= @session.author.display_name %>
+          <% end %> </p>
+      </div>
+    </div>
+  </.link>
+</div>
+
+
+
+
+<%!-- PARTICIPANTS --%>
+<h6 class="mt-10">Participants</h6>
+<%= if Enum.count(@session.participants) === 0 do %>
+<p>No participants so far...</p>
+<% else %>
+
+<% end %>
+
+
+
+
+
+<%!-- <.header>
   <h4>Session 
     <span class="text-[var(--primary-color)]"><%= @session.code %></span>
   </h4>
   <:subtitle>This is a session record from your database.</:subtitle>
   <:actions>
-    <%!-- <.link patch={~p"/sessions/#{@session}/show/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/sessions/#{@session}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit session</.button>
-    </.link> --%>
+    </.link> 
     <%= if @session.status === :open do %>
-      <%!-- <.link phx-click="close-session" data-confirm="Are you sure? A closed session cannot be opened again!">
+      <.link phx-click="close-session" data-confirm="Are you sure? A closed session cannot be opened again!">
         <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
           <Heroicons.x_mark class="w-5 h-5" />
           <span>CLOSE</span>
         </.button>
-      </.link> --%>
+      </.link>
       <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
         <Heroicons.x_mark class="w-5 h-5" />
         <span>CLOSE</span>
       </.button>
     <% end %>
   </:actions>
-</.header>
+</.header> --%>
 
-<.list>
+<%!-- <.list>
   <:item title="Code"><%= @session.code %></:item>
   <:item title="Start date"><%= DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %></:item>
   <:item title="End date" :if={@session.end_date}><%= DateTime.to_date(@session.end_date) %> @ <%= DateTime.to_time(@session.end_date) %></:item>
@@ -34,24 +131,23 @@
       <%= p.name %>
     </span>
   </:item>
-</.list>
+</.list> --%>
 
 
 <%!-- participant message --%>
-<div class="p-4 my-10">
+<%!-- <div class="p-4 my-10">
   <p class="font-bold">Participant Message:</p>
   <p class="text-red-500"> <%= @participant_message %> </p>
-</div>
+</div> --%>
 
 
 <%!-- monitor send msg to participants --%>
-<div class="flex flex-col p-4 my-10 w-96">
+<%!-- <div class="flex flex-col p-4 my-10 w-96">
   <label>Send Message to Participants:</label>
   <textarea type="text" id="monitor-send-msg-participant-input"/>
   <button id="monitor-send-msg-participant-btn" class="mt-2 call2actionBtn">Send</button>
-</div>
+</div> --%>
 
-<.back navigate={~p"/sessions"}>Back to sessions</.back>
 
 <script>
   window.session_code = "<%= @session.code %>"
