@@ -37,6 +37,22 @@ defmodule QuicWeb.TeamLive.Show do
               |> put_flash(:info, "Successfully added #{username} to #{socket.assigns.team.name}!")}
   end
 
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    team = Teams.get_team!(id)
+    case Teams.delete_team(team) do
+      {:ok, _} ->
+        {:noreply, socket
+                  |> put_flash(:info, "Team deleted successfully!")
+                  |> redirect(to: ~p"/teams")}
+
+      {:error, _} ->
+        {:noreply, socket |> put_flash(:info, "Something went wrong!")}
+    end
+
+
+  end
+
   def is_user_already_in_team(authors, username) do
     Enum.any?(authors, fn member -> member.username === username end)
   end

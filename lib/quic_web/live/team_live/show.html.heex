@@ -3,7 +3,156 @@
   <.my_back navigate={"/teams"}>Back to Teams</.my_back>
 </div>
 
-<.header>
+
+
+<div class="flex justify-center w-full">
+  <main class="w-full max-w-3xl">
+
+    <%!-- TEAM INFO --%>
+    <section class="w-full">
+      <div class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4">
+        <div class="flex-1">
+          <div class="border-r border-[var(--border)] mr-3 px-4 text-center">
+            <h4 class="text-[var(--primary-color)]"> <%= @team.name %> </h4>
+            <p class="mt-5"> <%= @team.description %> </p>
+
+            <div class="flex gap-4 mt-5 justify-evenly">
+              <div class="flex gap-2">
+                <Heroicons.pencil_square class="w-5 h-5" />
+                <p> <%= %> Quizzes </p>
+              </div>
+
+              <div class="flex gap-2">
+                <Heroicons.users class="w-5 h-5" />
+                <p> <%= Enum.count(@team.authors) %> Collaborators</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <%!-- TEAM ACTIONS --%>
+        <div class="flex flex-col items-center justify-between">
+          <.link patch={~p"/teams/#{@team}/show/edit"} phx-click={JS.push_focus()}>
+            <Heroicons.pencil class="question-box-icon" />
+          </.link>
+          
+          <.link
+            phx-click={JS.push("delete", value: %{id: @team.id})}
+            data-confirm="Are you sure? Once deleted, it cannot be retrived!">
+            <Heroicons.trash class="question-box-icon" />
+          </.link>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <div class="flex w-full gap-10 mt-20">
+      <%!-- COLLABORATORS --%>
+      <section class="w-1/3">
+        <div class="flex items-center justify-between mb-5">
+          <h6>Collaborators</h6>
+
+          <.link class="p-2 bg-[var(--primary-color)] hover:bg-indigo-600 rounded-full">
+            <Heroicons.user_plus class="w-5 h-5 text-white" />
+          </.link>
+        </div>
+
+        <div
+          :for={colaborator <- @team.authors}
+          class="rounded-md bg-[var(--background-card)] py-2 px-4 mb-4"
+        >
+          <div class="flex items-center gap-4">
+            <Heroicons.user_circle class="mt-2 h-14 w-14" />
+
+            <div class="flex-1">
+              <div class="flex justify-end">
+                <Heroicons.user_minus class="w-4 h-4" />
+              </div>
+              <p class="font-bold"> <%= colaborator.display_name %> </p>
+              <p> @<%= colaborator.username %> </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <%!-- SHARED QUIZZES --%>
+      <section class="w-2/3">
+        <div class="flex items-center justify-between mb-5">
+          <h6>Quizzes</h6>
+
+          <.link class="flex items-center gap-2 px-3 bg-[var(--background-card)] hover:bg-[var(--background-view)] rounded-full border border-[var(--primary-color)]">
+            <Heroicons.plus class="w-4 h-4 text-[var(--primary-color-text)]" />
+            <p>Add Quiz</p>
+          </.link>
+        </div>
+
+
+        <div
+          :for={_colaborator <- @team.authors}
+          class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4"
+        >
+
+          <%!-- <% isOwner = isOwner?(quiz.id, @current_author) %> --%>
+
+          <%!-- QUIZ INFO --%>
+          <div class="flex-1 pr-2 mr-2 border-r">
+            <div class="flex items-center gap-2">
+              <Heroicons.pencil_square class="w-5 h-5" />
+              <p class="font-bold"> Quiz 1 </p>
+            </div>
+
+            <p class="mt-4"> Description of Quiz 1, lorem ipsulum......</p>
+
+            <div class="flex flex-col items-center justify-between gap-2 mt-6 sm:flex-row">
+              <div class="flex gap-1">
+                <Heroicons.list_bullet class="w-5 h-5" />
+                <%!-- <p><%= Enum.count(@quiz.questions) %> Questions</p> --%>
+                <p class="text-gray-400">1 questions</p>
+              </div>
+
+              <div class="flex gap-1">
+                <Heroicons.trophy class="w-5 h-5" />
+                <%!-- <p><%= @quiz.total_points %> Points</p> --%>
+                <p class="text-gray-400">10 points</p>
+              </div>
+
+              <div class="flex gap-1">
+                <Heroicons.user_circle class="w-5 h-5" />
+                <%!-- <p>
+                  <%= if @quiz.author.id === @current_author.id do %>
+                    You
+                  <% else %>
+                    <%= @quiz.author.id %>
+                  <% end %> 
+                </p> --%>
+                <p class="text-gray-400">You</p>
+              </div>
+            </div>
+
+
+          </div>
+
+          <%!-- QUIZ ACTIONS --%>
+          <div class="flex flex-col items-center justify-between">
+            <Heroicons.bolt class="w-5 h-5 text-[var(--primary-color)]" />
+            <Heroicons.document_duplicate class="w-5 h-5" />
+            <Heroicons.trash class="w-5 h-5" />
+          </div>
+
+
+        </div>
+
+      </section>
+    </div>
+  </main>
+</div>
+
+
+
+<%!-- <.header>
    <h4 class="text-[var(--primary-color)]"><%= @team.name %></h4>
   <:subtitle>
     <p>This is a team record from your database.</p>
@@ -13,7 +162,7 @@
       <.button class="call2actionBtn">Edit team</.button>
     </.link>
   </:actions>
-</.header>
+</.header> --%>
 
 
 
@@ -38,9 +187,7 @@
 
 
 
-
-
-<.list>
+<%!-- <.list>
   <:item title="Name"><%= @team.name %></:item>
   <:item title="Description"><%= @team.description %></:item>
   <:item title="Members">
@@ -48,7 +195,9 @@
         <%= x.display_name %>
       <% end %>
   </:item>
-</.list>
+</.list> --%>
+
+
 
 
 <.modal :if={@live_action == :edit} id="team-modal" show on_cancel={JS.patch(~p"/teams/#{@team}")}>
