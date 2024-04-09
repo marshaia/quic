@@ -11,7 +11,7 @@ defmodule QuicWeb.TeamLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    {:noreply, socket |> assign(:current_path, "/teams/") |> apply_action(socket.assigns.live_action, params)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do

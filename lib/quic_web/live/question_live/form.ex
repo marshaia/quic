@@ -33,7 +33,8 @@ defmodule QuicWeb.QuestionLive.Form do
     {:ok, socket
           |> assign(:quiz_id, quiz_id)
           |> assign(:changeset, question)
-          |> assign(:page_title, "Quiz - New Question")}
+          |> assign(:page_title, "Quiz - New Question")
+          |> assign(:current_path, "/quizzes/#{quiz_id}/question/new")}
   end
 
 

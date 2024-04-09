@@ -5,7 +5,7 @@ defmodule QuicWeb.AuthorConfirmationInstructionsLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="max-w-sm mx-auto">
       <.header class="text-center">
         No confirmation instructions received?
         <:subtitle>We'll send a new confirmation link to your inbox</:subtitle>
@@ -20,7 +20,7 @@ defmodule QuicWeb.AuthorConfirmationInstructionsLive do
         </:actions>
       </.simple_form>
 
-      <p class="text-center mt-4">
+      <p class="mt-4 text-center">
         <.link href={~p"/authors/register"}>Register</.link>
         | <.link href={~p"/authors/log_in"}>Log in</.link>
       </p>
@@ -29,7 +29,7 @@ defmodule QuicWeb.AuthorConfirmationInstructionsLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, form: to_form(%{}, as: "author"))}
+    {:ok, socket |> assign(form: to_form(%{}, as: "author")) |> assign(:page_title, "Confirm Instructions")}
   end
 
   def handle_event("send_instructions", %{"author" => %{"email" => email}}, socket) do

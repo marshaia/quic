@@ -31,24 +31,41 @@
     <div class="max-w-6xl mx-auto">
 
       <div class="flex flex-col justify-between gap-10 md:flex-row">
-        <section>
+        <section class="md:w-1/2">
           <div class="flex items-center gap-2"> 
-            <Heroicons.question_mark_circle class="text-[var(--third-color)] w-7 h-7"/>
+            <%!-- <Heroicons.question_mark_circle class="text-[var(--third-color)] w-10 h-10"/> --%>
+            <Heroicons.code_bracket_square class="text-[var(--third-color)] w-10 h-10"/>
             <h4>What is QUIC?</h4>  
           </div>
           
-          <p>QUIC is a ...</p>
+          <h6 class="mt-2 font-normal text-justify">
+            QUIC, short for
+            <b>Qui</b>z
+            <b>C</b>reation (Tool),
+            is, as the name implies, an application for creating quizzes.
+          </h6>
+
+          <h6 class="font-normal text-justify">
+            Its main goal is to assist programming classes, so the feature that makes this tool stand out from others in the market is precisely the possibillity of editing and compiling code.
+          </h6>
         </section>
 
         <div class="border-b md:border-l border-[var(--border)]"></div>
 
-        <section>
+        <section class="md:w-1/2">
           <div class="flex items-center gap-2"> 
-            <Heroicons.academic_cap class="text-[var(--fifth-color)] w-7 h-7"/>
-            <h4>A little bit of context</h4>  
+            <Heroicons.academic_cap class="text-[var(--fifth-color)] w-10 h-10"/>
+            <h4>Academic Background</h4>  
           </div>
           
-          <p>QUIC is a ...</p>
+          <h6 class="mt-2 font-normal text-justify">QUIC was developed by Joana Alves, as part of her Master's Thesis in Software Engineering at Universidade do Minho.
+          She was supervised by Professor Pedro Rangel Henriques and Sofia Santos.</h6>
+          <h6 class="mt-2 font-normal text-justify">
+            QUIC is an <b>open source</b> project under the MIT license. You can find the source code on 
+            <a href="https://github.com/marshaia/quic">
+              <span class="text-[var(--primary-color)]">GitHub</span>.
+            </a>
+          </h6>
         </section>
       </div>
       

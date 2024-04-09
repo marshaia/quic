@@ -5,21 +5,21 @@ defmodule QuicWeb.AuthorForgotPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="max-w-sm mx-auto">
       <.header class="text-center">
-        Forgot your password?
-        <:subtitle>We'll send a password reset link to your inbox</:subtitle>
+        <h6 class="font-bold">Forgot your password?</h6>
+        <:subtitle><p>We'll send a password reset link to your inbox</p></:subtitle>
       </.header>
 
       <.simple_form for={@form} id="reset_password_form" phx-submit="send_email">
         <.input field={@form[:email]} type="email" placeholder="Email" required />
         <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
+          <.button phx-disable-with="Sending..." class="w-full call2actionBtn">
             Send password reset instructions
           </.button>
         </:actions>
       </.simple_form>
-      <p class="text-center text-sm mt-4">
+      <p class="mt-4 text-sm text-center">
         <.link href={~p"/authors/register"}>Register</.link>
         | <.link href={~p"/authors/log_in"}>Log in</.link>
       </p>
@@ -28,7 +28,7 @@ defmodule QuicWeb.AuthorForgotPasswordLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, form: to_form(%{}, as: "author"))}
+    {:ok, socket |> assign(:page_title, "Forgot Password") |> assign(form: to_form(%{}, as: "author"))}
   end
 
   def handle_event("send_email", %{"author" => %{"email" => email}}, socket) do

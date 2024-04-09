@@ -94,7 +94,7 @@
       <th>Participant</th>
       <th>Progress</th>
       <th>Points</th>
-      <th></th>
+      <%!-- <th></th> --%>
     </tr>
     
     <tr :for={{participant, index} <- Enum.with_index(@session.participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
@@ -102,11 +102,11 @@
       <td class="border-b border-b-[var(--border)]"><p><%= participant.name %></p></td>
       <td class="border-b border-b-[var(--border)]"><p><%= if participant.current_question === nil, do: 0, else: participant.current_question %></p></td>
       <td class="border-b border-b-[var(--border)]"><p><%= participant.total_points %></p></td>
-      <td class="border-b border-b-[var(--border)]">
+      <%!-- <td class="border-b border-b-[var(--border)]">
         <.button class="p-1 border border-[var(--primary-color-text)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]">
           <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
         </.button>
-      </td>
+      </td> --%>
     </tr>
   </table>
 </div>

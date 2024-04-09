@@ -5,7 +5,7 @@ defmodule QuicWeb.AuthorConfirmationLive do
 
   def render(%{live_action: :edit} = assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="max-w-sm mx-auto">
       <.header class="text-center">Confirm Account</.header>
 
       <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
@@ -15,7 +15,7 @@ defmodule QuicWeb.AuthorConfirmationLive do
         </:actions>
       </.simple_form>
 
-      <p class="text-center mt-4">
+      <p class="mt-4 text-center">
         <.link href={~p"/authors/register"}>Register</.link>
         | <.link href={~p"/authors/log_in"}>Log in</.link>
       </p>
@@ -25,7 +25,7 @@ defmodule QuicWeb.AuthorConfirmationLive do
 
   def mount(%{"token" => token}, _session, socket) do
     form = to_form(%{"token" => token}, as: "author")
-    {:ok, assign(socket, form: form), temporary_assigns: [form: nil]}
+    {:ok, socket |> assign(:page_title, "Confirmation") |> assign(form: form), temporary_assigns: [form: nil]}
   end
 
   # Do not log in the author after confirmation to avoid a

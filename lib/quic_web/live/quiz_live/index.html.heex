@@ -24,7 +24,7 @@
     <.link
       class="redLink"
       phx-click={JS.push("delete", value: %{id: quiz.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?">
+      data-confirm="Are you sure? Once deleted, it cannot be retrieved!">
       Delete
     </.link>
   </:action>

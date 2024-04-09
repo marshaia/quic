@@ -1,3 +1,8 @@
+
+<div class="flex justify-start mb-10">
+  <.my_back navigate={"/teams"}>Back to Teams</.my_back>
+</div>
+
 <.header>
    <h4 class="text-[var(--primary-color)]"><%= @team.name %></h4>
   <:subtitle>
@@ -45,7 +50,6 @@
   </:item>
 </.list>
 
-<.back navigate={~p"/teams"}>Back to teams</.back>
 
 <.modal :if={@live_action == :edit} id="team-modal" show on_cancel={JS.patch(~p"/teams/#{@team}")}>
   <.live_component

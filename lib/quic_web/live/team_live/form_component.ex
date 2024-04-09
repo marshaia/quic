@@ -8,10 +8,7 @@ defmodule QuicWeb.TeamLive.FormComponent do
     ~H"""
     <div>
       <.header>
-      <h6><%= @title %></h6>
-        <:subtitle>
-        <p>Use this form to manage quiz records in your database.</p>
-        </:subtitle>
+      <h4 class="text-[var(--primary-color)]"><%= @title %></h4>
       </.header>
 
       <.simple_form

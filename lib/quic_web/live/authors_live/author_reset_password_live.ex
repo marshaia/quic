@@ -5,7 +5,7 @@ defmodule QuicWeb.AuthorResetPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="max-w-sm mx-auto">
       <.header class="text-center">Reset Password</.header>
 
       <.simple_form
@@ -30,7 +30,7 @@ defmodule QuicWeb.AuthorResetPasswordLive do
         </:actions>
       </.simple_form>
 
-      <p class="text-center text-sm mt-4">
+      <p class="mt-4 text-sm text-center">
         <.link href={~p"/authors/register"}>Register</.link>
         | <.link href={~p"/authors/log_in"}>Log in</.link>
       </p>
@@ -50,7 +50,7 @@ defmodule QuicWeb.AuthorResetPasswordLive do
           %{}
       end
 
-    {:ok, assign_form(socket, form_source), temporary_assigns: [form: nil]}
+    {:ok, socket |> assign(:page_title, "Reset Password") |> assign_form(form_source), temporary_assigns: [form: nil]}
   end
 
   # Do not log in the author after reset password to avoid a

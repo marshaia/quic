@@ -15,6 +15,7 @@ defmodule QuicWeb.ParticipantLive.Show do
      |> assign(:current_path, "/session/#{session_id}/participants/#{participant_id}")
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:participant, Participants.get_participant!(participant_id))
+     |> assign(:session_id, session_id)
      |> assign(:back, "/sessions/#{session_id}")}
   end
 
