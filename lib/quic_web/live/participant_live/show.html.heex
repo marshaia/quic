@@ -1,4 +1,4 @@
-<.header>
+<%!-- <.header>
   Participant <%= @participant.id %>
   <:subtitle>This is a participant record from your database.</:subtitle>
   <:actions>
@@ -25,4 +25,27 @@
     participant={@participant}
     patch={~p"/participants/#{@participant}"}
   />
-</.modal>
+</.modal> --%>
+
+
+<%!-- PROFILE --%>
+<section class="flex flex-col items-center justify-center gap-4">
+  <Heroicons.user_circle class="w-24 h-24 text-[var(--primary-color)]" />
+
+  <h5><%= @participant.name %></h5>
+
+  <div class="flex flex-col items-center justify-center gap-1">
+    <p>Points: <%= @participant.total_points %></p>
+    <p>Current Question: <%= if @participant.current_question === nil, do: "not started yet", else: @participant.current_question %></p>
+  </div>
+</section>
+
+
+
+<%!-- ANSWERS & RESULTS --%>
+<h6 class="mt-10 mb-2 font-bold">Progress</h6>
+<section class="bg-[var(--background-card)] rounded-md p-3">
+  
+  <p>respostas</p>
+  
+</section>

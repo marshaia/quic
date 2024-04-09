@@ -117,12 +117,12 @@ defmodule QuicWeb.Router do
 
 
       # PARTICIPANT
-      live "/participants", ParticipantLive.Index, :index
-      live "/participants/new", ParticipantLive.Index, :new
-      live "/participants/:id/edit", ParticipantLive.Index, :edit
+      # live "/participants", ParticipantLive.Index, :index
+      # live "/participants/new", ParticipantLive.Index, :new
+      # live "/participants/:id/edit", ParticipantLive.Index, :edit
 
-      live "/participants/:id", ParticipantLive.Show, :show
-      live "/participants/:id/show/edit", ParticipantLive.Show, :edit
+      live "/session/:session_id/participants/:participant_id", ParticipantLive.Show, :show
+      # live "/participants/:id/show/edit", ParticipantLive.Show, :edit
     end
 
     get "/quizzes/:quiz_id/question/:question_id", QuestionsController, :show

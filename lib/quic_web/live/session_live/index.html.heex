@@ -1,5 +1,5 @@
 <.header>
-  <h4>Listing Sessions</h4>
+  <h4>Sessions</h4>
   <:actions>
     <.link patch={~p"/sessions/new"}>
       <.button class="call2actionBtn">New Session</.button>
@@ -7,7 +7,7 @@
   </:actions>
 </.header>
 
-<.table
+<%!-- <.table
   id="sessions"
   rows={@streams.sessions}
   row_click={fn {_id, session} -> JS.push("show_page", value: %{id: session.id}) end}
@@ -21,7 +21,7 @@
     <div class="sr-only">
       <.link navigate={~p"/sessions/#{session}"}>Show</.link>
     </div>
-    <%!-- <.link patch={~p"/sessions/#{session}/edit"}>Edit</.link> --%>
+    <.link patch={~p"/sessions/#{session}/edit"}>Edit</.link>
   </:action>
   <:action :let={{id, session}}>
     <.link
@@ -32,7 +32,7 @@
       Delete
     </.link>
   </:action>
-</.table>
+</.table> --%>
 
 <%!-- <.modal :if={@live_action in [:new, :edit]} id="session-modal" show on_cancel={JS.patch(~p"/sessions")}>
   <.live_component
@@ -44,3 +44,73 @@
     patch={~p"/sessions"}
   />
 </.modal> --%>
+
+
+
+<div class="mt-5 overflow-auto">
+  <table class="w-full p-2 mt-3 rounded-t-3xl">
+    <tr class="bg-[var(--border)] h-10">
+      <th>Status</th>
+      <th>Code</th>
+      <th>Quiz</th>
+      <th>Type</th>
+      <th># Part.</th>
+      <th>Time</th>
+      <th></th>
+    </tr>
+    
+    
+    
+    <tr :for={session <- @sessions} class="h-10 text-center hover:cursor-pointer hover:bg-[var(--hover)]" phx-click="clicked_session" phx-value-id={session.id}>
+      <td class="border-b border-b-[var(--border)]">
+      <div class="flex items-center justify-center">
+        <div class={["w-4 h-4 rounded-full mx-4", (if session.status === :open, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+      </div>
+        
+      </td>
+
+      <td class="border-b border-b-[var(--border)]">
+        <p class="mx-4 text-[var(--primary-color)] font-bold"><%= session.code %></p>
+      </td>
+
+      <td class="border-b border-b-[var(--border)]">
+        <p class="mx-4"><%= session.quiz.name %></p>
+      </td>
+
+      <td class="border-b border-b-[var(--border)]">
+        <p class="mx-4">
+          <%= if session.type === :teacher_paced do %>
+            Teacher Paced
+          <% else %>
+            Student Paced
+          <% end %>
+        </p>
+      </td>
+
+      <td class="border-b border-b-[var(--border)]"><p class="mx-4"><%= Enum.count(session.participants) %></p>
+        <%!-- <.button class="p-1 border border-[var(--primary-color-text)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]">
+          <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
+        </.button> --%>
+      </td>
+
+      <td class="border-b border-b-[var(--border)]">
+        <div class="flex items-center justify-center gap-1 mx-4">
+          <p class=""><%= DateTime.to_time(session.start_date) %></p>
+          <Heroicons.arrow_right_circle class="w-5 h-5" />
+          <p><%= if session.end_date === nil, do: "Now", else: DateTime.to_time(session.end_date) %></p>
+        </div>
+        
+      </td>
+
+      <td class="border-b border-b-[var(--border)]">
+        <.link
+          class="flex p-1.5 items-center justify-center text-white bg-red-700 rounded-full hover:bg-red-900"
+          phx-click={JS.push("delete", value: %{id: session.id}) |> hide("##{session.id}")}
+          data-confirm="Are you sure? Once deleted, it cannot be recovered!"
+        >
+          <Heroicons.trash class="w-5 h-5" />
+        </.link>
+      </td>
+    </tr>
+  </table>
+</div>

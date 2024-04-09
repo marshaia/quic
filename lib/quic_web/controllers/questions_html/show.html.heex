@@ -1,3 +1,8 @@
+
+<div class="flex justify-start mb-10">
+  <.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back to Quiz</.my_back>
+</div>
+
 <.header>
   <h4 class="text-[var(--primary-color)]"><%= @question.title %></h4>
   <:subtitle>
@@ -16,7 +21,6 @@
   <:item title="Points"><%= @question.points %></:item>
 </.list>
 
-<.back navigate={~p"/quizzes/#{@quiz_id}"}>Back to Quiz</.back>
 
 <%!-- <div>
   <.live_component

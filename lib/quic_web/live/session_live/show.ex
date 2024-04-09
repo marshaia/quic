@@ -25,6 +25,12 @@ defmodule QuicWeb.SessionLive.Show do
 
 
 
+  @impl true
+  def handle_event("clicked_participant", %{"id" => participant_id}, socket) do
+    {:noreply, redirect(socket, to: "/session/#{socket.assigns.session.id}/participants/#{participant_id}")}
+  end
+
+
 
 
 

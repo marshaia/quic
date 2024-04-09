@@ -1,3 +1,8 @@
+
+<div class="flex justify-start mb-10">
+<.my_back navigate={~p"/quizzes"}>Back to quizzes</.my_back>
+</div>
+
 <.header>
   <h4 class="text-[var(--primary-color)]"><%= @quiz.name %></h4>
   <:subtitle>
@@ -46,10 +51,6 @@
   </.link>
 </div>
 
-
-
-
-<.back navigate={~p"/quizzes"}>Back to quizzes</.back>
 
 <.modal :if={@live_action == :edit} id="quiz-modal" show on_cancel={JS.patch(~p"/quizzes/#{@quiz}")}>
   <.live_component

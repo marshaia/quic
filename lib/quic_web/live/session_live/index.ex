@@ -8,7 +8,7 @@ defmodule QuicWeb.SessionLive.Index do
   def mount(_params, _session, socket) do
     #{:ok, stream(socket, :sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))}
     #{:ok, stream(socket, :sessions, Sessions.list_sessions())}
-    {:ok, stream(socket, :sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))}
+    {:ok, assign(socket, :sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))} #stream(socket, :sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))}
   end
 
   @impl true
@@ -45,11 +45,16 @@ defmodule QuicWeb.SessionLive.Index do
     session = Sessions.get_session!(id)
     {:ok, _} = Sessions.delete_session(session)
 
-    {:noreply, stream_delete(socket, :sessions, session)}
+    {:noreply, assign(socket, :sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))}
   end
 
   @impl true
   def handle_event("show_page", %{"id" => id}, socket) do
     {:noreply, redirect(socket, to: "/sessions/#{id}")}
+  end
+
+  @impl true
+  def handle_event("clicked_session", %{"id" => session_id}, socket) do
+    {:noreply, redirect(socket, to: "/sessions/#{session_id}")}
   end
 end

@@ -1,10 +1,9 @@
 
-<div class="flex">
+<div class="flex flex-col justify-between gap-2 sm:flex-row">
   <.my_back navigate={~p"/sessions"}>Back to sessions</.my_back>
-  <div class="flex-1"></div>
 
   <%= if @session.status === :open do %>
-    <.button id="monitor-close-session-btn" class="flex items-center gap-2 px-3 bg-red-700 hover:bg-red-900">
+    <.button id="monitor-close-session-btn" class="flex items-center gap-2 p-1 bg-red-700 sm:px-2 hover:bg-red-900">
       <Heroicons.x_mark class="w-5 h-5" />
       <span>Close Session</span>
     </.button>
@@ -56,7 +55,7 @@
 
     <div class="flex-1"></div>
     
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col items-center justify-between gap-2 md:flex-row">
       <div class="flex gap-1">
         <Heroicons.list_bullet class="w-5 h-5" />
         <p><%= Enum.count(@session.quiz.questions) %> question</p>
@@ -85,30 +84,32 @@
 <%!-- PARTICIPANTS --%>
 <h6 class="mt-10 font-bold">Participants</h6>
 <%= if Enum.count(@session.participants) === 0 do %>
-<p class="mt-1">No participants so far...</p>
+<p class="mt-1">No participants to report.</p>
 <% else %>
 
-<table class="w-full mt-3 overflow-x-auto rounded-t-3xl">
-  <tr class="bg-[var(--border)] h-10">
-    <th>#</th>
-    <th>Participant</th>
-    <th>Progress</th>
-    <th>Points</th>
-    <th></th>
-  </tr>
-  
-  <tr :for={{participant, index} <- Enum.with_index(@session.participants)} class="h-10 text-center hover:bg-[var(--hover)]">
-    <td class="border-b border-b-[var(--border)] text-[var(--primary-color)] font-bold"><%= index + 1 %></td>
-    <td class="border-b border-b-[var(--border)]"><%= participant.name %></td>
-    <td class="border-b border-b-[var(--border)]"><%= if participant.current_question === nil, do: 0, else: participant.current_question %></td>
-    <td class="border-b border-b-[var(--border)]"><%= participant.total_points %></td>
-    <td class="border-b border-b-[var(--border)]">
-      <.button class="p-1 border border-[var(--primary-color-text)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]">
-        <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
-      </.button>
-    </td>
-  </tr>
-</table>
+<div class="overflow-auto">
+  <table class="w-full p-2 mt-3 rounded-t-3xl">
+    <tr class="bg-[var(--border)] h-10">
+      <th>#</th>
+      <th>Participant</th>
+      <th>Progress</th>
+      <th>Points</th>
+      <th></th>
+    </tr>
+    
+    <tr :for={{participant, index} <- Enum.with_index(@session.participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
+      <td class="border-b border-b-[var(--border)] text-[var(--primary-color)] font-bold"><%= index + 1 %></td>
+      <td class="border-b border-b-[var(--border)]"><p><%= participant.name %></p></td>
+      <td class="border-b border-b-[var(--border)]"><p><%= if participant.current_question === nil, do: 0, else: participant.current_question %></p></td>
+      <td class="border-b border-b-[var(--border)]"><p><%= participant.total_points %></p></td>
+      <td class="border-b border-b-[var(--border)]">
+        <.button class="p-1 border border-[var(--primary-color-text)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]">
+          <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
+        </.button>
+      </td>
+    </tr>
+  </table>
+</div>
 
 <% end %>
 
