@@ -1,9 +1,123 @@
 
-<div class="flex justify-start mb-10">
+<div class="flex justify-start mb-5">
 <.my_back navigate={~p"/quizzes"}>Back to quizzes</.my_back>
 </div>
 
-<.header>
+<% isOwner = isOwner?(@quiz.id, @current_author) %>
+
+<main class="px-10">
+  <%!-- QUIZ SPECS --%>
+  <section class="w-full">
+    
+    <div class="flex justify-end">
+      <.link 
+        :if={isOwner} 
+        patch={~p"/quizzes/#{@quiz}/show/edit"} 
+        phx-click={JS.push_focus()}
+        class="border-[var(--primary-color-text)] text--[var(--primary-color-text)] hover:text--[var(--primary-color)] hover:border-[var(--primary-color)] border rounded-full p-1.5"
+      >
+        <Heroicons.pencil class="question-box-icon" />
+      </.link>
+    </div>
+    
+    
+
+    <h4 class="text-center text-[var(--primary-color)]"> <%= @quiz.name %> </h4>
+    <p class="mt-4 text-justify"><%= @quiz.description %></p>
+
+    <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
+      <div class="flex gap-1">
+        <Heroicons.list_bullet class="w-5 h-5" />
+        <p><%= Enum.count(@quiz.questions) %> Questions</p>
+      </div>
+
+      <div class="flex gap-1">
+        <Heroicons.trophy class="w-5 h-5" />
+        <p><%= @quiz.total_points %> Points</p>
+      </div>
+
+      <div class="flex gap-1">
+        <Heroicons.user_circle class="w-5 h-5" />
+        <p>
+          <%= if @quiz.author.id === @current_author.id do %>
+            You
+          <% else %>
+            <%= @quiz.author.id %>
+          <% end %> 
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <%!-- LAUNCH DIVIDER --%>
+  <div class="flex flex-col items-center mt-20 mb-10">
+    <hr />
+    <.link navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 -mt-5 text-white call2actionBtn">
+      <Heroicons.bolt class="w-5 h-5" />
+      Launch Quiz
+    </.link>
+  </div>
+
+
+
+  <%!-- QUIZ QUESTIONS --%>
+  <section class="w-full">
+    <h6 class="mb-2 font-bold">Questions</h6>
+    <div 
+      :for={question <- @quiz.questions}
+      class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4"
+    >
+      <%!-- POSITION --%>
+      <div class="flex flex-col items-center justify-between">
+        <h5 class="text-[var(--primary-color)]">1</h5>
+        <Heroicons.arrow_up :if={isOwner} class="question-box-icon" />
+        <Heroicons.arrow_down :if={isOwner} class="question-box-icon" />
+      </div>
+
+      <%!-- QUESTION INFO --%>
+      <div class="flex-1 px-2 mx-3 border-x">
+        <div class="flex items-center justify-between">
+          <p class="font-bold"> <%= question.title %> </p>
+          <div class="bg-[var(--turquoise)] rounded-md px-2">
+            <span class="text-xs text-white">question type</span>
+          </div>
+        </div>
+        <p> <%= question.description %> </p>
+      </div>
+
+      <%!-- ACTIONS --%>
+      <div :if={isOwner} class="flex flex-col items-center justify-between">
+        <.link 
+          patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}/edit"} 
+          phx-click={JS.push_focus()}
+        >
+          <Heroicons.pencil class="question-box-icon" />
+        </.link>
+        
+        <.link
+          phx-click={JS.push("delete", value: %{id: question.id}) |> hide("##{question.id}")}
+          data-confirm="Are you sure you want to delete this question?"
+        >
+          <Heroicons.trash class="question-box-icon" />
+        </.link>
+        
+        <.link phx-click={JS.push("duplicate", value: %{id: question.id})}>
+          <Heroicons.document_duplicate class="question-box-icon" />
+        </.link>
+        
+      </div>
+    </div>
+
+    <div class="flex items-center justify-center">
+      <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full call2actionBtn">
+        <Heroicons.plus class="w-5 h-5 text-white" />
+      </.link>
+    </div>
+  </section>
+</main>
+
+<%!-- <.header>
   <h4 class="text-[var(--primary-color)]"><%= @quiz.name %></h4>
   <:subtitle>
     <p>This is a quiz record from your database.</p>
@@ -14,10 +128,6 @@
       <.button class="call2actionBtn">Edit quiz</.button>
     </.link>
     <% end %>
-
-    <%!-- <.link navigate={~p"/quizzes/#{@quiz}/show/edit"}>
-      <.button class="call2actionBtn">Edit quiz</.button>
-    </.link> --%>
   </:actions>
 </.header>
 
@@ -49,7 +159,7 @@
       <% end %>
       
   </.link>
-</div>
+</div> --%>
 
 
 <.modal :if={@live_action == :edit} id="quiz-modal" show on_cancel={JS.patch(~p"/quizzes/#{@quiz}")}>
@@ -58,6 +168,7 @@
     id={@quiz.id}
     title={@page_title}
     action={@live_action}
+    current_author={@current_author}
     quiz={@quiz}
     patch={~p"/quizzes/#{@quiz}"}
   />

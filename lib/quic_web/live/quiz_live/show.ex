@@ -15,7 +15,7 @@ defmodule QuicWeb.QuizLive.Show do
       {:noreply, socket
                 |> assign(:page_title, page_title(socket.assigns.live_action))
                 |> assign(:quiz, Quizzes.get_quiz!(id))
-                |> assign(:current_path, "quizzes/#{id}")}
+                |> assign(:current_path, ~p"/quizzes/#{id}")}
     else
       {:noreply, socket
             |> put_flash(:error, "You can only access Quizzes shared with/owned by you!")
@@ -27,10 +27,42 @@ defmodule QuicWeb.QuizLive.Show do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     question = Questions.get_question!(id)
-    {:ok, _} = Questions.delete_question(question)
-    Quizzes.update_quiz_points(socket.assigns.quiz.id)
 
-    {:noreply, assign(socket, :quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))}
+    case Questions.delete_question(question) do
+      {:ok, _} ->
+        Quizzes.update_quiz_points(socket.assigns.quiz.id)
+
+        {:noreply, socket
+                  |> assign(:quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))
+                  |> put_flash(:info, "Question deleted successfully!")}
+
+      {:error, _changeset} ->
+        {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+    end
+  end
+
+  @impl true
+  def handle_event("duplicate", %{"id" => id}, socket) do
+    question = Questions.get_question!(id)
+    question_params = %{
+      "title" => question.title,
+      "description" => question.description,
+      "points" => question.points
+    }
+
+    quiz_id = socket.assigns.quiz.id
+
+    case Questions.create_question_with_quiz(question_params, quiz_id) do
+      {:ok, _question} ->
+        Quizzes.update_quiz_points(quiz_id)
+
+        {:noreply, socket
+                  |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
+                  |> put_flash(:info, "Question duplicated successfully!")}
+
+      {:error, _changeset} ->
+        {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+    end
   end
 
   def isOwner?(quiz_id, author) do

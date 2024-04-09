@@ -18,3 +18,7 @@
 .main-page {
   @apply p-4 overflow-y-auto h-[calc(100vh-5.3rem)]
 }
+
+.question-box-icon {
+  @apply w-5 h-5 hover:cursor-pointer hover:text-[var(--primary-color)]
+}
