@@ -102,9 +102,13 @@ defmodule QuicWeb.AuthorSettingsLive do
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
       |> assign(:page_title, "Settings")
-      |> assign(:current_path, "/author/settings")
+      |> assign(:current_path, "/authors/settings")
 
     {:ok, socket}
+  end
+
+  def handle_params(_params, _uri, socket) do
+    {:noreply, socket}
   end
 
   def handle_event("validate_email", params, socket) do

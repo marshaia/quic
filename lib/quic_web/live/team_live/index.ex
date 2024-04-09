@@ -45,4 +45,9 @@ defmodule QuicWeb.TeamLive.Index do
 
     {:noreply, stream_delete(socket, :teams, team)}
   end
+
+  @impl true
+  def handle_event("clicked_team", %{"id" => id}, socket) do
+    {:noreply, redirect(socket, to: "/teams/#{id}")}
+  end
 end

@@ -4,6 +4,8 @@ defmodule QuicWeb.QuizLive.Index do
   alias Quic.Quizzes
   alias Quic.Quizzes.Quiz
 
+  require Logger
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, stream(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
@@ -11,7 +13,7 @@ defmodule QuicWeb.QuizLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, socket |> assign(:current_path, "quizzes/") |> apply_action(socket.assigns.live_action, params)}
+    {:noreply, socket |> assign(:current_path, "/quizzes") |> apply_action(socket.assigns.live_action, params)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
@@ -45,4 +47,10 @@ defmodule QuicWeb.QuizLive.Index do
 
     {:noreply, stream_delete(socket, :quizzes, quiz)}
   end
+
+  @impl true
+  def handle_event("clicked_quiz", %{"id" => id}, socket) do
+    {:noreply, redirect(socket, to: "/quizzes/#{id}")}
+  end
+
 end
