@@ -6,7 +6,7 @@ defmodule QuicWeb.TeamLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :teams, Teams.list_all_author_teams(socket.assigns.current_author.id))}
+    {:ok, assign(socket, :teams, Teams.list_all_author_teams(socket.assigns.current_author.id))}
   end
 
   @impl true
@@ -14,11 +14,11 @@ defmodule QuicWeb.TeamLive.Index do
     {:noreply, socket |> assign(:current_path, "/teams/") |> apply_action(socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Edit Team")
-    |> assign(:team, Teams.get_team!(id))
-  end
+  # defp apply_action(socket, :edit, %{"id" => id}) do
+  #   socket
+  #   |> assign(:page_title, "Edit Team")
+  #   |> assign(:team, Teams.get_team!(id))
+  # end
 
   defp apply_action(socket, :new, _params) do
     socket
@@ -34,8 +34,8 @@ defmodule QuicWeb.TeamLive.Index do
   end
 
   @impl true
-  def handle_info({QuicWeb.TeamLive.FormComponent, {:saved, team}}, socket) do
-    {:noreply, stream_insert(socket, :teams, team)}
+  def handle_info({QuicWeb.TeamLive.FormComponent, {:saved, _}}, socket) do
+    {:noreply, assign(socket, :teams, Teams.list_all_author_teams(socket.assigns.current_author.id))}
   end
 
   @impl true
@@ -43,7 +43,7 @@ defmodule QuicWeb.TeamLive.Index do
     team = Teams.get_team!(id)
     {:ok, _} = Teams.delete_team(team)
 
-    {:noreply, stream_delete(socket, :teams, team)}
+    {:noreply, assign(socket, :teams, Teams.list_all_author_teams(socket.assigns.current_author.id))}
   end
 
   @impl true

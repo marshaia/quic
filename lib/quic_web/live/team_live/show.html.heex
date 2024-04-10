@@ -16,7 +16,7 @@
             <h4 class="text-[var(--primary-color)]"> <%= @team.name %> </h4>
             <p class="mt-5"> <%= @team.description %> </p>
 
-            <div class="flex gap-4 mt-5 justify-evenly">
+            <div class="flex flex-col items-center md:flex-row gap-4 mt-5 md:justify-evenly">
               <div class="flex gap-2">
                 <Heroicons.pencil_square class="w-5 h-5" />
                 <p> <%= %> Quizzes </p>
@@ -48,9 +48,9 @@
 
 
 
-    <div class="flex w-full gap-10 mt-20">
+    <div class="flex flex-col md:flex-row w-full gap-10 mt-20">
       <%!-- COLLABORATORS --%>
-      <section class="w-1/3">
+      <section class="md:w-1/3">
         <div class="flex items-center justify-between mb-5">
           <h6>Collaborators</h6>
 
@@ -79,7 +79,7 @@
       </section>
 
       <%!-- SHARED QUIZZES --%>
-      <section class="w-2/3">
+      <section class="md:w-2/3">
         <div class="flex items-center justify-between mb-5">
           <h6>Quizzes</h6>
 
@@ -104,7 +104,10 @@
               <p class="font-bold"> Quiz 1 </p>
             </div>
 
+
+            <%!-- <%= if String.length(team.description) > 50, do: String.slice(team.description, 0..50) <> "...", else: team.description %> --%>
             <p class="mt-4"> Description of Quiz 1, lorem ipsulum......</p>
+
 
             <div class="flex flex-col items-center justify-between gap-2 mt-6 sm:flex-row">
               <div class="flex gap-1">

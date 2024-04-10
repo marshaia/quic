@@ -8,7 +8,7 @@ defmodule QuicWeb.QuizLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
+    {:ok, assign(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
   end
 
   @impl true
@@ -16,11 +16,11 @@ defmodule QuicWeb.QuizLive.Index do
     {:noreply, socket |> assign(:current_path, "/quizzes") |> apply_action(socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Edit Quiz")
-    |> assign(:quiz, Quizzes.get_quiz!(id))
-  end
+  # defp apply_action(socket, :edit, %{"id" => id}) do
+  #   socket
+  #   |> assign(:page_title, "Edit Quiz")
+  #   |> assign(:quiz, Quizzes.get_quiz!(id))
+  # end
 
   defp apply_action(socket, :new, _params) do
     socket
@@ -36,8 +36,8 @@ defmodule QuicWeb.QuizLive.Index do
   end
 
   @impl true
-  def handle_info({QuicWeb.QuizLive.FormComponent, {:saved, quiz}}, socket) do
-    {:noreply, stream_insert(socket, :quizzes, quiz)}
+  def handle_info({QuicWeb.QuizLive.FormComponent, {:saved, _}}, socket) do
+    {:noreply, assign(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
   end
 
   @impl true
@@ -45,7 +45,7 @@ defmodule QuicWeb.QuizLive.Index do
     quiz = Quizzes.get_quiz!(id)
     {:ok, _} = Quizzes.delete_quiz(quiz)
 
-    {:noreply, stream_delete(socket, :quizzes, quiz)}
+    {:noreply, assign(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
   end
 
   @impl true

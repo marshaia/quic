@@ -23,7 +23,7 @@ defmodule Quic.Quizzes do
   end
 
   def list_all_author_quizzes(id) do
-    author = Repo.get(Author, id) |> Repo.preload(:quizzes)
+    author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])])
     author.quizzes
   end
 
