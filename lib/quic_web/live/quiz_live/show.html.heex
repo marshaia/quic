@@ -52,7 +52,7 @@
 
 
     <%!-- LAUNCH DIVIDER --%>
-    <div class="flex flex-col items-center mt-14 mb-10">
+    <div class="flex flex-col items-center mb-10 mt-14">
       <hr />
       <.link navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 -mt-5 text-white call2actionBtn">
         <Heroicons.bolt class="w-5 h-5" />
@@ -81,7 +81,7 @@
           <div class="flex items-center justify-between">
             <p class="font-bold"> <%= question.title %> </p>
             <div class="bg-[var(--turquoise)] rounded-md px-2">
-              <span class="text-xs text-white">question type</span>
+              <span class="text-xs text-white"> <%= question.type %> </span>
             </div>
           </div>
           <p> <%= question.description %> </p>

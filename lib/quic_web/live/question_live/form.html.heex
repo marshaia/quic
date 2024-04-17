@@ -26,6 +26,15 @@
   <.input field={f[:title]} type="text" label="Title" />
   <.input field={f[:description]} type="text" label="Description" />
   <.input field={f[:points]} type="number" label="Points" />
+  <.input
+    field={f[:type]}
+    type="select"
+    label="Type"
+    prompt="Choose a value"
+    options={["Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blanks": :fill_the_blanks, "Open Answer": :open_answer]}
+  /> 
+
+
   <:actions>
     <.button class="call2actionBtn" phx-disable-with="Saving...">Save Question</.button>
   </:actions>

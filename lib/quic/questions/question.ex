@@ -8,6 +8,7 @@ defmodule Quic.Questions.Question do
     field :description, :string
     field :title, :string
     field :points, :integer
+    field :type, Ecto.Enum, values: [:multiple_choice, :true_false, :open_answer, :fill_the_blanks]
 
     belongs_to :quiz, Quic.Quizzes.Quiz, foreign_key: :quiz_id
 
@@ -17,17 +18,17 @@ defmodule Quic.Questions.Question do
   @doc false
   def changeset(question, attrs) do
     question
-    |> cast(attrs, [:title, :description, :points])
-    |> validate_required([:title, :description, :points])
+    |> cast(attrs, [:title, :description, :points, :type])
+    |> validate_required([:title, :description, :points, :type])
     |> validate_points()
   end
 
   @doc false
   def changeset(question, attrs, quiz) do
     question
-    |> cast(attrs, [:title, :description, :points])
+    |> cast(attrs, [:title, :description, :points, :type])
     |> put_assoc(:quiz, quiz)
-    |> validate_required([:title, :description, :points])
+    |> validate_required([:title, :description, :points, :type])
     |> validate_points()
   end
 
