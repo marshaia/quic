@@ -1,0 +1,27 @@
+<.header>
+  Question answer <%= @question_answer.id %>
+  <:subtitle>This is a question_answer record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/question_answers/#{@question_answer}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit question_answer</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Answer"><%= @question_answer.answer %></:item>
+  <:item title="Is correct"><%= @question_answer.is_correct %></:item>
+</.list>
+
+<.back navigate={~p"/question_answers"}>Back to question_answers</.back>
+
+<.modal :if={@live_action == :edit} id="question_answer-modal" show on_cancel={JS.patch(~p"/question_answers/#{@question_answer}")}>
+  <.live_component
+    module={QuicWeb.QuestionAnswerLive.FormComponent}
+    id={@question_answer.id}
+    title={@page_title}
+    action={@live_action}
+    question_answer={@question_answer}
+    patch={~p"/question_answers/#{@question_answer}"}
+  />
+</.modal>

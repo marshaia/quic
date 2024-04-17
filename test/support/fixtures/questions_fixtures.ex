@@ -19,4 +19,19 @@ defmodule Quic.QuestionsFixtures do
 
     question
   end
+
+  @doc """
+  Generate a question_answer.
+  """
+  def question_answer_fixture(attrs \\ %{}) do
+    {:ok, question_answer} =
+      attrs
+      |> Enum.into(%{
+        answer: "some answer",
+        is_correct: true
+      })
+      |> Quic.Questions.create_question_answer()
+
+    question_answer
+  end
 end

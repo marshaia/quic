@@ -11,6 +11,7 @@ defmodule Quic.Questions.Question do
     field :type, Ecto.Enum, values: [:multiple_choice, :true_false, :open_answer, :fill_the_blanks]
 
     belongs_to :quiz, Quic.Quizzes.Quiz, foreign_key: :quiz_id
+    has_many :answers, Quic.Questions.QuestionAnswer, foreign_key: :question_id
 
     timestamps(type: :utc_datetime)
   end

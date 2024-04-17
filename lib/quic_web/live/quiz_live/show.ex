@@ -4,6 +4,8 @@ defmodule QuicWeb.QuizLive.Show do
   alias Quic.Quizzes
   alias Quic.Questions
 
+  require Logger
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -47,7 +49,8 @@ defmodule QuicWeb.QuizLive.Show do
     question_params = %{
       "title" => question.title,
       "description" => question.description,
-      "points" => question.points
+      "points" => question.points,
+      "type" => question.type
     }
 
     quiz_id = socket.assigns.quiz.id
