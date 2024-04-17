@@ -8,8 +8,8 @@ defmodule QuicWeb.QuestionLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
-        <:subtitle>Use this form to manage question records in your database.</:subtitle>
+      <h4 class="text-[var(--primary-color)]"><%= @title %></h4>
+        <:subtitle></:subtitle>
       </.header>
 
       <.simple_form
@@ -22,8 +22,15 @@ defmodule QuicWeb.QuestionLive.FormComponent do
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:points]} type="number" label="Points" />
+        <.input
+          field={@form[:type]}
+          type="select"
+          label="Type"
+          prompt="Choose a value"
+          options={["Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blanks": :fill_the_blanks, "Open Answer": :open_answer]}
+        />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Question</.button>
+          <.button class="call2actionBtn" phx-disable-with="Saving...">Save Question</.button>
         </:actions>
       </.simple_form>
     </div>

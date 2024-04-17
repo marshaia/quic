@@ -35,15 +35,15 @@
 <form phx-change="form_type_changed" id="create-session-form">
   <div class="flex flex-col gap-10 md:flex-row">
     <div class="p-4 rounded-md bg-[var(--background-card)]">
-      <input type="radio" id="teacher_paced_radio" name="type" value={:teacher_paced}>
-      <label for="teacher_paced_radio" class="ml-2 font-bold">Teacher Paced</label>
-      <p class="mt-2">Explain what is a teacher_paced session</p>
+      <input type="radio" id="teacher_paced_radio" name="type" value={:monitor_paced}>
+      <label for="teacher_paced_radio" class="ml-2 font-bold">Monitor Paced</label>
+      <p class="mt-2">Explain what is a monitor_paced session</p>
     </div>
 
     <div class="p-4 rounded-md bg-[var(--background-card)]">
-      <input type="radio" id="student_paced_radio" name="type" value={:student_paced}>
-      <label for="student_paced_radio" class="ml-2 font-bold">Student Paced</label>
-      <p class="mt-2">Explain what is a student_paced session</p>
+      <input type="radio" id="student_paced_radio" name="type" value={:participant_paced}>
+      <label for="student_paced_radio" class="ml-2 font-bold">Participant Paced</label>
+      <p class="mt-2">Explain what is a participant_paced session</p>
     </div>
   </div>
   

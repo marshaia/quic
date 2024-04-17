@@ -1,13 +1,11 @@
 
 <div class="flex justify-start mb-10">
-<%!-- 
-  <%= if String.contains?(@page_title, "New") do %>
-  <.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back to Quiz</.my_back>
+<%= if String.contains?(@page_title, "New") do %>
+  <.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back</.my_back>
 <% else %>
-  <.my_back navigate={~p"/quizzes/#{@quiz_id}/question/#{@question.id}"}>Back to Question</.my_back>
-<% end %> --%>
+  <.my_back navigate={~p"/quizzes/#{@quiz_id}/question/#{@question.id}"}>Back</.my_back>
+<% end %> 
 
-<.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back</.my_back>
 </div>
 
 
@@ -23,17 +21,19 @@
   phx-change="validate"
   phx-submit="save"
 >
-  <.input field={f[:title]} type="text" label="Title" />
-  <.input field={f[:description]} type="text" label="Description" />
-  <.input field={f[:points]} type="number" label="Points" />
-  <.input
-    field={f[:type]}
-    type="select"
-    label="Type"
-    prompt="Choose a value"
-    options={["Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blanks": :fill_the_blanks, "Open Answer": :open_answer]}
-  /> 
-
+  <div class="flex flex-col justify-between w-full gap-6 md:flex-row">
+    <.input field={f[:title]} type="text" label="Title" />
+    <.input field={f[:points]} type="number" label="Points" />
+    <.input
+      field={f[:type]}
+      type="select"
+      label="Type"
+      prompt="Choose a value"
+      options={["Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blanks": :fill_the_blanks, "Open Answer": :open_answer]}
+    /> 
+  </div>
+  
+  <.input field={f[:description]} type="textarea" label="Description" />
 
   <:actions>
     <.button class="call2actionBtn" phx-disable-with="Saving...">Save Question</.button>

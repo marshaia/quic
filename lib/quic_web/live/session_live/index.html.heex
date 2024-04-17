@@ -79,10 +79,10 @@
 
       <td class="border-b border-b-[var(--border)] max-sm:hidden">
         <p class="mx-4">
-          <%= if session.type === :teacher_paced do %>
-            Teacher Paced
+          <%= if session.type === :monitor_paced do %>
+            Monitor Paced
           <% else %>
-            Student Paced
+            Participant Paced
           <% end %>
         </p>
       </td>

@@ -30,10 +30,10 @@
       <h3 class="text-[var(--primary-color)]"><%= @session.code %></h3>
       <p class="flex gap-2">
         <Heroicons.computer_desktop class="w-5 h-5" />
-        <%= if @session.type === :teacher_paced do %>
-          Teacher Paced
+        <%= if @session.type === :monitor_paced do %>
+          Monitor Paced
         <% else %>
-          Student Paced
+          Participant Paced
         <% end %>
       </p>
 

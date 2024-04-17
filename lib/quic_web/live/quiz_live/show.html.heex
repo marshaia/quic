@@ -77,7 +77,11 @@
         </div>
 
         <%!-- QUESTION INFO --%>
-        <div class="flex-1 px-2 mx-3 border-x">
+        <.link 
+          class="flex-1 px-2 mx-3 border-x"
+          patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}"} 
+          phx-click={JS.push_focus()}
+        >
           <div class="flex items-center justify-between">
             <p class="font-bold"> <%= question.title %> </p>
             <div class="bg-[var(--turquoise)] rounded-md px-2">
@@ -85,12 +89,13 @@
             </div>
           </div>
           <p> <%= question.description %> </p>
-        </div>
+        </.link>
+
 
         <%!-- ACTIONS --%>
         <div :if={isOwner} class="flex flex-col items-center justify-between">
           <.link 
-            patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}/edit"} 
+            patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}"} 
             phx-click={JS.push_focus()}
           >
             <Heroicons.pencil class="question-box-icon" />
