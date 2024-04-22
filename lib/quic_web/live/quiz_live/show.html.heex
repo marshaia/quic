@@ -91,19 +91,31 @@
             <div class={["rounded-md px-2", get_type_color(question.type)]}>
               <span class="text-xs text-white"> <%= readable_name(question.type) %> </span>
             </div>
+
+            <div class="flex gap-1">
+              <Heroicons.trophy class="w-5 h-5" />
+              <p><%= question.points %> Points</p>
+            </div>
           </div>
 
           <%!-- QUESTION DESCRIPTION --%>
           <.markdown class="mt-2" text={question.description} />
 
-          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="my-2" />
+          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="w-full my-3" />
 
           <%!-- QUESTION ANSWERS --%>
-          <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-wrap">
+          <%!-- <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-wrap mx-2">
             <div :for={answer <- question.answers} class="flex items-center w-1/2 gap-2 mb-2">
               <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
               
-              <p><%= answer.answer %></p>
+              <.markdown text={answer.answer} />
+            </div>
+          </div> --%>
+          <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-col mx-2">
+            <div :for={answer <- question.answers} class="flex items-center gap-2 mb-2">
+              <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+              
+              <.markdown text={answer.answer} />
             </div>
           </div>
         </.link>

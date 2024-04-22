@@ -4,6 +4,8 @@ defmodule QuicWeb.TeamLive.Show do
   alias Quic.Teams
   alias Quic.Accounts
 
+  require Logger
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok,
@@ -14,11 +16,17 @@ defmodule QuicWeb.TeamLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    {:noreply,
-     socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:team, Teams.get_team!(id))
-     |> assign(:current_path, "/teams/#{id}")}
+    if Teams.is_author_allowed_in_team(id, socket.assigns.current_author.id) do
+      {:noreply, socket
+                |> assign(:page_title, page_title(socket.assigns.live_action))
+                |> assign(:team, Teams.get_team!(id))
+                |> assign(:current_path, "/teams/#{id}")}
+    else
+      {:noreply, socket
+                |> put_flash(:error, "You can't access Teams you're not a part of!")
+                |> redirect(to: ~p"/teams")}
+    end
+
   end
 
 
@@ -49,8 +57,30 @@ defmodule QuicWeb.TeamLive.Show do
       {:error, _} ->
         {:noreply, socket |> put_flash(:info, "Something went wrong!")}
     end
+  end
+
+  @impl true
+  def handle_event("remove_author", %{"team" => team_id, "author" => author_id}, socket) do
+    are_removing_themselves = author_id === socket.assigns.current_author.id
+
+    case Teams.remove_author_from_team(team_id, author_id) do
+      {1, nil} ->
+        Teams.check_empty_team(team_id)
+
+        if are_removing_themselves do
+          {:noreply, socket
+                    |> put_flash(:info, "Successfully removed from team!")
+                    |> redirect(to: ~p"/teams")}
+        else
+          {:noreply, socket
+                    |> assign(:team, Teams.get_team!(team_id))
+                    |> put_flash(:info, "Collaborator successfully removed from team!")}
+        end
 
 
+      {_, _} ->
+        {:noreply, socket |> put_flash(:info, "Something went wrong! :(")}
+    end
   end
 
   def is_user_already_in_team(authors, username) do

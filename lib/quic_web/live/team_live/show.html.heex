@@ -16,7 +16,7 @@
             <h4 class="text-[var(--primary-color)]"> <%= @team.name %> </h4>
             <p class="mt-5"> <%= @team.description %> </p>
 
-            <div class="flex flex-col items-center md:flex-row gap-4 mt-5 md:justify-evenly">
+            <div class="flex flex-col items-center gap-4 mt-5 md:flex-row md:justify-evenly">
               <div class="flex gap-2">
                 <Heroicons.pencil_square class="w-5 h-5" />
                 <p> <%= %> Quizzes </p>
@@ -39,7 +39,7 @@
           <.link
             phx-click={JS.push("delete", value: %{id: @team.id})}
             data-confirm="Are you sure? Once deleted, it cannot be retrived!">
-            <Heroicons.trash class="question-box-icon" />
+              <Heroicons.trash class="question-box-icon" />
           </.link>
         </div>
       </div>
@@ -48,7 +48,7 @@
 
 
 
-    <div class="flex flex-col md:flex-row w-full gap-10 mt-20">
+    <div class="flex flex-col w-full gap-10 mt-20 md:flex-row">
       <%!-- COLLABORATORS --%>
       <section class="md:w-1/3">
         <div class="flex items-center justify-between mb-5">
@@ -68,7 +68,11 @@
 
             <div class="flex-1">
               <div class="flex justify-end">
-                <Heroicons.user_minus class="w-4 h-4" />
+                <.link
+                  phx-click={JS.push("remove_author", value: %{team: @team.id, author: colaborator.id})}
+                  data-confirm="Are you sure you want to remove this collaborator?">
+                    <Heroicons.user_minus class="w-4 h-4" />
+                </.link>
               </div>
               <p class="font-bold"> <%= colaborator.display_name %> </p>
               <p> @<%= colaborator.username %> </p>

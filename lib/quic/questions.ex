@@ -65,6 +65,27 @@ defmodule Quic.Questions do
     |> Repo.insert()
   end
 
+  def duplicate_question(attrs \\ %{}, quiz_id, answers) do
+    quiz = Quizzes.get_quiz!(quiz_id)
+
+    result = %Question{}
+      |> Question.changeset(attrs, quiz)
+      |> Repo.insert()
+
+    case result do
+      {:ok, question} ->
+        Enum.each(answers, fn answer ->
+                            params = %{"answer" => answer.answer, "is_correct" => answer.is_correct}
+                            {:ok, _} = create_answer_with_question(params, question.id)
+                          end)
+        {:ok, question}
+
+      {:error, _} -> result
+    end
+
+
+  end
+
   @doc """
   Updates a question.
 

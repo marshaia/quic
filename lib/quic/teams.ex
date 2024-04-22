@@ -4,9 +4,12 @@ defmodule Quic.Teams do
   """
 
   import Ecto.Query, warn: false
+
   alias Quic.Repo
   alias Quic.Accounts.Author
   alias Quic.Teams.Team
+
+  require Logger
 
   @doc """
   Returns the list of teams.
@@ -98,6 +101,32 @@ defmodule Quic.Teams do
     |> Ecto.Changeset.change()
     |> Ecto.Changeset.put_assoc(:authors, [author | team.authors])
     |> Repo.update()
+  end
+
+
+  def remove_author_from_team(team_id, author_id) do
+    team_bin = Ecto.UUID.dump!(team_id)
+    author_bin = Ecto.UUID.dump!(author_id)
+
+    Repo.delete_all(
+      from r in "teams_authors",
+      where: r.team_id == ^team_bin and r.author_id == ^author_bin
+    )
+  end
+
+  def is_author_allowed_in_team(team_id, author_id) do
+    team_bin = Ecto.UUID.dump!(team_id)
+    author_bin = Ecto.UUID.dump!(author_id)
+
+    query = from r in "teams_authors", where: r.team_id == ^team_bin and r.author_id == ^author_bin
+
+    Repo.exists?(query)
+  end
+
+
+  def check_empty_team(team_id) do
+    team = get_team!(team_id)
+    if Enum.count(team.authors) === 0, do: delete_team(team)
   end
 
   @doc """

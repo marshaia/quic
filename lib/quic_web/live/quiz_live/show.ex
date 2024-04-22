@@ -55,7 +55,7 @@ defmodule QuicWeb.QuizLive.Show do
 
     quiz_id = socket.assigns.quiz.id
 
-    case Questions.create_question_with_quiz(question_params, quiz_id) do
+    case Questions.duplicate_question(question_params, quiz_id, question.answers) do
       {:ok, _question} ->
         Quizzes.update_quiz_points(quiz_id)
 
