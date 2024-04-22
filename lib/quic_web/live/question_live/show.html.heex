@@ -60,10 +60,10 @@
           phx-click={JS.push_focus()}
         >
           <div class="flex-1 px-2 mx-3">
-          <div class="flex items-center justify-between">
+          <%!-- <div class="flex items-center justify-between">
             <p class="font-bold"> <%= answer.answer %> </p>
-          </div>
-          <p> <%= answer.is_correct %> </p>
+          </div> --%>
+          <.markdown text={answer.answer} />
         </div>
         </.link>
 

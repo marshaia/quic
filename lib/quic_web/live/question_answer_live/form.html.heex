@@ -1,3 +1,12 @@
+<div class="flex justify-start">
+  <%= if assigns[:answer] do %>
+    <.my_back navigate={~p"/quizzes/#{@quiz_id}/question/#{@question_id}/answer/#{@answer.id}"}>Back</.my_back>
+  <% else %>
+    <.my_back navigate={~p"/quizzes/#{@quiz_id}/question/#{@question_id}"}>Back</.my_back>
+  <% end %>
+</div>
+
+
 <.simple_form
   :let={f}
   for={@changeset}
@@ -6,7 +15,7 @@
   phx-change="validate"
   phx-submit="save"
 >
-  <.input field={f[:answer]} type="text" label="Answer" />
+  <.input field={f[:answer]} type="textarea" rows="20" label="Answer" />
   <.input field={f[:is_correct]} type="checkbox" label="Is correct" />
   <:actions>
     <.button class="call2actionBtn" phx-disable-with="Saving...">Save</.button>

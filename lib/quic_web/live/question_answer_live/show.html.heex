@@ -1,10 +1,24 @@
-
+  
 <div class="flex justify-start">
   <.my_back navigate={@back}>Back</.my_back>
 </div>
 
+<.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question_id}/answer/#{@answer.id}/edit"} phx-click={JS.push_focus()}>
+  <.button class="call2actionBtn">Edit Answer</.button>
+</.link>
 
-<.header>
+
+
+<div class="flex justify-center w-full mt-10">
+  <main class="w-full max-w-3xl">
+
+    <%!-- MARKDOWN PREVIEWER --%>
+    <.markdown text={@answer.answer} />
+
+  </main>
+</div>
+
+<%!-- <.header>
   Answer <%= @answer.id %>
   <:subtitle></:subtitle>
   <:actions>
@@ -17,7 +31,7 @@
 <.list>
   <:item title="Answer"><%= @answer.answer %></:item>
   <:item title="Is correct"><%= @answer.is_correct %></:item>
-</.list>
+</.list> --%>
 
 
 

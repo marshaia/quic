@@ -177,4 +177,29 @@ defmodule QuicWeb.MyComponents do
   end
 
 
+  @doc """
+  Renders a markdown previewer block.
+
+  ## Examples
+
+      <.markdown text="your markdown text here" />
+  """
+  attr :text, :string, required: true
+
+  def markdown(assigns) do
+    markdown_html =
+      String.trim(assigns.text)
+      |> Earmark.as_html!(code_class_prefix: "lang- language-")
+      |> Phoenix.HTML.raw()
+
+    assigns = assign(assigns, :markdown, markdown_html)
+
+    ~H"""
+    <div class="space-y-3 leading-relaxed">
+      <%= @markdown %>
+    </div>
+    """
+  end
+
+
 end

@@ -1,5 +1,5 @@
 defmodule QuicWeb.QuestionAnswerLive.Show do
-  use QuicWeb, :live_view
+  use QuicWeb, :author_live_view
 
   alias Quic.Questions
 
