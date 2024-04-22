@@ -55,6 +55,24 @@ defmodule QuicWeb.QuestionLive.Show do
     end
   end
 
+  defp readable_name(type) do
+    case type do
+      :multiple_choice -> "Multiple Choice"
+      :true_false -> "True or False"
+      :open_answer -> "Open Answer"
+      :fill_the_blanks -> "Fill in the Blanks"
+    end
+  end
+
+  defp get_type_color(type) do
+    case type do
+      :multiple_choice -> "bg-[var(--second-color)]"
+      :true_false -> "bg-[var(--blue)]"
+      :open_answer -> "bg-[var(--dark-green)]"
+      :fill_the_blanks -> "bg-[var(--fifth-color)]"
+    end
+  end
+
   defp page_title(:show), do: "Show Question"
   defp page_title(:edit), do: "Edit Question"
 end

@@ -12,7 +12,7 @@
   rows={@streams.questions}
   row_click={fn {_id, question} -> JS.navigate(~p"/questions/#{question}") end}
 >
-  <:col :let={{_id, question}} label="Title"><%= question.title %></:col>
+  <%!-- <:col :let={{_id, question}} label="Title"><%= question.title %></:col> --%>
   <:col :let={{_id, question}} label="Description"><%= question.description %></:col>
   <:col :let={{_id, question}} label="Points"><%= question.points %></:col>
   <:action :let={{_id, question}}>

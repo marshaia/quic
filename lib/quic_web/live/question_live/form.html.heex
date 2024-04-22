@@ -8,35 +8,39 @@
 
 </div>
 
+<div class="flex justify-center w-full">
+  <main class="w-full max-w-3xl">
+    <.header>
+      <h4 class="text-[var(--primary-color)]"> Question Editor </h4>
+    </.header>
 
-<.header>
-  <h4 class="text-[var(--primary-color)]"> Question Editor </h4>
-</.header>
 
+    <.simple_form
+      :let={f}
+      for={@changeset}
+      id="question-form"
+      phx-change="validate"
+      phx-submit="save"
+    >
+      <div class="flex flex-col w-full gap-6 justify-evenly md:flex-row">
+        <%!-- <.input field={f[:title]} type="text" label="Title" /> --%>
+        <.input field={f[:points]} type="number" label="Points" />
+        <.input
+          field={f[:type]}
+          type="select"
+          label="Type"
+          prompt="Choose a value"
+          options={["Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blanks": :fill_the_blanks, "Open Answer": :open_answer]}
+        /> 
+      </div>
+      
+      <.input field={f[:description]} type="textarea" rows="15" label="Description" />
 
-<.simple_form
-  :let={f}
-  for={@changeset}
-  id="question-form"
-  phx-change="validate"
-  phx-submit="save"
->
-  <div class="flex flex-col justify-between w-full gap-6 md:flex-row">
-    <.input field={f[:title]} type="text" label="Title" />
-    <.input field={f[:points]} type="number" label="Points" />
-    <.input
-      field={f[:type]}
-      type="select"
-      label="Type"
-      prompt="Choose a value"
-      options={["Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blanks": :fill_the_blanks, "Open Answer": :open_answer]}
-    /> 
-  </div>
-  
-  <.input field={f[:description]} type="textarea" label="Description" />
+      <:actions>
+        <.button class="call2actionBtn" phx-disable-with="Saving...">Save Question</.button>
+      </:actions>
+    </.simple_form>
 
-  <:actions>
-    <.button class="call2actionBtn" phx-disable-with="Saving...">Save Question</.button>
-  </:actions>
-</.simple_form>
+  </main>
+</div>
 

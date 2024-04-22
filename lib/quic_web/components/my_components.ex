@@ -185,6 +185,7 @@ defmodule QuicWeb.MyComponents do
       <.markdown text="your markdown text here" />
   """
   attr :text, :string, required: true
+  attr :class, :string, default: ""
 
   def markdown(assigns) do
     markdown_html =
@@ -195,7 +196,7 @@ defmodule QuicWeb.MyComponents do
     assigns = assign(assigns, :markdown, markdown_html)
 
     ~H"""
-    <div class="space-y-3 leading-relaxed">
+    <div class={"space-y-2 leading-relaxed <> #{@class}"}>
       <%= @markdown %>
     </div>
     """

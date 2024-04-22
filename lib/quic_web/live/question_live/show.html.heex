@@ -8,8 +8,20 @@
 
 <div class="flex justify-center w-full">
   <main class="w-full max-w-3xl">
-    <%!-- QUESTION SPECS --%>
-    <section class="w-full">
+
+  <%!-- QUESTION SPECS --%>
+  <section class="p-4 mt-5 rounded-md bg-[var(--background-card)]">
+    <div class="flex items-center justify-between">
+      <div class={["rounded-md px-2", get_type_color(@question.type)]}>
+        <span class="text-xs text-white"> <%= readable_name(@question.type) %> </span>
+      </div>
+
+
+      <div class="flex gap-1">
+        <Heroicons.trophy class="w-5 h-5" />
+        <p><%= @question.points %> Points</p>
+      </div>
+
       <div class="flex justify-end">
         <.link 
           patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/edit"}
@@ -19,23 +31,25 @@
           <Heroicons.pencil class="question-box-icon" />
         </.link>
       </div>
-      
+    </div>
 
-      <h4 class="text-center text-[var(--primary-color)]"> <%= @question.title %> </h4>
-      <p class="mt-4 text-justify"><%= @question.description %></p>
-    </section>
+
+    <p class="mt-4 text-justify"><.markdown text={@question.description} /></p>
+  </section>
+
+
 
 
 
     <%!-- DIVIDER --%>
-    <div class="flex flex-col items-center mb-10 mt-14">
+    <div :if={@question.type !== :open_answer} class="flex flex-col items-center mb-10 mt-14">
       <hr />
     </div>
 
 
 
     <%!-- QUIZ ANSWERS --%>
-    <section class="w-full">
+    <section :if={@question.type !== :open_answer} class="w-full">
       <h6 class="mb-2 font-bold">Answers</h6>
       <div 
         :for={answer <- @question.answers}

@@ -6,7 +6,7 @@ defmodule Quic.Questions.Question do
   @foreign_key_type :binary_id
   schema "questions" do
     field :description, :string
-    field :title, :string
+    #field :title, :string
     field :points, :integer
     field :type, Ecto.Enum, values: [:multiple_choice, :true_false, :open_answer, :fill_the_blanks]
 
@@ -19,17 +19,17 @@ defmodule Quic.Questions.Question do
   @doc false
   def changeset(question, attrs) do
     question
-    |> cast(attrs, [:title, :description, :points, :type])
-    |> validate_required([:title, :description, :points, :type])
+    |> cast(attrs, [:description, :points, :type]) # :title
+    |> validate_required([:description, :points, :type]) # :title
     |> validate_points()
   end
 
   @doc false
   def changeset(question, attrs, quiz) do
     question
-    |> cast(attrs, [:title, :description, :points, :type])
+    |> cast(attrs, [:description, :points, :type]) # :title
     |> put_assoc(:quiz, quiz)
-    |> validate_required([:title, :description, :points, :type])
+    |> validate_required([:description, :points, :type]) # :title
     |> validate_points()
   end
 

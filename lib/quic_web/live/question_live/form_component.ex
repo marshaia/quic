@@ -8,7 +8,7 @@ defmodule QuicWeb.QuestionLive.FormComponent do
     ~H"""
     <div>
       <.header>
-      <h4 class="text-[var(--primary-color)]"><%= @title %></h4>
+        <h4 class="text-[var(--primary-color)]"><%= @title %></h4>
         <:subtitle></:subtitle>
       </.header>
 
@@ -19,7 +19,7 @@ defmodule QuicWeb.QuestionLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:title]} type="text" label="Title" />
+        <%!-- <.input field={@form[:title]} type="text" label="Title" /> --%>
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:points]} type="number" label="Points" />
         <.input

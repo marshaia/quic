@@ -5,7 +5,7 @@ defmodule Quic.Repo.Migrations.CreateTeams do
     create table(:teams, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :name, :string
-      add :description, :string
+      add :description, :text
 
       timestamps(type: :utc_datetime)
     end

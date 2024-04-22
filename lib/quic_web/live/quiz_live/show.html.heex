@@ -24,7 +24,9 @@
       
 
       <h4 class="text-center text-[var(--primary-color)]"> <%= @quiz.name %> </h4>
+      <%!-- <p class="mt-4 text-justify"><.markdown text={@quiz.description} /></p> --%>
       <p class="mt-4 text-justify"><%= @quiz.description %></p>
+
 
       <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
         <div class="flex gap-1">
@@ -78,17 +80,32 @@
 
         <%!-- QUESTION INFO --%>
         <.link 
-          class="flex-1 px-2 mx-3 border-x"
+          class="flex-1 px-4 mx-3 border-x"
           patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}"} 
           phx-click={JS.push_focus()}
         >
           <div class="flex items-center justify-between">
-            <p class="font-bold"> <%= question.title %> </p>
-            <div class="bg-[var(--turquoise)] rounded-md px-2">
-              <span class="text-xs text-white"> <%= question.type %> </span>
+            <%!-- <p class="font-bold"> <%= question.title %> </p> --%>
+
+            <%!-- QUESTION TYPE --%>
+            <div class={["rounded-md px-2", get_type_color(question.type)]}>
+              <span class="text-xs text-white"> <%= readable_name(question.type) %> </span>
             </div>
           </div>
-          <p> <%= question.description %> </p>
+
+          <%!-- QUESTION DESCRIPTION --%>
+          <.markdown class="mt-2" text={question.description} />
+
+          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="my-2" />
+
+          <%!-- QUESTION ANSWERS --%>
+          <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-wrap">
+            <div :for={answer <- question.answers} class="flex items-center w-1/2 gap-2 mb-2">
+              <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+              
+              <p><%= answer.answer %></p>
+            </div>
+          </div>
         </.link>
 
 
