@@ -9,11 +9,16 @@ defmodule QuicWeb.QuestionAnswerLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
+  def handle_params(%{"quiz_id" => quiz_id, "question_id" => question_id, "answer_id" => answer_id}, _, socket) do
+
     {:noreply,
      socket
+     |> assign(:answer, Questions.get_question_answer!(answer_id))
+     |> assign(:question_id, question_id)
+     |> assign(:quiz_id, quiz_id)
+     |> assign(:back, "/quizzes/#{quiz_id}/question/#{question_id}")
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:question_answer, Questions.get_question_answer!(id))}
+     |> assign(:current_path, "/quizzes/#{quiz_id}/question/#{question_id}/answer/#{answer_id}")}
   end
 
   defp page_title(:show), do: "Show Question answer"

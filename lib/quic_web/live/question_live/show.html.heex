@@ -42,24 +42,37 @@
         class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4"
       >
         <%!-- POSITION --%>
-        <div class="flex flex-col items-center justify-between">
+        <%!-- <div class="flex flex-col items-center justify-between">
           <h5 class="text-[var(--primary-color)]">1</h5>
           <Heroicons.arrow_up  class="question-box-icon" />
           <Heroicons.arrow_down  class="question-box-icon" />
-        </div>
+        </div>  --%>
 
-        <%!-- QUESTION INFO --%>
-        <div class="flex-1 px-2 mx-3 border-x">
+        <%!-- ANSWER VALIDITY --%>
+        <div class="flex flex-col items-center justify-start">
+          <div class={["w-4 h-4 rounded-full mt-2", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+        </div> 
+
+        <%!-- ANSWER INFO --%>
+        <.link 
+          class="flex-1 mx-3 border-x"
+          patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/answer/#{answer.id}"} 
+          phx-click={JS.push_focus()}
+        >
+          <div class="flex-1 px-2 mx-3">
           <div class="flex items-center justify-between">
             <p class="font-bold"> <%= answer.answer %> </p>
           </div>
-          <p> <%= answer.description %> </p>
+          <p> <%= answer.is_correct %> </p>
         </div>
+        </.link>
+
+        
 
         <%!-- ACTIONS --%>
         <div class="flex flex-col items-center justify-between">
           <.link 
-            patch={~p"/questions/#{@question.id}/show/edit"} 
+            patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/answer/#{answer.id}/edit"} 
             phx-click={JS.push_focus()}
           >
             <Heroicons.pencil class="question-box-icon" />
@@ -72,7 +85,7 @@
             <Heroicons.trash class="question-box-icon" />
           </.link>
           
-          <.link phx-click={JS.push("duplicate", value: %{id: answer.id})}>
+          <.link :if={Enum.count(@question.answers) < 4} phx-click={JS.push("duplicate", value: %{id: answer.id})}>
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
           
@@ -80,7 +93,7 @@
       </div>
 
       <div :if={Enum.count(@question.answers) < 4} class="flex items-center justify-center">
-        <.link patch={~p"/question_answers/new"} class="rounded-full call2actionBtn">
+        <.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/answer/new"} class="rounded-full call2actionBtn">
           <Heroicons.plus class="w-5 h-5 text-white" />
         </.link>
       </div>
@@ -114,6 +127,7 @@
     action={@live_action}
     quiz_id={@quiz_id}
     question={@question}
+    current_path={@current_path}
     patch={@current_path}
   />
 </.modal>

@@ -98,14 +98,21 @@ defmodule QuicWeb.Router do
       live "/quizzes/:quiz_id/question/:question_id", QuestionLive.Show, :show
       live "/quizzes/:quiz_id/question/:question_id/edit", QuestionLive.Form
 
+      # QUESTION ANSWERS
+      live "/quizzes/:quiz_id/question/:question_id/answer/new", QuestionAnswerLive.Form
+      live "/quizzes/:quiz_id/question/:question_id/answer/:answer_id", QuestionAnswerLive.Show, :show
+      live "/quizzes/:quiz_id/question/:question_id/answer/:answer_id/edit", QuestionAnswerLive.Form
+
+
+
 
       # QUESTION ANSWERS
-      live "/question_answers", QuestionAnswerLive.Index, :index
-      live "/question_answers/new", QuestionAnswerLive.Index, :new
-      live "/question_answers/:id/edit", QuestionAnswerLive.Index, :edit
+      # live "/question_answers", QuestionAnswerLive.Index, :index
+      # live "/question_answers/new", QuestionAnswerLive.Index, :new
+      # live "/question_answers/:id/edit", QuestionAnswerLive.Index, :edit
 
-      live "/question_answers/:id", QuestionAnswerLive.Show, :show
-      live "/question_answers/:id/show/edit", QuestionAnswerLive.Show, :edit
+      # live "/question_answers/:id", QuestionAnswerLive.Show, :show
+      # live "/question_answers/:id/show/edit", QuestionAnswerLive.Show, :edit
 
 
       # TEAMS

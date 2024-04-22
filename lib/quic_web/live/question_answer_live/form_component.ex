@@ -8,7 +8,7 @@ defmodule QuicWeb.QuestionAnswerLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+      <h4 class="text-[var(--primary-color)]"><%= @title %></h4>
         <:subtitle>Use this form to manage question_answer records in your database.</:subtitle>
       </.header>
 

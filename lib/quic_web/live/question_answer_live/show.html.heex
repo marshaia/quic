@@ -1,27 +1,35 @@
+
+<div class="flex justify-start">
+  <.my_back navigate={@back}>Back</.my_back>
+</div>
+
+
 <.header>
-  Question answer <%= @question_answer.id %>
-  <:subtitle>This is a question_answer record from your database.</:subtitle>
+  Answer <%= @answer.id %>
+  <:subtitle></:subtitle>
   <:actions>
-    <.link patch={~p"/question_answers/#{@question_answer}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit question_answer</.button>
+    <.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question_id}/answer/#{@answer.id}/edit"} phx-click={JS.push_focus()}>
+      <.button class="call2actionBtn">Edit Answer</.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Answer"><%= @question_answer.answer %></:item>
-  <:item title="Is correct"><%= @question_answer.is_correct %></:item>
+  <:item title="Answer"><%= @answer.answer %></:item>
+  <:item title="Is correct"><%= @answer.is_correct %></:item>
 </.list>
 
-<.back navigate={~p"/question_answers"}>Back to question_answers</.back>
 
-<.modal :if={@live_action == :edit} id="question_answer-modal" show on_cancel={JS.patch(~p"/question_answers/#{@question_answer}")}>
+
+<%!-- <.back navigate={~p"/question_answers"}>Back to question_answers</.back>
+
+<.modal :if={@live_action == :edit} id="question_answer-modal" show on_cancel={JS.patch(~p"/question_answers/#{@answer}")}>
   <.live_component
     module={QuicWeb.QuestionAnswerLive.FormComponent}
-    id={@question_answer.id}
+    id={@answer.id}
     title={@page_title}
     action={@live_action}
-    question_answer={@question_answer}
-    patch={~p"/question_answers/#{@question_answer}"}
+    question_answer={@answer}
+    patch={~p"/question_answers/#{@answer}"}
   />
-</.modal>
+</.modal> --%>

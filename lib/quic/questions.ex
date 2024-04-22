@@ -4,10 +4,12 @@ defmodule Quic.Questions do
   """
 
   import Ecto.Query, warn: false
+
   alias Quic.Quizzes
   alias Quic.Repo
 
   alias Quic.Questions.Question
+  alias Quic.Questions.QuestionAnswer
 
   @doc """
   Returns the list of questions.
@@ -139,7 +141,7 @@ defmodule Quic.Questions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_question_answer!(id), do: Repo.get!(QuestionAnswer, id)
+  def get_question_answer!(id), do: Repo.get!(QuestionAnswer, id) |> Repo.preload(:question)
 
   @doc """
   Creates a question_answer.
@@ -157,6 +159,18 @@ defmodule Quic.Questions do
     %QuestionAnswer{}
     |> QuestionAnswer.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_answer_with_question(attrs \\ %{}, id) do
+    question = get_question!(id)
+    %QuestionAnswer{}
+    |> QuestionAnswer.changeset(attrs, question)
+    |> Repo.insert()
+  end
+
+  def answer_belongs_to_question?(question_id, answer_id) do
+    answer = get_question_answer!(answer_id)
+    answer.question.id === question_id
   end
 
   @doc """

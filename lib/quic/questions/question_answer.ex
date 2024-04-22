@@ -19,4 +19,12 @@ defmodule Quic.Questions.QuestionAnswer do
     |> cast(attrs, [:answer, :is_correct])
     |> validate_required([:answer, :is_correct])
   end
+
+  @doc false
+  def changeset(question_answer, attrs, question) do
+    question_answer
+    |> cast(attrs, [:answer, :is_correct])
+    |> put_assoc(:question, question)
+    |> validate_required([:answer, :is_correct])
+  end
 end
