@@ -106,3 +106,7 @@ hr {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+.screen-padding {
+  @apply sm:px-6 md:px-10 xl:px-40 2xl:px-56
+}

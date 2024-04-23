@@ -7,9 +7,9 @@
 
 <div class="flex justify-center w-full">
   <main class="w-full max-w-3xl">
+
     <%!-- QUIZ SPECS --%>
     <section class="w-full">
-      
       <div class="flex justify-end">
         <.link 
           :if={isOwner} 
@@ -21,10 +21,8 @@
         </.link>
       </div>
       
-      
 
       <h4 class="text-center text-[var(--primary-color)]"> <%= @quiz.name %> </h4>
-      <%!-- <p class="mt-4 text-justify"><.markdown text={@quiz.description} /></p> --%>
       <p class="mt-4 text-justify"><%= @quiz.description %></p>
 
 
@@ -81,19 +79,19 @@
 
         <%!-- QUESTION INFO --%>
         <.link 
-          class="flex-1 px-4 mx-3 border-x"
+          class="flex-1 px-4 mx-3 overflow-auto border-x"
           patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}"} 
           phx-click={JS.push_focus()}
         >
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col md:justify-between md:items-center md:flex-row">
             <%!-- <p class="font-bold"> <%= question.title %> </p> --%>
 
             <%!-- QUESTION TYPE --%>
-            <div class={["rounded-md px-2", get_type_color(question.type)]}>
+            <div class={["rounded-md px-2 max-w-fit", get_type_color(question.type)]}>
               <span class="text-xs text-white"> <%= readable_name(question.type) %> </span>
             </div>
 
-            <div class="flex gap-1">
+            <div class="hidden gap-1 md:flex">
               <Heroicons.trophy class="w-5 h-5" />
               <p><%= question.points %> Points</p>
             </div>
