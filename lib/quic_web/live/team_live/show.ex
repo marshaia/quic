@@ -8,7 +8,8 @@ defmodule QuicWeb.TeamLive.Show do
     {:ok,
       socket
       |> assign(searched_users: %{})
-      |> assign(input_text: "")}
+      |> assign(input_text: "")
+      |> assign(color: 1)}
   end
 
   @impl true
@@ -65,9 +66,18 @@ defmodule QuicWeb.TeamLive.Show do
     end
   end
 
-  def is_user_already_in_team(authors, username) do
-    Enum.any?(authors, fn member -> member.username === username end)
+  def user_color(number) do
+    case rem(number, 6) do
+      1 -> "text-[var(--second-color)]"
+      2 -> "text-[var(--third-color)]"
+      3 -> "text-[var(--fourth-color)]"
+      4 -> "text-[var(--fifth-color)]"
+      5 -> "text-[var(--green)]"
+      _ -> "text-[var(--blue)]"
+    end
   end
+
+
 
   defp page_title(:show), do: "Show Team"
   defp page_title(:edit), do: "Edit Team"

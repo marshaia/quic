@@ -31,7 +31,7 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
 
       <%= if String.length(@input_text) > 0 do %>
       <div class="flex flex-col w-full overflow-y-auto max-h-40 border border-[var(--border)] rounded-md mt-3">
-        <div :for={user <- @searched_users} >
+        <div :for={user <- @searched_users}>
             <% already_in_team = is_user_already_in_team(@team.authors, user.username) %>
             <.link
               :if={!already_in_team}
@@ -70,10 +70,8 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
 
   @impl true
   def handle_event("save", _params, socket) do
-    # users = Accounts.get_author_by_name_or_username(input)
-    {:noreply, socket} #assign(socket, searched_users: users, input_text: input)}
+    {:noreply, socket}
   end
-
 
   @impl true
   def handle_event("clicked_user", %{"username" => username} = _params, socket) do
@@ -89,7 +87,5 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
   def is_user_already_in_team(authors, username) do
     Enum.any?(authors, fn member -> member.username === username end)
   end
-
-
 
 end

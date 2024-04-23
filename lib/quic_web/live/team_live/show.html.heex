@@ -10,7 +10,7 @@
 
     <%!-- TEAM INFO --%>
     <section class="w-full">
-      <div class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4">
+      <div class="flex rounded-md bg-[var(--background-card)] p-4 min-h-32">
         <div class="flex-1">
           <div class="border-r border-[var(--border)] mr-3 px-4 text-center">
             <h4 class="text-[var(--primary-color)]"> <%= @team.name %> </h4>
@@ -48,7 +48,7 @@
 
 
 
-    <div class="flex flex-col w-full gap-10 mt-20 md:flex-row">
+    <div class="flex flex-col w-full gap-10 mt-16 md:flex-row">
       <%!-- COLLABORATORS --%>
       <section class="md:w-1/3">
         <div class="flex items-center justify-between mb-5">
@@ -60,11 +60,11 @@
         </div>
 
         <div
-          :for={colaborator <- @team.authors}
+          :for={{colaborator, index} <- Enum.with_index(@team.authors)}
           class="rounded-md bg-[var(--background-card)] py-2 px-4 mb-4"
         >
           <div class="flex items-center gap-4">
-            <Heroicons.user_circle class="mt-2 h-14 w-14" />
+            <Heroicons.user_circle class={["mt-2 h-14 w-14", user_color(index + 1)]}/>
 
             <div class="flex-1">
               <div class="flex justify-end">
@@ -95,7 +95,7 @@
 
 
         <div
-          :for={_colaborator <- @team.authors}
+          :for={{_colaborator, index} <- Enum.with_index(@team.authors)}
           class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4"
         >
 
@@ -104,7 +104,7 @@
           <%!-- QUIZ INFO --%>
           <div class="flex-1 pr-2 mr-2 border-r">
             <div class="flex items-center gap-2">
-              <Heroicons.pencil_square class="w-5 h-5" />
+              <Heroicons.pencil_square class={["h-5 w-5", user_color(index + 1)]} />
               <p class="font-bold"> Quiz 1 </p>
             </div>
 
@@ -138,8 +138,6 @@
                 <p class="text-gray-400">You</p>
               </div>
             </div>
-
-
           </div>
 
           <%!-- QUIZ ACTIONS --%>
@@ -148,10 +146,7 @@
             <Heroicons.document_duplicate class="w-5 h-5" />
             <Heroicons.trash class="w-5 h-5" />
           </div>
-
-
         </div>
-
       </section>
     </div>
   </main>
@@ -173,23 +168,6 @@
 
 
 
-<%!-- <form phx-change="search_users">
-  <input
-    class="input"
-    type="text" name="text" value={@input_text} />
-</form>
-
-<%= if String.length(@input_text) > 0 do %>
-<div :for={user <- @searched_users}>
-    <.button 
-    class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 active:hover:bg-[--hover]"
-    disabled={is_user_already_in_team(@team.authors, user.username)}
-    phx-click="clicked_user" phx-value-username={user.username}>
-      <p class={["font-semibold", (if is_user_already_in_team(@team.authors, user.username), do: "text-red-400")]}><%= user.display_name %></p>
-      <p class="text-sm"><%= user.username %></p>
-    </.button>
-</div>
-<% end %> --%>
 
 <.modal :if={@live_action == :add_collaborator} id="add-collaborator-modal" show on_cancel={JS.patch(~p"/teams/#{@team}")} width_class="max-w-lg">
   <.live_component
