@@ -54,7 +54,7 @@
         <div class="flex items-center justify-between mb-5">
           <h6>Collaborators</h6>
 
-          <.link class="p-2 bg-[var(--primary-color)] hover:bg-indigo-600 rounded-full">
+          <.link patch={~p"/teams/#{@team}/add_collaborator"} phx-click={JS.push_focus()} class="p-2 bg-[var(--primary-color)] hover:bg-indigo-600 rounded-full">
             <Heroicons.user_plus class="w-5 h-5 text-white" />
           </.link>
         </div>
@@ -173,7 +173,7 @@
 
 
 
-<form phx-change="search_users">
+<%!-- <form phx-change="search_users">
   <input
     class="input"
     type="text" name="text" value={@input_text} />
@@ -189,22 +189,18 @@
       <p class="text-sm"><%= user.username %></p>
     </.button>
 </div>
-<% end %>
+<% end %> --%>
 
-
-
-
-<%!-- <.list>
-  <:item title="Name"><%= @team.name %></:item>
-  <:item title="Description"><%= @team.description %></:item>
-  <:item title="Members">
-      <%= for x <- @team.authors do %>
-        <%= x.display_name %>
-      <% end %>
-  </:item>
-</.list> --%>
-
-
+<.modal :if={@live_action == :add_collaborator} id="add-collaborator-modal" show on_cancel={JS.patch(~p"/teams/#{@team}")} width_class="max-w-lg">
+  <.live_component
+    module={QuicWeb.TeamLive.AddCollaboratorForm}
+    id={@team.id}
+    title={@page_title}
+    action={@live_action}
+    team={@team}
+    patch={~p"/teams/#{@team}"}
+  />
+</.modal>
 
 
 <.modal :if={@live_action == :edit} id="team-modal" show on_cancel={JS.patch(~p"/teams/#{@team}")}>

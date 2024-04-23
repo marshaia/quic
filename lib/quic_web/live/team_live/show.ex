@@ -2,9 +2,6 @@ defmodule QuicWeb.TeamLive.Show do
   use QuicWeb, :author_live_view
 
   alias Quic.Teams
-  alias Quic.Accounts
-
-  require Logger
 
   @impl true
   def mount(_params, _session, socket) do
@@ -29,21 +26,6 @@ defmodule QuicWeb.TeamLive.Show do
 
   end
 
-
-  @impl true
-  def handle_event("search_users", %{"text" => input} = _params, socket) do
-    users = Accounts.get_author_by_name_or_username(input)
-    {:noreply, assign(socket, searched_users: users, input_text: input)}
-  end
-
-  @impl true
-  def handle_event("clicked_user", %{"username" => username} = _params, socket) do
-    Teams.insert_author_in_team(socket.assigns.team, username)
-    team = Teams.get_team!(socket.assigns.team.id)
-    {:noreply, socket
-              |> assign(team: team)
-              |> put_flash(:info, "Successfully added #{username} to #{socket.assigns.team.name}!")}
-  end
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
@@ -89,4 +71,5 @@ defmodule QuicWeb.TeamLive.Show do
 
   defp page_title(:show), do: "Show Team"
   defp page_title(:edit), do: "Edit Team"
+  defp page_title(:add_collaborator), do: "Add Collaborator"
 end

@@ -122,6 +122,7 @@ defmodule QuicWeb.Router do
 
       live "/teams/:id", TeamLive.Show, :show
       live "/teams/:id/show/edit", TeamLive.Show, :edit
+      live "/teams/:id/add_collaborator", TeamLive.Show, :add_collaborator
 
 
       # SESSIONS
@@ -141,9 +142,6 @@ defmodule QuicWeb.Router do
       live "/session/:session_id/participants/:participant_id", ParticipantLive.Show, :show
       # live "/participants/:id/show/edit", ParticipantLive.Show, :edit
     end
-
-    get "/quizzes/:quiz_id/question/:question_id", QuestionsController, :show
-
   end
 
   scope "/", QuicWeb do

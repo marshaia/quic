@@ -39,6 +39,7 @@ defmodule QuicWeb.CoreComponents do
   attr :id, :string, required: true
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
+  attr :width_class, :string, default: ""
   slot :inner_block, required: true
 
   def modal(assigns) do
@@ -60,7 +61,7 @@ defmodule QuicWeb.CoreComponents do
         tabindex="0"
       >
         <div class="flex items-center justify-center min-h-full">
-          <div class="w-full max-w-3xl p-4 sm:p-6 lg:py-8">
+          <div class={"w-full #{if @width_class === "", do: "max-w-3xl", else: @width_class}  p-4 sm:p-6 lg:py-8"}>
             <.focus_wrap
               id={"#{@id}-container"}
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
