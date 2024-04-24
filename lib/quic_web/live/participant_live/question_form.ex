@@ -35,6 +35,8 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   # SELECTED ANSWER
   @impl true
   def handle_event("selected-answer", %{"id" => answer_id}, socket) do
+    socket = push_event(socket, "store", %{key: "answer", data: answer_id})
+
     {:noreply, socket
               |> assign(:selected_answer, answer_id)}
   end
@@ -42,8 +44,12 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   # SESSION CHANNEL MESSAGES
   @impl true
-  def handle_info({"monitor_message", %{"message" => msg}}, socket) do
-    {:noreply, assign(socket, :monitor_msg, msg)}
+  def handle_info({"submission_results", %{"answer" => results}}, socket) do
+    if results do
+      {:noreply, put_flash(socket, :info, "Correct Answer!")}
+    else
+      {:noreply, put_flash(socket, :error, "Wrong Answer :(")}
+    end
   end
 
   @impl true

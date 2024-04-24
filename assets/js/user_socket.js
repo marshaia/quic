@@ -92,7 +92,31 @@ if(join_btn) join_btn.addEventListener("click", () => {
   if (code.length === 5 && username.length > 0) joinChannel(code, username, false)
 });
 
-// Participant send message to Monitor
+
+
+// Participant submits answers to question
+p_submit_answer = document.getElementById("participant-submit-answer-btn")
+if(p_submit_answer) p_submit_answer.addEventListener("click", () => {
+  res = window.confirm("Are you sure you want to submit?")
+  if(res) {
+    code = localStorage.getItem("session_code")
+    answer_id = sessionStorage.getItem("answer")
+    question_id = sessionStorage.getItem("question")
+    participant_id = localStorage.getItem("participant_token")
+  
+    if (answer_id) {
+      joinChannel(code, participant_id, false)
+      channel.push("participant_submitted_answer", 
+        {
+          "participant_id": participant_id,
+          "session_code" : code,
+          "question_id" : question_id,
+          "selected_answer": answer_id,
+        })
+    }
+  }
+});
+
 // p_send_msg_monitor = document.getElementById("participant-send-msg-monitor-btn")
 // if(p_send_msg_monitor) p_send_msg_monitor.addEventListener("click", () => {
 //   text = document.getElementById("participant-send-msg-monitor-input").value

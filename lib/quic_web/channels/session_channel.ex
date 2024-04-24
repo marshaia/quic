@@ -63,10 +63,27 @@ defmodule QuicWeb.SessionChannel do
 
 
   @impl true
-  def handle_in("participant_msg_to_monitor", %{"participant_id" => id, "session_code" => code, "message" => msg}, socket) do
-    name = SessionParticipant.get_participant_name(id)
-    Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", {"participant_message", %{"participant_name" => name, "message" => msg}})
-    {:noreply, socket}
+  def handle_in("participant_submitted_answer", %{"participant_id" => participant_id, "session_code" => code, "question_id" => question_id, "selected_answer" => answer_id}, socket) do
+
+    # verify if participant is on the session
+    if SessionParticipant.participant_already_in_session?(participant_id, code) do
+
+      # update participant's current question
+      SessionParticipant.update_participant_current_question(participant_id)
+
+      # evaluate participant's submission
+      results = SessionParticipant.access_submission(participant_id, question_id, answer_id)
+
+      # update data base with Participant's results
+      SessionParticipant.update_participant_results(participant_id, question_id, results)
+
+      # send results to the Participant and Session Monitor
+      name = SessionParticipant.get_participant_name(participant_id)
+      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", {"participant_submitted_answer", %{"participant_name" => name, "answer" => results}})
+      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"submission_results", %{"answer" => results}})
+    else
+      {:noreply, socket}
+    end
   end
 
 
