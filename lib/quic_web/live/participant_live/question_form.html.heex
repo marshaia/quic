@@ -1,28 +1,31 @@
-<h4 class="mb-4">
-  Session 
-  <span class="text-[var(--primary-color)]">
-    <%= @session_code %>
-  </span>
-</h4>
 
-<h6 class="mb-8 font-normal">Welcome, <%= @participant.name %> </h6>
+<%!-- QUESTION DESCRIPTION --%>
+<.markdown class="mt-2" text={@question.description} />
 
-<p>Waiting for the Session to start...</p>
+<%!-- DIVIDER --%>
+<hr class="border border-[var(--border)] my-5" />
 
-
-<div class="flex flex-col p-4 my-10 w-96">
-  <label>Send Message to Monitor:</label>
-  <textarea type="text" id="participant-send-msg-monitor-input"/>
-  <button id="participant-send-msg-monitor-btn" class="mt-2 call2actionBtn">Send</button>
+<%!-- ANSWERS --%>
+<div class="flex flex-wrap">
+  <div :for={answer <- @question.answers} class="w-full md:w-1/2 p-3">
+    <div 
+      phx-click="selected-answer"
+      phx-click={}
+      phx-value-id={answer.id}
+      class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if @selected_answer === answer.id, do: "bg-green-200 hover:bg-green-300")]}
+    >
+      <.markdown class="mt-2" text={answer.answer} />
+    </div>
+  </div>
 </div>
 
-
-<div class="p-4 mt-10">
-  <p class="font-bold">Monitor says:</p>
-  <p><%= @monitor_msg %></p>
+<%!-- SUBMIT BUTTON --%>
+<div class="flex justify-center mt-10">
+  <.button class="call2actionBtn" disabled={@selected_answer === nil}>
+    Submit
+  </.button>
 </div>
 
 <script>
-  localStorage.setItem("participant_token", "<%= @participant.id %>")
-  localStorage.setItem("session_code", "<%= @session_code %>")
+  window.answer_id = "<%= @selected_answer %>"
 </script>

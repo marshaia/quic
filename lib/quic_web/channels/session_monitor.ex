@@ -1,5 +1,6 @@
 defmodule QuicWeb.SessionMonitor do
   alias Quic.Sessions
+  alias Quic.Quizzes
 
   def exists_session?(code) do
     session = Sessions.get_session_by_code(code)
@@ -22,5 +23,13 @@ defmodule QuicWeb.SessionMonitor do
     #   {:ok, _session} -> :success
     #   {:error, _changeset} -> :error
     # end
+  end
+
+  def start_session(code) do
+    # alter session status to on_going
+
+    # return first quiz question
+    quiz_questions = Quizzes.get_quiz!(get_session(code).quiz.id).questions
+    Enum.at(quiz_questions, 0, nil)
   end
 end

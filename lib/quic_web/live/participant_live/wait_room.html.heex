@@ -1,0 +1,16 @@
+<h4 class="mb-4">
+  Session 
+  <span class="text-[var(--primary-color)]">
+    <%= @session_code %>
+  </span>
+</h4>
+
+<h6 class="mb-8 font-normal">Welcome, <%= @participant.name %> </h6>
+
+<p>Waiting for the Session to start...</p>
+
+
+<script>
+  localStorage.setItem("participant_token", "<%= @participant.id %>")
+  localStorage.setItem("session_code", "<%= @session_code %>")
+</script>

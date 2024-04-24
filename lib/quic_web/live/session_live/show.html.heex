@@ -11,7 +11,7 @@
 </div>
 
 
-<div class="flex flex-col justify-between gap-10 my-5 md:flex-row"> 
+<div class="flex flex-col justify-between gap-10 my-5 lg:flex-row"> 
   <%!-- SESSION SPECS --%>
   <div class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4">
     <div class="flex justify-between">
@@ -59,7 +59,7 @@
 
     <div class="flex-1"></div>
     
-    <div class="flex flex-col items-center justify-between gap-2 md:flex-row">
+    <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
       <div class="flex gap-1">
         <Heroicons.list_bullet class="w-5 h-5" />
         <p><%= quiz_num_questions %> Questions</p>
@@ -83,6 +83,14 @@
   </.link>
 </div>
 
+
+
+<%!-- SESSION CONTROL BUTTONS --%>
+<h6 class="mt-10 font-bold">Status</h6>
+<.button class="flex gap-2 items-center redBtn" id="start-session-btn">
+  <Heroicons.play class="w-5 h-5" />
+  START
+</.button>
 
 
 <%!-- PARTICIPANTS --%>

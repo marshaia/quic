@@ -46,11 +46,6 @@ defmodule QuicWeb.SessionLive.Show do
   end
 
   @impl true
-  def handle_info({"error_joining_session", %{"error" => msg}}, socket) do
-    {:noreply, socket |> put_flash(:error, msg)}
-  end
-
-  @impl true
   def handle_info("monitor-session-closed", socket) do
     {:noreply, socket
               |> assign(:session, Sessions.get_session!(socket.assigns.session.id))

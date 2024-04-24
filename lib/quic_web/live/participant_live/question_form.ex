@@ -1,12 +1,17 @@
 defmodule QuicWeb.ParticipantLive.QuestionForm do
-  alias Quic.Participants
-  alias Quic.Sessions
 
   use QuicWeb, :live_view
 
+  alias Quic.Participants
+  alias Quic.Sessions
+  alias Quic.Questions
+
 
   @impl true
-  def mount(%{"code" => code, "id" => participant_id}, _session, socket) do
+  def mount(%{"participant_id" => participant_id, "question_id" => question_id}, _session, socket) do
+    participant = Participants.get_participant!(participant_id)
+    code = Participants.get_participant_session_code!(participant_id)
+
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
 
@@ -17,15 +22,25 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
           {:ok, redirect(socket, to: ~p"/")}
         else
           {:ok, socket
-          |> assign(participant: Participants.get_participant!(participant_id))
-          |> assign(:page_title, "Live Session #{code}")
           |> assign(:session_code, code)
-          |> assign(:monitor_msg, "")}
+          |> assign(participant: participant)
+          |> assign(:selected_answer, nil)
+          |> assign(:page_title, "Session #{code} - Question ?")
+          |> assign(:question, Questions.get_question!(question_id))}
         end
     end
   end
 
 
+  # SELECTED ANSWER
+  @impl true
+  def handle_event("selected-answer", %{"id" => answer_id}, socket) do
+    {:noreply, socket
+              |> assign(:selected_answer, answer_id)}
+  end
+
+
+  # SESSION CHANNEL MESSAGES
   @impl true
   def handle_info({"monitor_message", %{"message" => msg}}, socket) do
     {:noreply, assign(socket, :monitor_msg, msg)}

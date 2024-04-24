@@ -71,9 +71,10 @@ defmodule QuicWeb.SessionChannel do
 
 
   @impl true
-  def handle_in("monitor_msg_to_all_participants", %{"session_code" => code, "email" => email, "message" => msg}, socket) do
+  def handle_in("monitor-start-session", %{"session_code" => code, "email" => email}, socket) do
     if SessionMonitor.exists_session?(code) and SessionMonitor.session_belongs_to_monitor?(code, email) do
-      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"monitor_message", %{"message" => msg}})
+      first_question = SessionMonitor.start_session(code)
+      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"session-started", %{"question" => first_question}})
     end
 
     {:noreply, socket}
