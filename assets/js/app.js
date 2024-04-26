@@ -1,6 +1,6 @@
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.
-import "./user_socket.js"
+// import "./user_socket.js"
 
 // You can include dependencies in two ways.
 //
@@ -21,10 +21,14 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
-import {SessionStore} from './hooks.js'
+import { SessionStore } from './session_store_hook.js'
+import { SessionChannelParticipant } from "./channel_participant_hook.js"
+import { SessionChannelMonitor } from "./channel_monitor_hook.js"
 
 let Hooks = {}
 Hooks.SessionStore = SessionStore;
+Hooks.SessionChannelParticipant = SessionChannelParticipant;
+Hooks.SessionChannelMonitor = SessionChannelMonitor;
 
 
 

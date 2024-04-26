@@ -16,9 +16,9 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   def handle_event("validate", %{"code" => code, "name" => name}, socket) do
     socket = assign(socket, :error_name, "")
 
-    if String.length(code) === 5, do: Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
+    # if String.length(code) === 5, do: Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
 
-    changeset = %Participant{} |> Participants.change_participant_validate(%{"name" => name},code)
+    changeset = %Participant{} |> Participants.change_participant_validate(%{"name" => name}, code)
 
     if Enum.count(changeset.errors) > 0 do
         [name: {msg, []}] = changeset.errors
@@ -33,21 +33,36 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   end
 
   def handle_event("save", %{"code" => code, "name" => username}, socket) do
-    Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
-    Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code) <> ":participant:" <> username)
+    # Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
+    # Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code) <> ":participant:" <> username)
+
+    socket = push_event(socket, "join_session", %{"username" => username, "code" => code})
     {:noreply, assign(socket, :code, code)}
   end
 
-
-  def handle_info({"joined_session", %{"participant" => user}}, socket) do
+  def handle_event("joined_session", %{"participant" => participant_id}, socket) do
     {:noreply, socket
-              |> assign(:participant, user)
-              |> redirect(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}")}
+              |> assign(:participant, Participants.get_participant!(participant_id))
+              |> redirect(to: ~p"/live-session/#{socket.assigns.code}/#{participant_id}")}
   end
 
-  def handle_info({"error_joining_session", %{"error" => msg}}, socket) do
+  def handle_event("error_joining_session", %{"reason" => msg}, socket) do
     {:noreply, socket |> put_flash(:error, msg)}
   end
+
+
+
+
+
+  # def handle_info({"joined_session", %{"participant" => user}}, socket) do
+  #   {:noreply, socket
+  #             |> assign(:participant, user)
+  #             |> redirect(to: ~p"/live-session/#{socket.assigns.code}/#{user.id}")}
+  # end
+
+  # def handle_info({"error_joining_session", %{"error" => msg}}, socket) do
+  #   {:noreply, socket |> put_flash(:error, msg)}
+  # end
 
   def handle_info(_, socket), do: {:noreply, socket}
 
