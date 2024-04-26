@@ -11,7 +11,7 @@ defmodule QuicWeb.ParticipantLive.WaitRoom do
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
 
-    case Sessions.get_session_by_code(code) do
+    case Sessions.get_open_session_by_code(code) do
       nil -> {:ok, redirect(socket, to: ~p"/")}
       session ->
         if session.status !== :open do

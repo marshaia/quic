@@ -35,7 +35,7 @@ defmodule Quic.Participants do
       ** (Ecto.NoResultsError)
 
   """
-  def get_participant!(id), do: Repo.get!(Participant, id)
+  def get_participant!(id), do: Repo.get!(Participant, id) |> Repo.preload(:session)
 
   def get_participant_session_code!(id)  do
     try do

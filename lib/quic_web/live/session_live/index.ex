@@ -57,4 +57,13 @@ defmodule QuicWeb.SessionLive.Index do
   def handle_event("clicked_session", %{"id" => session_id}, socket) do
     {:noreply, redirect(socket, to: "/sessions/#{session_id}")}
   end
+
+
+  def session_status_color(status) do
+    case status do
+      :open -> "bg-[var(--green)]"
+      :on_going -> "bg-yellow-500"
+      :closed -> "bg-red-700"
+    end
+  end
 end

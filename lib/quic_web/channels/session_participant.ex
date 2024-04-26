@@ -1,8 +1,13 @@
 defmodule QuicWeb.SessionParticipant do
   require Logger
 
+  alias Quic.Sessions
   alias Quic.Questions
   alias Quic.Participants
+
+  def session_is_open?(code) do
+    Sessions.is_session_open?(code)
+  end
 
   def create_participant(session, username) do
     participant = %{"name" => username}
@@ -30,13 +35,13 @@ defmodule QuicWeb.SessionParticipant do
     end
   end
 
-  def access_submission(_participant_id, question_id, selected_answer) do
+  def assess_submission(_participant_id, question_id, selected_answer) do
     question = Questions.get_question!(question_id)
     answer = Questions.get_question_answer!(selected_answer)
 
     if answer.question.id === question_id do
       case question.type do
-        :multiple_choice -> access_multiple_choice(question, answer)
+        :multiple_choice -> assess_multiple_choice(question, answer)
         _ -> false
       end
     else
@@ -44,7 +49,7 @@ defmodule QuicWeb.SessionParticipant do
     end
   end
 
-  def access_multiple_choice(_question, selected_answer) do
+  def assess_multiple_choice(_question, selected_answer) do
     selected_answer.is_correct
   end
 

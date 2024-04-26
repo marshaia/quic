@@ -10,25 +10,32 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   @impl true
   def mount(%{"participant_id" => participant_id, "question_id" => question_id}, _session, socket) do
     participant = Participants.get_participant!(participant_id)
-    code = Participants.get_participant_session_code!(participant_id)
+    code = participant.session.code
 
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
 
-    case Sessions.get_session_by_code(code) do
-      nil -> {:ok, redirect(socket, to: ~p"/")}
-      session ->
-        if session.status !== :open do
-          {:ok, redirect(socket, to: ~p"/")}
-        else
-          {:ok, socket
+    {:ok, socket
           |> assign(:session_code, code)
-          |> assign(participant: participant)
+          |> assign(:participant, participant)
           |> assign(:selected_answer, nil)
           |> assign(:page_title, "Session #{code} - Question ?")
           |> assign(:question, Questions.get_question!(question_id))}
-        end
-    end
+
+    # case Sessions.get_session!(participant.session.id) do
+    #   nil -> {:ok, redirect(socket, to: ~p"/")}
+    #   session ->
+    #     if session.status !== :open do
+    #       {:ok, redirect(socket, to: ~p"/")}
+    #     else
+    #       {:ok, socket
+    #       |> assign(:session_code, code)
+    #       |> assign(participant: participant)
+    #       |> assign(:selected_answer, nil)
+    #       |> assign(:page_title, "Session #{code} - Question ?")
+    #       |> assign(:question, Questions.get_question!(question_id))}
+    #     end
+    # end
   end
 
 

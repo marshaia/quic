@@ -65,7 +65,7 @@
 
       <td class="border-b border-b-[var(--border)]">
         <div class="flex items-center justify-center">
-          <div class={["w-4 h-4 rounded-full mx-4", (if session.status === :open, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+          <div class={["w-4 h-4 rounded-full mx-4", session_status_color(session.status)]} />
         </div>
       </td>
 

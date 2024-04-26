@@ -21,18 +21,11 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+import {SessionStore} from './hooks.js'
 
 let Hooks = {}
-Hooks.SessionStore = {
-  mounted() {
-    this.handleEvent("store", (obj) => {
-      sessionStorage.setItem(obj.key, obj.data)
-    })
-    this.handleEvent("clear", (obj) => {
-      sessionStorage.removeItem(obj.key)
-    })
-  },
-}
+Hooks.SessionStore = SessionStore;
+
 
 
 

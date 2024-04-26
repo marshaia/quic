@@ -2,7 +2,7 @@
 <div class="flex flex-col justify-between gap-5 sm:flex-row">
   <.my_back navigate={~p"/sessions"}>Back to sessions</.my_back>
 
-  <%= if @session.status === :open do %>
+  <%= if @session.status !== :closed do %>
     <.button id="monitor-close-session-btn" class="flex items-center gap-2 p-1 bg-red-700 sm:px-2 hover:bg-red-900">
       <Heroicons.x_mark class="w-5 h-5" />
       <span>Close Session</span>
@@ -16,7 +16,7 @@
   <div class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4">
     <div class="flex justify-between">
       <div class="flex items-center gap-2">
-        <div class={["w-4 h-4 rounded-full", (if @session.status === :open, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+        <div class={["w-4 h-4 rounded-full", session_status_color(@session.status)]} />
         <p><%= @session.status %></p>     
       </div>
 
@@ -87,7 +87,7 @@
 
 <%!-- SESSION CONTROL BUTTONS --%>
 <h6 class="mt-10 font-bold">Status</h6>
-<.button class="flex gap-2 items-center redBtn" id="start-session-btn">
+<.button :if={@session.status === :open} class="flex items-center gap-2 redBtn" id="start-session-btn">
   <Heroicons.play class="w-5 h-5" />
   START
 </.button>
@@ -95,7 +95,7 @@
 
 <%!-- PARTICIPANTS --%>
 <h6 class="mt-10 font-bold">Participants</h6>
-<%= if Enum.count(@session.participants) === 0 do %>
+<%= if Enum.count(@participants) === 0 do %>
 <p class="mt-1">No participants to report.</p>
 <% else %>
 
@@ -109,7 +109,7 @@
       <%!-- <th></th> --%>
     </tr>
     
-    <tr :for={{participant, index} <- Enum.with_index(@session.participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
+    <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
       <td class="border-b border-b-[var(--border)] text-[var(--primary-color)] font-bold"><%= index + 1 %></td>
       <td class="border-b border-b-[var(--border)]"><p><%= participant.name %></p></td>
       <td class="border-b border-b-[var(--border)]"><p><%= if participant.current_question === nil, do: 0, else: participant.current_question %> / <%= quiz_num_questions %></p></td>
@@ -185,6 +185,7 @@
 
 <script>
   window.session_code = "<%= @session.code %>"
+  window.session_id = "<%= @session.id %>"
 </script>
 
 <%!-- <.modal :if={@live_action == :edit} id="session-modal" show on_cancel={JS.patch(~p"/sessions/#{@session}")}>

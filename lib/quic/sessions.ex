@@ -46,15 +46,37 @@ defmodule Quic.Sessions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(quiz: :questions) |> Repo.preload(quiz: :author) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
+  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(quiz: [:questions, :author]) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
 
-  def get_session_by_code(code) do
-    Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
+  def get_session_participants(id) do
+    session = Repo.get!(Session, id) |> Repo.preload(:participants)
+    session.participants
+  end
+
+  # def get_session_by_code(code) do
+  #   Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
+  # end
+
+  # def get_open_session_by_code(code) do
+  #   Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
+  # end
+
+  def get_open_session_by_code(code) do
+    Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:participants)
   end
 
   def get_open_sessions() do
     query = from s in "sessions", where: s.status == "open", select: s.code
     Repo.all(query)
+  end
+
+  def is_session_open?(code) do
+    try do
+      Repo.get_by!(Session, code: code, status: :open)
+      true
+    rescue
+      _ -> false
+    end
   end
 
 

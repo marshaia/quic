@@ -1,5 +1,6 @@
 defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   use QuicWeb, :live_view
+
   alias Quic.Participants
   alias Quic.Participants.Participant
 

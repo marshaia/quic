@@ -2,6 +2,7 @@ defmodule QuicWeb.SessionChannel do
   require Logger
   use QuicWeb, :channel
 
+  alias Quic.Sessions
   alias QuicWeb.SessionMonitor
   alias QuicWeb.SessionParticipant
 
@@ -11,55 +12,100 @@ defmodule QuicWeb.SessionChannel do
     %{"username" => username, "isMonitor" => isMonitor} = payload
     socket = socket |> assign(session_code: code, channel: channel)
 
-    # 1) verify session code validity
-    if SessionMonitor.exists_session?(code) do
-      session = SessionMonitor.get_session(code)
+    if isMonitor do
+      %{"session_id" => session_id} = payload
 
-      # 2) verify user authorization
-      if isMonitor do
-        # if it's a Monitor, verify their authorization towards the session, i.e., if the Session belongs to them
-        if SessionMonitor.session_belongs_to_monitor?(session.code, username) do
-          # 3) add user to session channel and respond
-          {:ok, socket}
-        else
-          # QuicWeb.Endpoint.broadcast(channel <> ":monitor", "disconnect", %{})
-          {:error, %{reason: "You can't access Sessions that don't belong to you!"}}
-        end
-
-      # If it's a Participant, insert them in the DB in the associated Session
-      else
-        if SessionParticipant.participant_already_in_session?(username, session.code) do
-          {:ok, socket}
-        else
-          # 3) add user to session channel and respond
-          {:ok, participant} = SessionParticipant.create_participant(session, username)
-          socket = assign(socket, :participant, participant)
-          Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":participant:" <> participant.name, {"joined_session", %{"participant" => participant}})
-          Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":monitor", {"participant_joined", %{"name" => participant.name}})
-          {:ok, socket}
-        end
-      end
-
-
-    # if the code isn't valid, i.e., the session isn't open
-    else
-      if isMonitor do
+      # verify Session id validity && Monitor ownership
+      if SessionMonitor.exists_session_with_id_and_code?(session_id, code) && SessionMonitor.session_belongs_to_monitor?(session_id, username) do
         {:ok, socket}
       else
-        Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"error_joining_session", %{"error" => "Invalid Session Code"}})
-        # QuicWeb.Endpoint.broadcast("session:#{code}:participant:#{username}", "disconnect", %{})
-        {:error, %{reason: "Session doesn't exist"}}
+        {:error, %{reason: "You can't access Sessions that don't belong to you!"}}
+      end
+
+    # It's a Participant
+    else
+      # If Participant is already in Session
+      if SessionParticipant.participant_already_in_session?(username, code) do
+        {:ok, socket}
+      else
+        # If Session is still Open
+        if SessionParticipant.session_is_open?(code) do
+         # add Participant to Session and respond
+          session = Sessions.get_open_session_by_code(code)
+          {:ok, participant} = SessionParticipant.create_participant(session, username)
+          socket = assign(socket, :participant, participant)
+
+          Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":participant:" <> participant.name, {"joined_session", %{"participant" => participant}})
+          Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":monitor", {"participant_joined", %{"name" => participant.name}})
+
+          {:ok, socket}
+
+        # If Session is no longer Open
+        else
+          Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":participant:" <> username, {"error_joining_session", %{"error" => "Invalid Session Code"}})
+          {:error, %{reason: "Session doesn't exist"}}
+        end
       end
     end
-
-    # #send(self(), :after_join)
-
-    # if authorized?(payload) do
-    #   {:ok, assign(socket, :session_id, id)}
-    # else
-    #   {:error, %{reason: "unauthorized"}}
-    # end
   end
+
+
+
+
+  # def join("session:" <> code = channel, payload, socket) do
+
+  #   %{"username" => username, "isMonitor" => isMonitor} = payload
+  #   socket = socket |> assign(session_code: code, channel: channel)
+
+  #   # 1) verify session code validity
+  #   if SessionMonitor.exists_session?(code) do
+  #     session = SessionMonitor.get_session(code)
+
+  #     # 2) verify user authorization
+  #     if isMonitor do
+  #       # if it's a Monitor, verify their authorization towards the session, i.e., if the Session belongs to them
+  #       if SessionMonitor.session_belongs_to_monitor?(session.code, username) do
+  #         # 3) add user to session channel and respond
+  #         {:ok, socket}
+  #       else
+  #         # QuicWeb.Endpoint.broadcast(channel <> ":monitor", "disconnect", %{})
+  #         {:error, %{reason: "You can't access Sessions that don't belong to you!"}}
+  #       end
+
+  #     # If it's a Participant, insert them in the DB in the associated Session
+  #     else
+  #       if SessionParticipant.participant_already_in_session?(username, session.code) do
+  #         {:ok, socket}
+  #       else
+  #         # 3) add user to session channel and respond
+  #         {:ok, participant} = SessionParticipant.create_participant(session, username)
+  #         socket = assign(socket, :participant, participant)
+  #         Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":participant:" <> participant.name, {"joined_session", %{"participant" => participant}})
+  #         Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel <> ":monitor", {"participant_joined", %{"name" => participant.name}})
+  #         {:ok, socket}
+  #       end
+  #     end
+
+
+  #   # if the code isn't valid, i.e., the session isn't open
+  #   else
+  #     if isMonitor do
+  #       {:ok, socket}
+  #     else
+  #       Phoenix.PubSub.broadcast(Quic.PubSub, socket.assigns.channel, {"error_joining_session", %{"error" => "Invalid Session Code"}})
+  #       # QuicWeb.Endpoint.broadcast("session:#{code}:participant:#{username}", "disconnect", %{})
+  #       {:error, %{reason: "Session doesn't exist"}}
+  #     end
+  #   end
+
+  #   # #send(self(), :after_join)
+
+  #   # if authorized?(payload) do
+  #   #   {:ok, assign(socket, :session_id, id)}
+  #   # else
+  #   #   {:error, %{reason: "unauthorized"}}
+  #   # end
+  # end
 
 
   @impl true
@@ -72,7 +118,7 @@ defmodule QuicWeb.SessionChannel do
       SessionParticipant.update_participant_current_question(participant_id)
 
       # evaluate participant's submission
-      results = SessionParticipant.access_submission(participant_id, question_id, answer_id)
+      results = SessionParticipant.assess_submission(participant_id, question_id, answer_id)
 
       # update data base with Participant's results
       SessionParticipant.update_participant_results(participant_id, question_id, results)
@@ -81,33 +127,36 @@ defmodule QuicWeb.SessionChannel do
       name = SessionParticipant.get_participant_name(participant_id)
       Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", {"participant_submitted_answer", %{"participant_name" => name, "answer" => results}})
       Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"submission_results", %{"answer" => results}})
-    else
-      {:noreply, socket}
     end
+
+    {:noreply, socket}
   end
 
 
   @impl true
-  def handle_in("monitor-start-session", %{"session_code" => code, "email" => email}, socket) do
-    if SessionMonitor.exists_session?(code) and SessionMonitor.session_belongs_to_monitor?(code, email) do
-      first_question = SessionMonitor.start_session(code)
-      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"session-started", %{"question" => first_question}})
+  def handle_in("monitor-start-session", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
+    if SessionMonitor.exists_session_with_id?(session_id) and SessionMonitor.session_belongs_to_monitor?(session_id, email) do
+
+      case SessionMonitor.start_session(session_id) do
+        {:ok, first_question} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"session-started", %{"question" => first_question}})
+        {:error, _} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", {"monitor-unable-to-start-session", %{"msg" => "Error Starting Session"}})
+      end
+
     end
 
     {:noreply, socket}
   end
 
   @impl true
-  def handle_in("monitor-close-session", %{"session_code" => code, "email" => email}, socket) do
-    if SessionMonitor.exists_session?(code) and SessionMonitor.session_belongs_to_monitor?(code, email) do
-      case SessionMonitor.close_session(code) do
+  def handle_in("monitor-close-session", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
+    if SessionMonitor.exists_session_with_id?(session_id) and SessionMonitor.session_belongs_to_monitor?(session_id, email) do
+      case SessionMonitor.close_session(session_id) do
         {:ok, _} ->
           Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "monitor-session-closed")
           Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, "monitor-closed-session")
 
-          {:error, _} ->
-            Logger.error("RECEBNI EROOOOOOOOOOOOO")
-            Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "monitor-unable-to-close-session")
+        {:error, _} ->
+          Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "monitor-unable-to-close-session")
       end
 
       {:noreply, socket}

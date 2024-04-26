@@ -40,7 +40,7 @@ defmodule Quic.Participants.Participant do
   def validate_name(changeset, code) do
       name = get_field(changeset, :name)
 
-      case Sessions.get_session_by_code(code) do
+      case Sessions.get_open_session_by_code(code) do
         nil -> changeset
         session ->
           other_participants = session.participants |> Enum.map(&(&1.name))

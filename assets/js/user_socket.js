@@ -55,22 +55,32 @@ let channel;
 pathname = window.location.pathname
 if (pathname.startsWith("/sessions/")) {
   code = window.session_code
+  session_id = window.session_id
   email = localStorage.getItem("author_email")
-  joinChannel(code, email, true)
+  joinChannel(code, email, true, session_id)
 }
 
 
 // Function for a User to join the channel of a Session
-function joinChannel(session_code, username, isMonitor) {
+function joinChannel(session_code, username, isMonitor, session_id = null) {
   let socket = new Socket("/socket", {params: {session: session_code, username: username, isMonitor: isMonitor }})
   socket.connect()
 
   window.channel_socket = socket;
 
-  channel = socket.channel(
-    "session:" + session_code, 
-    {"username": username, "isMonitor": isMonitor}
-  )
+  if (session_id) {
+    channel = socket.channel(
+      "session:" + session_code, 
+      {"username": username, "isMonitor": isMonitor, "session_id": session_id}
+    )
+  } else {
+    channel = socket.channel(
+      "session:" + session_code, 
+      {"username": username, "isMonitor": isMonitor}
+    )
+  }
+
+  
 
   channel.join()
     .receive("ok", () => {window.channel = channel})
@@ -145,18 +155,20 @@ if(log_out_btn_responsive) log_out_btn_responsive.addEventListener("click", () =
   localStorage.removeItem("author_email")
 });
 
-// Monitor send message to Participants
+// Monitor Starts Session
 m_start_session = document.getElementById("start-session-btn")
 if(m_start_session) m_start_session.addEventListener("click", () => {
   res = window.confirm("Are you sure? Once started, no more participants can join the Session!")
   if (res) {
     email = localStorage.getItem("author_email")
+    session_id = window.session_id
     code = window.session_code
     
     // joinChannel(code, email, true)
     channel.push("monitor-start-session", 
       {
         "session_code" : code,
+        "session_id": session_id,
         "email" : email,
       })
   }  
@@ -168,12 +180,14 @@ if(m_close_session_btn) m_close_session_btn.addEventListener("click", () => {
   res = window.confirm("Are you sure? A closed session cannot be opened again!")
   if (res) {
     email = localStorage.getItem("author_email")
+    session_id = window.session_id
     code = window.session_code
     
     // joinChannel(code, email, true)
     channel.push("monitor-close-session", 
       {
         "session_code" : code,
+        "session_id": session_id,
         "email" : email,
       })
   }  
