@@ -43,7 +43,7 @@
 
         <p class="flex gap-2">
           <Heroicons.clock class="w-5 h-5" />
-          <% DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %>
+          <%= DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %>
         </p>
       </div>
     </div>

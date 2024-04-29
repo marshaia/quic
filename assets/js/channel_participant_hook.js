@@ -47,13 +47,13 @@ export const SessionChannelParticipant = {
       "question_id" : question_id,
       "selected_answer": answer_id,
     })
-    .receive("ok", (params) => {
-      console.log("params ---> ", JSON.stringify(params))
-      this.pushEvent("submission_results", params)
-    })
-    .receive("error", (params) => {
-      console.log("recebi erro: ", JSON.stringify(params))
-      this.pushEvent("submission_results_error", params)
-    })
+    // .receive("ok", (params) => {
+    //   console.log("params ---> ", JSON.stringify(params))
+    //   this.pushEvent("submission_results", params)
+    // })
+    // .receive("error", (params) => {
+    //   console.log("recebi erro: ", JSON.stringify(params))
+    //   this.pushEvent("submission_results_error", params)
+    // })
   }
 };

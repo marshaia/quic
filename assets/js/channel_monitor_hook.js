@@ -29,13 +29,13 @@ export const SessionChannelMonitor = {
     )
     
     channel.join()
-      .receive("ok", (params) => {
+      .receive("ok", () => {
         // window.channel = channel; 
-        console.log("recebi ok: ", params);
+        // console.log("recebi ok: ", params);
         // this.pushEvent("joined_session", params);
       })
-      .receive("error", (params) => {
-        console.log("recebi erro: ", params);
+      .receive("error", () => {
+        // console.log("recebi erro: ", params);
         // this.pushEvent("error_joining_session", params)
         socket.disconnect();
       });
@@ -53,12 +53,12 @@ export const SessionChannelMonitor = {
         "session_id": session_id,
         "email" : email,
       })
-      .receive("ok", () => {
-        this.pushEvent("session-started")
-      })
-      .receive("error", () => {
-        this.pushEvent("error-starting-session")
-      })
+      // .receive("ok", () => {
+      //   this.pushEvent("session-started")
+      // })
+      // .receive("error", () => {
+      //   this.pushEvent("error-starting-session")
+      // })
   },
 
   closeSession(code, session_id, email) {
@@ -68,12 +68,12 @@ export const SessionChannelMonitor = {
       "session_id": session_id,
       "email" : email,
     })
-    .receive("ok", () => {
-      this.pushEvent("session-closed")
-    })
-    .receive("error", () => {
-      this.pushEvent("error-closing-session")
-    })
+    // .receive("ok", () => {
+    //   this.pushEvent("session-closed")
+    // })
+    // .receive("error", () => {
+    //   this.pushEvent("error-closing-session")
+    // })
   }
 
   

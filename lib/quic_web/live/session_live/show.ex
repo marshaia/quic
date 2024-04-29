@@ -32,41 +32,14 @@ defmodule QuicWeb.SessionLive.Show do
     {:noreply, redirect(socket, to: "/session/#{socket.assigns.session.id}/participants/#{participant_id}")}
   end
 
-  # Start Session Events
   @impl true
   def handle_event("start-session-btn", _payload, socket) do
     {:noreply, socket |> push_event("start_session", %{session_id: socket.assigns.session.id, code: socket.assigns.session.code, email: socket.assigns.current_author.email})}
   end
 
   @impl true
-  def handle_event("session-started", _payload, socket) do
-    {:noreply, socket
-              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
-              |> put_flash(:info, "Session started!")}
-  end
-
-  @impl true
-  def handle_event("error-starting-session", _payload, socket) do
-    {:noreply, socket |> put_flash(:error, "Something went wrong. Please try again!")}
-  end
-
-
-  # Close Session Events
-  @impl true
   def handle_event("close-session-btn", _payload, socket) do
     {:noreply, socket |> push_event("close_session", %{session_id: socket.assigns.session.id, code: socket.assigns.session.code, email: socket.assigns.current_author.email})}
-  end
-
-  @impl true
-  def handle_event("session-closed", _payload, socket) do
-    {:noreply, socket
-              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
-              |> put_flash(:info, "Session closed!")}
-  end
-
-  @impl true
-  def handle_event("error-closing-session", _payload, socket) do
-    {:noreply, socket |> put_flash(:error, "Something went wrong. Please try again!")}
   end
 
 
@@ -88,34 +61,29 @@ defmodule QuicWeb.SessionLive.Show do
               |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
   end
 
-  # @impl true
-  # def handle_info("monitor-session-closed", socket) do
-  #   {:noreply, socket
-  #             |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
-  #             |> put_flash(:info, "Session closed successfully!")}
-  # end
+  @impl true
+  def handle_info({"session-started", _params}, socket) do
+    {:noreply, socket
+              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+              |> put_flash(:info, "Session started!")}
+  end
 
-  # @impl true
-  # def handle_info("monitor-unable-to-close-session", socket) do
-  #   {:noreply, socket
-  #             |> put_flash(:info, "Something went wrong. Please try again!")}
-  # end
+  @impl true
+  def handle_info("error-starting-session", socket) do
+    {:noreply, socket |> put_flash(:error, "Something went wrong. Please try again!")}
+  end
 
-  # @impl true
-  # def handle_info({"session-started", %{"question" => _}}, socket) do
-  #   {:noreply, socket
-  #             |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
-  #             |> put_flash(:info, "Session started!")}
-  # end
+  @impl true
+  def handle_info("monitor-closed-session", socket) do
+    {:noreply, socket
+              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+              |> put_flash(:info, "Session closed!")}
+  end
 
-
-
-  # @impl true
-  # def handle_info({"monitor-unable-to-start-session", %{"msg" => msg}}, socket) do
-  #   {:noreply, socket |> put_flash(:error, msg)}
-  # end
-
-
+  @impl true
+  def handle_info("error-closing-session", socket) do
+    {:noreply, socket |> put_flash(:error, "Something went wrong. Please try again!")}
+  end
 
   @impl true
   def handle_info(_, socket), do: {:noreply, socket}

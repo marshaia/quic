@@ -35,7 +35,7 @@ defmodule QuicWeb.SessionChannel do
           {:ok, participant} = SessionParticipant.create_participant(session, username)
           #socket = assign(socket, :participant, participant)
 
-          #Phoenix.PubSub.broadcast(Quic.PubSub, channel <> ":participant:" <> participant.name, {"joined_session", %{"participant" => participant}})
+          # Phoenix.PubSub.broadcast(Quic.PubSub, channel <> ":participant:" <> username, {"joined_session", %{"participant" => participant}})
           Phoenix.PubSub.broadcast(Quic.PubSub, channel <> ":monitor", {"participant_joined", %{"name" => participant.name}})
 
           {:ok, %{"participant" => participant.id}, socket}
@@ -126,12 +126,16 @@ defmodule QuicWeb.SessionChannel do
       # send results to the Participant and Session Monitor
       name = SessionParticipant.get_participant_name(participant_id)
       Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", {"participant_submitted_answer", %{"participant_name" => name, "answer" => results}})
-      #Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"submission_results", %{"answer" => results}})
+      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"submission_results", %{"answer" => results}})
 
-      {:reply, {:ok, %{"answer" => results}}, socket}
+      #{:reply, {:ok, %{"answer" => results}}, socket}
+
     else
-      {:reply, :error, socket}
+      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, "submission_results_error")
+      #{:reply, :error, socket}
     end
+
+    {:noreply, socket}
 
   end
 
@@ -142,13 +146,14 @@ defmodule QuicWeb.SessionChannel do
       case SessionMonitor.start_session(session_id) do
         {:ok, first_question} ->
           Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"session-started", %{"question" => first_question}})
-          {:reply, :ok, socket}
+          #{:reply, :ok, socket}
 
         {:error, _} ->
-          # Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", {"monitor-unable-to-start-session", %{"msg" => "Error Starting Session"}})
-          {:reply, :error, socket}
+          Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "error-starting-session")
+          #{:reply, :error, socket}
       end
     end
+    {:noreply, socket}
   end
 
   @impl true
@@ -158,13 +163,15 @@ defmodule QuicWeb.SessionChannel do
         {:ok, _} ->
           # Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "monitor-session-closed")
           Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, "monitor-closed-session")
-          {:reply, :ok, socket}
+          #{:reply, :ok, socket}
 
         {:error, _} ->
-          # Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "monitor-unable-to-close-session")
-          {:reply, :error, socket}
+          Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "error-closing-session")
+          #{:reply, :error, socket}
       end
     end
+
+    {:noreply, socket}
   end
 
   # @impl true
