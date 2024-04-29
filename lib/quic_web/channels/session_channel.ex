@@ -42,8 +42,8 @@ defmodule QuicWeb.SessionChannel do
 
         # If Session is no longer Open
         else
-          Phoenix.PubSub.broadcast(Quic.PubSub, channel <> ":participant:" <> username, {"error_joining_session", %{"error" => "Invalid Session Code"}})
-          {:error, %{reason: "Session doesn't exist"}}
+          # Phoenix.PubSub.broadcast(Quic.PubSub, channel <> ":participant:" <> username, {"error_joining_session", %{"error" => "Invalid Session Code"}})
+          {:error, %{reason: "Invalid session code"}}
         end
       end
     end
@@ -139,7 +139,6 @@ defmodule QuicWeb.SessionChannel do
   @impl true
   def handle_in("monitor-start-session", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
     if SessionMonitor.exists_session_with_id?(session_id) and SessionMonitor.session_belongs_to_monitor?(session_id, email) do
-
       case SessionMonitor.start_session(session_id) do
         {:ok, first_question} ->
           Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"session-started", %{"question" => first_question}})
