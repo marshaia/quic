@@ -6,7 +6,7 @@
       <.button 
         phx-click="close-session-btn" 
         data-confirm="Are you sure? A closed session cannot be opened again!"
-        class="flex items-center gap-2 p-1 bg-red-700 sm:px-2 hover:bg-red-900"
+        class="flex items-center gap-2 p-2 bg-red-700 sm:px-2 hover:bg-red-900"
       >
         <Heroicons.x_mark class="w-5 h-5" />
         <span>Close Session</span>
@@ -21,7 +21,7 @@
       <div class="flex justify-between">
         <div class="flex items-center gap-2">
           <div class={["w-4 h-4 rounded-full", session_status_color(@session.status)]} />
-          <p><%= @session.status %></p>     
+          <p><%= session_status_translate(@session.status) %></p>     
         </div>
 
         <div class="flex items-center gap-2">
@@ -91,15 +91,29 @@
 
   <%!-- SESSION CONTROL BUTTONS --%>
   <h6 class="mt-10 font-bold">Status</h6>
-  <.button 
-    :if={@session.status === :open} 
-    class="flex items-center gap-2 redBtn" 
-    phx-click="start-session-btn"
-    data-confirm="Are you sure? Once started, no more participants can join the Session!"
-  >
-    <Heroicons.play class="w-5 h-5" />
-    START
-  </.button>
+  <%= if @session.status === :open do %>
+    <.button 
+      :if={@session.status === :open} 
+      class="flex items-center gap-2 call2actionBtn" 
+      phx-click="start-session-btn"
+      data-confirm="Are you sure? Once started, no more participants can join the Session!"
+    >
+      <Heroicons.play class="w-5 h-5" />
+      START
+    </.button>
+  <% else %>
+    <%= if @session.status === :on_going && @session.type === :monitor_paced do %>
+      <%!-- CONTROL QUESTION FLOW --%>
+      <.button  
+        class="flex items-center gap-2 normalBtn" 
+        data-confirm="Are you sure you want to move on to the next question?"
+      >
+        <Heroicons.arrow_right class="w-5 h-5" />
+        Next Question
+      </.button>
+    <% end %>
+  <% end %>
+  
 
 
   <%!-- PARTICIPANTS --%>

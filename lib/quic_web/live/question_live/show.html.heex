@@ -49,6 +49,7 @@
 
 
     <%!-- QUIZ ANSWERS --%>
+    <% total_answers = Enum.count(@question.answers) %>
     <section :if={@question.type !== :open_answer} class="w-full">
       <h6 class="mb-2 font-bold">Answers</h6>
       <div 
@@ -99,14 +100,14 @@
             <Heroicons.trash class="question-box-icon" />
           </.link>
           
-          <.link :if={Enum.count(@question.answers) < 4} phx-click={JS.push("duplicate", value: %{id: answer.id})}>
+          <.link :if={total_answers < 4} phx-click={JS.push("duplicate", value: %{id: answer.id})}>
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
           
         </div>
       </div>
 
-      <div :if={Enum.count(@question.answers) < 4} class="flex items-center justify-center">
+      <div :if={total_answers < 4} class="flex items-center justify-center">
         <.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/answer/new"} class="rounded-full call2actionBtn">
           <Heroicons.plus class="w-5 h-5 text-white" />
         </.link>

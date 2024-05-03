@@ -8,7 +8,7 @@ defmodule Quic.Questions.Question do
     field :description, :string
     #field :title, :string
     field :points, :integer
-    field :type, Ecto.Enum, values: [:multiple_choice, :true_false, :open_answer, :fill_the_blanks]
+    field :type, Ecto.Enum, values: [:multiple_choice, :true_false, :open_answer, :fill_the_blanks, :fill_the_code, :code]
 
     belongs_to :quiz, Quic.Quizzes.Quiz, foreign_key: :quiz_id
     has_many :answers, Quic.Questions.QuestionAnswer, foreign_key: :question_id

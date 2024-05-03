@@ -63,16 +63,15 @@
 
 
     <%!-- QUIZ QUESTIONS --%>
-    <% total_questions = Enum.count(@quiz.questions) %>
     <section class="w-full">
       <h6 class="mb-2 font-bold">Questions</h6>
       <div 
-        :for={question <- @quiz.questions}
+        :for={{question, index} <- Enum.with_index(@quiz.questions)}
         class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4"
       >
         <%!-- POSITION --%>
         <div class="flex flex-col items-center justify-between">
-          <h5 class="text-[var(--primary-color)]">1</h5>
+          <h5 class="text-[var(--primary-color)]"><%= index + 1 %></h5>
           <Heroicons.arrow_up :if={isOwner} class="question-box-icon" />
           <Heroicons.arrow_down :if={isOwner} class="question-box-icon" />
         </div>
@@ -136,14 +135,14 @@
             <Heroicons.trash class="question-box-icon" />
           </.link>
           
-          <.link :if={total_questions < 4} phx-click={JS.push("duplicate", value: %{id: question.id})}>
+          <.link phx-click={JS.push("duplicate", value: %{id: question.id})}>
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
           
         </div>
       </div>
 
-      <div :if={total_questions < 4} class="flex items-center justify-center">
+      <div class="flex items-center justify-center">
         <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full call2actionBtn">
           <Heroicons.plus class="w-5 h-5 text-white" />
         </.link>

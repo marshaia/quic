@@ -98,6 +98,14 @@ defmodule QuicWeb.SessionLive.Show do
     end
   end
 
+  def session_status_translate(status) do
+    case status do
+      :open -> "OPEN"
+      :on_going -> "ON GOING"
+      :closed -> "CLOSED"
+    end
+  end
+
 
   defp page_title(:show), do: "Show Session"
   defp page_title(:edit), do: "Edit Session"

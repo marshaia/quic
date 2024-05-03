@@ -77,6 +77,10 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   @impl true
   def handle_info("monitor-closed-session", socket) do
+    code = socket.assigns.session_code
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code)
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> socket.assigns.participant.id)
+
     {:noreply, socket
               |> put_flash(:info, "This Session has been closed by the Monitor. Hope you enjoyed it!")
               |> redirect(to: ~p"/")}

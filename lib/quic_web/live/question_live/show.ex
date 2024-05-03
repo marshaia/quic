@@ -61,6 +61,8 @@ defmodule QuicWeb.QuestionLive.Show do
       :true_false -> "True or False"
       :open_answer -> "Open Answer"
       :fill_the_blanks -> "Fill in the Blanks"
+      :fill_the_code -> "Fill the Code"
+      :code -> "Code"
     end
   end
 
@@ -70,6 +72,8 @@ defmodule QuicWeb.QuestionLive.Show do
       :true_false -> "bg-[var(--blue)]"
       :open_answer -> "bg-[var(--dark-green)]"
       :fill_the_blanks -> "bg-[var(--fifth-color)]"
+      :fill_the_code -> "bg-[var(--third-color)]"
+      :code -> "bg-[var(--fourth-color)]"
     end
   end
 

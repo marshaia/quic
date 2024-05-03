@@ -28,6 +28,10 @@ defmodule QuicWeb.ParticipantLive.WaitRoom do
 
   @impl true
   def handle_info({"session-started", %{"question" => question}}, socket) do
+    code = socket.assigns.session_code
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code)
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> socket.assigns.participant.id)
+
     {:noreply, socket
               |> put_flash(:info, "Session started!")
               |> redirect(to: ~p"/live-session/#{socket.assigns.participant.id}/question/#{question.id}")}
