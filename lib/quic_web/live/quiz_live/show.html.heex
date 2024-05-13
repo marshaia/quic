@@ -63,7 +63,7 @@
 
 
     <%!-- QUIZ QUESTIONS --%>
-    <section class="w-full">
+    <section id="quiz-page-questions-section-prism-hook" phx-hook="PrismInitializer" class="w-full">
       <h6 class="mb-2 font-bold">Questions</h6>
       <div 
         :for={{question, index} <- Enum.with_index(@quiz.questions)}
@@ -113,7 +113,15 @@
             <div :for={answer <- question.answers} class="flex items-center gap-2 mb-2">
               <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
               
-              <.markdown text={answer.answer} />
+              <%= if question.type === :true_false do %>
+                <%= if answer.is_correct do %>
+                  <p>True</p>
+                <% else %>
+                  <p>False</p>
+                <% end %>
+              <% else %>
+                <.markdown text={answer.answer} />
+              <% end %>
             </div>
           </div>
         </.link>
@@ -208,3 +216,7 @@
     patch={~p"/quizzes/#{@quiz}"}
   />
 </.modal>
+
+
+
+

@@ -2,9 +2,11 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@import "prism.css";
 @import "colors.css";
 @import "buttons.css";
 @import "author.css";
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;700;900&display=swap');
 
 
@@ -31,7 +33,7 @@ h3 { @apply text-4xl }
 h4 { @apply text-3xl }
 h5 { @apply text-2xl }
 h6 { @apply text-lg } 
-p  { @apply text-sm}
+p  { @apply text-sm }
 
 h1,
 h2,
@@ -66,6 +68,40 @@ hr {
   h6 { @apply text-3xl } 
   p  { @apply text-base}
 } */
+
+
+/* Customizing bullet points */
+ul {
+  list-style-type: none; /* Remove default bullets */
+  padding-left: 20px; /* Add indentation */
+}
+
+ul li::before {
+  content: "\2022"; /* Unicode for bullet character (•) */
+  color: #007bff; /* Change bullet color */
+  font-size: 1.2em; /* Adjust bullet size */
+  margin-right: 5px; /* Add space between bullet and text */
+}
+
+/* Customizing enumeration */
+ol {
+  list-style-type: none; /* Remove default numbering */
+  counter-reset: custom-counter; /* Reset counter for custom numbering */
+  padding-left: 20px; /* Add indentation */
+}
+
+ol li {
+  counter-increment: custom-counter; /* Increment counter for each list item */
+}
+
+ol li::before {
+  content: counter(custom-counter) ". "; /* Use the counter value as the enumeration */
+  color: #007bff; /* Change enumeration color */
+  font-weight: bold; /* Make enumeration bold */
+  margin-right: 5px; /* Add space between enumeration and text */
+}
+
+li { @apply text-sm }
 
 
 .input {

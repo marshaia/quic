@@ -21,6 +21,8 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+import Prism from "../vendor/prism.js"
+
 import { SessionStore } from './session_store_hook.js'
 import { SessionChannelParticipant } from "./channel_participant_hook.js"
 import { SessionChannelMonitor } from "./channel_monitor_hook.js"
@@ -30,7 +32,14 @@ Hooks.SessionStore = SessionStore;
 Hooks.SessionChannelParticipant = SessionChannelParticipant;
 Hooks.SessionChannelMonitor = SessionChannelMonitor;
 
-
+Hooks.PrismInitializer = {
+  mounted() {
+    Prism.highlightAll();
+  },
+  // updated() {
+  //   Prism.highlightAll();
+  // }
+}
 
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")

@@ -57,6 +57,7 @@ defmodule QuicWeb.QuestionLive.Show do
 
   defp readable_name(type) do
     case type do
+      :single_choice -> "Single Choice"
       :multiple_choice -> "Multiple Choice"
       :true_false -> "True or False"
       :open_answer -> "Open Answer"
@@ -68,6 +69,7 @@ defmodule QuicWeb.QuestionLive.Show do
 
   defp get_type_color(type) do
     case type do
+      :single_choice -> "bg-[var(--turquoise)]"
       :multiple_choice -> "bg-[var(--second-color)]"
       :true_false -> "bg-[var(--blue)]"
       :open_answer -> "bg-[var(--dark-green)]"

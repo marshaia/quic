@@ -37,9 +37,27 @@
     <p class="mt-4 text-justify"><.markdown text={@question.description} /></p>
   </section>
 
+  <div id="question-page-prism-hook" phx-hook="PrismInitializer">
+    <pre class="language-css"><code class="language-css">p { color: red }</code></pre>
 
+    <pre class="language-markdown"><code>
+    <%= """
+    ```c
+    include <stdio.h>
+    int main()
+    {
+      int arr[] = { 10, 20, 30, 40, 50, 60 };
+      int size_arra = (arr, sizeof arr / sizeof *arr);
+      printf("Number of elements in arr[]:  %d", size_arra);
+    }```
+    """ %>
+    </code></pre>
 
-
+    <pre class="language-markdown"><code>
+      <%= @question.description %>
+    </code></pre>
+  </div>
+  
 
     <%!-- DIVIDER --%>
     <div :if={@question.type !== :open_answer} class="flex flex-col items-center mb-10 mt-14">
@@ -100,14 +118,14 @@
             <Heroicons.trash class="question-box-icon" />
           </.link>
           
-          <.link :if={total_answers < 4} phx-click={JS.push("duplicate", value: %{id: answer.id})}>
+          <.link :if={@question.type !== :true_false && total_answers < 4} phx-click={JS.push("duplicate", value: %{id: answer.id})}>
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
           
         </div>
       </div>
 
-      <div :if={total_answers < 4} class="flex items-center justify-center">
+      <div :if={(@question.type !== :true_false && total_answers < 4) || (@question.type === :true_false && total_answers === 0)} class="flex items-center justify-center">
         <.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/answer/new"} class="rounded-full call2actionBtn">
           <Heroicons.plus class="w-5 h-5 text-white" />
         </.link>

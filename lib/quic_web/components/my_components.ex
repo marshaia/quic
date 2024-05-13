@@ -1,9 +1,10 @@
 defmodule QuicWeb.MyComponents do
   use Phoenix.Component
-  import QuicWeb.CoreComponents
   alias Phoenix.LiveView.JS
 
-  # alias Phoenix.LiveView.JS
+  import QuicWeb.CoreComponents
+  import Phoenix.HTML
+
   # import QuicWeb.Gettext
 
 
@@ -184,20 +185,13 @@ defmodule QuicWeb.MyComponents do
 
       <.markdown text="your markdown text here" />
   """
-  attr :text, :string, required: true
+  attr :text, :string, default: ""
   attr :class, :string, default: ""
 
   def markdown(assigns) do
-    markdown_html =
-      String.trim(assigns.text)
-      |> Earmark.as_html!(code_class_prefix: "lang- language-")
-      |> Phoenix.HTML.raw()
-
-    assigns = assign(assigns, :markdown, markdown_html)
-
     ~H"""
-    <div class={"space-y-2 leading-relaxed <> #{@class}"}>
-      <%= @markdown %>
+    <div class={"space-y-2 leading-relaxed #{@class}"}>
+      <%= String.trim(@text) |> Earmark.as_html!(code_class_prefix: "lang- language-") |> raw %>
     </div>
     """
   end
