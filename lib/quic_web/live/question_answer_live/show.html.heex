@@ -1,16 +1,18 @@
   
-<div class="flex justify-start">
+<div class="flex items-center justify-between">
   <.my_back navigate={@back}>Back</.my_back>
+
+  <.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question_id}/answer/#{@answer.id}/edit"} phx-click={JS.push_focus()}>
+    <.button class="call2actionBtn">Edit Answer</.button>
+  </.link>
 </div>
 
-<.link patch={~p"/quizzes/#{@quiz_id}/question/#{@question_id}/answer/#{@answer.id}/edit"} phx-click={JS.push_focus()}>
-  <.button class="call2actionBtn">Edit Answer</.button>
-</.link>
+
 
 
 
 <div class="flex justify-center w-full mt-10">
-  <main class="w-full max-w-3xl">
+  <main id="answer-show-page-prism-hook" phx-hook="PrismInitializer" class="w-full max-w-3xl">
 
     <%!-- MARKDOWN PREVIEWER --%>
     <.markdown text={@answer.answer} />

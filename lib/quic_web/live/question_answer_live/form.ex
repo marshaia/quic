@@ -19,6 +19,7 @@ defmodule QuicWeb.QuestionAnswerLive.Form do
           |> assign(:action, :edit)
           |> assign(:answer, answer)
           |> assign(:changeset, changeset)
+          |> assign(:section_selected, :editor)
           |> assign(:page_title, "Edit Answer")
           |> assign(:current_path, "/quizzes/#{quiz_id}/question/#{question_id}/answer/#{answer_id}/edit")}
     else
@@ -38,6 +39,7 @@ defmodule QuicWeb.QuestionAnswerLive.Form do
         |> assign(:question_id, question_id)
         |> assign(:action, :new)
         |> assign(:changeset, changeset)
+        |> assign(:section_selected, :editor)
         |> assign(:page_title, "Edit Answer")
         |> assign(:current_path, "/quizzes/#{quiz_id}/question/#{question_id}/answer/new")}
   end
@@ -54,6 +56,15 @@ defmodule QuicWeb.QuestionAnswerLive.Form do
 
   def handle_event("save", %{"question_answer" => question_answer_params}, socket) do
     save_question_answer(socket, socket.assigns.action, question_answer_params)
+  end
+
+  @impl true
+  def handle_event("clicked_section", %{"section" => "previewer"}, socket) do
+    {:noreply, assign(socket, :section_selected, :previewer)}
+  end
+  @impl true
+  def handle_event("clicked_section", %{"section" => "editor"}, socket) do
+    {:noreply, assign(socket, :section_selected, :editor)}
   end
 
   defp save_question_answer(socket, :edit, answer_params) do

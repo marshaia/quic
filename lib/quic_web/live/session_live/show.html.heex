@@ -1,17 +1,6 @@
 <div id="monitor-session-specs-section" phx-hook="SessionChannelMonitor">
-  <div class="flex flex-col justify-between gap-5 sm:flex-row">
+  <div class="flex justify-between">
     <.my_back navigate={~p"/sessions"}>Back to sessions</.my_back>
-
-    <%= if @session.status !== :closed do %>
-      <.button 
-        phx-click="close-session-btn" 
-        data-confirm="Are you sure? A closed session cannot be opened again!"
-        class="flex items-center gap-2 p-2 bg-red-700 sm:px-2 hover:bg-red-900"
-      >
-        <Heroicons.x_mark class="w-5 h-5" />
-        <span>Close Session</span>
-      </.button>
-    <% end %>
   </div>
 
 
@@ -113,6 +102,16 @@
       </.button>
     <% end %>
   <% end %>
+  <%= if @session.status !== :closed do %>
+      <.button 
+        phx-click="close-session-btn" 
+        data-confirm="Are you sure? A closed session cannot be opened again!"
+        class="flex items-center gap-2 p-2 bg-red-700 sm:px-2 hover:bg-red-900"
+      >
+        <Heroicons.x_mark class="w-5 h-5" />
+        <span>Close Session</span>
+      </.button>
+    <% end %>
   
 
 

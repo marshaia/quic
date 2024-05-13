@@ -34,29 +34,8 @@
     </div>
 
 
-    <p class="mt-4 text-justify"><.markdown text={@question.description} /></p>
+    <p id="question-page-prism-hook" phx-hook="PrismInitializer" class="mt-4 text-justify"><.markdown text={@question.description} /></p>
   </section>
-
-  <div id="question-page-prism-hook" phx-hook="PrismInitializer">
-    <pre class="language-css"><code class="language-css">p { color: red }</code></pre>
-
-    <pre class="language-markdown"><code>
-    <%= """
-    ```c
-    include <stdio.h>
-    int main()
-    {
-      int arr[] = { 10, 20, 30, 40, 50, 60 };
-      int size_arra = (arr, sizeof arr / sizeof *arr);
-      printf("Number of elements in arr[]:  %d", size_arra);
-    }```
-    """ %>
-    </code></pre>
-
-    <pre class="language-markdown"><code>
-      <%= @question.description %>
-    </code></pre>
-  </div>
   
 
     <%!-- DIVIDER --%>
@@ -72,6 +51,8 @@
       <h6 class="mb-2 font-bold">Answers</h6>
       <div 
         :for={answer <- @question.answers}
+        id={"question-page-answer-#{answer.id}-hook"}
+        phx-hook="PrismInitializer"
         class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-20 mb-4"
       >
         <%!-- POSITION --%>

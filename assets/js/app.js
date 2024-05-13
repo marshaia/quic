@@ -36,9 +36,9 @@ Hooks.PrismInitializer = {
   mounted() {
     Prism.highlightAll();
   },
-  // updated() {
-  //   Prism.highlightAll();
-  // }
+  updated() {
+    Prism.highlightAll();
+  }
 }
 
 

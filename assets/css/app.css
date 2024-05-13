@@ -78,7 +78,7 @@ ul {
 
 ul li::before {
   content: "\2022"; /* Unicode for bullet character (•) */
-  color: #007bff; /* Change bullet color */
+  color: var(--primary-color); /* Change bullet color */
   font-size: 1.2em; /* Adjust bullet size */
   margin-right: 5px; /* Add space between bullet and text */
 }
@@ -96,7 +96,7 @@ ol li {
 
 ol li::before {
   content: counter(custom-counter) ". "; /* Use the counter value as the enumeration */
-  color: #007bff; /* Change enumeration color */
+  color: var(--primary-color); /* Change enumeration color */
   font-weight: bold; /* Make enumeration bold */
   margin-right: 5px; /* Add space between enumeration and text */
 }
