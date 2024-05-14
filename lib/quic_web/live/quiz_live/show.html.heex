@@ -9,7 +9,7 @@
   <main class="w-full max-w-3xl">
 
     <%!-- QUIZ SPECS --%>
-    <section class="w-full">
+    <section class="w-full bg-[var(--background-card)] p-4 rounded-md border border-[var(--border)]">
       <div class="flex justify-end">
         <.link 
           :if={isOwner} 
@@ -67,7 +67,7 @@
       <h6 class="mb-2 font-bold">Questions</h6>
       <div 
         :for={{question, index} <- Enum.with_index(@quiz.questions)}
-        class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4"
+        class="flex border border-[var(--border)] rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4"
       >
         <%!-- POSITION --%>
         <div class="flex flex-col items-center justify-between">
@@ -99,7 +99,7 @@
           <%!-- QUESTION DESCRIPTION --%>
           <.markdown class="mt-2" text={question.description} />
 
-          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="w-full my-3" />
+          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks && question.type !== :true_false} class="w-full my-4" />
 
           <%!-- QUESTION ANSWERS --%>
           <%!-- <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-wrap mx-2">
@@ -109,19 +109,28 @@
               <.markdown text={answer.answer} />
             </div>
           </div> --%>
-          <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-col mx-2">
-            <div :for={answer <- question.answers} class="flex items-center gap-2 mb-2">
-              <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-              
+          <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-col px-2">
+            <div :for={answer <- question.answers} class="flex flex-col mb-1">
               <%= if question.type === :true_false do %>
                 <%= if answer.is_correct do %>
-                  <p>True</p>
+                  <div class="mt-4 -ml-2 px-2 rounded-md py-1 bg-[var(--light-green)] w-min">
+                    <p class="text-[var(--dark-green-2)]">True</p>
+                  </div>
+                 
                 <% else %>
-                  <p>False</p>
+                  <div class="mt-4 -ml-2 px-2 rounded-md py-1 bg-[var(--light-red)] w-min">
+                    <p class="text-[var(--dark-red)]">False</p>
+                  </div>
                 <% end %>
+
               <% else %>
-                <.markdown text={answer.answer} />
+                <div class="flex items-center gap-4">
+                  <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+                  <.markdown text={answer.answer} />
+                </div>
               <% end %>
+
+              <%!-- <hr class="w-full my-3 bg-[var(--background-card)]" /> --%>
             </div>
           </div>
         </.link>

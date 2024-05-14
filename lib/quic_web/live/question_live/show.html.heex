@@ -10,7 +10,7 @@
   <main class="w-full max-w-3xl">
 
   <%!-- QUESTION SPECS --%>
-  <section class="p-4 mt-5 rounded-md bg-[var(--background-card)]">
+  <section class="p-4 mt-5 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
     <div class="flex items-center justify-between">
       <div class={["rounded-md px-2", get_type_color(@question.type)]}>
         <span class="text-xs text-white"> <%= readable_name(@question.type) %> </span>
@@ -39,21 +39,25 @@
   
 
     <%!-- DIVIDER --%>
-    <div :if={@question.type !== :open_answer} class="flex flex-col items-center mb-10 mt-14">
+    <%!-- <div :if={@question.type !== :open_answer} class="flex flex-col items-center mb-10 mt-14">
       <hr />
-    </div>
+    </div> --%>
 
 
 
     <%!-- QUIZ ANSWERS --%>
     <% total_answers = Enum.count(@question.answers) %>
-    <section :if={@question.type !== :open_answer} class="w-full">
+    <section 
+      :if={@question.type !== :open_answer} 
+      id={"question-page-answer-hook"} phx-hook="PrismInitializer"
+      class="w-full mt-8"
+    >
       <h6 class="mb-2 font-bold">Answers</h6>
       <div 
         :for={answer <- @question.answers}
         id={"question-page-answer-#{answer.id}-hook"}
         phx-hook="PrismInitializer"
-        class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-20 mb-4"
+        class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-20 mb-4 border border-[var(--border)]"
       >
         <%!-- POSITION --%>
         <%!-- <div class="flex flex-col items-center justify-between">
@@ -69,7 +73,7 @@
 
         <%!-- ANSWER INFO --%>
         <.link 
-          class="flex-1 mx-3 border-x"
+          class="flex-1 ml-3 border-l"
           patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/answer/#{answer.id}"} 
           phx-click={JS.push_focus()}
         >
@@ -84,7 +88,7 @@
         
 
         <%!-- ACTIONS --%>
-        <div class="flex flex-col items-center justify-between">
+        <%!-- <div class="flex flex-col items-center justify-between">
           <.link 
             patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/answer/#{answer.id}/edit"} 
             phx-click={JS.push_focus()}
@@ -102,8 +106,8 @@
           <.link :if={@question.type !== :true_false && total_answers < 4} phx-click={JS.push("duplicate", value: %{id: answer.id})}>
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
-          
-        </div>
+        </div> --%>
+
       </div>
 
       <div :if={(@question.type !== :true_false && total_answers < 4) || (@question.type === :true_false && total_answers === 0)} class="flex items-center justify-center">
