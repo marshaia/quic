@@ -1,0 +1,244 @@
+
+<div class="flex justify-start mb-8 md:mb-0">
+  <%= if String.contains?(@page_title, "New") do %>
+    <.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back</.my_back>
+  <% else %>
+    <.my_back navigate={~p"/quizzes/#{@quiz_id}/question/#{@question.id}"}>Back</.my_back>
+  <% end %> 
+</div>
+
+
+
+<.header>
+  <h4 class="text-[var(--primary-color-text)] text-center mb-8 md:mb-3">Question Editor</h4>
+</.header>
+
+<div class="w-full mt-10">
+  <%!-- SWITCH BUTTONS FOR SMALL-MEDIUM SCREENS --%>
+  <div class="flex w-full lg:hidden">
+    <.link
+      class={["w-1/2 text-center py-2 px-4 border border-[var(--border)] hover:bg-[var(--hover)] rounded-l-md",
+      (if @view_selected === :editor, do: "bg-[var(--background-card)] border-[var(--primary-color)] text-[var(--primary-color)]", else: "bg-[var(--background-view)]")]}
+      phx-click="clicked_view"
+      phx-value-view={:editor}
+    >
+      Editor
+    </.link>
+    
+    <.link
+      class={["w-1/2 text-center bg-[var(--background-card)] py-2 px-4 border border-[var(--border)] hover:bg-[var(--hover)] rounded-r-md",
+      (if @view_selected === :previewer, do: "bg-[var(--background-card)] border-[var(--primary-color)] text-[var(--primary-color)]", else: "bg-[var(--background-view)]")]}
+      phx-click="clicked_view"
+      phx-value-view={:previewer}
+    >
+      Previewer
+    </.link>
+  </div>
+
+  <%!-- FORM FOR SMALL-MEDIUM SCREENS  --%>
+  <div class="block w-full lg:hidden">
+
+    <%!-- QUESTION FORM --%>
+    <%= if @view_selected === :editor do %>
+    <h6 class="mt-10 font-bold text-[var(--primary-color)] text-center">Question</h6>
+    <.simple_form
+      class="-mt-10"
+      :if={@view_selected === :editor}
+      :let={f}
+      for={@question_changeset}
+      id="question-form-responsive"
+      phx-change="validateQuestion"
+      phx-submit="saveForm"
+    >
+      <.input field={f[:points]} type="number" label="Points" />
+      <.input field={f[:description]} type="textarea" rows="8" label="Question Description" />
+    </.simple_form>
+
+    <%!-- ANSWERS FORM --%>
+    <%= if @type !== "open_answer" && @type !== "true_false" do %>
+      <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
+      <.simple_form
+        class="-mt-10"
+        :let={f}
+        for={Questions.change_question_answer(%QuestionAnswer{})}
+        id="question-answer-form-responsive"
+        phx-change="validateAnswer"
+        phx-submit="saveForm"
+      >
+        <.input field={f[:answer]} type="textarea" rows="3" label="Answer Text" /> <%!-- label="Answer" --%>
+        <.input field={f[:is_correct]} type="checkbox" label="Is correct" />
+      </.simple_form>
+    <% end %>
+
+    <%!-- SAVE BUTTON --%>
+    <div class="flex justify-center mt-5">
+      <.button class="call2actionBtn" phx-click="save">
+        Save Question
+      </.button>
+    </div>
+    <% end %>
+  </div>
+
+
+  <%!-- FOR MEDIUM-LARGE SCREENS --%>
+  <div class="hidden w-full lg:flex">
+    <div class="hidden lg:block lg:w-1/2">
+      <%!-- QUESTION FORM --%>
+      <h6 class="mt-5 font-bold text-[var(--primary-color)] text-center">Question</h6>
+      <.simple_form
+        class="-mt-10"
+        :if={@view_selected === :editor}
+        :let={f}
+        for={@question_changeset}
+        id="question-form"
+        phx-change="validateQuestion"
+        phx-submit="saveForm"
+      >
+        <.input field={f[:points]} type="number" label="Points" />
+        <.input field={f[:description]} type="textarea" rows="8" label="Question Description" />
+      </.simple_form>
+
+      <%!-- ANSWERS FORM --%>
+      <%= if @type !== "open_answer" && @type !== "true_false" do %>
+        <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
+        <.simple_form
+          class="-mt-10"
+          :let={f}
+          for={Questions.change_question_answer(%QuestionAnswer{})}
+          id="question-answer-form"
+          phx-change="validateAnswer"
+          phx-submit="saveForm"
+        >
+          <.input field={f[:answer]} type="textarea" rows="3" label="Answer Text" /> <%!-- label="Answer" --%>
+          <.input field={f[:is_correct]} type="checkbox" label="Is correct" />
+        </.simple_form>
+      <% end %>
+
+      <%!-- SAVE BUTTON --%>
+      <div class="flex justify-center mt-5">
+        <.button class="call2actionBtn" phx-click="save">
+          Save Question
+        </.button>
+      </div>
+    </div>
+
+    <%!-- DIVIDER FOR LARGE SCREENS --%>
+    <div class="border-l border-[var(--border)] mx-10"></div>
+
+    <%!-- MARKDOWN PREVIEWERS FOR LARGE SCREENS --%>
+    <section id="answer-form-page-prism-hook" phx-hook="PrismInitializer" class="w-1/2">
+      <h6 class="mt-5 font-bold text-[var(--primary-color)] text-center">Previewer</h6> 
+
+      <div class="flex justify-between mt-8">
+        <div class={["py-1 px-2 rounded-md", (if is_atom(@type), do: QuicWebAux.get_type_color(@type), else: QuicWebAux.get_type_color(String.to_atom(@type)))]}>
+          <p class="text-white"><%= (if is_atom(@type), do: QuicWebAux.readable_name(@type), else: QuicWebAux.readable_name(String.to_atom(@type))) %></p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <Heroicons.trophy class="w-5 h-5 text-[var(primary-color-text)]" />
+          <p>
+            <%= if Map.has_key?(@question_changeset.changes, :points) do %>
+              <%= @question_changeset.changes.points %>
+            <% else %>
+              <%= if @question_changeset.data.points !== nil do %>
+                <%= @question_changeset.data.points %>
+              <% end %>
+            <% end %>
+            Points
+          </p>
+        </div>
+      </div>
+
+      <div class={["mt-8 bg-[var(--background-card)] overflow-auto rounded-md py-2 px-4 border border-[var(--border)]", (if @type !== "open_answer" && @type !== "true_false", do: "h-[calc(100%-445px)]", else: "h-[255px]")]} > 
+        <%= if Map.has_key?(@question_changeset.changes, :description) do %>
+          <.markdown text={@question_changeset.changes.description} />
+        <% else %>
+          <%= if @question_changeset.data.description !== nil do %>
+            <.markdown text={@question_changeset.data.description} />
+          <% else %>
+          <.markdown />
+          <% end %>
+        <% end %>
+      </div>
+
+      <%= if @type !== "open_answer" && @type !== "true_false" do %>
+        <div class="mt-14">
+          <p class="font-bold">Answers</p>
+        </div>
+        
+        <div class="flex gap-4 mt-4 bg-[var(--background-card)] overflow-auto rounded-md py-3 px-4 border border-[var(--border)]" style="height: calc(15% - 8px);">
+          <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+          <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
+            <.markdown text={@question_changeset.changes.answer} />
+          <% else %>
+            <%= if @question_changeset.data.description !== nil do %>
+              <.markdown text={@question_changeset.data.description} />
+            <% else %>
+            <.markdown />
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </section>
+  </div>
+
+  
+
+
+  <%!-- MARKDOWN PREVIEWERS FOR SMALL-MEDIUM SCREENS --%>
+  <section :if={@view_selected === :previewer} id="answer-form-page-prism-hook-responsive" phx-hook="PrismInitializer" class="block w-full lg:hidden">
+    <h6 class="mt-5 font-bold text-[var(--primary-color)] text-center">Previewer</h6> 
+
+    <div class="flex justify-between mt-8">
+      <div class={["py-1 px-2 rounded-md", (if is_atom(@type), do: QuicWebAux.get_type_color(@type), else: QuicWebAux.get_type_color(String.to_atom(@type)))]}>
+        <p class="text-white"><%= (if is_atom(@type), do: QuicWebAux.readable_name(@type), else: QuicWebAux.readable_name(String.to_atom(@type))) %></p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <Heroicons.trophy class="w-5 h-5 text-[var(primary-color-text)]" />
+        <p>
+          <%= if Map.has_key?(@question_changeset.changes, :points) do %>
+            <%= @question_changeset.changes.points %>
+          <% else %>
+            <%= if @question_changeset.data.points !== nil do %>
+              <%= @question_changeset.data.points %>
+            <% end %>
+          <% end %>
+          Points
+        </p>
+      </div>
+    </div>
+
+
+    <div class={["mt-8 bg-[var(--background-card)] rounded-md py-2 px-4 border border-[var(--border)]"]} > 
+      <%= if Map.has_key?(@question_changeset.changes, :description) do %>
+        <.markdown text={@question_changeset.changes.description} />
+      <% else %>
+        <%= if @question_changeset.data.description !== nil do %>
+          <.markdown text={@question_changeset.data.description} />
+        <% end %>
+      <% end %>
+    </div>
+
+
+    <%= if @type !== "open_answer" && @type !== "true_false" do %>
+      <div class="mt-14">
+        <p class="font-bold">Answers</p>
+      </div>
+      
+      <div class="flex gap-4 mt-4 bg-[var(--background-card)] overflow-auto rounded-md py-3 px-4 border border-[var(--border)]">
+        <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+        <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
+          <.markdown text={@question_changeset.changes.answer} />
+        <% else %>
+          <%= if @question_changeset.data.description !== nil do %>
+            <.markdown text={@question_changeset.data.description} />
+          <% else %>
+          <.markdown />
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+
+</div>

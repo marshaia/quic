@@ -85,6 +85,7 @@ defmodule QuicWeb.Router do
 
       live "/quizzes/:id", QuizLive.Show, :show
       live "/quizzes/:id/show/edit", QuizLive.Show, :edit
+      live "/quizzes/:id/new-question", QuizLive.Show, :new_question
 
       # QUESTIONS
       # live "/questions", QuestionLive.Index, :index
@@ -95,6 +96,9 @@ defmodule QuicWeb.Router do
       # live "/questions/:id/show/edit", QuestionLive.Show, :edit
       #live "/quizzes/:quiz_id/question/:question_id/edit", QuestionLive.Show, :edit
 
+
+      live "/quizzes/:quiz_id/new-question/:type", QuestionLive.Forms
+      live "/quizzes/:quiz_id/edit-question/:question_id", QuestionLive.Forms
       live "/quizzes/:quiz_id/question/new", QuestionLive.Form
       live "/quizzes/:quiz_id/question/:question_id", QuestionLive.Show, :show
       live "/quizzes/:quiz_id/question/:question_id/edit", QuestionLive.Form

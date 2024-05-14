@@ -86,8 +86,8 @@
             <%!-- <p class="font-bold"> <%= question.title %> </p> --%>
 
             <%!-- QUESTION TYPE --%>
-            <div class={["rounded-md px-2 max-w-fit", get_type_color(question.type)]}>
-              <span class="text-xs text-white"> <%= readable_name(question.type) %> </span>
+            <div class={["rounded-md px-2 max-w-fit", QuicWebAux.get_type_color(question.type)]}>
+              <span class="text-xs text-white"> <%= QuicWebAux.readable_name(question.type) %> </span>
             </div>
 
             <div class="hidden gap-1 md:flex">
@@ -99,7 +99,7 @@
           <%!-- QUESTION DESCRIPTION --%>
           <.markdown class="mt-2" text={question.description} />
 
-          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks && question.type !== :true_false} class="w-full my-4" />
+          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="w-full my-4" />
 
           <%!-- QUESTION ANSWERS --%>
           <%!-- <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-wrap mx-2">
@@ -113,12 +113,12 @@
             <div :for={answer <- question.answers} class="flex flex-col mb-1">
               <%= if question.type === :true_false do %>
                 <%= if answer.is_correct do %>
-                  <div class="mt-4 -ml-2 px-2 rounded-md py-1 bg-[var(--light-green)] w-min">
+                  <div class="-ml-2 px-2 rounded-md py-1 bg-[var(--light-green)] w-min">
                     <p class="text-[var(--dark-green-2)]">True</p>
                   </div>
                  
                 <% else %>
-                  <div class="mt-4 -ml-2 px-2 rounded-md py-1 bg-[var(--light-red)] w-min">
+                  <div class="-ml-2 px-2 rounded-md py-1 bg-[var(--light-red)] w-min">
                     <p class="text-[var(--dark-red)]">False</p>
                   </div>
                 <% end %>
@@ -139,7 +139,7 @@
         <%!-- ACTIONS --%>
         <div :if={isOwner} class="flex flex-col items-center justify-between">
           <.link 
-            patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}"} 
+            patch={~p"/quizzes/#{@quiz.id}/edit-question/#{question.id}"} 
             phx-click={JS.push_focus()}
           >
             <Heroicons.pencil class="question-box-icon" />
@@ -159,10 +159,48 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-center">
-        <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full call2actionBtn">
+      <div class="flex flex-wrap items-center justify-center">
+        <.link patch={~p"/quizzes/#{@quiz.id}/new-question"} class="rounded-full call2actionBtn">
           <Heroicons.plus class="w-5 h-5 text-white" />
         </.link>
+
+        <%!-- <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full call2actionBtn">
+          <Heroicons.plus class="w-5 h-5 text-white" />
+        </.link> --%>
+
+
+
+
+        <%!-- <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full bg-[var(--turquoise)] px-2 py-1">
+          <p class="text-white">Single Choice</p>
+        </.link>
+
+        <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full bg-[var(--second-color)] px-2 py-1">
+          <p class="text-white">Multiple Choice</p>
+        </.link>
+
+        <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full bg-[var(--blue)] px-2 py-1">
+          <p class="text-white">True or False</p>
+        </.link>
+
+        <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full bg-[var(--dark-green)] px-2 py-1">
+          <p class="text-white">Open Answer</p>
+        </.link>
+
+        <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full bg-[var(--fifth-color)] px-2 py-1">
+          <p class="text-white">Fill the Blanks</p>
+        </.link>
+        
+        <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full bg-[var(--third-color)] px-2 py-1">
+          <p class="text-white">Fill the Code</p>
+        </.link>
+
+        <.link patch={~p"/quizzes/#{@quiz.id}/question/new"} class="rounded-full bg-[var(--fourth-color)] px-2 py-1">
+          <p class="text-white">Code</p>
+        </.link> --%>
+
+
+
       </div>
     </section>
   </main>
@@ -222,6 +260,16 @@
     action={@live_action}
     current_author={@current_author}
     quiz={@quiz}
+    patch={~p"/quizzes/#{@quiz}"}
+  />
+</.modal>
+
+<.modal :if={@live_action == :new_question} id="quiz-new-question-modal" show on_cancel={JS.patch(~p"/quizzes/#{@quiz}")}>
+  <.live_component
+    module={QuicWeb.QuizLive.NewQuestionForm}
+    id={@quiz.id}
+    action={@live_action}
+    current_author={@current_author}
     patch={~p"/quizzes/#{@quiz}"}
   />
 </.modal>

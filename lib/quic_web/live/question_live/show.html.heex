@@ -12,8 +12,8 @@
   <%!-- QUESTION SPECS --%>
   <section class="p-4 mt-5 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
     <div class="flex items-center justify-between">
-      <div class={["rounded-md px-2", get_type_color(@question.type)]}>
-        <span class="text-xs text-white"> <%= readable_name(@question.type) %> </span>
+      <div class={["rounded-md px-2", QuicWebAux.get_type_color(@question.type)]}>
+        <span class="text-xs text-white"> <%= QuicWebAux.readable_name(@question.type) %> </span>
       </div>
 
 
@@ -24,7 +24,7 @@
 
       <div class="flex justify-end">
         <.link 
-          patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/edit"}
+          patch={~p"/quizzes/#{@quiz_id}/edit-question/#{@question.id}"}
           phx-click={JS.push_focus()}
           class="border-[var(--primary-color-text)] text--[var(--primary-color-text)] hover:text--[var(--primary-color)] hover:border-[var(--primary-color)] border rounded-full p-1.5"
         >
