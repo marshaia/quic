@@ -11,9 +11,6 @@ defmodule Quic.Sessions do
   alias Quic.Participants.Participant
 
   alias Quic.Sessions.CodeGenerator
-
-  require Logger
-
   @doc """
   Returns the list of sessions.
 

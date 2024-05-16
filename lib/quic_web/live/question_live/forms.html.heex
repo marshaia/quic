@@ -48,7 +48,7 @@
       for={@question_changeset}
       id="question-form-responsive"
       phx-change="validateQuestion"
-      phx-submit="saveForm"
+      phx-submit="ignore"
     >
       <.input field={f[:points]} type="number" label="Points" />
       <.input field={f[:description]} type="textarea" rows="8" label="Question Description" />
@@ -56,23 +56,16 @@
 
     <%!-- ANSWERS FORM --%>
     <%= if @type !== :open_answer && @type !== :true_false do %>
-      <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
-      <.simple_form
-        class="-mt-10"
-        :let={f}
-        for={Questions.change_question_answer(%QuestionAnswer{})}
-        id="question-answer-form-responsive"
-        phx-change="validateAnswer"
-        phx-submit="saveForm"
-      >
-        <.input field={f[:answer]} type="textarea" rows="3" label="Answer Text" /> <%!-- label="Answer" --%>
-        <.input field={f[:is_correct]} type="checkbox" label="Is correct" />
-      </.simple_form>
+
+      <%= if @type === :single_choice || @type === :multiple_choice do %>
+        <.live_component id="single-choice-answer-form-responsive" module={QuicWeb.QuestionLive.FormSingleChoice} question_id={if String.contains?(@page_title, "New"), do: nil, else: @question.id} type={@type} />
+      <% end %>
+
     <% end %>
 
     <%!-- SAVE BUTTON --%>
     <div class="flex justify-center mt-5">
-      <.button class="call2actionBtn" phx-click="save">
+      <.button class="call2actionBtn" phx-click="saveQuestion" disabled={@cant_submit_question || @cant_submit_answers}>
         Save Question
       </.button>
     </div>
@@ -80,7 +73,7 @@
   </div>
 
 
-  <%!-- FOR MEDIUM-LARGE SCREENS --%>
+  <%!-- FOR LARGE SCREENS --%>
   <div class="hidden w-full lg:flex">
     <div class="hidden lg:block lg:w-1/2">
       <%!-- QUESTION FORM --%>
@@ -92,7 +85,7 @@
         for={@question_changeset}
         id="question-form"
         phx-change="validateQuestion"
-        phx-submit="saveForm"
+        phx-submit="ignore"
       >
         <.input field={f[:points]} type="number" label="Points" />
         <.input field={f[:description]} type="textarea" rows="10" label="Question Description" />
@@ -100,30 +93,25 @@
 
       <%!-- ANSWERS FORM --%>
       <%= if @type !== :open_answer && @type !== :true_false do %>
-        <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
-        <.simple_form
-          class="-mt-10"
-          :let={f}
-          for={if assigns[:answer_changeset], do: @answer_changeset, else: Questions.change_question_answer(%QuestionAnswer{})}
-          id="question-answer-form"
-          phx-change="validateAnswer"
-          phx-submit="saveForm"
-        >
-          <.input field={f[:answer]} type="textarea" rows="3" label="Answer Text" /> <%!-- label="Answer" --%>
-          <.input field={f[:is_correct]} type="checkbox" label="Is correct" />
-        </.simple_form>
+
+        <%= if @type === :single_choice || @type === :multiple_choice do %>
+          <.live_component id="single-choice-answer-form" module={QuicWeb.QuestionLive.FormSingleChoice} question_id={if String.contains?(@page_title, "New"), do: nil, else: @question.id} type={@type}/>
+        <% end %>
+        
       <% end %>
 
       <%!-- SAVE BUTTON --%>
       <div class="flex justify-center mt-5">
-        <.button class="call2actionBtn" phx-click="save">
+        <.button class="call2actionBtn" phx-click="saveQuestion" disabled={@cant_submit_question || @cant_submit_answers}>
           Save Question
         </.button>
       </div>
     </div>
 
+
     <%!-- DIVIDER FOR LARGE SCREENS --%>
     <div class="border-l border-[var(--border)] mx-10"></div>
+
 
     <%!-- MARKDOWN PREVIEWERS FOR LARGE SCREENS --%>
     <section id="answer-form-page-prism-hook" phx-hook="PrismInitializer" class="w-1/2">
@@ -150,7 +138,6 @@
       </div>
 
       <p class="mt-8 font-bold">Description</p>
-      <%!-- (if @type !== :open_answer && @type !== :true_false, do: "h-[calc(100%-445px)]", else: "h-[300px]") --%>
       <div class={["mt-2 bg-[var(--background-card)] overflow-auto rounded-md py-2 px-4 border border-[var(--border)]"]} > 
         <%= if Map.has_key?(@question_changeset.changes, :description) do %>
           <.markdown text={@question_changeset.changes.description} />
@@ -164,23 +151,49 @@
       </div>
 
       <%= if @type !== :open_answer && @type !== :true_false do %>
-        <div class="mt-14">
+        <div class="mt-10">
           <p class="font-bold">Answers</p>
         </div>
         
-        <%!-- style="height: calc(15% - 8px);" --%>
-        <div class="flex gap-4 mt-4 bg-[var(--background-card)] overflow-auto rounded-md py-3 px-4 border border-[var(--border)]" >
-          <%!-- <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
-          <%!-- <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
-            <.markdown text={@question_changeset.changes.answer} />
-          <% else %>
-            <%= if @question_changeset.data.description !== nil do %>
-              <.markdown text={@question_changeset.data.description} />
-            <% else %>
-            <.markdown />
-            <% end %>
-          <% end %> --%>
-        </div>
+
+        <%= if Enum.count(@answers) > 0 do %>
+          <div 
+            :for={answer_changeset <- @answers}
+            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
+          > 
+            <% changes = answer_changeset.changes %>
+            <div class="flex flex-col items-center justify-start">
+              <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} />
+            </div> 
+            
+            <div class="flex-1 ml-3 border-l">
+              <div class="flex-1 px-2 mx-3">
+                <%= if Map.has_key?(changes, :answer) do %>
+                  <.markdown text={changes.answer} />
+                <% else %>
+                  <%= if answer_changeset.data.answer !== nil do %>
+                    <.markdown text={answer_changeset.data.answer} />
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            
+          </div>
+
+        <% else %>
+          <div 
+            :for={answer <- @question.answers}
+            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
+          >
+            <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+            <div class="flex-1 ml-3 border-l">
+              <div class="flex-1 px-2 mx-3">
+                <.markdown text={answer.answer} />
+              </div>
+            </div>
+          </div>
+        <% end %>
+
       <% end %>
     </section>
   </div>
@@ -223,23 +236,50 @@
 
 
     <%= if @type !== :open_answer && @type !== :true_false do %>
-      <div class="mt-14">
-        <p class="font-bold">Answers</p>
-      </div>
-      
-      <div class="flex gap-4 mt-4 bg-[var(--background-card)] overflow-auto rounded-md py-3 px-4 border border-[var(--border)]">
-        <%!-- <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
-        <%!-- <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
-          <.markdown text={@question_changeset.changes.answer} />
+        <div class="mt-10">
+          <p class="font-bold">Answers</p>
+        </div>
+        
+
+        <%= if Enum.count(@answers) > 0 do %>
+          <div 
+            :for={answer_changeset <- @answers}
+            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
+          > 
+            <% changes = answer_changeset.changes %>
+            <div class="flex flex-col items-center justify-start">
+              <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} />
+            </div> 
+            
+            <div class="flex-1 ml-3 border-l">
+              <div class="flex-1 px-2 mx-3">
+                <%= if Map.has_key?(changes, :answer) do %>
+                  <.markdown text={changes.answer} />
+                <% else %>
+                  <%= if answer_changeset.data.answer !== nil do %>
+                    <.markdown text={answer_changeset.data.answer} />
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            
+          </div>
+
         <% else %>
-          <%= if @question_changeset.data.description !== nil do %>
-            <.markdown text={@question_changeset.data.description} />
-          <% else %>
-          <.markdown />
-          <% end %>
-        <% end %> --%>
-      </div>
-    <% end %>
+          <div 
+            :for={answer <- @question.answers}
+            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
+          >
+            <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+            <div class="flex-1 ml-3 border-l">
+              <div class="flex-1 px-2 mx-3">
+                <.markdown text={answer.answer} />
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+      <% end %>
   </section>
 
 </div>

@@ -38,8 +38,12 @@ defmodule Quic.Questions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_question!(id), do: Repo.get!(Question, id) |> Repo.preload(:quiz) |> Repo.preload(:answers)
+  def get_question!(id), do: Repo.get!(Question, id) |> Repo.preload(:quiz) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: [desc: a.inserted_at])])
 
+  def get_question_answers!(id) do
+    question = Repo.get!(Question, id) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: [desc: a.inserted_at])])
+    question.answers
+  end
   @doc """
   Creates a question.
 
@@ -58,11 +62,31 @@ defmodule Quic.Questions do
     |> Repo.insert()
   end
 
-  def create_question_with_quiz(attrs \\ %{}, id) do
-    quiz = Quizzes.get_quiz!(id)
-    %Question{}
-    |> Question.changeset(attrs, quiz)
-    |> Repo.insert()
+  # def create_question_with_quiz(attrs \\ %{}, id) do
+  #   quiz = Quizzes.get_quiz!(id)
+  #   %Question{}
+  #   |> Question.changeset(attrs, quiz)
+  #   |> Repo.insert()
+  # end
+
+  def create_question(attrs \\ %{}, quiz_id, answers_changesets) do
+    quiz = Quizzes.get_quiz!(quiz_id)
+
+    result = %Question{}
+      |> Question.changeset(attrs, quiz)
+      |> Repo.insert()
+
+    case result do
+      {:ok, question} ->
+        Enum.each(answers_changesets, fn answer_changeset ->
+                            changes = answer_changeset.changes
+                            params = %{"answer" => changes.answer, "is_correct" => (if Map.has_key?(changes, :is_correct), do: changes.is_correct, else: false)}
+                            {:ok, _} = create_answer_with_question(params, question.id)
+                          end)
+        {:ok, question}
+
+      {:error, _} -> result
+    end
   end
 
   def duplicate_question(attrs \\ %{}, quiz_id, answers) do
@@ -82,8 +106,6 @@ defmodule Quic.Questions do
 
       {:error, _} -> result
     end
-
-
   end
 
   @doc """
@@ -102,6 +124,30 @@ defmodule Quic.Questions do
     question
     |> Question.changeset(attrs)
     |> Repo.update()
+  end
+
+  def update_question(question, attrs \\ %{}, answers, answers_attrs \\ []) do
+    result = question
+      |> Question.changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, question} ->
+        Enum.reduce(answers_attrs, 0,
+          fn answer_changeset, acc ->
+            answer_bd = Enum.at(answers, acc, %QuestionAnswer{})
+            params = %{
+              "answer" => (if Map.has_key?(answer_changeset.changes, :answer), do: answer_changeset.changes.answer, else: answer_bd.answer),
+              "is_correct" => (if Map.has_key?(answer_changeset.changes, :is_correct), do: answer_changeset.changes.is_correct, else: false)
+            }
+            {:ok, _} = update_question_answer(answer_bd, params)
+            acc + 1
+          end
+        )
+        {:ok, question}
+
+      {:error, _} -> result
+    end
   end
 
   @doc """
