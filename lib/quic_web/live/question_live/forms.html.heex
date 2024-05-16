@@ -55,7 +55,7 @@
     </.simple_form>
 
     <%!-- ANSWERS FORM --%>
-    <%= if @type !== "open_answer" && @type !== "true_false" do %>
+    <%= if @type !== :open_answer && @type !== :true_false do %>
       <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
       <.simple_form
         class="-mt-10"
@@ -95,16 +95,16 @@
         phx-submit="saveForm"
       >
         <.input field={f[:points]} type="number" label="Points" />
-        <.input field={f[:description]} type="textarea" rows="8" label="Question Description" />
+        <.input field={f[:description]} type="textarea" rows="10" label="Question Description" />
       </.simple_form>
 
       <%!-- ANSWERS FORM --%>
-      <%= if @type !== "open_answer" && @type !== "true_false" do %>
+      <%= if @type !== :open_answer && @type !== :true_false do %>
         <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
         <.simple_form
           class="-mt-10"
           :let={f}
-          for={Questions.change_question_answer(%QuestionAnswer{})}
+          for={if assigns[:answer_changeset], do: @answer_changeset, else: Questions.change_question_answer(%QuestionAnswer{})}
           id="question-answer-form"
           phx-change="validateAnswer"
           phx-submit="saveForm"
@@ -149,7 +149,9 @@
         </div>
       </div>
 
-      <div class={["mt-8 bg-[var(--background-card)] overflow-auto rounded-md py-2 px-4 border border-[var(--border)]", (if @type !== "open_answer" && @type !== "true_false", do: "h-[calc(100%-445px)]", else: "h-[255px]")]} > 
+      <p class="mt-8 font-bold">Description</p>
+      <%!-- (if @type !== :open_answer && @type !== :true_false, do: "h-[calc(100%-445px)]", else: "h-[300px]") --%>
+      <div class={["mt-2 bg-[var(--background-card)] overflow-auto rounded-md py-2 px-4 border border-[var(--border)]"]} > 
         <%= if Map.has_key?(@question_changeset.changes, :description) do %>
           <.markdown text={@question_changeset.changes.description} />
         <% else %>
@@ -161,14 +163,15 @@
         <% end %>
       </div>
 
-      <%= if @type !== "open_answer" && @type !== "true_false" do %>
+      <%= if @type !== :open_answer && @type !== :true_false do %>
         <div class="mt-14">
           <p class="font-bold">Answers</p>
         </div>
         
-        <div class="flex gap-4 mt-4 bg-[var(--background-card)] overflow-auto rounded-md py-3 px-4 border border-[var(--border)]" style="height: calc(15% - 8px);">
-          <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-          <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
+        <%!-- style="height: calc(15% - 8px);" --%>
+        <div class="flex gap-4 mt-4 bg-[var(--background-card)] overflow-auto rounded-md py-3 px-4 border border-[var(--border)]" >
+          <%!-- <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
+          <%!-- <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
             <.markdown text={@question_changeset.changes.answer} />
           <% else %>
             <%= if @question_changeset.data.description !== nil do %>
@@ -176,7 +179,7 @@
             <% else %>
             <.markdown />
             <% end %>
-          <% end %>
+          <% end %> --%>
         </div>
       <% end %>
     </section>
@@ -187,8 +190,6 @@
 
   <%!-- MARKDOWN PREVIEWERS FOR SMALL-MEDIUM SCREENS --%>
   <section :if={@view_selected === :previewer} id="answer-form-page-prism-hook-responsive" phx-hook="PrismInitializer" class="block w-full lg:hidden">
-    <h6 class="mt-5 font-bold text-[var(--primary-color)] text-center">Previewer</h6> 
-
     <div class="flex justify-between mt-8">
       <div class={["py-1 px-2 rounded-md", (if is_atom(@type), do: QuicWebAux.get_type_color(@type), else: QuicWebAux.get_type_color(String.to_atom(@type)))]}>
         <p class="text-white"><%= (if is_atom(@type), do: QuicWebAux.readable_name(@type), else: QuicWebAux.readable_name(String.to_atom(@type))) %></p>
@@ -221,14 +222,14 @@
     </div>
 
 
-    <%= if @type !== "open_answer" && @type !== "true_false" do %>
+    <%= if @type !== :open_answer && @type !== :true_false do %>
       <div class="mt-14">
         <p class="font-bold">Answers</p>
       </div>
       
       <div class="flex gap-4 mt-4 bg-[var(--background-card)] overflow-auto rounded-md py-3 px-4 border border-[var(--border)]">
-        <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-        <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
+        <%!-- <div class={["w-4 h-4 rounded-full", (if true, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
+        <%!-- <%= if Map.has_key?(@question_changeset.changes, :answer) do %>
           <.markdown text={@question_changeset.changes.answer} />
         <% else %>
           <%= if @question_changeset.data.description !== nil do %>
@@ -236,7 +237,7 @@
           <% else %>
           <.markdown />
           <% end %>
-        <% end %>
+        <% end %> --%>
       </div>
     <% end %>
   </section>

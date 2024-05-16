@@ -52,7 +52,7 @@
 
 
     <%!-- LAUNCH DIVIDER --%>
-    <div class="flex flex-col items-center mb-10 mt-14">
+    <div class="flex flex-col items-center mb-7 mt-14">
       <hr />
       <.link navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 -mt-5 text-white call2actionBtn">
         <Heroicons.bolt class="w-5 h-5" />
@@ -78,7 +78,7 @@
 
         <%!-- QUESTION INFO --%>
         <.link 
-          class="flex-1 px-4 mx-3 overflow-auto border-x"
+          class="flex-1 px-4 mx-3 overflow-auto border-x border-[var(--border)]"
           patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}"} 
           phx-click={JS.push_focus()}
         >

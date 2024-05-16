@@ -37,7 +37,7 @@ defmodule QuicWeb.QuestionLive.Forms do
       question_changeset = Questions.change_question(%Question{}) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
 
       {:ok, socket
-            |> assign(:type, type)
+            |> assign(:type, String.to_atom(type))
             |> assign(:quiz_id, quiz_id)
             |> assign(:question_changeset, question_changeset)
             |> assign(:view_selected, :editor)
@@ -67,8 +67,13 @@ defmodule QuicWeb.QuestionLive.Forms do
   end
 
   @impl true
-  def handle_event("validateAnswer", _params, socket) do
-    {:noreply, socket}
+  def handle_event("validateAnswer", %{"question_answer" => answer_params}, socket) do
+    changeset =
+      %QuestionAnswer{}
+      |> Questions.change_question_answer(answer_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, :answer_changeset, changeset)}
   end
 
 
