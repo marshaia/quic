@@ -1,4 +1,4 @@
-defmodule QuicWeb.QuestionLive.FormSingleChoice do
+defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
   use QuicWeb, :live_component
 
   alias Quic.Questions
@@ -14,18 +14,7 @@ defmodule QuicWeb.QuestionLive.FormSingleChoice do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col w-full gap-3">
-      <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
-
-      <p class="-mt-5">
-      <.error :if={@error_more_than_one_true} >
-        Question has to have only 1 correct option!
-      </.error>
-      <.error :if={@error_less_than_one_true} >
-        Question has to have more than 1 correct option!
-      </.error>
-      </p>
-
+    <div class="flex flex-col w-full gap-3 mt-10">
       <.simple_form
         class="w-full -mt-10"
         :let={f}
@@ -110,24 +99,14 @@ defmodule QuicWeb.QuestionLive.FormSingleChoice do
   # is invoked with all of the assigns given to
   # If is not defined all assigns are simply merged into the socket.
   @impl true
-  def update(%{question_id: question_id, type: type} = assigns, socket) do
-    is_new = question_id === nil
-    socket = socket |> assign(assigns) |> assign(type: type, error_more_than_one_true: false, error_less_than_one_true: false, is_new_question: is_new)
+  def update(%{type: type, answers: answers} = assigns, socket) do
+    socket = socket |> assign(assigns) |> assign(type: type)
 
-    if is_new do
-      {:ok, socket
-          |> assign(:changeset_1, Questions.change_question_answer(%QuestionAnswer{}))
-          |> assign(:changeset_2, Questions.change_question_answer(%QuestionAnswer{}))
-          |> assign(:changeset_3, Questions.change_question_answer(%QuestionAnswer{}))
-          |> assign(:changeset_4, Questions.change_question_answer(%QuestionAnswer{}))}
-    else
-      answers = Questions.get_question_answers!(question_id)
-      {:ok, socket
-          |> assign(:changeset_1, Questions.change_question_answer(Enum.at(answers, 0, Questions.change_question_answer(%QuestionAnswer{}))))
-          |> assign(:changeset_2, Questions.change_question_answer(Enum.at(answers, 1, Questions.change_question_answer(%QuestionAnswer{}))))
-          |> assign(:changeset_3, Questions.change_question_answer(Enum.at(answers, 2, Questions.change_question_answer(%QuestionAnswer{}))))
-          |> assign(:changeset_4, Questions.change_question_answer(Enum.at(answers, 3, Questions.change_question_answer(%QuestionAnswer{}))))}
-    end
+    {:ok, socket
+          |> assign(:changeset_1, Enum.at(answers, 0, Questions.change_question_answer(%QuestionAnswer{})))
+          |> assign(:changeset_2, Enum.at(answers, 1, Questions.change_question_answer(%QuestionAnswer{})))
+          |> assign(:changeset_3, Enum.at(answers, 2, Questions.change_question_answer(%QuestionAnswer{})))
+          |> assign(:changeset_4, Enum.at(answers, 3, Questions.change_question_answer(%QuestionAnswer{})))}
   end
 
 
@@ -144,22 +123,24 @@ defmodule QuicWeb.QuestionLive.FormSingleChoice do
 
     if socket.assigns.type === :single_choice do
       if only_one_correct_option?(changesets) do
-        socket = assign(socket, :error_more_than_one_true, false)
+        send(self(), :no_error_answers)
         if all_answers_valid?(changesets), do: send(self(), {:cant_submit, false}), else: send(self(), {:cant_submit, true})
         {:noreply, socket}
       else
+        send(self(), {:error_answers, "Question has to have only 1 correct option!"})
         send(self(), {:cant_submit, true})
-        {:noreply, assign(socket, :error_more_than_one_true, true)}
+        {:noreply, socket}
       end
 
     else
       if more_than_one_correct_option?(changesets) do
-        socket = assign(socket, :error_less_than_one_true, false)
+        send(self(), :no_error_answers)
         if all_answers_valid?(changesets), do: send(self(), {:cant_submit, false}), else: send(self(), {:cant_submit, true})
         {:noreply, socket}
       else
+        send(self(), {:error_answers, "Question has to have more than 1 correct option!"})
         send(self(), {:cant_submit, true})
-        {:noreply, assign(socket, :error_less_than_one_true, true)}
+        {:noreply, socket}
       end
     end
 
@@ -168,8 +149,8 @@ defmodule QuicWeb.QuestionLive.FormSingleChoice do
   defp only_one_correct_option?(changesets) do
     res = Enum.reduce(changesets, 0,
       fn changeset, acc ->
-        if(Map.has_key?(changeset.changes, :is_correct)) do
-          if (changeset.changes.is_correct), do: acc + 1
+        if (Map.has_key?(changeset.changes, :is_correct) && changeset.changes.is_correct) || (Map.has_key?(changeset.data, :is_correct) && changeset.data.is_correct) do
+          acc + 1
         else
           acc
         end
@@ -181,8 +162,8 @@ defmodule QuicWeb.QuestionLive.FormSingleChoice do
   defp more_than_one_correct_option?(changesets) do
     res = Enum.reduce(changesets, 0,
       fn changeset, acc ->
-        if(Map.has_key?(changeset.changes, :is_correct)) do
-          if (changeset.changes.is_correct), do: acc + 1
+        if (Map.has_key?(changeset.changes, :is_correct) && changeset.changes.is_correct) || (Map.has_key?(changeset.data, :is_correct) && changeset.data.is_correct) do
+          acc + 1
         else
           acc
         end

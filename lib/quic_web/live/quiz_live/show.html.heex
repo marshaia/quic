@@ -112,17 +112,7 @@
           <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-col px-2">
             <div :for={answer <- question.answers} class="flex flex-col mb-1">
               <%= if question.type === :true_false do %>
-                <%= if answer.is_correct do %>
-                  <div class="-ml-2 px-2 rounded-md py-1 bg-[var(--light-green)] w-min">
-                    <p class="text-[var(--dark-green-2)]">True</p>
-                  </div>
-                 
-                <% else %>
-                  <div class="-ml-2 px-2 rounded-md py-1 bg-[var(--light-red)] w-min">
-                    <p class="text-[var(--dark-red)]">False</p>
-                  </div>
-                <% end %>
-
+                <.true_or_false is_true={answer.is_correct} />
               <% else %>
                 <div class="flex items-center gap-4">
                   <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />

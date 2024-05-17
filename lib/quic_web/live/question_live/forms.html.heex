@@ -55,12 +55,23 @@
     </.simple_form>
 
     <%!-- ANSWERS FORM --%>
+    <%= if @type === :true_false do %>
+      <.live_component id="true-false-answer-form-responsive" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} />
+    <% end %>
+
     <%= if @type !== :open_answer && @type !== :true_false do %>
 
       <%= if @type === :single_choice || @type === :multiple_choice do %>
-        <.live_component id="single-choice-answer-form-responsive" module={QuicWeb.QuestionLive.FormSingleChoice} question_id={if String.contains?(@page_title, "New"), do: nil, else: @question.id} type={@type} />
-      <% end %>
+        <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
 
+        <p class="mt-5">
+          <.error :if={@error_answers !== nil} >
+            <%= @error_answers %>
+          </.error>
+        </p>
+        <.live_component id="single-choice-answer-form-responsive" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} />
+      <% end %>
+      
     <% end %>
 
     <%!-- SAVE BUTTON --%>
@@ -92,10 +103,21 @@
       </.simple_form>
 
       <%!-- ANSWERS FORM --%>
+      <%= if @type === :true_false do %>
+        <.live_component id="true-false-answer-form" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} />
+      <% end %>
+
       <%= if @type !== :open_answer && @type !== :true_false do %>
 
         <%= if @type === :single_choice || @type === :multiple_choice do %>
-          <.live_component id="single-choice-answer-form" module={QuicWeb.QuestionLive.FormSingleChoice} question_id={if String.contains?(@page_title, "New"), do: nil, else: @question.id} type={@type}/>
+          <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
+
+          <p class="mt-5">
+            <.error :if={@error_answers !== nil} >
+              <%= @error_answers %>
+            </.error>
+          </p>
+          <.live_component id="single-choice-answer-form" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} />
         <% end %>
         
       <% end %>
@@ -108,93 +130,13 @@
       </div>
     </div>
 
-
     <%!-- DIVIDER FOR LARGE SCREENS --%>
     <div class="border-l border-[var(--border)] mx-10"></div>
-
 
     <%!-- MARKDOWN PREVIEWERS FOR LARGE SCREENS --%>
     <section id="answer-form-page-prism-hook" phx-hook="PrismInitializer" class="w-1/2">
       <h6 class="mt-5 font-bold text-[var(--primary-color)] text-center">Previewer</h6> 
-
-      <div class="flex justify-between mt-8">
-        <div class={["py-1 px-2 rounded-md", (if is_atom(@type), do: QuicWebAux.get_type_color(@type), else: QuicWebAux.get_type_color(String.to_atom(@type)))]}>
-          <p class="text-white"><%= (if is_atom(@type), do: QuicWebAux.readable_name(@type), else: QuicWebAux.readable_name(String.to_atom(@type))) %></p>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <Heroicons.trophy class="w-5 h-5 text-[var(primary-color-text)]" />
-          <p>
-            <%= if Map.has_key?(@question_changeset.changes, :points) do %>
-              <%= @question_changeset.changes.points %>
-            <% else %>
-              <%= if @question_changeset.data.points !== nil do %>
-                <%= @question_changeset.data.points %>
-              <% end %>
-            <% end %>
-            Points
-          </p>
-        </div>
-      </div>
-
-      <p class="mt-8 font-bold">Description</p>
-      <div class={["mt-2 bg-[var(--background-card)] overflow-auto rounded-md py-2 px-4 border border-[var(--border)]"]} > 
-        <%= if Map.has_key?(@question_changeset.changes, :description) do %>
-          <.markdown text={@question_changeset.changes.description} />
-        <% else %>
-          <%= if @question_changeset.data.description !== nil do %>
-            <.markdown text={@question_changeset.data.description} />
-          <% else %>
-          <.markdown />
-          <% end %>
-        <% end %>
-      </div>
-
-      <%= if @type !== :open_answer && @type !== :true_false do %>
-        <div class="mt-10">
-          <p class="font-bold">Answers</p>
-        </div>
-        
-
-        <%= if Enum.count(@answers) > 0 do %>
-          <div 
-            :for={answer_changeset <- @answers}
-            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
-          > 
-            <% changes = answer_changeset.changes %>
-            <div class="flex flex-col items-center justify-start">
-              <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} />
-            </div> 
-            
-            <div class="flex-1 ml-3 border-l">
-              <div class="flex-1 px-2 mx-3">
-                <%= if Map.has_key?(changes, :answer) do %>
-                  <.markdown text={changes.answer} />
-                <% else %>
-                  <%= if answer_changeset.data.answer !== nil do %>
-                    <.markdown text={answer_changeset.data.answer} />
-                  <% end %>
-                <% end %>
-              </div>
-            </div>
-            
-          </div>
-
-        <% else %>
-          <div 
-            :for={answer <- @question.answers}
-            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
-          >
-            <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-            <div class="flex-1 ml-3 border-l">
-              <div class="flex-1 px-2 mx-3">
-                <.markdown text={answer.answer} />
-              </div>
-            </div>
-          </div>
-        <% end %>
-
-      <% end %>
+      <.markdown_previewer_question question_changeset={@question_changeset} type={@type} answers={@answers} />
     </section>
   </div>
 
@@ -203,83 +145,7 @@
 
   <%!-- MARKDOWN PREVIEWERS FOR SMALL-MEDIUM SCREENS --%>
   <section :if={@view_selected === :previewer} id="answer-form-page-prism-hook-responsive" phx-hook="PrismInitializer" class="block w-full lg:hidden">
-    <div class="flex justify-between mt-8">
-      <div class={["py-1 px-2 rounded-md", (if is_atom(@type), do: QuicWebAux.get_type_color(@type), else: QuicWebAux.get_type_color(String.to_atom(@type)))]}>
-        <p class="text-white"><%= (if is_atom(@type), do: QuicWebAux.readable_name(@type), else: QuicWebAux.readable_name(String.to_atom(@type))) %></p>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <Heroicons.trophy class="w-5 h-5 text-[var(primary-color-text)]" />
-        <p>
-          <%= if Map.has_key?(@question_changeset.changes, :points) do %>
-            <%= @question_changeset.changes.points %>
-          <% else %>
-            <%= if @question_changeset.data.points !== nil do %>
-              <%= @question_changeset.data.points %>
-            <% end %>
-          <% end %>
-          Points
-        </p>
-      </div>
-    </div>
-
-
-    <div class={["mt-8 bg-[var(--background-card)] rounded-md py-2 px-4 border border-[var(--border)]"]} > 
-      <%= if Map.has_key?(@question_changeset.changes, :description) do %>
-        <.markdown text={@question_changeset.changes.description} />
-      <% else %>
-        <%= if @question_changeset.data.description !== nil do %>
-          <.markdown text={@question_changeset.data.description} />
-        <% end %>
-      <% end %>
-    </div>
-
-
-    <%= if @type !== :open_answer && @type !== :true_false do %>
-        <div class="mt-10">
-          <p class="font-bold">Answers</p>
-        </div>
-        
-
-        <%= if Enum.count(@answers) > 0 do %>
-          <div 
-            :for={answer_changeset <- @answers}
-            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
-          > 
-            <% changes = answer_changeset.changes %>
-            <div class="flex flex-col items-center justify-start">
-              <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} />
-            </div> 
-            
-            <div class="flex-1 ml-3 border-l">
-              <div class="flex-1 px-2 mx-3">
-                <%= if Map.has_key?(changes, :answer) do %>
-                  <.markdown text={changes.answer} />
-                <% else %>
-                  <%= if answer_changeset.data.answer !== nil do %>
-                    <.markdown text={answer_changeset.data.answer} />
-                  <% end %>
-                <% end %>
-              </div>
-            </div>
-            
-          </div>
-
-        <% else %>
-          <div 
-            :for={answer <- @question.answers}
-            class="flex mt-4 rounded-md bg-[var(--background-card)] py-3 px-4 mb-4 border border-[var(--border)]"
-          >
-            <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-            <div class="flex-1 ml-3 border-l">
-              <div class="flex-1 px-2 mx-3">
-                <.markdown text={answer.answer} />
-              </div>
-            </div>
-          </div>
-        <% end %>
-
-      <% end %>
+     <.markdown_previewer_question question_changeset={@question_changeset} type={@type} answers={@answers} />
   </section>
 
 </div>

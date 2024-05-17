@@ -3,7 +3,6 @@ defmodule QuicWeb.QuestionLive.Forms do
 
   alias Quic.Quizzes
   alias Quic.Questions
-  alias QuicWeb.QuicWebAux
   alias Quic.Questions.Question
   alias Quic.Questions.QuestionAnswer
 
@@ -19,10 +18,11 @@ defmodule QuicWeb.QuestionLive.Forms do
       {:ok, socket
           |> assign(:cant_submit_question, false)
           |> assign(:cant_submit_answers, false)
+          |> assign(:error_answers, nil)
           |> assign(:quiz_id, quiz_id)
           |> assign(:question, question)
           |> assign(:type, question.type)
-          |> assign(:answers, [])
+          |> assign(:answers, create_answers_changesets(question.type, %{new_question: false, question: question}))
           |> assign(:question_changeset, question_changeset)
           |> assign(:view_selected, :editor)
           |> assign(:page_title, "Quiz - Edit Question")
@@ -38,19 +38,14 @@ defmodule QuicWeb.QuestionLive.Forms do
   def mount(%{"type" => type, "quiz_id" => quiz_id} = _params, _session, socket) do
     if Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
       question_changeset = Questions.change_question(%Question{}, %{type: type}) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
-      answers_changesets = [
-        Questions.change_question_answer(%QuestionAnswer{}),
-        Questions.change_question_answer(%QuestionAnswer{}),
-        Questions.change_question_answer(%QuestionAnswer{}),
-        Questions.change_question_answer(%QuestionAnswer{})
-      ]
 
       {:ok, socket
             |> assign(:cant_submit_question, true)
-            |> assign(:cant_submit_answers, true)
+            |> assign(:cant_submit_answers, (if type === "true_false", do: false, else: true))
+            |> assign(:error_answers, nil)
             |> assign(:type, String.to_atom(type))
             |> assign(:quiz_id, quiz_id)
-            |> assign(:answers, answers_changesets)
+            |> assign(:answers, create_answers_changesets(String.to_atom(type), %{new_question: true}))
             |> assign(:question_changeset, question_changeset)
             |> assign(:view_selected, :editor)
             |> assign(:page_title, "Quiz - New Question")
@@ -106,7 +101,6 @@ defmodule QuicWeb.QuestionLive.Forms do
 
 
 
-
   defp update_question(socket) do
     question = socket.assigns.question
     answers_params = socket.assigns.answers
@@ -118,12 +112,12 @@ defmodule QuicWeb.QuestionLive.Forms do
     }
 
     case Questions.update_question(question, question_params, question.answers, answers_params) do
-      {:ok, _question} ->
+      {:ok, question} ->
         Quizzes.update_quiz_points(socket.assigns.quiz_id)
 
         {:noreply, socket
-                  |> put_flash(:info, "Question updated successfully!")}
-                  #|> redirect(to: ~p"/quizzes/#{socket.assigns.quiz_id}/question/#{question.id}")}
+                  |> put_flash(:info, "Question updated successfully!")
+                  |> redirect(to: ~p"/quizzes/#{socket.assigns.quiz_id}/question/#{question.id}")}
 
       {:error, _changeset} ->
         {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
@@ -154,24 +148,28 @@ defmodule QuicWeb.QuestionLive.Forms do
     end
   end
 
-  # defp save_question(socket) do
-  #   quiz_id = socket.assigns.quiz_id
 
-  #   case Questions.create_question_with_quiz(question_params, quiz_id) do
-  #     {:ok, question} ->
-  #       #notify_parent({:saved, question})
+  defp create_answers_changesets(type, %{new_question: new_question} = params) do
+    if new_question do
+      case type do
+        t when t in [:single_choice, :multiple_choice] ->
+          [
+            Questions.change_question_answer(%QuestionAnswer{}),
+            Questions.change_question_answer(%QuestionAnswer{}),
+            Questions.change_question_answer(%QuestionAnswer{}),
+            Questions.change_question_answer(%QuestionAnswer{}),
+          ]
 
-  #       Quizzes.update_quiz_points(quiz_id)
+        :true_false -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => false, "answer" => "."})]
+        :open_answer -> []
+        _ -> [Questions.change_question_answer(%QuestionAnswer{})]
+      end
 
-  #       {:noreply,
-  #        socket
-  #        |> put_flash(:info, "Question created successfully")
-  #        |> push_navigate(to: ~p"/quizzes/#{quiz_id}/question/#{question.id}")}
-
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       {:noreply, assign(socket, changeset: changeset)}
-  #   end
-  # end
+    else
+      %{question: question} = params
+      Enum.reduce(question.answers, [], fn answer, acc -> [Questions.change_question_answer(answer) | acc] end) |> Enum.reverse
+    end
+  end
 
 
 
@@ -184,6 +182,16 @@ defmodule QuicWeb.QuestionLive.Forms do
   @impl true
   def handle_info({:question_answers, answers}, socket) do
     {:noreply, socket |> assign(:answers, answers)}
+  end
+
+  @impl true
+  def handle_info(:no_error_answers, socket) do
+    {:noreply, socket |> assign(:error_answers, nil)}
+  end
+
+  @impl true
+  def handle_info({:error_answers, msg}, socket) do
+    {:noreply, socket |> assign(:error_answers, msg)}
   end
 
 end

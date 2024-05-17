@@ -1,6 +1,8 @@
 defmodule QuicWeb.MyComponents do
   use Phoenix.Component
+
   alias Phoenix.LiveView.JS
+  alias QuicWeb.QuicWebAux
 
   import QuicWeb.CoreComponents
   import Phoenix.HTML
@@ -195,6 +197,147 @@ defmodule QuicWeb.MyComponents do
     </div>
     """
   end
+
+
+  @doc """
+  Renders a True or False block
+
+  ## Examples
+
+    <.true_or_false is_true={true} />
+  """
+  attr :is_true, :boolean, default: false
+  attr :class, :string, default: ""
+
+  def true_or_false(assigns) do
+    ~H"""
+    <div class={@class}>
+      <%= if @is_true do %>
+        <div class="-ml-2 px-2 rounded-md py-1 bg-[var(--light-green)] w-min">
+          <p class="text-[var(--dark-green-2)]">True</p>
+        </div>
+
+      <% else %>
+        <div class="-ml-2 px-2 rounded-md py-1 bg-[var(--light-red)] w-min">
+          <p class="text-[var(--dark-red)]">False</p>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+
+
+
+
+  @doc """
+  Renders a Markdown Previewer for a Question's Answers.
+
+  ## Examples
+
+    <.markdown_previewer  answers={question.answers}/>
+  """
+  attr :answers, :any, default: []
+
+  def markdown_previewer_answers(assigns) do
+    ~H"""
+    <div
+      :for={answer_changeset <- @answers}
+      class="flex mt-4 rounded-md bg-[var(--background-card)] min-h-20 py-3 px-4 mb-4 border border-[var(--border)]"
+    >
+      <% changes = answer_changeset.changes %>
+      <div class="flex flex-col items-center justify-start">
+        <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} />
+      </div>
+
+      <div class="flex-1 ml-3 border-l">
+        <div class="flex-1 px-2 mx-3">
+          <%= if Map.has_key?(changes, :answer) do %>
+            <.markdown text={changes.answer} />
+          <% else %>
+            <%= if answer_changeset.data.answer !== nil do %>
+              <.markdown text={answer_changeset.data.answer} />
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+    """
+  end
+
+
+
+
+  @doc """
+  Renders a Markdown Previewer for a Question.
+
+  ## Examples
+
+    <.markdown_previewer_question type={question.type} answers={question.answers} question_changeset={changeset} />
+  """
+  attr :answers, :any, default: []
+  attr :type, :atom, required: true
+  attr :question_changeset, :any, default: %{}
+
+  def markdown_previewer_question(assigns) do
+    ~H"""
+    <div>
+      <%!-- QUESTION TYPE AND POINTS --%>
+      <div class="flex justify-between mt-8">
+        <div class={["py-1 px-2 rounded-md", (if is_atom(@type), do: QuicWebAux.get_type_color(@type), else: QuicWebAux.get_type_color(String.to_atom(@type)))]}>
+          <p class="text-white"><%= (if is_atom(@type), do: QuicWebAux.readable_name(@type), else: QuicWebAux.readable_name(String.to_atom(@type))) %></p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <Heroicons.trophy class="w-5 h-5 text-[var(primary-color-text)]" />
+          <p>
+            <%= if Map.has_key?(@question_changeset.changes, :points) do %>
+              <%= @question_changeset.changes.points %>
+            <% else %>
+              <%= if @question_changeset.data.points !== nil do %>
+                <%= @question_changeset.data.points %>
+              <% end %>
+            <% end %>
+            Points
+          </p>
+        </div>
+      </div>
+
+      <%!-- QUESTION DESCRIPTION --%>
+      <p class="mt-8 font-bold">Description</p>
+      <div class={["mt-2 bg-[var(--background-card)] overflow-auto rounded-md min-h-28 h- py-2 px-4 border border-[var(--border)]"]} >
+        <%= if Map.has_key?(@question_changeset.changes, :description) do %>
+          <.markdown text={@question_changeset.changes.description} />
+        <% else %>
+          <%= if @question_changeset.data.description !== nil do %>
+            <.markdown text={@question_changeset.data.description} />
+          <% else %>
+          <.markdown />
+          <% end %>
+        <% end %>
+      </div>
+
+      <%= if @type === :true_false do %>
+        <% answer = Enum.at(@answers, 0, nil) %>
+        <.true_or_false
+          class="mt-3 ml-3"
+          is_true={(Map.has_key?(answer.changes, :is_correct) && answer.changes.is_correct) || (Map.has_key?(answer.data, :is_correct) && answer.data.is_correct)}
+        />
+      <% end %>
+
+      <%= if @type !== :open_answer && @type !== :true_false do %>
+        <div class="mt-10">
+          <p class="font-bold">Answers</p>
+        </div>
+
+        <.markdown_previewer_answers answers={@answers} />
+      <% end %>
+    </div>
+    """
+  end
+
+
 
 
 end
