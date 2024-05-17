@@ -80,7 +80,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
         phx-target={@myself}
       >
         <div class="flex items-center w-full gap-4">
-          <.input field={f[:is_correct]} type="checkbox"/>
+          <.input field={f[:is_correct]} type="checkbox" />
           <div class="flex-1">
            <.input field={f[:answer]} type="textarea" rows="1" class="flex-1 w-full"/>
           </div>

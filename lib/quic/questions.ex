@@ -138,7 +138,7 @@ defmodule Quic.Questions do
             answer_bd = Enum.at(answers, acc, %QuestionAnswer{})
             params = %{
               "answer" => (if Map.has_key?(answer_changeset.changes, :answer), do: answer_changeset.changes.answer, else: answer_bd.answer),
-              "is_correct" => (if Map.has_key?(answer_changeset.changes, :is_correct), do: answer_changeset.changes.is_correct, else: false)
+              "is_correct" => (if Map.has_key?(answer_changeset.changes, :is_correct), do: answer_changeset.changes.is_correct, else: answer_bd.is_correct)
             }
             {:ok, _} = update_question_answer(answer_bd, params)
             acc + 1

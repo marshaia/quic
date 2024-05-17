@@ -84,11 +84,7 @@ defmodule QuicWeb.QuestionLive.Form do
 
   @impl true
   def handle_event("saveQuestion", _params, socket) do
-    if Map.has_key?(socket.assigns, :question) do
-      update_question(socket)
-    else
-      create_question(socket)
-    end
+    if Map.has_key?(socket.assigns, :question), do: update_question(socket), else: create_question(socket)
   end
 
   @impl true
@@ -110,6 +106,10 @@ defmodule QuicWeb.QuestionLive.Form do
       "points" => (if Map.has_key?(changes_map, :points), do: changes_map.points, else: question.points),
       "type" => (if Map.has_key?(changes_map, :type), do: changes_map.type, else: question.type),
     }
+
+    Logger.error("os que já existiam: \n#{inspect question.answers}")
+    Logger.debug("\nos que foram alterados: \n#{inspect answers_params}")
+
 
     case Questions.update_question(question, question_params, question.answers, answers_params) do
       {:ok, question} ->
