@@ -97,11 +97,9 @@ defmodule QuicWeb.Router do
       #live "/quizzes/:quiz_id/question/:question_id/edit", QuestionLive.Show, :edit
 
 
-      live "/quizzes/:quiz_id/new-question/:type", QuestionLive.Forms
-      live "/quizzes/:quiz_id/edit-question/:question_id", QuestionLive.Forms
-      live "/quizzes/:quiz_id/question/new", QuestionLive.Form
+      live "/quizzes/:quiz_id/new-question/:type", QuestionLive.Form
+      live "/quizzes/:quiz_id/edit-question/:question_id", QuestionLive.Form
       live "/quizzes/:quiz_id/question/:question_id", QuestionLive.Show, :show
-      live "/quizzes/:quiz_id/question/:question_id/edit", QuestionLive.Form
 
       # QUESTION ANSWERS
       live "/quizzes/:quiz_id/question/:question_id/answer/new", QuestionAnswerLive.Form

@@ -16,7 +16,7 @@ defmodule QuicWeb.QuicWebAux do
     case type do
       :single_choice -> "bg-[var(--turquoise)]"
       :multiple_choice -> "bg-[var(--second-color)]"
-      :true_false -> "bg-[var(--blue)]"
+      :true_false -> "bg-gray-500"
       :open_answer -> "bg-[var(--dark-green)]"
       :fill_the_blanks -> "bg-[var(--fifth-color)]"
       :fill_the_code -> "bg-[var(--third-color)]"
