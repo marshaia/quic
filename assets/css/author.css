@@ -1,5 +1,5 @@
 .sidebar {
-  @apply flex-col bg-[var(--background-card)] lg:w-64 md:w-44 p-5 rounded-md h-[calc(100vh-5.3rem)] border border-[var(--border)]
+  @apply flex-col bg-[var(--background-card)] lg:w-52 md:w-44 p-5 rounded-md h-[calc(100vh-5.3rem)] border border-[var(--border)]
   md:flex hidden
 }
 
@@ -12,7 +12,7 @@
 }
 
 .sidebar-icon {
-  @apply w-5 h-5 text-xl tracking-wider md:w-6 md:h-7 font-extralight
+  @apply w-5 h-5 md:w-6 md:h-6 font-extralight
 }
 
 .main-page {

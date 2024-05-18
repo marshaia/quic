@@ -1,12 +1,11 @@
 
-<div class="flex justify-start mb-5">
-  <.my_back navigate={~p"/quizzes"}>Back to quizzes</.my_back>
-</div>
-
 <% isOwner = isOwner?(@quiz.id, @current_author) %>
 
 <div class="flex justify-center w-full">
-  <main class="w-full max-w-3xl">
+  <main class="w-full "> <%!-- max-3-xl --%>
+    <div class="flex justify-start mb-5">
+      <.my_back navigate={~p"/quizzes"}>Back to quizzes</.my_back>
+    </div>
 
     <%!-- QUIZ SPECS --%>
     <section class="w-full bg-[var(--background-card)] p-4 rounded-md border border-[var(--border)]">
@@ -109,18 +108,18 @@
               <.markdown text={answer.answer} />
             </div>
           </div> --%>
-          <div :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="flex flex-col px-2">
-            <div :for={answer <- question.answers} class="flex flex-col mb-1">
-              <%= if question.type === :true_false do %>
-                <.true_or_false is_true={answer.is_correct} />
-              <% else %>
-                <div class="flex items-center gap-4">
+          <%= if question.type === :true_false do %>
+            <div class="px-2">
+              <% answer = Enum.at(question.answers, 0, %{}) %>
+              <.true_or_false is_true={answer.is_correct} />
+            </div>
+          <% end %>
+          <div :if={question.type !== :open_answer && question.type !== :true_false} class="flex flex-wrap px-2">
+            <div :for={answer <- question.answers} class="w-full p-1 lg:w-1/2">
+                <div class="flex items-center w-full gap-4">
                   <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
                   <.markdown text={answer.answer} />
                 </div>
-              <% end %>
-
-              <%!-- <hr class="w-full my-3 bg-[var(--background-card)]" /> --%>
             </div>
           </div>
         </.link>
