@@ -7,45 +7,6 @@
   </:actions>
 </.header>
 
-<%!-- <.table
-  id="sessions"
-  rows={@streams.sessions}
-  row_click={fn {_id, session} -> JS.push("show_page", value: %{id: session.id}) end}
->
-  <:col :let={{_id, session}} label="Code"><%= session.code %></:col>
-  <:col :let={{_id, session}} label="Start date"><%= session.start_date %></:col>
-  <:col :let={{_id, session}} label="End date"><%= session.end_date %></:col>
-  <:col :let={{_id, session}} label="Status"><%= session.status %></:col>
-  <:col :let={{_id, session}} label="Type"><%= session.type %></:col>
-  <:action :let={{_id, session}}>
-    <div class="sr-only">
-      <.link navigate={~p"/sessions/#{session}"}>Show</.link>
-    </div>
-    <.link patch={~p"/sessions/#{session}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={{id, session}}>
-    <.link
-      class="redLink"
-      phx-click={JS.push("delete", value: %{id: session.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
-    >
-      Delete
-    </.link>
-  </:action>
-</.table> --%>
-
-<%!-- <.modal :if={@live_action in [:new, :edit]} id="session-modal" show on_cancel={JS.patch(~p"/sessions")}>
-  <.live_component
-    module={QuicWeb.SessionLive.FormComponent}
-    id={@session.id || :new}
-    title={@page_title}
-    action={@live_action}
-    session={@session}
-    patch={~p"/sessions"}
-  />
-</.modal> --%>
-
-
 
 <div class="mt-5 overflow-auto">
   <table class="w-full p-2 mt-3 rounded-t-3xl">
@@ -54,7 +15,7 @@
       <th>Code</th>
       <th>Quiz</th>
       <th class="max-sm:hidden">Type</th>
-      <th class="max-sm:hidden"># Part.</th>
+      <%!-- <th class="max-sm:hidden"># Part.</th> --%>
       <th class="max-sm:hidden">Time</th>
       <th></th>
     </tr>
@@ -87,11 +48,7 @@
         </p>
       </td>
 
-      <td class="max-sm:hidden border-b border-b-[var(--border)]"><p class="mx-4"><%= Enum.count(session.participants) %></p>
-        <%!-- <.button class="p-1 border border-[var(--primary-color-text)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]">
-          <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
-        </.button> --%>
-      </td>
+      <%!-- <td class="max-sm:hidden border-b border-b-[var(--border)]"><p class="mx-4"><%= Enum.count(session.participants) %></p></td> --%>
 
       <td class="border-b border-b-[var(--border)] max-sm:hidden">
         <div class="flex items-center justify-center gap-1 mx-4">

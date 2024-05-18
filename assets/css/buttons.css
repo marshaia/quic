@@ -25,3 +25,15 @@
 .redLink {
   @apply text-white redBtn
 }
+
+.session-form-circle {
+  @apply rounded-full w-8 h-8 flex justify-center text-center items-center
+}
+
+.session-form-step-line {
+  @apply h-1 w-20 rounded-full
+}
+
+.session-form-btn {
+  @apply flex items-center gap-1 px-3 py-1
+}

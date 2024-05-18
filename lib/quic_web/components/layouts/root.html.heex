@@ -11,9 +11,6 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
     <script>
-    localStorage.setItem("author_email", "<%= if @current_author, do: @current_author.email %>")
-
-    
     function changeThemeToDark(toDark) {
       if (toDark) {
         localStorage.theme = 'dark'

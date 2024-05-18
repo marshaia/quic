@@ -12,6 +12,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   def mount(%{"quiz_id" => quiz_id}, _session, socket) do
     if Quizzes.is_allowed_to_access?(quiz_id, socket.assigns.current_author) do
       {:ok, socket
+            |> assign(:step, 1)
             |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
             |> assign(:session_type, nil)
             |> assign(:search_quiz_input, "")
@@ -33,6 +34,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket
+          |> assign(:step, 1)
           |> assign(:quiz, nil)
           |> assign(:session_type, nil)
           |> assign(:search_quiz_input, "")
@@ -59,8 +61,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   def handle_event("clicked_quiz", %{"id" => quiz_id} = _params, socket) do
     {:noreply, socket
               |> assign(quiz: Quizzes.get_quiz!(quiz_id))
-              |> assign(:search_quiz_input, "")
-              |> put_flash(:info, "Quiz selected successfully!")}
+              |> assign(:search_quiz_input, "")}
+              #|> put_flash(:info, "Quiz selected successfully!")}
   end
 
   @impl true
@@ -82,6 +84,25 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
       end
     end
 
+  end
+
+
+  @impl true
+  def handle_event("next_step", _params, socket) do
+    if socket.assigns.step < 3 do
+      {:noreply, socket |> assign(:step, socket.assigns.step + 1)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_event("previous_step", _params, socket) do
+    if socket.assigns.step > 1 do
+      {:noreply, socket |> assign(:step, socket.assigns.step - 1)}
+    else
+      {:noreply, socket}
+    end
   end
 
 

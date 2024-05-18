@@ -25,7 +25,7 @@ defmodule Quic.Sessions do
   end
 
   def list_all_author_sessions(id) do
-    author = Repo.get(Author, id) |> Repo.preload([sessions: from(s in Session, order_by: [desc: s.updated_at])]) |> Repo.preload(sessions: [:quiz, :participants])
+    author = Repo.get(Author, id) |> Repo.preload([sessions: from(s in Session, order_by: [desc: s.updated_at])]) |> Repo.preload(sessions: :quiz) #|> Repo.preload(sessions: :participants)
     author.sessions
   end
 
