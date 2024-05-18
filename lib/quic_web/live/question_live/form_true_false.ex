@@ -9,7 +9,7 @@ defmodule QuicWeb.QuestionLive.FormTrueFalse do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
+    <div class="w-full -mt-2">
       <.simple_form
         :let={f}
         for={@changeset}

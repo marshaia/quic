@@ -9,88 +9,17 @@
 
 
 
-<.header>
-  <h4 class="text-[var(--primary-color-text)] text-center mb-8 md:mb-3">Question Editor</h4>
-</.header>
+<%!-- LARGE SCREENS --%>
+<div class="hidden lg:block">
+  <.header>
+    <h5 class="text-[var(--primary-color)] lg:text-center lg:-mt-3 mb-8 md:mb-3">Question Editor</h5>
+  </.header>
 
-<div class="w-full mt-10">
-  <%!-- SWITCH BUTTONS FOR SMALL-MEDIUM SCREENS --%>
-  <div class="flex w-full lg:hidden">
-    <.link
-      class={["w-1/2 text-center py-2 px-4 border border-[var(--border)] hover:bg-[var(--hover)] rounded-l-md",
-      (if @view_selected === :editor, do: "bg-[var(--background-card)] border-[var(--primary-color)] text-[var(--primary-color)]", else: "bg-[var(--background-view)]")]}
-      phx-click="clicked_view"
-      phx-value-view={:editor}
-    >
-      Editor
-    </.link>
-    
-    <.link
-      class={["w-1/2 text-center bg-[var(--background-card)] py-2 px-4 border border-[var(--border)] hover:bg-[var(--hover)] rounded-r-md",
-      (if @view_selected === :previewer, do: "bg-[var(--background-card)] border-[var(--primary-color)] text-[var(--primary-color)]", else: "bg-[var(--background-view)]")]}
-      phx-click="clicked_view"
-      phx-value-view={:previewer}
-    >
-      Previewer
-    </.link>
-  </div>
-
-  <%!-- FORM FOR SMALL-MEDIUM SCREENS  --%>
-  <div class="block w-full lg:hidden">
-
-    <%!-- QUESTION FORM --%>
-    <%= if @view_selected === :editor do %>
-    <h6 class="mt-10 font-bold text-[var(--primary-color)] text-center">Question</h6>
-    <.simple_form
-      class="-mt-10"
-      :if={@view_selected === :editor}
-      :let={f}
-      for={@question_changeset}
-      id="question-form-responsive"
-      phx-change="validateQuestion"
-      phx-submit="ignore"
-    >
-      <.input field={f[:points]} type="number" label="Points" />
-      <.input field={f[:description]} type="textarea" rows="8" label="Question Description" />
-    </.simple_form>
-
-    <%!-- ANSWERS FORM --%>
-    <%= if @type === :true_false do %>
-      <.live_component id="true-false-answer-form-responsive" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} />
-    <% end %>
-
-    <%= if @type !== :open_answer && @type !== :true_false do %>
-
-      <%= if @type === :single_choice || @type === :multiple_choice do %>
-        <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
-
-        <p class="mt-5">
-          <.error :if={@error_answers !== nil} >
-            <%= @error_answers %>
-          </.error>
-        </p>
-        <.live_component id="single-choice-answer-form-responsive" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} />
-      <% end %>
-      
-    <% end %>
-
-    <%!-- SAVE BUTTON --%>
-    <div class="flex justify-center mt-5">
-      <.button class="call2actionBtn" phx-click="saveQuestion" disabled={@cant_submit_question || @cant_submit_answers}>
-        Save Question
-      </.button>
-    </div>
-    <% end %>
-  </div>
-
-
-  <%!-- FOR LARGE SCREENS --%>
-  <div class="hidden w-full lg:flex">
-    <div class="hidden lg:block lg:w-1/2">
-      <%!-- QUESTION FORM --%>
-      <h6 class="mt-5 font-bold text-[var(--primary-color)] text-center">Question</h6>
+  <div class="flex w-full mt-4 rounded-md border border-[var(--border)] h-[calc(100vh-15.5rem)] bg-[var(--background-card)]">
+    <%!-- FORM --%>
+    <section class="flex flex-col items-center w-1/2 px-6 py-5 overflow-auto">
       <.simple_form
-        class="-mt-10"
+        class="w-full -mt-10"
         :if={@view_selected === :editor}
         :let={f}
         for={@question_changeset}
@@ -108,44 +37,88 @@
       <% end %>
 
       <%= if @type !== :open_answer && @type !== :true_false do %>
-
         <%= if @type === :single_choice || @type === :multiple_choice do %>
-          <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
-
-          <p class="mt-5">
-            <.error :if={@error_answers !== nil} >
-              <%= @error_answers %>
-            </.error>
-          </p>
+          <h6 class="mt-8 font-bold text-[var(--primary-color-text)] text-center">Answers</h6>
+          <.error :if={@error_answers !== nil}><%= @error_answers %></.error>
           <.live_component id="single-choice-answer-form" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} />
         <% end %>
-        
       <% end %>
+    </section>
 
-      <%!-- SAVE BUTTON --%>
-      <div class="flex justify-center mt-5">
-        <.button class="call2actionBtn" phx-click="saveQuestion" disabled={@cant_submit_question || @cant_submit_answers}>
-          Save Question
-        </.button>
-      </div>
-    </div>
+    <%!-- DIVIDER --%>
+    <div class="border-l border-[var(--border)]"></div>
 
-    <%!-- DIVIDER FOR LARGE SCREENS --%>
-    <div class="border-l border-[var(--border)] mx-10"></div>
-
-    <%!-- MARKDOWN PREVIEWERS FOR LARGE SCREENS --%>
-    <section id="answer-form-page-prism-hook" phx-hook="PrismInitializer" class="w-1/2">
-      <h6 class="mt-5 font-bold text-[var(--primary-color)] text-center">Previewer</h6> 
+    <%!-- PREVIEWER --%>
+    <section id="answer-form-page-prism-hook" phx-hook="PrismInitializer" class="w-1/2 px-6 overflow-auto">
       <.markdown_previewer_question question_changeset={@question_changeset} type={@type} answers={@answers} />
     </section>
   </div>
+</div>
 
-  
 
 
-  <%!-- MARKDOWN PREVIEWERS FOR SMALL-MEDIUM SCREENS --%>
-  <section :if={@view_selected === :previewer} id="answer-form-page-prism-hook-responsive" phx-hook="PrismInitializer" class="block w-full lg:hidden">
+<%!-- SMALL-MEDIUM SCREENS --%>
+<div class="block w-full lg:hidden">
+  <div class="flex w-full">
+    <.link
+      class={["w-1/2 text-center py-2 px-4 border border-[var(--border)] hover:bg-[var(--hover)] rounded-l-md",
+      (if @view_selected === :editor, do: "bg-[var(--background-card)] border-[var(--primary-color)] text-[var(--primary-color)]", else: "bg-[var(--background-view)]")]}
+      phx-click="clicked_view"
+      phx-value-view={:editor}
+    >
+      Editor
+    </.link>
+    
+    <.link
+      class={["w-1/2 text-center bg-[var(--background-card)] py-2 px-4 border border-[var(--border)] hover:bg-[var(--hover)] rounded-r-md",
+      (if @view_selected === :previewer, do: "bg-[var(--background-card)] border-[var(--primary-color)] text-[var(--primary-color)]", else: "bg-[var(--background-view)]")]}
+      phx-click="clicked_view"
+      phx-value-view={:previewer}
+    >
+      Previewer
+    </.link>  
+  </div>
+
+  <%!-- QUESTION FORM --%>
+  <%= if @view_selected === :editor do %>
+    <%!-- <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Question</h6> --%>
+    <.simple_form
+      class=""
+      :if={@view_selected === :editor}
+      :let={f}
+      for={@question_changeset}
+      id="question-form-responsive"
+      phx-change="validateQuestion"
+      phx-submit="ignore"
+    >
+      <.input field={f[:points]} type="number" label="Points" />
+      <.input field={f[:description]} type="textarea" rows="8" label="Question Description" />
+    </.simple_form>
+
+    <%!-- ANSWERS FORM --%>
+    <%= if @type === :true_false do %>
+      <.live_component id="true-false-answer-form-responsive" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} />
+    <% end %>
+
+    <%= if @type !== :open_answer && @type !== :true_false do %>
+      <%= if @type === :single_choice || @type === :multiple_choice do %>
+        <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
+        <.error :if={@error_answers !== nil}><%= @error_answers %></.error>
+        <.live_component id="single-choice-answer-form-responsive" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} />
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%!-- MARKDOWN PREVIEWERS --%>
+  <section :if={@view_selected === :previewer} id="answer-form-page-prism-hook-responsive" phx-hook="PrismInitializer" class="mt-3 w-full bg-[var(--background-card)] rounded-md px-4 border border-[var(--border)]">
      <.markdown_previewer_question question_changeset={@question_changeset} type={@type} answers={@answers} />
   </section>
+</div>
 
+
+<%!-- SAVE BUTTON --%>
+<div class="flex justify-center mt-5">
+  <.button class="call2actionBtn" phx-click="saveQuestion" disabled={@cant_submit_question || @cant_submit_answers}>
+    Save Question
+  </.button>
 </div>

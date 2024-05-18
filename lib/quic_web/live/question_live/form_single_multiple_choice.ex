@@ -14,7 +14,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col w-full gap-3 mt-10">
+    <div class="flex flex-col w-full gap-3">
       <.simple_form
         class="w-full -mt-10"
         :let={f}
