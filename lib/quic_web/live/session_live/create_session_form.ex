@@ -1,12 +1,9 @@
 defmodule QuicWeb.SessionLive.CreateSessionForm do
-  require Logger
   use QuicWeb, :author_live_view
 
-  alias Quic.Sessions
   alias Quic.Quizzes
+  alias Quic.Sessions
   alias Quic.Sessions.Session
-
-
 
   @impl true
   def mount(%{"quiz_id" => quiz_id}, _session, socket) do
@@ -15,10 +12,9 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
             |> assign(:step, 1)
             |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
             |> assign(:session_type, nil)
-            |> assign(:search_quiz_input, "")
             |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
             |> assign(:page_title, "New Session")
-            |> assign(:current_path, "/sessions/new")
+            |> assign(:current_path, "/sessions/new/quiz/#{quiz_id}")
             |> assign(:back, "/quizzes/#{quiz_id}")}
 
     else
@@ -37,7 +33,6 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
           |> assign(:step, 1)
           |> assign(:quiz, nil)
           |> assign(:session_type, nil)
-          |> assign(:search_quiz_input, "")
           |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
           |> assign(:page_title, "New Session")
           |> assign(:current_path, "/sessions/new")
@@ -54,15 +49,18 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   @impl true
   def handle_event("form_quiz_changed", %{"quiz_name" => name}, socket) do
     result = filter_author_quizzes(socket.assigns.current_author.id, name)
-    {:noreply, socket |> assign(search_quiz_input: name, filtered_quizzes: result)}
+    {:noreply, socket |> assign(filtered_quizzes: result)}
   end
 
   @impl true
   def handle_event("clicked_quiz", %{"id" => quiz_id} = _params, socket) do
     {:noreply, socket
               |> assign(quiz: Quizzes.get_quiz!(quiz_id))
-              |> assign(:search_quiz_input, "")}
-              #|> put_flash(:info, "Quiz selected successfully!")}
+              |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
+  end
+  @impl true
+  def handle_event("deselect_quiz", _params, socket) do
+    {:noreply, socket |> assign(quiz: nil)}
   end
 
   @impl true
@@ -105,9 +103,11 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
     end
   end
 
-
+  # fazer ao nivel da BD com uma query
   defp filter_author_quizzes(author_id, input) do
     Enum.filter(Quizzes.list_all_author_quizzes(author_id), fn quiz -> String.match?(quiz.name, ~r/#{input}/i) end)
+    |> Enum.filter(fn quiz -> String.match?(quiz.description, ~r/#{input}/i) end)
+    #|> Enum.filter(fn quiz -> String.match?(quiz.author.display.name, ~r/#{input}/i) end)
   end
 
 end
