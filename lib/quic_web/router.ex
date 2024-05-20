@@ -135,6 +135,7 @@ defmodule QuicWeb.Router do
       #live "/sessions/:id/edit", SessionLive.Index, :edit
 
       live "/sessions/:id", SessionLive.Show, :show
+      live "/sessions/:id/full-screen", SessionLive.FullScreenControls
       #live "/sessions/:id/show/edit", SessionLive.Show, :edit
 
 

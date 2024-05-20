@@ -1,0 +1,64 @@
+
+<div class="flex justify-between mt-8">
+  <h3 class="text-[var(--primary-color)] font-bold"><%= @session.quiz.name %></h3>
+
+  <.button
+    class="redBtn"
+  >
+    Finish Session
+  </.button>
+</div>
+
+<div class="flex items-center justify-center gap-4 my-3">
+  <%!-- <.button
+    class=""
+  >
+    <Heroicons.chevron_left class="w-5 h-5"/>
+  </.button> --%>
+
+  <h6 class="text-gray-500 ">
+    1 of 10
+  </h6>
+
+  <.button
+    phx-click="next_question"
+    data-confirm="Are you sure you want to move on to the next question?" 
+    class="p-2 rounded-md bg-[var(--background-card)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
+  >
+    <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
+  </.button>
+</div>
+
+
+<%!-- QUESTION --%>
+<div class="w-full mt-3">
+  <div class="flex gap-5">
+    <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-bold text-[var(--primary-color-text)] text-lg">
+      1
+    </div>
+    
+    <% question = Enum.at(@quiz.questions, 0, nil) %>
+    <%= if question !== nil do %>
+      <section id="monitor-paced-full-screen-question" phx-hook="PrismInitializer" class="w-full">
+        <.markdown text={question.description} />
+      </section>
+    <% end %>
+  </div>
+
+
+  <div id="monitor-paced-full-screen-answers" class="flex flex-wrap mt-10">
+    <div :for={answer <- question.answers} class="w-full p-3 md:w-1/2">
+    <%!-- (if @selected_answer === answer.id, do: "bg-green-200 hover:bg-green-300") --%>
+      <div 
+        phx-click="selected-answer"
+        phx-click={}
+        phx-value-id={answer.id}
+        class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", ]}
+      >
+        <.markdown class="mt-2" text={answer.answer} />
+      </div>
+    </div>
+  </div>
+
+
+</div>

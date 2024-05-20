@@ -31,7 +31,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket
-          |> assign(:step, 2)
+          |> assign(:step, 1)
           |> assign(:quiz, nil)
           |> assign(:session_type, :monitor_paced)
           |> assign(:filtered_quizzes, Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id))

@@ -19,11 +19,10 @@ defmodule QuicWeb.SessionLive.Show do
     Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
 
     {:noreply, socket
-              |> assign(:page_title, page_title(socket.assigns.live_action))
-              |> assign(:participant_message, "")
-              |> assign(:participants, Sessions.get_session_participants(id))
               |> assign(:session, session)
-              |> assign(:current_path, "/sessions/#{id}")}
+              |> assign(:page_title, "Show Session")
+              |> assign(:current_path, "/sessions/#{id}")
+              |> assign(:participants, Sessions.get_session_participants(id))}
   end
 
 
@@ -41,6 +40,11 @@ defmodule QuicWeb.SessionLive.Show do
   @impl true
   def handle_event("close-session-btn", _payload, socket) do
     {:noreply, socket |> push_event("close_session", %{session_id: socket.assigns.session.id, code: socket.assigns.session.code, email: socket.assigns.current_author.email})}
+  end
+
+  @impl true
+  def handle_event("next_question", _params, socket) do
+    {:noreply, socket}
   end
 
 
@@ -107,7 +111,4 @@ defmodule QuicWeb.SessionLive.Show do
     end
   end
 
-
-  defp page_title(:show), do: "Show Session"
-  defp page_title(:edit), do: "Edit Session"
 end

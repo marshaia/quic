@@ -1,6 +1,16 @@
 <div id="monitor-session-specs-section" phx-hook="SessionChannelMonitor">
   <div class="flex justify-between">
     <.my_back navigate={~p"/sessions"}>Back to sessions</.my_back>
+    <%= if @session.status !== :closed do %>
+      <.button 
+        phx-click="close-session-btn" 
+        data-confirm="Are you sure? A closed session cannot be opened again!"
+        class="flex items-center gap-2 p-2 bg-red-700 sm:px-2 hover:bg-red-900"
+      >
+        <Heroicons.x_mark class="w-5 h-5" />
+        <span>Close Session</span>
+      </.button>
+    <% end %>
   </div>
 
 
@@ -75,7 +85,8 @@
 
 
   <%!-- SESSION CONTROL BUTTONS --%>
-  <h6 class="mt-10 font-bold">Status</h6>
+  <%!-- <h6 class="mt-10 font-bold">Controls</h6> --%>
+  <div class="flex items-center justify-center my-10">
   <%= if @session.status === :open do %>
     <.button 
       :if={@session.status === :open} 
@@ -86,33 +97,50 @@
       <Heroicons.play class="w-5 h-5" />
       START
     </.button>
-  <% else %>
-    <%= if @session.status === :on_going && @session.type === :monitor_paced do %>
-      <%!-- CONTROL QUESTION FLOW --%>
-      <.button  
-        class="flex items-center gap-2 normalBtn" 
-        data-confirm="Are you sure you want to move on to the next question?"
-      >
-        <Heroicons.arrow_right class="w-5 h-5" />
-        Next Question
-      </.button>
-    <% end %>
   <% end %>
-  <%= if @session.status !== :closed do %>
-      <.button 
-        phx-click="close-session-btn" 
-        data-confirm="Are you sure? A closed session cannot be opened again!"
-        class="flex items-center gap-2 p-2 bg-red-700 sm:px-2 hover:bg-red-900"
+  
+  <%= if @session.type === :monitor_paced && @session.status === :on_going do %>
+    <%!-- VISUALIZE SESSION IN FULL SCREEN --%>
+    <.link  
+      target="_blank"
+      patch={~p"/sessions/#{@session.id}/full-screen"}
+      class="flex items-center p-2 bg-gray-500 hover:bg-[var(--border)] rounded-md" 
+    >
+      <Heroicons.arrows_pointing_out class="w-5 h-5" />
+      Full Screen
+    </.link>
+
+    <div class="flex items-center justify-center gap-4 ml-5">
+      <%!-- <.button
+        class=""
       >
-        <Heroicons.x_mark class="w-5 h-5" />
-        <span>Close Session</span>
+        <Heroicons.chevron_left class="w-5 h-5"/>
+      </.button> --%>
+
+      <h6 class="">
+        1 of 10
+      </h6>
+
+      <.button
+        phx-click="next_question"
+        data-confirm="Are you sure you want to move on to the next question?" 
+        class="p-2 rounded-md bg-[var(--primary-color)] hover:bg-[var(--background-view)] border border-[var(--primary-color)]"
+      >
+        <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
       </.button>
-    <% end %>
+    </div>
+  <% end %>
+
+
+
+  </div>
+  
+  
   
 
 
   <%!-- PARTICIPANTS --%>
-  <h6 class="mt-10 font-bold">Participants</h6>
+  <h6 class="font-bold">Participants</h6>
   <%= if Enum.count(@participants) === 0 do %>
   <p class="mt-1">No participants to report.</p>
   <% else %>

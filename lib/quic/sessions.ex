@@ -43,7 +43,7 @@ defmodule Quic.Sessions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(quiz: [:questions, :author]) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
+  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(quiz: [:questions, :author]) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
 
   def get_session_participants(id) do
     session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])

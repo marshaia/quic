@@ -1,7 +1,13 @@
 <%!-- MAIN CONTENT --%>
-<main class="px-4 py-20 screen-padding bg-[var(--background-view)]">
+<%!-- <main class="px-4 py-20 screen-padding bg-[var(--background-view)]">
   <div class="max-w-6xl mx-auto overflow-y-auto no-scrollbar ">
     <.flash_group flash={@flash} />
     <%= @inner_content %>
   </div>
+</main> --%>
+
+
+<main class="screen-padding overflow-y-auto h-[calc(100vh-3.4rem)]">
+  <.flash_group flash={@flash} />
+  <%= @inner_content %>
 </main>
