@@ -40,4 +40,49 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_event("back_to_session", _params, socket) do
+    {:noreply, socket |> redirect(to: ~p"/sessions/#{socket.assigns.session.id}")}
+  end
+
+  @impl true
+  def handle_event("start_session_btn", _payload, socket) do
+    {:noreply, socket |> push_event("start_session", %{session_id: socket.assigns.session.id, code: socket.assigns.session.code, email: socket.assigns.current_author.email})}
+  end
+
+  @impl true
+  def handle_event("close_session_btn", _payload, socket) do
+    {:noreply, socket |> push_event("close_session", %{session_id: socket.assigns.session.id, code: socket.assigns.session.code, email: socket.assigns.current_author.email})}
+  end
+
+
+
+  # SERVER MESSAGES
+  @impl true
+  def handle_info({"session-started", _params}, socket) do
+    {:noreply, socket
+              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+              |> put_flash(:info, "Session started!")}
+  end
+
+  @impl true
+  def handle_info("error-starting-session", socket) do
+    {:noreply, socket |> put_flash(:error, "Something went wrong. Please try again!")}
+  end
+
+  @impl true
+  def handle_info("monitor-closed-session", socket) do
+    {:noreply, socket
+              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+              |> put_flash(:info, "Session closed!")}
+  end
+
+  @impl true
+  def handle_info("error-closing-session", socket) do
+    {:noreply, socket |> put_flash(:error, "Something went wrong. Please try again!")}
+  end
+
+  @impl true
+  def handle_info(_, socket), do: {:noreply, socket}
+
 end

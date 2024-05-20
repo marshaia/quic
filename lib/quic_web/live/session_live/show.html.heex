@@ -89,46 +89,49 @@
   <div class="flex items-center justify-center my-10">
   <%= if @session.status === :open do %>
     <.button 
-      :if={@session.status === :open} 
-      class="flex items-center gap-2 call2actionBtn" 
-      phx-click="start-session-btn"
+      class="flex items-center gap-2 mr-5 call2actionBtn" 
       data-confirm="Are you sure? Once started, no more participants can join the Session!"
+      phx-click="start-session-btn"
+
     >
       <Heroicons.play class="w-5 h-5" />
       START
     </.button>
   <% end %>
   
-  <%= if @session.type === :monitor_paced && @session.status === :on_going do %>
+  <%= if @session.type === :monitor_paced do %>
     <%!-- VISUALIZE SESSION IN FULL SCREEN --%>
     <.link  
+      :if={@session.status !== :closed}
       target="_blank"
       patch={~p"/sessions/#{@session.id}/full-screen"}
-      class="flex items-center p-2 bg-gray-500 hover:bg-[var(--border)] rounded-md" 
+      class="flex items-center p-2 px-4 bg-gray-500 hover:bg-[var(--border)] rounded-full gap-2" 
     >
       <Heroicons.arrows_pointing_out class="w-5 h-5" />
       Full Screen
     </.link>
 
-    <div class="flex items-center justify-center gap-4 ml-5">
-      <%!-- <.button
-        class=""
-      >
-        <Heroicons.chevron_left class="w-5 h-5"/>
-      </.button> --%>
+    <%= if @session.status === :on_going do %>
+      <div class="flex items-center justify-center gap-4 ml-5">
+        <%!-- <.button
+          class=""
+        >
+          <Heroicons.chevron_left class="w-5 h-5"/>
+        </.button> --%>
 
-      <h6 class="">
-        1 of 10
-      </h6>
+        <h6 class="">
+          1 of 10
+        </h6>
 
-      <.button
-        phx-click="next_question"
-        data-confirm="Are you sure you want to move on to the next question?" 
-        class="p-2 rounded-md bg-[var(--primary-color)] hover:bg-[var(--background-view)] border border-[var(--primary-color)]"
-      >
-        <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
-      </.button>
-    </div>
+        <.button
+          phx-click="next_question"
+          data-confirm="Are you sure you want to move on to the next question?" 
+          class="p-2 rounded-md bg-[var(--primary-color)] hover:bg-[var(--background-view)] border border-[var(--primary-color)]"
+        >
+          <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
+        </.button>
+      </div>
+    <% end %>
   <% end %>
 
 

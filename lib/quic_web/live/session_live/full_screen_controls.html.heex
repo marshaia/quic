@@ -1,64 +1,150 @@
 
-<div class="flex justify-between mt-8">
-  <h3 class="text-[var(--primary-color)] font-bold"><%= @session.quiz.name %></h3>
-
-  <.button
-    class="redBtn"
-  >
-    Finish Session
-  </.button>
-</div>
-
-<div class="flex items-center justify-center gap-4 my-3">
-  <%!-- <.button
-    class=""
-  >
-    <Heroicons.chevron_left class="w-5 h-5"/>
-  </.button> --%>
-
-  <h6 class="text-gray-500 ">
-    1 of 10
-  </h6>
-
-  <.button
-    phx-click="next_question"
-    data-confirm="Are you sure you want to move on to the next question?" 
-    class="p-2 rounded-md bg-[var(--background-card)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
-  >
-    <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
-  </.button>
-</div>
-
-
-<%!-- QUESTION --%>
-<div class="w-full mt-3">
-  <div class="flex gap-5">
-    <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-bold text-[var(--primary-color-text)] text-lg">
-      1
-    </div>
+<%!-- GREETINGS + SESSION CODE --%>
+<%= if @session.status === :open do %>
+  <div class="flex justify-center mt-10">
     
-    <% question = Enum.at(@quiz.questions, 0, nil) %>
-    <%= if question !== nil do %>
-      <section id="monitor-paced-full-screen-question" phx-hook="PrismInitializer" class="w-full">
-        <.markdown text={question.description} />
-      </section>
-    <% end %>
-  </div>
+    <div class="flex w-full mx-3 flex-col items-center bg-[var(--background-card)] p-3 rounded-xl border border-[var(--border)]">
+      <%!-- SESSION CODE --%>
+      <div class="flex items-center gap-5">
+        <%!-- <h6>Code:</h6> --%>
+        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--third-color)]" />
+        <h1 class="text-[var(--primary-color)]"><%= @session.code %></h1>
+        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--fourth-color)]" />
+      </div>
 
-
-  <div id="monitor-paced-full-screen-answers" class="flex flex-wrap mt-10">
-    <div :for={answer <- question.answers} class="w-full p-3 md:w-1/2">
-    <%!-- (if @selected_answer === answer.id, do: "bg-green-200 hover:bg-green-300") --%>
-      <div 
-        phx-click="selected-answer"
-        phx-click={}
-        phx-value-id={answer.id}
-        class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", ]}
-      >
-        <.markdown class="mt-2" text={answer.answer} />
+      <%!-- WHERE TO JOIN --%>
+      <div class="flex w-full justify-evenly">
+        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--second-color)]" />
+        <p class="mt-5 text-center">Join at <b>www.joana.di.uminho.pt</b></p>
+        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--fifth-color)]" />
       </div>
     </div>
   </div>
 
+  <%!-- NUMBER OF PARTICIPANTS SO FAR --%>
+  <div class="flex justify-between mt-5">
+    <div class="flex gap-2 bg-[var(--background-card)] rounded-full p-2 px-4 border border-[var(--border)]">
+      <Heroicons.user_group class="w-7 h-7 text-[var(--primary-color-text)]" />
+      <h6 class="font-normal"><%= Enum.count(@participants) %></h6>
+    </div>
 
-</div>
+    <.button 
+      id="start_btn_monitor_full_screen"
+      phx-hook="SessionChannelMonitor"
+      phx-click="start_session_btn"
+      data-confirm="Are you sure? Once started, no more participants can join the Session!"
+      class="flex items-center gap-2 px-4 bg-[var(--primary-color)] text-white"
+    >
+      <Heroicons.play class="w-5 h-5"/>
+      START
+    </.button>
+  </div>
+
+  <%!-- PARTICIPANTS --%>
+  <div class="flex justify-center mt-5">
+    <%= if Enum.count(@participants) === 0 do %>
+      <p>No participants yet...</p>
+    <% else %>
+      <div :for={participant <- @participants}>
+        <%= participant.name %>
+      </div>
+    <% end %>
+  </div>
+
+
+
+
+
+
+        
+
+
+
+<%!-- QUIZ QUESTIONS --%>
+<% else %>
+  <%= if @session.status === :on_going do %>
+    <div class="flex justify-between mt-8">
+      <h3 class="text-[var(--primary-color)] font-bold"><%= @session.quiz.name %></h3>
+
+      <.button
+        id="finish_btn_monitor_full_screen"
+        phx-hook="SessionChannelMonitor"
+        phx-click="close_session_btn" 
+        data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
+        class="redBtn"
+      >
+        Finish Session
+      </.button>
+    </div>
+
+    <div class="flex items-center justify-center gap-4 my-3">
+      <%!-- <.button
+        class=""
+      >
+        <Heroicons.chevron_left class="w-5 h-5"/>
+      </.button> --%>
+
+      <h6 class="text-gray-500 ">
+        1 of 10
+      </h6>
+
+      <.button
+        phx-click="next_question"
+        data-confirm="Are you sure you want to move on to the next question?" 
+        class="p-2 rounded-md bg-[var(--background-card)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
+      >
+        <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
+      </.button>
+    </div>
+
+
+    <%!-- QUESTION --%>
+    <div class="w-full mt-3">
+      <div class="flex gap-5">
+        <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-bold text-[var(--primary-color-text)] text-lg">
+          1
+        </div>
+        
+        <% question = Enum.at(@quiz.questions, 0, nil) %>
+        <%= if question !== nil do %>
+          <section id="monitor-paced-full-screen-question" phx-hook="PrismInitializer" class="w-full">
+            <.markdown text={question.description} />
+          </section>
+        <% end %>
+      </div>
+
+
+      <div id="monitor-paced-full-screen-answers" class="flex flex-wrap mt-10">
+        <div :for={answer <- question.answers} class="w-full p-3 md:w-1/2">
+        <%!-- (if @selected_answer === answer.id, do: "bg-green-200 hover:bg-green-300") --%>
+          <div 
+            phx-click="selected-answer"
+            phx-click={}
+            phx-value-id={answer.id}
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", ]}
+          >
+            <.markdown class="mt-2" text={answer.answer} />
+          </div>
+        </div>
+      </div>
+    
+    </div>
+  
+  <%!-- SESSION IS CLOSED --%>
+  <% else %>
+    <div class="flex flex-col items-center justify-center w-full mt-14">
+
+      <h3>This session is closed</h3>
+      <h6 class="mt-5 font-normal text-center">You can now close this window. To see the results, return to the session's page.</h6>
+
+      <.button
+        phx-click="back_to_session"
+        class="mt-8 call2actionBtn"
+      >
+      Go to Session
+      </.button>
+    </div>
+  <% end %>
+
+
+<% end %>
