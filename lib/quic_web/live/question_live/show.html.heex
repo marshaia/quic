@@ -24,8 +24,7 @@
 
       <div class="flex justify-end">
         <.link 
-          patch={~p"/quizzes/#{@quiz_id}/edit-question/#{@question.id}"}
-          phx-click={JS.push_focus()}
+          phx-click="clicked_edit"
           class="border-[var(--primary-color-text)] text--[var(--primary-color-text)] hover:text--[var(--primary-color)] hover:border-[var(--primary-color)] border rounded-full p-1.5"
         >
           <Heroicons.pencil class="question-box-icon" />

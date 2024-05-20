@@ -78,8 +78,8 @@
         <%!-- QUESTION INFO --%>
         <.link 
           class="flex-1 px-4 mx-3 overflow-auto border-x border-[var(--border)]"
-          patch={~p"/quizzes/#{@quiz.id}/question/#{question.id}"} 
-          phx-click={JS.push_focus()}
+          phx-click="clicked_question"
+          phx-value-id={question.id}
         >
           <div class="flex flex-col md:justify-between md:items-center md:flex-row">
             <%!-- <p class="font-bold"> <%= question.title %> </p> --%>

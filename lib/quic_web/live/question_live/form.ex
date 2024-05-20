@@ -25,8 +25,7 @@ defmodule QuicWeb.QuestionLive.Form do
           |> assign(:answers, create_answers_changesets(question.type, %{new_question: false, question: question}))
           |> assign(:question_changeset, question_changeset)
           |> assign(:view_selected, :editor)
-          |> assign(:page_title, "Quiz - Edit Question")
-          |> assign(:current_path, "/quizzes/#{quiz_id}/#{question_id}")}
+          |> assign(:page_title, "Quiz - Edit Question")}
     else
       {:ok, socket
             |> put_flash(:error, "You can only edit your own quizzes' questions!")
@@ -48,13 +47,22 @@ defmodule QuicWeb.QuestionLive.Form do
             |> assign(:answers, create_answers_changesets(String.to_atom(type), %{new_question: true}))
             |> assign(:question_changeset, question_changeset)
             |> assign(:view_selected, :editor)
-            |> assign(:page_title, "Quiz - New Question")
-            |> assign(:current_path, "/quizzes/#{quiz_id}/new-question/#{type}")}
+            |> assign(:page_title, "Quiz - New Question")}
     else
       {:ok, socket
             |> put_flash(:error, "You can only edit your own quizzes' questions!")
             |> push_navigate(to: ~p"/quizzes/")}
     end
+  end
+
+  @impl true
+  def handle_params(%{"question_id" => question_id, "quiz_id" => quiz_id}, _uri, socket) do
+    {:noreply, socket |> assign(:current_path, "/quizzes/#{quiz_id}/edit-question/#{question_id}")}
+  end
+
+  @impl true
+  def handle_params(%{"type" => type, "quiz_id" => quiz_id}, _uri, socket) do
+    {:noreply, socket |> assign(:current_path, "/quizzes/#{quiz_id}/new-question/#{type}")}
   end
 
 

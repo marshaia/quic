@@ -7,8 +7,12 @@ defmodule QuicWeb.SessionLive.Index do
   def mount(_params, _session, socket) do
     {:ok, socket
           |> assign(:sessions, Sessions.list_all_author_sessions(socket.assigns.current_author.id))
-          |> assign(:page_title, "Sessions")
-          |> assign(:current_path, "/sessions")}
+          |> assign(:page_title, "Sessions")}
+  end
+
+  @impl true
+  def handle_params(_params, _uri, socket) do
+    {:noreply, socket |> assign(:current_path, "/sessions")}
   end
 
 

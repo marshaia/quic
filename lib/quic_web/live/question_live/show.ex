@@ -15,9 +15,12 @@ defmodule QuicWeb.QuestionLive.Show do
      socket
      |> assign(:quiz_id, quiz_id)
      |> assign(:question, Questions.get_question!(question_id))
-     |> assign(:page_title, page_title(socket.assigns.live_action))
+     |> assign(:page_title, "Quiz - Show Question")
      |> assign(:current_path, "/quizzes/#{quiz_id}/question/#{question_id}")}
   end
 
-  defp page_title(:show), do: "Show Question"
+  @impl true
+  def handle_event("clicked_edit", _params, socket) do
+    {:noreply, socket |> redirect(to: ~p"/quizzes/#{socket.assigns.quiz_id}/edit-question/#{socket.assigns.question.id}")}
+  end
 end
