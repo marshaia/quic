@@ -2,6 +2,7 @@ defmodule QuicWeb.SessionLive.Show do
   use QuicWeb, :author_live_view
 
   alias Quic.Sessions
+  alias QuicWeb.QuicWebAux
 
   @impl true
   def mount(_params, _session, socket) do

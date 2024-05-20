@@ -39,14 +39,14 @@
       <div class="flex justify-center">
         <form phx-change="form_type_changed" id="create-session-form" class="mt-8 max-w-96">
           <div class="flex flex-col gap-5">
-            <div class={["px-4 py-2 rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === "monitor_paced", do: "border-[var(--primary-color)]")]}>
-              <input type="radio" id="teacher_paced_radio" name="type" value={:monitor_paced} checked={@session_type === "monitor_paced"}>
+            <div class={["px-4 py-2 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === :monitor_paced, do: "border-[var(--primary-color)] bg-[var(--background-view)]")]}>
+              <input type="radio" id="teacher_paced_radio" name="type" value={:monitor_paced} checked={@session_type === :monitor_paced}>
               <label for="teacher_paced_radio" class="ml-2 mt-0.5 font-semibold">Monitor Paced</label>
               <p class="mt-2">You control the flow of the questions, i.e., every Participant is answering the same question at the same time, and you decide when it's time to move on to the next question</p>
             </div>
 
-            <div class={["px-4 py-2 rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === "participant_paced", do: "border-[var(--primary-color)]")]}>
-              <input type="radio" id="student_paced_radio" name="type" value={:participant_paced} checked={@session_type === "participant_paced"}>
+            <div class={["px-4 py-2 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === :participant_paced, do: "border-[var(--primary-color)] bg-[var(--background-view)]")]}>
+              <input type="radio" id="student_paced_radio" name="type" value={:participant_paced} checked={@session_type === :participant_paced}>
               <label for="student_paced_radio" class="ml-2 mt-0.5 font-semibold">Participant Paced</label>
               <p class="mt-2">Each Participant completes the quiz independently, without your interference, with the Participant deciding when to move on to the next question and when to submit the quiz</p>
             </div>
@@ -63,30 +63,25 @@
         <p>Please select the Quiz to broadcast</p>
       </div>
       <%= if @quiz !== nil do %>
-        <div class="flex mt-8 gap-4 p-4 w-96 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+        <div class="flex mt-8 gap-4 p-4 w-96 md:w-full rounded-xl bg-[var(--background-view)] border border-[var(--border)]">
           <Heroicons.pencil class="w-5 h-5 text-[var(--primary-color)]"/>
-
           <div class="w-full">
             <div class="flex justify-between">
-              <p class="text-base"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></p>
+              <p class="-mt-1 text-base font-bold"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></p>
               <Heroicons.x_circle 
                 class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--primary-color)] -mt-2 -mr-2 hover:cursor-pointer"
                 phx-click="deselect_quiz"
               />
             </div>
-
             <p><%= if String.length(@quiz.description) > 30, do: String.slice(@quiz.description, 0..30) <> "...", else: @quiz.description %></p>
-
-            <div class="flex justify-between mt-4 md:flex-col md:mt-0 md:gap-2">
+            <div class="flex justify-between gap-2 mt-4">
               <div class="flex gap-1">
                 <Heroicons.trophy class="w-5 h-5"/>
                 <p><%= @quiz.total_points %> Points</p>
               </div>
-
               <div class="flex gap-1">
                 <Heroicons.user class="w-5 h-5"/>
-                <%!-- <p><% quiz.author.display_name %></p> --%>
-                <p> You </p>
+                <p><%= @quiz.author.display_name %></p>
               </div>
             </div>
           </div>
@@ -97,10 +92,10 @@
           <div class="flex items-center justify-center">
             <Heroicons.magnifying_glass class="relative w-5 h-5 text-[var(--primary-color)]" />
           </div>
-          <input type="text" id="quiz_name" name="quiz_name" class="bg-[var(--background-view)] border-none focus:ring-0 text-sm w-96" placeholder="Search by name, description or author"/>
+          <input type="text" id="quiz_name" name="quiz_input" class="bg-[var(--background-view)] border-none focus:ring-0 text-sm w-80" placeholder="Search by name, description or author"/>
         </form>
 
-        <div class="mb-3 h-[220px] rounded-b-xl border-t border-[var(--border)] overflow-auto bg-[var(--background-view)] w-full">
+        <div class="mb-3 h-[233px] rounded-b-xl border-t border-[var(--border)] overflow-auto bg-[var(--background-view)] w-full">
           <%= if Enum.count(@filtered_quizzes) === 0 do %>
             <p class="mt-3 text-xs text-center">Nothing to show</p>
           <% else %>
@@ -109,25 +104,7 @@
               phx-click="clicked_quiz" phx-value-id={quiz.id}
               class="hover:bg-[var(--background-card)] cursor-pointer px-4 pt-3"
             >
-              <div class="flex flex-col justify-between md:flex-row">
-                <div class="flex-1">
-                  <p class="text-base text-[var(--primary-color)]"><%= quiz.name %></p>
-                  <p><%= if String.length(quiz.description) > 30, do: String.slice(quiz.description, 0..30) <> "...", else: quiz.description %></p>
-                </div>
-
-                <div class="flex justify-between mt-4 md:flex-col md:mt-0 md:gap-2">
-                  <div class="flex gap-1">
-                    <Heroicons.trophy class="w-5 h-5"/>
-                    <p><%= quiz.total_points %> Points</p>
-                  </div>
-
-                  <div class="flex gap-1">
-                    <Heroicons.user class="w-5 h-5"/>
-                    <%!-- <p><% quiz.author.display_name %></p> --%>
-                    <p> You </p>
-                  </div>
-                </div>
-              </div>
+              <.quiz_summary quiz={quiz} author_name={quiz.author_name}/>
 
               <hr class="w-full mt-5" />
             </div>
@@ -139,11 +116,19 @@
 
     <%!-- STEP 3 - SUMMARY --%>
     <%= if @step === 3 do %>
-      <div class="text-center">
-        <h6 class="mt-5 font-bold">Summary</h6>
-        <%!-- <p>Please select the session type which suits you better</p> --%>
+      <h6 class="mt-5 font-bold text-center">Summary</h6>
+
+      <div class="flex justify-start gap-1 mt-3">
+        <Heroicons.academic_cap class="w-5 h-5 text-[var(--primary-color)]"/>
+        <p><%= QuicWebAux.session_type_translate(@session_type) %></p>
       </div>
+
+      <div class="bg-[var(--background-view)] px-4 pt-3 pb-5 mt-5 rounded-xl">
+        <.quiz_summary quiz={@quiz} author_name={@quiz.author.display_name} />
+      </div>
+
     <% end %>
+
 
 
     <%!-- BUTTONS --%>
@@ -160,7 +145,7 @@
 
       <.button 
         :if={@step !== 3}
-        disabled={(@step === 1 && @session_type === nil) || (@step === 2 && !assigns[:quiz])}
+        disabled={(@step === 1 && @session_type === nil) || (@step === 2 && @quiz === nil)}
         class="session-form-btn bg-[var(--primary-color)]" 
         phx-click="next_step"
       >
@@ -170,87 +155,12 @@
 
       <.button 
         :if={@step === 3}
-        class="session-form-btn bg-[var(--primary-color)]" 
+        class="session-form-btn bg-[var(--primary-color)]"
         phx-click="save"
       >
-        <Heroicons.bolt class="w-4 h-4" />
-        <p class="font-normal text-white">Create Session</p>
+        <Heroicons.bolt class="w-5 h-5" />
+        <p class="text-base font-normal text-white">Create Session</p>
       </.button>
     </div>
   </div>
 </main>
-
-
-<%!-- <.simple_form
-  :let={f}
-  for={@changeset}
-  id="session-create-form"
-  phx-change="validate"
-  phx-submit="save"
->
-  <.input
-    field={f[:type]}
-    type="select"
-    label="Type"
-    prompt="Choose a value"
-    options={Ecto.Enum.values(Quic.Sessions.Session, :type)}
-  />
-      
-  <:actions>
-    <.button phx-disable-with="Saving..." class="call2actionBtn">Create Session</.button>
-  </:actions>
-</.simple_form> --%>
-
-
-<%!-- <h6 class="mt-10 mb-4 font-bold">Session Type</h6>
-<form phx-change="form_type_changed" id="create-session-form">
-  <div class="flex flex-col gap-10 md:flex-row">
-    <div class="p-4 rounded-md bg-[var(--background-card)]">
-      <input type="radio" id="teacher_paced_radio" name="type" value={:monitor_paced}>
-      <label for="teacher_paced_radio" class="ml-2 font-bold">Monitor Paced</label>
-      <p class="mt-2">You control the flow of the questions, i.e., every Participant is answering the same question at the same time, and you decide when it's time to move on to the next question</p>
-    </div>
-
-    <div class="p-4 rounded-md bg-[var(--background-card)]">
-      <input type="radio" id="student_paced_radio" name="type" value={:participant_paced}>
-      <label for="student_paced_radio" class="ml-2 font-bold">Participant Paced</label>
-      <p class="mt-2">Each Participant completes the quiz independently, without your interference, with the Participant deciding when to move on to the next question and when to submit the quiz</p>
-    </div>
-  </div>
-  
-
-  <h6 class="mt-10 mb-4 font-bold">Select Quiz</h6>
-  <%= if assigns[:quiz] do %>
-  <div class="flex gap-4 p-4 max-w-md rounded-md bg-[var(--background-card)]">
-    <Heroicons.pencil class="w-5 h-5 text-[var(--primary-color)]"/>
-    <div>
-      <span class="font-bold"><%= @quiz.name %></span>
-      <p><%= @quiz.description %></p>
-    </div>
-  </div>
-  <% end %>
-</form>
-
-
-<form phx-change="form_quiz_changed">
-  <label for="quiz_name">Search</label>
-  <input type="text" id="quiz_name" name="quiz_name" />
-</form>
-
-<%= if String.length(@search_quiz_input) > 0 do  %>
-    <div :for={quiz <- @filtered_quizzes}>
-      <.button 
-      class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 active:hover:bg-[--hover]"
-      disabled={if @quiz !== nil, do: @quiz.id === quiz.id}
-      phx-click="clicked_quiz" phx-value-id={quiz.id}>
-        <p class={["font-semibold", (if is_user_already_in_team(@team.authors, user.username), do: "text-red-400")]}><%= user.display_name %></p>
-        <p class="text-sm"><%= quiz.name %></p>
-      </.button>
-    </div>
-  <% end %>
-
-
-
-<.button class="call2actionBtn" phx-click="save">
-  <p class="text-white">Create Session</p>
-</.button> --%>

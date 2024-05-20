@@ -340,6 +340,36 @@ defmodule QuicWeb.MyComponents do
   end
 
 
+  @doc """
+  Renders a Quiz Summary block with the basic information.
+
+  ## Examples:
+
+    <.quiz_summary quiz={@quiz}/>
+  """
+  attr :quiz, :any, default: %{}
+  attr :author_name, :string, default: ""
+
+  def quiz_summary(assigns) do
+    ~H"""
+    <div class="w-full">
+      <p class="-mt-1 text-base font-bold text-[var(--primary-color)]"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></p>
+      <p><%= if String.length(@quiz.description) > 30, do: String.slice(@quiz.description, 0..30) <> "...", else: @quiz.description %></p>
+      <div class="flex justify-between gap-2 mt-4">
+        <div class="flex gap-1">
+          <Heroicons.trophy class="w-5 h-5"/>
+          <p><%= @quiz.total_points %> Points</p>
+        </div>
+        <div class="flex gap-1">
+          <Heroicons.user class="w-5 h-5"/>
+          <p><%= @author_name %></p>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+
 
 
 end

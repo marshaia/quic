@@ -37,4 +37,13 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
+
+  def session_type_translate(type) do
+    case type do
+      :monitor_paced -> "Monitor Paced"
+      :participant_paced -> "Participant Paced"
+      _ -> ""
+    end
+  end
+
 end

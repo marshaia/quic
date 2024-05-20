@@ -9,8 +9,6 @@ defmodule Quic.Teams do
   alias Quic.Accounts.Author
   alias Quic.Teams.Team
 
-  require Logger
-
   @doc """
   Returns the list of teams.
 
