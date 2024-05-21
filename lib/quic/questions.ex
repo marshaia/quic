@@ -44,6 +44,12 @@ defmodule Quic.Questions do
     question = Repo.get!(Question, id) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: [desc: a.inserted_at])])
     question.answers
   end
+
+  def get_question_with_position(quiz_id, position) do
+    query = from q in Question, where: q.quiz_id == ^quiz_id and q.position == ^position
+    res = Repo.all(query)
+    Enum.at(res, 0, nil)
+  end
   @doc """
   Creates a question.
 

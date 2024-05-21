@@ -28,13 +28,16 @@ defmodule QuicWeb.QuizLive.Show do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     question = Questions.get_question!(id)
+    position = question.position
+    quiz_id = socket.assigns.quiz.id
 
     case Questions.delete_question(question) do
       {:ok, _} ->
-        Quizzes.update_quiz_points(socket.assigns.quiz.id)
+        Quizzes.update_quiz_questions_positions(quiz_id, position)
+        Quizzes.update_quiz_points(quiz_id)
 
         {:noreply, socket
-                  |> assign(:quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))
+                  |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
                   |> put_flash(:info, "Question deleted successfully!")}
 
       {:error, _changeset} ->
@@ -46,10 +49,10 @@ defmodule QuicWeb.QuizLive.Show do
   def handle_event("duplicate", %{"id" => id}, socket) do
     question = Questions.get_question!(id)
     question_params = %{
-      # "title" => question.title,
       "description" => question.description,
       "points" => question.points,
-      "type" => question.type
+      "type" => question.type,
+      "position" => Enum.count(socket.assigns.quiz.questions) + 1
     }
 
     quiz_id = socket.assigns.quiz.id
@@ -71,6 +74,27 @@ defmodule QuicWeb.QuizLive.Show do
   def handle_event("clicked_question", %{"id" => id}, socket) do
     {:noreply, socket |> redirect(to: ~p"/quizzes/#{socket.assigns.quiz.id}/question/#{id}")}
   end
+
+  @impl true
+  def handle_event("clicked_edit", %{"id" => id}, socket) do
+    {:noreply, socket |> redirect(to: ~p"/quizzes/#{socket.assigns.quiz.id}/edit-question/#{id}")}
+  end
+
+  @impl true
+  def handle_event("send_question_up", %{"id" => id}, socket) do
+    quiz_id = socket.assigns.quiz.id
+    Quizzes.send_quiz_question(:up, quiz_id, id)
+    {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(quiz_id))}
+  end
+
+  @impl true
+  def handle_event("send_question_down", %{"id" => id}, socket) do
+    quiz_id = socket.assigns.quiz.id
+    Quizzes.send_quiz_question(:down, quiz_id, id)
+    {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))}
+  end
+
+
 
   def isOwner?(quiz_id, author) do
     Quizzes.is_owner?(quiz_id, author)

@@ -65,14 +65,29 @@
     <section id="quiz-page-questions-section-prism-hook" phx-hook="PrismInitializer" class="w-full">
       <h6 class="mb-2 font-bold">Questions</h6>
       <div 
-        :for={{question, index} <- Enum.with_index(@quiz.questions)}
+        :for={question<- @quiz.questions}
         class="flex border border-[var(--border)] rounded-md bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4"
       >
         <%!-- POSITION --%>
         <div class="flex flex-col items-center justify-between">
-          <h5 class="text-[var(--primary-color)]"><%= index + 1 %></h5>
-          <Heroicons.arrow_up :if={isOwner} class="question-box-icon" />
-          <Heroicons.arrow_down :if={isOwner} class="question-box-icon" />
+          <h5 class="text-[var(--primary-color)]"><%= question.position %></h5>
+
+          <.button
+            disabled={question.position === 1}
+            phx-click="send_question_up"
+            phx-value-id={question.id}
+          >
+            <Heroicons.arrow_up :if={isOwner} class={["question-box-icon", (if question.position === 1, do: "text-[var(--border)] hover:text-[var(--border)]", else: "text-[var(--primary-color-text)]")]} />
+          </.button>
+
+          <.button
+            disabled={question.position === Enum.count(@quiz.questions)}
+            phx-click="send_question_down"
+            phx-value-id={question.id}
+          >
+            <Heroicons.arrow_down :if={isOwner} class={["question-box-icon", (if question.position === Enum.count(@quiz.questions), do: "text-[var(--border)] hover:text-[var(--border)]", else: "text-[var(--primary-color-text)]")]} />
+          </.button>
+
         </div>
 
         <%!-- QUESTION INFO --%>
@@ -115,7 +130,7 @@
             </div>
           <% end %>
           <div :if={question.type !== :open_answer && question.type !== :true_false} class="flex flex-wrap">
-            <div :for={answer <- question.answers} class="w-full p-1 lg:w-1/2 px-5">
+            <div :for={answer <- question.answers} class="w-full p-1 px-5 lg:w-1/2">
                 <div class="flex items-center w-full gap-3">
                   <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
                   <.markdown class="w-full" text={answer.answer} />
@@ -128,8 +143,8 @@
         <%!-- ACTIONS --%>
         <div :if={isOwner} class="flex flex-col items-center justify-between">
           <.link 
-            patch={~p"/quizzes/#{@quiz.id}/edit-question/#{question.id}"} 
-            phx-click={JS.push_focus()}
+            phx-click="clicked_edit"
+            phx-value-id={question.id}
           >
             <Heroicons.pencil class="question-box-icon" />
           </.link>

@@ -7,9 +7,10 @@ defmodule Quic.Quizzes do
   alias Quic.Accounts.Author
   alias Quic.Repo
 
+  alias Quic.Questions
   alias Quic.Quizzes.Quiz
+  alias Quic.Questions.Question
 
-  require Logger
 
   @doc """
   Returns the list of quizzes.
@@ -67,7 +68,17 @@ defmodule Quic.Quizzes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_quiz!(id), do: Repo.get!(Quiz, id) |> Repo.preload(:author) |> Repo.preload(:questions) |> Repo.preload(questions: :answers)
+  def get_quiz!(id), do: Repo.get!(Quiz, id) |> Repo.preload(:author) |> Repo.preload([questions: from(q in Question, order_by: [asc: q.position])]) |> Repo.preload(questions: :answers)
+
+  def get_quiz_num_questions!(id) do
+    quiz = Repo.get!(Quiz, id) |> Repo.preload(:questions)
+    Enum.count(quiz.questions)
+  end
+
+  def get_quiz_questions!(id) do
+    quiz = Repo.get!(Quiz, id) |> Repo.preload([questions: from(q in Question, order_by: [asc: q.position])])
+    quiz.questions
+  end
 
   @doc """
   Creates a quiz.
@@ -122,6 +133,31 @@ defmodule Quic.Quizzes do
     |> Repo.update()
   end
 
+  def update_quiz_questions_positions(id, position) do
+    quiz_questions = get_quiz_questions!(id)
+    Enum.each(quiz_questions,
+      fn question ->
+        if (question.position > position) do
+          Questions.update_question(question, %{"position" => question.position - 1})
+        end
+      end)
+  end
+
+  def send_quiz_question(direction, quiz_id, question_id) do
+    question = Questions.get_question!(question_id)
+    old_position = question.position
+    new_position = question.position + (if direction === :up, do: -1, else: 1)
+
+    if old_position >= 1 do
+      case  Questions.get_question_with_position(quiz_id, new_position) do
+        nil -> {:error, question}
+        switch_question ->
+          Questions.update_question(switch_question, %{"position" => old_position})
+          Questions.update_question(question, %{"position" => new_position})
+          {:ok, question}
+      end
+    end
+  end
 
 
 

@@ -20,5 +20,5 @@
 }
 
 .question-box-icon {
-  @apply w-5 h-5 hover:cursor-pointer hover:text-[var(--primary-color)]
+  @apply w-5 h-5 hover:text-[var(--primary-color)]
 }

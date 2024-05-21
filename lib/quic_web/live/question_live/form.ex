@@ -44,6 +44,7 @@ defmodule QuicWeb.QuestionLive.Form do
             |> assign(:error_answers, nil)
             |> assign(:type, String.to_atom(type))
             |> assign(:quiz_id, quiz_id)
+            |> assign(:quiz_num_questions, Quizzes.get_quiz_num_questions!(quiz_id))
             |> assign(:answers, create_answers_changesets(String.to_atom(type), %{new_question: true}))
             |> assign(:question_changeset, question_changeset)
             |> assign(:view_selected, :editor)
@@ -68,8 +69,12 @@ defmodule QuicWeb.QuestionLive.Form do
 
 
   @impl true
-  def handle_event("validateQuestion", %{"question" => question_params}, socket) do
-    question_params = Map.put(question_params, "type", socket.assigns.type)
+  def handle_event("validateQuestion", %{"question" => params}, socket) do
+    position = (if Map.has_key?(socket.assigns, :question), do: socket.assigns.question.position, else: socket.assigns.quiz_num_questions)
+    question_params = params
+      |> Map.put("type", socket.assigns.type)
+      |> Map.put("position", position)
+
     changeset =
       %Question{}
       |> Questions.change_question(question_params)
@@ -140,7 +145,8 @@ defmodule QuicWeb.QuestionLive.Form do
     question_params = %{
       "description" => changes_map.description,
       "points" => changes_map.points,
-      "type" => changes_map.type
+      "type" => changes_map.type,
+      "position" => socket.assigns.quiz_num_questions + 1
     }
 
     case Questions.create_question(question_params, quiz_id, answers_params) do
