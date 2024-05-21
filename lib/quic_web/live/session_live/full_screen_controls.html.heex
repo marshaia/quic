@@ -77,7 +77,7 @@
       </.button>
     </div>
 
-    <div class="flex items-center justify-center gap-4 my-3">
+    <div class="flex items-center justify-center gap-4 my-3 mb-5">
       <%!-- <.button
         class=""
       >
@@ -107,22 +107,34 @@
         
         <% question = Enum.at(@quiz.questions, 0, nil) %>
         <%= if question !== nil do %>
-          <section id="monitor-paced-full-screen-question" phx-hook="PrismInitializer" class="w-full">
+          <section id="monitor_paced_full_screen_question" phx-hook="PrismInitializer" class="increment_font_size bg-[var(--background-card)] border border-[var(--border)] pt-3 px-5 pb-5 rounded-xl w-full">
             <.markdown text={question.description} />
           </section>
         <% end %>
       </div>
 
 
-      <div id="monitor-paced-full-screen-answers" class="flex flex-wrap mt-10">
+      <%!-- SHOW CORRECT ANSWERS --%>
+      <div class="flex justify-end mt-8 mb-5">
+        <.button 
+          class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)]" 
+          phx-click="toggle_correct_answers"
+        > 
+          <%= if @show_correct_answers do %>
+            <Heroicons.eye_slash class="w-4 h-4 text-[var(--primary-color-text)]" />
+          <% else %>
+            <Heroicons.eye class="w-4 h-4 text-[var(--primary-color-text)]" />
+          <% end %>
+          <p class="font-normal">
+          <%= if @show_correct_answers, do: "Hide", else: "Show" %> 
+          Correct Answer</p>
+        </.button>
+      </div>
+
+
+      <div id="monitor_paced_full_screen_answers" phx-hook="PrismInitializer" class="increment_font_size flex flex-wrap">
         <div :for={answer <- question.answers} class="w-full p-3 md:w-1/2">
-        <%!-- (if @selected_answer === answer.id, do: "bg-green-200 hover:bg-green-300") --%>
-          <div 
-            phx-click="selected-answer"
-            phx-click={}
-            phx-value-id={answer.id}
-            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", ]}
-          >
+          <div class={["py-2 px-4 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}>
             <.markdown class="mt-2" text={answer.answer} />
           </div>
         </div>

@@ -105,7 +105,7 @@
       :if={@session.status !== :closed}
       target="_blank"
       patch={~p"/sessions/#{@session.id}/full-screen"}
-      class="flex items-center p-2 px-4 bg-gray-500 hover:bg-[var(--border)] rounded-full gap-2" 
+      class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)] rounded-full hover:bg-[var(--hover)]" 
     >
       <Heroicons.arrows_pointing_out class="w-5 h-5" />
       Full Screen

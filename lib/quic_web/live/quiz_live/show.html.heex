@@ -114,11 +114,11 @@
               <.true_or_false is_true={answer.is_correct} />
             </div>
           <% end %>
-          <div :if={question.type !== :open_answer && question.type !== :true_false} class="flex flex-wrap px-2">
-            <div :for={answer <- question.answers} class="w-full p-1 lg:w-1/2">
-                <div class="flex items-center w-full gap-4">
+          <div :if={question.type !== :open_answer && question.type !== :true_false} class="flex flex-wrap">
+            <div :for={answer <- question.answers} class="w-full p-1 lg:w-1/2 px-5">
+                <div class="flex items-center w-full gap-3">
                   <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-                  <.markdown text={answer.answer} />
+                  <.markdown class="w-full" text={answer.answer} />
                 </div>
             </div>
           </div>

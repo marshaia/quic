@@ -24,6 +24,8 @@
   --red: #B91C1C;
   --light-red: #ee7373;
   --dark-red: #8a0f0f;
+
+  --code-previewer-selection: #b3d4fc;
 }
 
 
@@ -34,5 +36,6 @@
   --background-view: #111827;
   --border: rgba(255,255,255,.1);
   --hover: rgba(255,255,255,.03);
-  --focus-ring: 0 0 0 0.2rem rgba(129, 140, 248, 0.2)
+  --focus-ring: 0 0 0 0.2rem rgba(129, 140, 248, 0.2);
+  --code-previewer-selection: #494949;
 }

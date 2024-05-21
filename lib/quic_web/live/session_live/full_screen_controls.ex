@@ -25,7 +25,8 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
                 |> assign(:session, session)
                 |> assign(:page_title, "Session #{session.code}")
                 |> assign(:current_path, "/sessions/#{id}/full-screen")
-                |> assign(:participants, Sessions.get_session_participants(id))}
+                |> assign(:participants, Sessions.get_session_participants(id))
+                |> assign(:show_correct_answers, false)}
 
               else
       {:noreply, socket
@@ -53,6 +54,11 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   @impl true
   def handle_event("close_session_btn", _payload, socket) do
     {:noreply, socket |> push_event("close_session", %{session_id: socket.assigns.session.id, code: socket.assigns.session.code, email: socket.assigns.current_author.email})}
+  end
+
+  @impl true
+  def handle_event("toggle_correct_answers", _params, socket) do
+    {:noreply, socket |> assign(:show_correct_answers, !socket.assigns.show_correct_answers)}
   end
 
 
