@@ -22,7 +22,8 @@ defmodule QuicWeb.SessionLive.Show do
               |> assign(:session, session)
               |> assign(:page_title, "Show Session")
               |> assign(:current_path, "/sessions/#{id}")
-              |> assign(:participants, Sessions.get_session_participants(id))}
+              |> assign(:participants, Sessions.get_session_participants(id))
+              |> assign(:selected_view, :participants)}
   end
 
 
@@ -45,6 +46,11 @@ defmodule QuicWeb.SessionLive.Show do
   @impl true
   def handle_event("next_question", _params, socket) do
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("change_selected_view", %{"view" => view}, socket) do
+    {:noreply, socket |> assign(:selected_view, String.to_atom(view))}
   end
 
 

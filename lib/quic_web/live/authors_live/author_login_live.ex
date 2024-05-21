@@ -3,7 +3,7 @@ defmodule QuicWeb.AuthorLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="max-w-md mx-auto">
+    <div class="max-w-md px-4 py-4 mx-auto mt-10">
       <.header class="text-center">
         <h5>Sign in to account</h5>
         <:subtitle>

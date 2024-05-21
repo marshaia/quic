@@ -1,8 +1,9 @@
 defmodule QuicWeb.SessionLive.FullScreenControls do
-  alias Quic.Quizzes
   use QuicWeb, :live_view
 
   alias Quic.Sessions
+  alias Quic.Quizzes
+  alias QuicWeb.QuicWebAux
 
   @impl true
   def mount(_params, _session, socket) do

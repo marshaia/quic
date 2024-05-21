@@ -87,166 +87,106 @@
   <%!-- SESSION CONTROL BUTTONS --%>
   <%!-- <h6 class="mt-10 font-bold">Controls</h6> --%>
   <div class="flex items-center justify-center my-10">
-  <%= if @session.status === :open do %>
-    <.button 
-      class="flex items-center gap-2 mr-5 call2actionBtn" 
-      data-confirm="Are you sure? Once started, no more participants can join the Session!"
-      phx-click="start-session-btn"
+    <%= if @session.status === :open do %>
+      <.button 
+        class="flex items-center gap-2 mr-5 call2actionBtn" 
+        data-confirm="Are you sure? Once started, no more participants can join the Session!"
+        phx-click="start-session-btn"
 
-    >
-      <Heroicons.play class="w-5 h-5" />
-      START
-    </.button>
-  <% end %>
-  
-  <%= if @session.type === :monitor_paced do %>
-    <%!-- VISUALIZE SESSION IN FULL SCREEN --%>
-    <.link  
-      :if={@session.status !== :closed}
-      target="_blank"
-      patch={~p"/sessions/#{@session.id}/full-screen"}
-      class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)] rounded-full hover:bg-[var(--hover)]" 
-    >
-      <Heroicons.arrows_pointing_out class="w-5 h-5" />
-      Full Screen
-    </.link>
-
-    <%= if @session.status === :on_going do %>
-      <div class="flex items-center justify-center gap-4 ml-5">
-        <%!-- <.button
-          class=""
-        >
-          <Heroicons.chevron_left class="w-5 h-5"/>
-        </.button> --%>
-
-        <h6 class="">
-          1 of 10
-        </h6>
-
-        <.button
-          phx-click="next_question"
-          data-confirm="Are you sure you want to move on to the next question?" 
-          class="p-2 rounded-md bg-[var(--primary-color)] hover:bg-[var(--background-view)] border border-[var(--primary-color)]"
-        >
-          <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
-        </.button>
-      </div>
+      >
+        <Heroicons.play class="w-5 h-5" />
+        START
+      </.button>
     <% end %>
-  <% end %>
+    
+    <%= if @session.type === :monitor_paced do %>
+      <%!-- VISUALIZE SESSION IN FULL SCREEN --%>
+      <.link  
+        :if={@session.status !== :closed}
+        target="_blank"
+        patch={~p"/sessions/#{@session.id}/full-screen"}
+        class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)] rounded-full hover:bg-[var(--hover)]" 
+      >
+        <Heroicons.arrows_pointing_out class="w-5 h-5" />
+        Full Screen
+      </.link>
 
+      <%= if @session.status === :on_going do %>
+        <div class="flex items-center justify-center gap-4 ml-5">
+          <%!-- <.button
+            class=""
+          >
+            <Heroicons.chevron_left class="w-5 h-5"/>
+          </.button> --%>
 
+          <h6 class="">
+            1 of 10
+          </h6>
 
+          <.button
+            phx-click="next_question"
+            data-confirm="Are you sure you want to move on to the next question?" 
+            class="p-2 rounded-md bg-[var(--primary-color)] hover:bg-[var(--background-view)] border border-[var(--primary-color)]"
+          >
+            <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
+          </.button>
+        </div>
+      <% end %>
+    <% end %>
   </div>
   
   
   
 
+  <div class="flex border-b border-[var(--border)]">
+    <div 
+      phx-click="change_selected_view"
+      phx-value-view="participants"
+      class={["w-1/2 text-center py-1 cursor-pointer rounded-tl-xl", (if @selected_view === :participants, do: "bg-[var(--background-card)] border border-[var(--border)]", else: "bg-[var(--background-view)]")]}
+    >
+      <h6 class={["font-bold", (if @selected_view === :participants, do: "text-[var(--primary-color)]")]}>Participants</h6>
+    </div>
+    <div 
+      phx-click="change_selected_view"
+      phx-value-view="stats"
+      class={["w-1/2 text-center py-1 cursor-pointer rounded-tr-xl", (if @selected_view === :stats, do: "bg-[var(--background-card)] border border-[var(--border)]", else: "bg-[var(--background-view)]")]}
+    >
+      <h6 class={["font-bold", (if @selected_view === :stats, do: "text-[var(--primary-color)]")]}>Stats</h6>
+    </div>
+  </div>
 
   <%!-- PARTICIPANTS --%>
-  <h6 class="font-bold">Participants</h6>
-  <%= if Enum.count(@participants) === 0 do %>
-  <p class="mt-1">No participants to report.</p>
-  <% else %>
+  <%= if @selected_view === :participants do %>
+    <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-x border-b border-[var(--border)]">
+      <%= if Enum.count(@participants) === 0 do %>
+        <p class="mt-1">No participants to report.</p>
+      <% else %>
 
-  <div class="overflow-auto">
-    <table class="w-full p-2 mt-3 rounded-t-3xl">
-      <tr class="bg-[var(--border)] h-10">
-        <th>#</th>
-        <th>Participant</th>
-        <th>Progress</th>
-        <th>Points</th>
-        <%!-- <th></th> --%>
-      </tr>
-      
-      <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
-        <td class="border-b border-b-[var(--border)] text-[var(--primary-color)] font-bold"><%= index + 1 %></td>
-        <td class="border-b border-b-[var(--border)]"><p><%= participant.name %></p></td>
-        <td class="border-b border-b-[var(--border)]"><p><%= if participant.current_question === nil, do: 0, else: participant.current_question %> / <%= quiz_num_questions %></p></td>
-        <td class="border-b border-b-[var(--border)]"><p><%= participant.total_points %></p></td>
-        <%!-- <td class="border-b border-b-[var(--border)]">
-          <.button class="p-1 border border-[var(--primary-color-text)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]">
-            <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
-          </.button>
-        </td> --%>
-      </tr>
-    </table>
-  </div>
+      <div class="overflow-auto">
+        <table class="w-full p-2">
+          <tr class="border-b border-[var(--border)] h-10">
+            <th>#</th>
+            <th>Name</th>
+            <th>Progress</th>
+            <th>Points</th>
+          </tr>
+          
+          <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
+            <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
+            <td class=""><p><%= participant.name %></p></td>
+            <td class=""><p><%= if participant.current_question === nil, do: 0, else: participant.current_question %> / <%= quiz_num_questions %></p></td>
+            <td class=""><p><%= participant.total_points %></p></td>
+          </tr>
+        </table>
+      </div>
+      <% end %>
+    </div>
+    
+
+  <% else %>
+    <div class="bg-[var(--background-card)] p-2 px-4 rounded-b-xl border-x border-b border-[var(--border)]">
+      <p>Stats section </p>
+    </div>
 
   <% end %>
-
-
-
-
-
-  <%!-- <.header>
-    <h4>Session 
-      <span class="text-[var(--primary-color)]"><%= @session.code %></span>
-    </h4>
-    <:subtitle>This is a session record from your database.</:subtitle>
-    <:actions>
-      <.link patch={~p"/sessions/#{@session}/show/edit"} phx-click={JS.push_focus()}>
-        <.button>Edit session</.button>
-      </.link> 
-      <%= if @session.status === :open do %>
-        <.link phx-click="close-session" data-confirm="Are you sure? A closed session cannot be opened again!">
-          <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
-            <Heroicons.x_mark class="w-5 h-5" />
-            <span>CLOSE</span>
-          </.button>
-        </.link>
-        <.button id="monitor-close-session-btn" class="flex items-center gap-2 redBtn">
-          <Heroicons.x_mark class="w-5 h-5" />
-          <span>CLOSE</span>
-        </.button>
-      <% end %>
-    </:actions>
-  </.header> --%>
-
-  <%!-- <.list>
-    <:item title="Code"><%= @session.code %></:item>
-    <:item title="Start date"><%= DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %></:item>
-    <:item title="End date" :if={@session.end_date}><%= DateTime.to_date(@session.end_date) %> @ <%= DateTime.to_time(@session.end_date) %></:item>
-    <:item title="Status"><%= @session.status %></:item>
-    <:item title="Type"><%= @session.type %></:item>
-    <:item title="Quiz"><%= @session.quiz.name %></:item>
-    <:item title="Participants">
-      <span :for={p <- @session.participants}>
-        <%= p.name %>
-      </span>
-    </:item>
-  </.list> --%>
-
-
-  <%!-- participant message --%>
-  <%!-- <div class="p-4 my-10">
-    <p class="font-bold">Participant Message:</p>
-    <p class="text-red-500"> <%= @participant_message %> </p>
-  </div> --%>
-
-
-  <%!-- monitor send msg to participants --%>
-  <%!-- <div class="flex flex-col p-4 my-10 w-96">
-    <label>Send Message to Participants:</label>
-    <textarea type="text" id="monitor-send-msg-participant-input"/>
-    <button id="monitor-send-msg-participant-btn" class="mt-2 call2actionBtn">Send</button>
-  </div> --%>
-
-
-  <%!-- <.modal :if={@live_action == :edit} id="session-modal" show on_cancel={JS.patch(~p"/sessions/#{@session}")}>
-    <.live_component
-      module={QuicWeb.SessionLive.FormComponent}
-      id={@session.id}
-      title={@page_title}
-      action={@live_action}
-      session={@session}
-      patch={~p"/sessions/#{@session}"}
-    />
-  </.modal> --%>
-
 </div>
-
-<%!-- <script>
-  window.session_code = "<%= @session.code %>"
-  window.session_id = "<%= @session.id %>"
-</script> --%>
-

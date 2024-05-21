@@ -2,6 +2,7 @@ defmodule QuicWeb.TeamLive.Show do
   use QuicWeb, :author_live_view
 
   alias Quic.Teams
+  alias QuicWeb.QuicWebAux
 
   @impl true
   def mount(_params, _session, socket) do
@@ -65,18 +66,6 @@ defmodule QuicWeb.TeamLive.Show do
         {:noreply, socket |> put_flash(:info, "Something went wrong! :(")}
     end
   end
-
-  def user_color(number) do
-    case rem(number, 6) do
-      1 -> "text-[var(--second-color)]"
-      2 -> "text-[var(--third-color)]"
-      3 -> "text-[var(--fourth-color)]"
-      4 -> "text-[var(--fifth-color)]"
-      5 -> "text-[var(--green)]"
-      _ -> "text-[var(--blue)]"
-    end
-  end
-
 
 
   defp page_title(:show), do: "Show Team"

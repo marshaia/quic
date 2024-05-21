@@ -83,14 +83,14 @@ defmodule QuicWeb.QuizLive.Show do
   @impl true
   def handle_event("send_question_up", %{"id" => id}, socket) do
     quiz_id = socket.assigns.quiz.id
-    Quizzes.send_quiz_question(:up, quiz_id, id)
+    Quizzes.send_quiz_question(:up, quiz_id, id, Enum.count(socket.assigns.quiz.questions))
     {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(quiz_id))}
   end
 
   @impl true
   def handle_event("send_question_down", %{"id" => id}, socket) do
     quiz_id = socket.assigns.quiz.id
-    Quizzes.send_quiz_question(:down, quiz_id, id)
+    Quizzes.send_quiz_question(:down, quiz_id, id, Enum.count(socket.assigns.quiz.questions))
     {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))}
   end
 

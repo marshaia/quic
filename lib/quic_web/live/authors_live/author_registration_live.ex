@@ -7,7 +7,7 @@ defmodule QuicWeb.AuthorRegistrationLive do
   @spec render(any()) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
-    <div class="max-w-md mx-auto">
+    <div class="max-w-md px-4 py-4 mx-auto mt-10">
       <.header class="text-center">
         <h5>Register for an account</h5>
         <:subtitle>

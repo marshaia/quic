@@ -46,4 +46,16 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
+
+  def user_color(number) do
+    case rem(number, 6) do
+      1 -> "text-[var(--second-color)]"
+      2 -> "text-[var(--third-color)]"
+      3 -> "text-[var(--fourth-color)]"
+      4 -> "text-[var(--fifth-color)]"
+      5 -> "text-[var(--green)]"
+      _ -> "text-[var(--blue)]"
+    end
+  end
+
 end
