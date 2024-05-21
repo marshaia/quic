@@ -2,7 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import "prism.css";
+@import "prism_light.css";
+@import "prism_dark.css";
 @import "colors.css";
 @import "buttons.css";
 @import "author.css";
