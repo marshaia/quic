@@ -35,22 +35,45 @@ defmodule QuicWeb.SessionParticipant do
     end
   end
 
-  def assess_submission(_participant_id, question_id, selected_answer) do
+  def assess_submission(_participant_id, question_id, answer) do
     question = Questions.get_question!(question_id)
-    answer = Questions.get_question_answer!(selected_answer)
+    #answer = Questions.get_question_answer!(selected_answer)
 
-    if answer.question.id === question_id do
+    #if answer.question.id === question_id do
       case question.type do
+        :single_choice -> assess_single_choice(question, Questions.get_question_answer!(answer))
         :multiple_choice -> assess_multiple_choice(question, answer)
+        :true_false -> assess_true_false(question, answer)
         _ -> false
       end
-    else
-      false
-    end
+    #else
+    #  false
+    #end
   end
 
-  def assess_multiple_choice(_question, selected_answer) do
+  def assess_single_choice(_question, selected_answer) do
     selected_answer.is_correct
+  end
+
+  def assess_multiple_choice(question, selected_answers) do
+    # question correct answers
+    correct_answers = Enum.reduce(question.answers, [], fn a, acc -> if a.is_correct, do: [a.id | acc], else: acc end)
+    how_many_true = Enum.count(correct_answers)
+
+    # check participant didn't select incorrect answers
+    participant_correct_answers = Enum.reduce(selected_answers, true, fn answer_id, acc -> if !Enum.member?(correct_answers, answer_id), do: false, else: acc end)
+
+    # check if participant selected only correct answers and all correct answers possible
+    participant_correct_answers && how_many_true === Enum.count(selected_answers)
+  end
+
+  def assess_true_false(question, participant_answer) do
+    participant_answer = (if participant_answer === "true", do: true, else: false)
+    question_answer = Enum.at(question.answers, 0, nil)
+    case question_answer do
+      nil -> false
+      answer -> answer.is_correct === participant_answer
+    end
   end
 
   def update_participant_results(participant_id, question_id, results) do

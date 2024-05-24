@@ -130,11 +130,31 @@
 
 
       <div id="monitor_paced_full_screen_answers" phx-hook="PrismInitializer" class="flex flex-wrap increment_font_size">
-        <div :for={answer <- question.answers} class="w-full p-3 md:w-1/2">
-          <div class={["py-2 px-4 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}>
-            <.markdown class="mt-2" text={answer.answer} />
+        <%= if question.type === :true_false do %>
+          <% answer = Enum.at(question.answers, 0, nil) %>
+          <div class="w-full p-3 md:w-1/2">
+            <div
+              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}
+            >
+              <p>True</p>
+            </div>
           </div>
-        </div>
+          <div class="w-full p-3 md:w-1/2">
+            <div 
+              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if @show_correct_answers && !answer.is_correct, do: "bg-green-200")]}
+            >
+              <p>False</p>
+            </div>
+          </div>
+        <% end %>
+
+        <%= if question.type !== :true_false do %>
+          <div :for={answer <- question.answers} class="w-full p-3 md:w-1/2">
+            <div class={["py-2 px-4 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}>
+              <.markdown class="mt-2" text={answer.answer} />
+            </div>
+          </div>
+        <%end %>
       </div>
     
     </div>

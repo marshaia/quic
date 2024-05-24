@@ -9,7 +9,7 @@ export const SessionChannelParticipant = {
     }),
 
     this.handleEvent("participant-submit-answer", (obj) => {
-      this.submitAnswer(obj.code, obj.answer_id, obj.question_id, obj.participant_id)
+      this.submitAnswer(obj.code, obj.response, obj.question_id, obj.participant_id)
     })
   },
 
@@ -39,13 +39,13 @@ export const SessionChannelParticipant = {
     // });
   },
 
-  submitAnswer(code, answer_id, question_id, participant_id) {
+  submitAnswer(code, response, question_id, participant_id) {
     channel.push("participant_submitted_answer", 
     {
       "participant_id": participant_id,
       "session_code" : code,
       "question_id" : question_id,
-      "selected_answer": answer_id,
+      "answer": response,
     })
     // .receive("ok", (params) => {
     //   console.log("params ---> ", JSON.stringify(params))

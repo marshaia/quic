@@ -57,10 +57,8 @@ defmodule QuicWeb.SessionLive.Show do
 
   # Session Channel Events
   @impl true
-  def handle_info({"participant_submitted_answer", %{"participant_name" => username, "answer" => answer}}, socket) do
-    {:noreply, socket
-              |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))
-              |> put_flash(:info, "Participant #{username} submitted answer #{answer}")}
+  def handle_info("participant_submitted_answer", socket) do
+    {:noreply, socket |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
   end
 
   @impl true
