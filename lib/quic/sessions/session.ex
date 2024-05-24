@@ -10,6 +10,7 @@ defmodule Quic.Sessions.Session do
     field :type, Ecto.Enum, values: [:monitor_paced, :participant_paced]
     field :start_date, :utc_datetime
     field :end_date, :utc_datetime
+    field :current_question, :integer
 
     has_many :participants, Quic.Participants.Participant, foreign_key: :session_id
     belongs_to :monitor, Quic.Accounts.Author, foreign_key: :monitor_id
@@ -21,8 +22,7 @@ defmodule Quic.Sessions.Session do
   @doc false
   def changeset(session, attrs) do
     session
-    |> cast(attrs, [:code, :start_date, :end_date, :status, :type])
-    #|> validate_required([:code, :start_date, :end_date, :status, :type])
+    |> cast(attrs, [:code, :start_date, :end_date, :status, :type, :current_question])
     |> validate_required([:type])
   end
 end

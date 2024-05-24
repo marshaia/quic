@@ -45,15 +45,13 @@ defmodule QuicWeb.SessionLive.Show do
 
   @impl true
   def handle_event("next_question", _params, socket) do
-    {:noreply, socket}
+    {:noreply, socket |> push_event("next_question", %{code: socket.assigns.session.code, session_id: socket.assigns.session.id, email: socket.assigns.current_author.email})}
   end
 
   @impl true
   def handle_event("change_selected_view", %{"view" => view}, socket) do
     {:noreply, socket |> assign(:selected_view, String.to_atom(view))}
   end
-
-
 
 
 
@@ -66,10 +64,8 @@ defmodule QuicWeb.SessionLive.Show do
   end
 
   @impl true
-  def handle_info({"participant_joined", %{"name" => name}}, socket) do
-    {:noreply, socket
-              |> put_flash(:info, "#{name} just joined the session!")
-              |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
+  def handle_info("participant_joined", socket) do
+    {:noreply, socket |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
   end
 
   @impl true
@@ -97,17 +93,21 @@ defmodule QuicWeb.SessionLive.Show do
   end
 
   @impl true
+  def handle_info({"next-question", _params}, socket) do
+    {:noreply, socket
+              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+              |> put_flash(:info, "Next question")}
+  end
+
+  @impl true
+  def handle_info("error-next-question", socket) do
+    {:noreply, socket |> put_flash(:error, "Couldn't continue to the next question.")}
+  end
+
+  @impl true
   def handle_info(_, socket), do: {:noreply, socket}
 
 
-
-  def session_status_color(status) do
-    case status do
-      :open -> "bg-[var(--green)]"
-      :on_going -> "bg-yellow-500"
-      :closed -> "bg-red-700"
-    end
-  end
 
   def session_status_translate(status) do
     case status do

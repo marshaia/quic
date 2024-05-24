@@ -37,6 +37,6 @@ defmodule Quic.Questions.Question do
     changeset
     |> validate_required([:points])
     |> validate_number(:points, greater_than_or_equal_to: -1, message: "nº of points must be equal or greater than 0")
-    |> validate_number(:points, less_than_or_equal_to: 1001, message: "nº of points must be equal or less than 1000")
+    |> validate_number(:points, less_than_or_equal_to: 1000, message: "nº of points must be equal or less than 1000")
   end
 end

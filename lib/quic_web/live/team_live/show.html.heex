@@ -7,7 +7,7 @@
 
     <%!-- TEAM INFO --%>
     <section class="w-full">
-      <div class="flex rounded-md bg-[var(--background-card)] p-4 min-h-32">
+      <div class="flex rounded-md bg-[var(--background-card)] border border-[var(--border)] p-4 min-h-32">
         <div class="flex-1">
           <div class="border-r border-[var(--border)] mr-3 px-4 text-center">
             <h4 class="text-[var(--primary-color)]"> <%= @team.name %> </h4>
@@ -59,7 +59,7 @@
 
         <div
           :for={{colaborator, index} <- Enum.with_index(@team.authors)}
-          class="rounded-md relative bg-[var(--background-card)] py-2 px-4 mb-4"
+          class="rounded-md relative border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 mb-4"
         >
           <div class="absolute right-2.5 -top-2.5">
             <.link
@@ -95,7 +95,7 @@
 
         <div
           :for={{_colaborator, index} <- Enum.with_index(@team.authors)}
-          class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4"
+          class="flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4"
         >
 
           <%!-- <% isOwner = isOwner?(quiz.id, @current_author) %> --%>

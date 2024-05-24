@@ -13,7 +13,7 @@ defmodule QuicWeb.QuestionLive.FormTrueFalse do
       <.simple_form
         :let={f}
         for={@changeset}
-        id="question-true-false-answer-form"
+        id={"question-true-false-answer-form" <> (if @responsive, do: "-responsive", else: "")}
         phx-target={@myself}
         phx-change="validate"
         phx-submit="ignore"
@@ -36,10 +36,12 @@ defmodule QuicWeb.QuestionLive.FormTrueFalse do
   # end
 
   @impl true
-  def update(%{answers: answers} = assigns, socket) do
+  def update(%{answers: answers, responsive: responsive} = assigns, socket) do
     socket = assign(socket, assigns)
 
-    {:ok, socket |> assign(:changeset, Enum.at(answers, 0, Questions.change_question_answer(%QuestionAnswer{})))}
+    {:ok, socket
+          |> assign(:changeset, Enum.at(answers, 0, Questions.change_question_answer(%QuestionAnswer{})))
+          |> assign(:responsive, responsive)}
   end
 
 

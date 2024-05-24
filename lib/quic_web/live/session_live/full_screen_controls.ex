@@ -29,7 +29,7 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
                 |> assign(:participants, Sessions.get_session_participants(id))
                 |> assign(:show_correct_answers, false)}
 
-              else
+    else
       {:noreply, socket
                 |> put_flash(:error, "Session is not of type Monitor Paced!")
                 |> redirect(to: ~p"/sessions")}
@@ -39,7 +39,7 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
 
   @impl true
   def handle_event("next_question", _params, socket) do
-    {:noreply, socket}
+    {:noreply, socket |> push_event("next_question", %{code: socket.assigns.session.code, session_id: socket.assigns.session.id, email: socket.assigns.current_author.email})}
   end
 
   @impl true
@@ -66,10 +66,8 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
 
   # SERVER MESSAGES
   @impl true
-  def handle_info({"participant_joined", %{"name" => name}}, socket) do
-    {:noreply, socket
-              |> put_flash(:info, "#{name} just joined the session!")
-              |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
+  def handle_info("participant_joined", socket) do
+    {:noreply, socket |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
   end
 
   @impl true
@@ -95,6 +93,19 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   def handle_info("error-closing-session", socket) do
     {:noreply, socket |> put_flash(:error, "Something went wrong. Please try again!")}
   end
+
+  @impl true
+  def handle_info({"next-question", _params}, socket) do
+    {:noreply, socket
+              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+              |> put_flash(:info, "Next question")}
+  end
+
+  @impl true
+  def handle_info("error-next-question", socket) do
+    {:noreply, socket |> put_flash(:error, "Couldn't continue to the next question.")}
+  end
+
 
   @impl true
   def handle_info(_, socket), do: {:noreply, socket}

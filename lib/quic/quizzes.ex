@@ -149,7 +149,7 @@ defmodule Quic.Quizzes do
     new_position = question.position + (if direction === :up, do: -1, else: 1)
 
     if (direction === :up && old_position > 1) || (direction === :down && old_position >= 1 && old_position <= quiz_num_questions) do
-      case  Questions.get_question_with_position(quiz_id, new_position) do
+      case Questions.get_question_with_position(quiz_id, new_position) do
         nil -> {:error, question}
         switch_question ->
           Questions.update_question(switch_question, %{"position" => old_position})

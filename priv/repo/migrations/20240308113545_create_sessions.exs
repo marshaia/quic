@@ -9,6 +9,7 @@ defmodule Quic.Repo.Migrations.CreateSessions do
       add :end_date, :utc_datetime
       add :status, :string
       add :type, :string
+      add :current_question, :integer
 
       timestamps(type: :utc_datetime)
     end

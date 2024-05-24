@@ -6,7 +6,7 @@
       <%!-- SESSION CODE --%>
       <div class="flex items-center gap-5 md:gap-12">
         <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--third-color)]" />
-        <h1 class="text-[var(--primary-color)]"><%= @session.code %></h1>
+        <h1 class="text-[var(--primary-color)] text-7xl"><%= @session.code %></h1>
         <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--fourth-color)]" />
       </div>
 
@@ -20,7 +20,7 @@
   </div>
 
   <%!-- NUMBER OF PARTICIPANTS SO FAR --%>
-  <div class="flex justify-between my-5">
+  <div class="flex justify-between mx-3 my-5">
     <div class="flex gap-2 bg-[var(--background-card)] rounded-full p-2 px-4 border border-[var(--border)]">
       <Heroicons.user_group class="w-7 h-7 text-[var(--primary-color-text)]" />
       <h6 class="font-normal"><%= Enum.count(@participants) %></h6>
@@ -78,30 +78,25 @@
     </div>
 
     <div class="flex items-center justify-center gap-4 my-3 mb-5">
-      <%!-- <.button
-        class=""
-      >
-        <Heroicons.chevron_left class="w-5 h-5"/>
-      </.button> --%>
-
       <h6 class="text-gray-500 ">
-        <% question = Enum.at(@quiz.questions, 0, nil) %>
-        <%= question.position %> of <%= Enum.count(@quiz.questions) %>
+        <%= @session.current_question %> of <%= Enum.count(@session.quiz.questions) %>
       </h6>
 
-      <.button
-        phx-click="next_question"
-        data-confirm="Are you sure you want to move on to the next question?" 
-        class="p-2 rounded-md bg-[var(--background-card)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
-      >
-        <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
-      </.button>
+      <%= if @session.current_question < Enum.count(@session.quiz.questions) do %>
+        <.button
+          phx-click="next_question"
+          data-confirm="Are you sure you want to move on to the next question? Anyone who hasn't answered won't be able to do it again!" 
+          class="p-2 rounded-md bg-[var(--background-card)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
+        >
+          <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
+        </.button>
+      <% end %>
     </div>
 
 
     <%!-- QUESTION --%>
     <div class="w-full mt-3">
-      <% question = Enum.at(@quiz.questions, 0, nil) %>
+      <% question = Enum.at(@quiz.questions, @session.current_question - 1, nil) %>
       <div class="flex gap-5">
         <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-bold text-[var(--primary-color-text)] text-lg">
           <%= question.position %>

@@ -58,4 +58,13 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
+
+  def session_status_color(status) do
+    case status do
+      :open -> "bg-[var(--green)]"
+      :on_going -> "bg-yellow-500"
+      :closed -> "bg-red-700"
+    end
+  end
+
 end

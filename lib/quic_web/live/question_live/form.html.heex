@@ -1,5 +1,5 @@
 
-<div class="flex justify-start mb-8 md:mb-0">
+<div class="flex justify-start mb-8 lg:mb-0">
   <%= if String.contains?(@page_title, "New") do %>
     <.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back</.my_back>
   <% else %>
@@ -28,19 +28,21 @@
         phx-submit="ignore"
       >
         <.input field={f[:points]} type="number" label="Points" />
-        <.input field={f[:description]} type="textarea" rows="10" label="Question Description" />
+        <.input field={f[:description]} type="textarea" rows="10" label="Question Description (Markdown)" />
       </.simple_form>
 
       <%!-- ANSWERS FORM --%>
       <%= if @type === :true_false do %>
-        <.live_component id="true-false-answer-form" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} />
+        <.live_component id="true-false-answer-form" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} responsive={false} />
       <% end %>
 
       <%= if @type !== :open_answer && @type !== :true_false do %>
         <%= if @type === :single_choice || @type === :multiple_choice do %>
-          <h6 class="mt-8 font-bold text-[var(--primary-color-text)] text-center">Answers</h6>
+          <h6 class="mt-8 font-bold text-[var(--primary-color-text)] text-center">
+            Answers <span class="text-sm font-normal">(Markdown)</span>
+          </h6>
           <.error :if={@error_answers !== nil}><%= @error_answers %></.error>
-          <.live_component id="single-choice-answer-form" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} />
+          <.live_component id="single-choice-answer-form" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} responsive={false} />
         <% end %>
       <% end %>
     </section>
@@ -50,6 +52,8 @@
 
     <%!-- PREVIEWER --%>
     <section id="answer-form-page-prism-hook" phx-hook="PrismInitializer" class="w-1/2 px-6 overflow-auto">
+      <h6 class="my-3 text-center">Previewer</h6>
+      <hr class="w-full"/>
       <.markdown_previewer_question question_changeset={@question_changeset} type={@type} answers={@answers} />
     </section>
   </div>
@@ -81,9 +85,7 @@
 
   <%!-- QUESTION FORM --%>
   <%= if @view_selected === :editor do %>
-    <%!-- <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Question</h6> --%>
     <.simple_form
-      class=""
       :if={@view_selected === :editor}
       :let={f}
       for={@question_changeset}
@@ -97,14 +99,14 @@
 
     <%!-- ANSWERS FORM --%>
     <%= if @type === :true_false do %>
-      <.live_component id="true-false-answer-form-responsive" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} />
+      <.live_component id="true-false-answer-form-responsive" module={QuicWeb.QuestionLive.FormTrueFalse} answers={@answers} responsive={true} />
     <% end %>
 
     <%= if @type !== :open_answer && @type !== :true_false do %>
       <%= if @type === :single_choice || @type === :multiple_choice do %>
         <h6 class="mt-8 font-bold text-[var(--primary-color)] text-center">Answers</h6>
         <.error :if={@error_answers !== nil}><%= @error_answers %></.error>
-        <.live_component id="single-choice-answer-form-responsive" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} />
+        <.live_component id="single-choice-answer-form-responsive" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} responsive={true} />
       <% end %>
     <% end %>
   <% end %>

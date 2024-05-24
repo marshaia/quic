@@ -131,9 +131,11 @@
           <% end %>
           <div :if={question.type !== :open_answer && question.type !== :true_false} class="flex flex-wrap">
             <div :for={answer <- question.answers} class="w-full p-1 px-5 lg:w-1/2">
-                <div class="flex items-center w-full gap-3">
+                <div class="flex justify-start w-full gap-3">
                   <div class={["w-4 h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-                  <.markdown class="w-full" text={answer.answer} />
+                  <div class="flex-1 -mt-0.5">
+                    <.markdown class="w-full" text={answer.answer} />
+                  </div>
                 </div>
             </div>
           </div>

@@ -93,6 +93,7 @@ defmodule Quic.Sessions do
     attrs = Map.put(attrs, "code", generate_valid_code())
             |> Map.put("status", :open)
             |> Map.put("start_date", DateTime.utc_now())
+            |> Map.put("current_question", 0)
 
     %Session{}
     |> Session.changeset(attrs)

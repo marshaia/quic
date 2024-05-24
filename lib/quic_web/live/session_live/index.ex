@@ -2,6 +2,7 @@ defmodule QuicWeb.SessionLive.Index do
   use QuicWeb, :author_live_view
 
   alias Quic.Sessions
+  alias QuicWeb.QuicWebAux
 
   @impl true
   def mount(_params, _session, socket) do
@@ -29,12 +30,4 @@ defmodule QuicWeb.SessionLive.Index do
     {:noreply, redirect(socket, to: "/sessions/#{session_id}")}
   end
 
-
-  def session_status_color(status) do
-    case status do
-      :open -> "bg-[var(--green)]"
-      :on_going -> "bg-yellow-500"
-      :closed -> "bg-red-700"
-    end
-  end
 end

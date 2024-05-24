@@ -19,7 +19,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
         class="w-full -mt-10"
         :let={f}
         for={@changeset_1}
-        id="question-answer-form-1"
+        id={"question-answer-form-1" <> (if @responsive, do: "-responsive", else: "")}
         phx-change="validateAnswer"
         phx-submit="saveForm"
         phx-value-id="1"
@@ -37,7 +37,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
         class="w-full -mt-10"
         :let={f}
         for={@changeset_2}
-        id="question-answer-form-2"
+        id={"question-answer-form-2" <> (if @responsive, do: "-responsive", else: "")}
         phx-change="validateAnswer"
         phx-submit="saveForm"
         phx-value-id="2"
@@ -55,7 +55,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
         class="w-full -mt-10"
         :let={f}
         for={@changeset_3}
-        id="question-answer-form-3"
+        id={"question-answer-form-3" <> (if @responsive, do: "-responsive", else: "")}
         phx-change="validateAnswer"
         phx-submit="saveForm"
         phx-value-id="3"
@@ -73,7 +73,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
         class="w-full -mt-10"
         :let={f}
         for={@changeset_4}
-        id="question-answer-form-4"
+        id={"question-answer-form-4" <> (if @responsive, do: "-responsive", else: "")}
         phx-change="validateAnswer"
         phx-value-id="4"
         phx-submit="saveForm"
@@ -99,14 +99,15 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
   # is invoked with all of the assigns given to
   # If is not defined all assigns are simply merged into the socket.
   @impl true
-  def update(%{type: type, answers: answers} = assigns, socket) do
+  def update(%{type: type, answers: answers, responsive: responsive} = assigns, socket) do
     socket = socket |> assign(assigns) |> assign(type: type)
 
     {:ok, socket
           |> assign(:changeset_1, Enum.at(answers, 0, Questions.change_question_answer(%QuestionAnswer{})))
           |> assign(:changeset_2, Enum.at(answers, 1, Questions.change_question_answer(%QuestionAnswer{})))
           |> assign(:changeset_3, Enum.at(answers, 2, Questions.change_question_answer(%QuestionAnswer{})))
-          |> assign(:changeset_4, Enum.at(answers, 3, Questions.change_question_answer(%QuestionAnswer{})))}
+          |> assign(:changeset_4, Enum.at(answers, 3, Questions.change_question_answer(%QuestionAnswer{})))
+          |> assign(:responsive, responsive)}
   end
 
 

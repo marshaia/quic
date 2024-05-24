@@ -18,8 +18,8 @@ defmodule QuicWeb.ParticipantLive.WaitRoom do
           {:ok, redirect(socket, to: ~p"/")}
         else
           {:ok, socket
-          |> assign(participant: Participants.get_participant!(participant_id))
-          |> assign(:page_title, "Live Session #{code}")
+          |> assign(:participant, Participants.get_participant!(participant_id))
+          |> assign(:page_title, "Session #{code}")
           |> assign(:session_code, code)}
         end
     end
@@ -35,6 +35,18 @@ defmodule QuicWeb.ParticipantLive.WaitRoom do
     {:noreply, socket
               |> put_flash(:info, "Session started!")
               |> redirect(to: ~p"/live-session/#{socket.assigns.participant.id}/question/#{question.id}")}
+  end
+
+
+  @impl true
+  def handle_info("monitor-closed-session", socket) do
+    code = socket.assigns.session_code
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code)
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> socket.assigns.participant.id)
+
+    {:noreply, socket
+              |> put_flash(:info, "This Session has been closed by the Monitor. Hope you enjoyed it!")
+              |> redirect(to: ~p"/")}
   end
 
 

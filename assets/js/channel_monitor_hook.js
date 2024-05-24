@@ -14,6 +14,10 @@ export const SessionChannelMonitor = {
 
     this.handleEvent("close_session", (obj) => {
       this.closeSession(obj.code, obj.session_id, obj.email)
+    }),
+
+    this.handleEvent("next_question", (obj) => {
+      this.nextQuestion(obj.code, obj.session_id, obj.email)
     })
   },
 
@@ -29,14 +33,7 @@ export const SessionChannelMonitor = {
     )
     
     channel.join()
-      .receive("ok", () => {
-        // window.channel = channel; 
-        // console.log("recebi ok: ", params);
-        // this.pushEvent("joined_session", params);
-      })
       .receive("error", () => {
-        // console.log("recebi erro: ", params);
-        // this.pushEvent("error_joining_session", params)
         socket.disconnect();
       });
   
@@ -53,12 +50,6 @@ export const SessionChannelMonitor = {
         "session_id": session_id,
         "email" : email,
       })
-      // .receive("ok", () => {
-      //   this.pushEvent("session-started")
-      // })
-      // .receive("error", () => {
-      //   this.pushEvent("error-starting-session")
-      // })
   },
 
   closeSession(code, session_id, email) {
@@ -68,15 +59,16 @@ export const SessionChannelMonitor = {
       "session_id": session_id,
       "email" : email,
     })
-    // .receive("ok", () => {
-    //   this.pushEvent("session-closed")
-    // })
-    // .receive("error", () => {
-    //   this.pushEvent("error-closing-session")
-    // })
-  }
+  },
 
-  
+  nextQuestion(code, session_id, email) {
+    channel.push("monitor-next-question", 
+    {
+      "session_code" : code,
+      "session_id": session_id,
+      "email" : email,
+    })
+  }
 
 
 };

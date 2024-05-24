@@ -19,7 +19,7 @@
     <div class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4">
       <div class="flex justify-between">
         <div class="flex items-center gap-2">
-          <div class={["w-4 h-4 rounded-full", session_status_color(@session.status)]} />
+          <div class={["w-4 h-4 rounded-full", QuicWebAux.session_status_color(@session.status)]} />
           <p><%= session_status_translate(@session.status) %></p>     
         </div>
 
@@ -113,23 +113,19 @@
 
       <%= if @session.status === :on_going do %>
         <div class="flex items-center justify-center gap-4 ml-5">
-          <%!-- <.button
-            class=""
-          >
-            <Heroicons.chevron_left class="w-5 h-5"/>
-          </.button> --%>
-
-          <h6 class="">
-            1 of 10
+          <h6 class="text-gray-500 ">
+            <%= @session.current_question %> of <%= Enum.count(@session.quiz.questions) %>
           </h6>
 
-          <.button
-            phx-click="next_question"
-            data-confirm="Are you sure you want to move on to the next question?" 
-            class="p-2 rounded-md bg-[var(--primary-color)] hover:bg-[var(--background-view)] border border-[var(--primary-color)]"
-          >
-            <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
-          </.button>
+          <%= if @session.current_question < Enum.count(@session.quiz.questions) do %>
+            <.button
+              phx-click="next_question"
+              data-confirm="Are you sure you want to move on to the next question? Anyone who hasn't answered won't be able to do it again!" 
+              class="p-2 rounded-md bg-[var(--background-card)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
+            >
+              <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
+            </.button>
+          <% end %>
         </div>
       <% end %>
     <% end %>
@@ -138,18 +134,20 @@
   
   
 
-  <div class="flex border-b border-[var(--border)]">
+  <div class="flex">
     <div 
       phx-click="change_selected_view"
       phx-value-view="participants"
-      class={["w-1/2 text-center py-1 cursor-pointer rounded-tl-xl", (if @selected_view === :participants, do: "bg-[var(--background-card)] border border-[var(--border)]", else: "bg-[var(--background-view)]")]}
+      class={["w-1/2 text-center py-1 cursor-pointer rounded-tl-xl border-[var(--border)]", (if @selected_view === :participants, do: "bg-[var(--background-card)] border-x border-t ", else: "bg-[var(--background-view)] border-b")]}
     >
-      <h6 class={["font-bold", (if @selected_view === :participants, do: "text-[var(--primary-color)]")]}>Participants</h6>
+      <h6 class={["font-bold", (if @selected_view === :participants, do: "text-[var(--primary-color)]")]}>
+        Participants <span class="text-sm font-normal text-[var(--primary-color-text)]">(<%= Enum.count(@participants) %>)</span>
+      </h6>
     </div>
     <div 
       phx-click="change_selected_view"
       phx-value-view="stats"
-      class={["w-1/2 text-center py-1 cursor-pointer rounded-tr-xl", (if @selected_view === :stats, do: "bg-[var(--background-card)] border border-[var(--border)]", else: "bg-[var(--background-view)]")]}
+      class={["w-1/2 text-center py-1 cursor-pointer rounded-tr-xl border-[var(--border)]", (if @selected_view === :stats, do: "bg-[var(--background-card)] border-x border-t ", else: "bg-[var(--background-view)] border-b")]}
     >
       <h6 class={["font-bold", (if @selected_view === :stats, do: "text-[var(--primary-color)]")]}>Stats</h6>
     </div>
@@ -157,7 +155,7 @@
 
   <%!-- PARTICIPANTS --%>
   <%= if @selected_view === :participants do %>
-    <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-x border-b border-[var(--border)]">
+    <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-b border-x border-[var(--border)]">
       <%= if Enum.count(@participants) === 0 do %>
         <p class="mt-1">No participants to report.</p>
       <% else %>
@@ -184,7 +182,7 @@
     
 
   <% else %>
-    <div class="bg-[var(--background-card)] p-2 px-4 rounded-b-xl border-x border-b border-[var(--border)]">
+    <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-b border-x border-[var(--border)]">
       <p>Stats section </p>
     </div>
 
