@@ -1,9 +1,9 @@
 defmodule QuicWeb.SessionParticipant do
-  require Logger
 
   alias Quic.Sessions
   alias Quic.Questions
   alias Quic.Participants
+  alias Quic.ParticipantAnswers
 
   def session_is_open?(code) do
     Sessions.is_session_open?(code)
@@ -35,15 +35,19 @@ defmodule QuicWeb.SessionParticipant do
     end
   end
 
-  def assess_submission(_participant_id, question_id, answer) do
+  def assess_submission(participant_id, question_id, answer) do
     question = Questions.get_question!(question_id)
     #answer = Questions.get_question_answer!(selected_answer)
 
     #if answer.question.id === question_id do
       case question.type do
-        :single_choice -> assess_single_choice(question, Questions.get_question_answer!(answer))
+        :single_choice ->
+          ParticipantAnswers.create_participant_answer(%{"answer" => answer}, participant_id, question_id)
+          assess_single_choice(question, Questions.get_question_answer!(answer))
         :multiple_choice -> assess_multiple_choice(question, answer)
-        :true_false -> assess_true_false(question, answer)
+        :true_false ->
+          ParticipantAnswers.create_participant_answer(%{"answer" => answer}, participant_id, question_id)
+          assess_true_false(question, answer)
         _ -> false
       end
     #else
@@ -77,12 +81,16 @@ defmodule QuicWeb.SessionParticipant do
   end
 
   def update_participant_results(participant_id, question_id, results) do
+    participant = Participants.get_participant!(participant_id)
+    question = Questions.get_question!(question_id)
+    participant_answer = Enum.find(participant.answers, nil, fn a -> a.question.id === question_id end)
+
     if results do
-      participant = Participants.get_participant!(participant_id)
-      question = Questions.get_question!(question_id)
-
       participant |> Participants.update_participant(%{"total_points" => participant.total_points + question.points})
-    end
+      ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :correct})
 
+    else
+      ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :incorrect})
+    end
   end
 end

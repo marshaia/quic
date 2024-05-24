@@ -1,35 +1,6 @@
-<%!-- <.header>
-  Participant <%= @participant.id %>
-  <:subtitle>This is a participant record from your database.</:subtitle>
-  <:actions>
-    <.link patch={~p"/participants/#{@participant}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit participant</.button>
-    </.link>
-  </:actions>
-</.header>
-
-<.list>
-  <:item title="Name"><%= @participant.name %></:item>
-  <:item title="Total points"><%= @participant.total_points %></:item>
-  <:item title="Current question"><%= @participant.current_question %></:item>
-</.list>
-
-<.back navigate={~p"/participants"}>Back to participants</.back>
-
-<.modal :if={@live_action == :edit} id="participant-modal" show on_cancel={JS.patch(~p"/participants/#{@participant}")}>
-  <.live_component
-    module={QuicWeb.ParticipantLive.FormComponent}
-    id={@participant.id}
-    title={@page_title}
-    action={@live_action}
-    participant={@participant}
-    patch={~p"/participants/#{@participant}"}
-  />
-</.modal> --%>
-
 
 <div class="flex justify-start mb-10">
-  <.my_back navigate={"/sessions/#{@session_id}"}>Back to Session</.my_back>
+  <.my_back navigate={"/sessions/#{@participant.session.id}"}>Back to Session</.my_back>
 </div>
 
 
@@ -39,18 +10,84 @@
 
   <h5><%= @participant.name %></h5>
 
-  <div class="flex flex-col items-center justify-center gap-1">
-    <p>Points: <%= @participant.total_points %></p>
-    <p>Current Question: <%= if @participant.current_question === nil, do: "not started yet", else: @participant.current_question %></p>
+  <div class="flex items-center justify-center gap-1">
+    <Heroicons.trophy class="w-5 h-5"/>
+    <p><%= @participant.total_points %></p>
   </div>
 </section>
 
 
 
+<%!-- PARTICIPANT PROGRESS --%>
+<% num_quiz_questions = Enum.count(@quiz.questions) %>
+<% progress = progress_percentage(@participant.current_question, num_quiz_questions) %>
+<div class="flex justify-center mt-8">
+  <div class="bg-[var(--border)] rounded-full w-[80%]"> 
+    <div class={["bg-[var(--primary-color)] text-white px-4 text-right rounded-full", "w-[#{progress}%]"]} style={"width: #{progress}%"}>
+      <%= if @participant.current_question === num_quiz_questions, do: "Completed", else: @participant.current_question %>
+    </div> 
+  </div> 
+</div>
+
+
+
 <%!-- ANSWERS & RESULTS --%>
-<h6 class="mt-10 mb-2 font-bold">Progress</h6>
-<section class="bg-[var(--background-card)] rounded-md p-3">
-  
-  <p>respostas</p>
-  
-</section>
+<h6 class="mt-8 mb-3 font-bold">Answers</h6>
+<%= if Enum.count(@participant.answers) === 0 do %>
+  <p><%= @participant.name %> has not submitted any answers yet.</p>
+<% else %>
+  <section :for={answer <- @participant.answers} id="participant-personal-page-section" phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
+    <%!-- QUESTION DESCRIPTION --%>
+    <div class="flex gap-5 mb-5">
+      <div class="rounded-full border border-[var(--primary-color)] w-8 h-8 flex items-center justify-center">
+        <h6><%= answer.question.position %></h6>
+      </div>
+      
+      <div class="w-full pt-1.5">
+        <.markdown text={answer.question.description} />
+      </div>
+    </div>
+
+    <%!-- DIVIDER --%>
+    <hr class="border border-[var(--border)] my-5 w-full" />
+
+    <%!-- ANSWERS --%>
+    <div class="flex flex-wrap">
+      <%= if answer.question.type === :true_false do %>
+        <div class="w-full p-3 md:w-1/2">
+          <div 
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)] ", (if answer.answer === "true", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
+          >
+            <p>True</p>
+          </div>
+        </div>
+        <div class="w-full p-3 md:w-1/2">
+          <div 
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if answer.answer === "false", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
+          >
+            <p>False</p>
+          </div>
+        </div>
+      <% end %>
+
+      <%= if answer.question.type === :single_choice do %>
+        <div :for={q_answer <- answer.question.answers} class="w-full p-3 md:w-1/2">
+          <div class={["py-2 px-4 rounded-md bg-[var(--background-card)] ", (if answer.answer === q_answer.id && answer.result === :correct, do: "bg-[var(--light-green)]", else: (if answer.answer === q_answer.id && answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}>
+            <.markdown class="mt-2" text={q_answer.answer} />
+          </div>
+        </div>
+      <% end %>
+
+      <%= if answer.question.type === :multiple_choice do %>
+        <div :for={q_answer <- answer.question.answers} class="w-full p-3 md:w-1/2">
+          <div 
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]"]}
+          >
+            <.markdown class="mt-2" text={q_answer.answer} />
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+  </section>
+<% end %>

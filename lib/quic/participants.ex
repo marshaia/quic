@@ -35,7 +35,7 @@ defmodule Quic.Participants do
       ** (Ecto.NoResultsError)
 
   """
-  def get_participant!(id), do: Repo.get!(Participant, id) |> Repo.preload(:session)
+  def get_participant!(id), do: Repo.get!(Participant, id) |> Repo.preload(:session) |> Repo.preload(answers: [question: :answers])
 
   def get_participant_session_code!(id)  do
     try do
@@ -59,7 +59,9 @@ defmodule Quic.Participants do
 
   """
   def create_participant(attrs \\ %{}, session) do
-    attrs = Map.put(attrs, "total_points", 0)
+    attrs = attrs
+        |> Map.put("total_points", 0)
+        |> Map.put("current_question", 0)
 
     %Participant{}
     |> Participant.changeset(attrs)

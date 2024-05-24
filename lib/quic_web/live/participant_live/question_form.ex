@@ -4,26 +4,40 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   alias Quic.Participants
   alias Quic.Questions
+  alias Quic.Sessions
 
 
   @impl true
   def mount(%{"participant_id" => participant_id, "question_id" => question_id}, _session, socket) do
     participant = Participants.get_participant!(participant_id)
-    code = participant.session.code
     question = Questions.get_question!(question_id)
+    session = Sessions.get_session!(participant.session.id)
 
-    socket = push_event(socket, "join_session", %{code: code, username: participant.id})
+    if participant.session.status === :closed do
+      {:ok, socket |> put_flash(:error, "Session is closed!") |> redirect(to: ~p"/")}
 
-    Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
-    Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
+    else
+      if participant.session.current_question !== question.position do
+        new_question_id = Enum.at(session.quiz.questions, session.current_question - 1, nil)
+        {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{new_question_id}")}
 
-    {:ok, socket
-          |> assign(:session_code, code)
-          |> assign(:participant, participant)
-          |> assign(:selected_answer, (if question.type === :single_choice, do: nil, else: []))
-          |> assign(:page_title, "Session #{code} - Question #{question.position}")
-          |> assign(:question, question)
-          |> assign(:has_submitted, false)}
+      else
+        code = participant.session.code
+        has_submitted = (Enum.any?(participant.answers, fn a -> a.question.id === question_id end))
+
+        socket = push_event(socket, "join_session", %{code: code, username: participant.id})
+        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
+        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
+
+        {:ok, socket
+              |> assign(:session_code, code)
+              |> assign(:participant, participant)
+              |> assign(:selected_answer, (if question.type === :single_choice, do: nil, else: []))
+              |> assign(:page_title, "Session #{code} - Question #{question.position}")
+              |> assign(:question, question)
+              |> assign(:has_submitted, has_submitted)}
+      end
+    end
   end
 
 
@@ -78,7 +92,6 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
               |> put_flash(:info, "This Session has been closed by the Monitor. Hope you enjoyed it!")
               |> redirect(to: ~p"/")}
   end
-
 
   @impl true
   def handle_info({"next-question", %{"question" => question}}, socket) do

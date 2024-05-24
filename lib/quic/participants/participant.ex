@@ -12,6 +12,7 @@ defmodule Quic.Participants.Participant do
     field :current_question, :integer
 
     belongs_to :session, Quic.Sessions.Session, foreign_key: :session_id
+    has_many :answers, Quic.ParticipantAnswers.ParticipantAnswer, foreign_key: :participant_id
 
     timestamps(type: :utc_datetime)
   end

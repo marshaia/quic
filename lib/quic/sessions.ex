@@ -50,6 +50,11 @@ defmodule Quic.Sessions do
     session.participants
   end
 
+  def get_session_quiz(id) do
+    session = Repo.get!(Session, id) |> Repo.preload(quiz: :questions)
+    session.quiz
+  end
+
   # def get_session_by_code(code) do
   #   Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
   # end
