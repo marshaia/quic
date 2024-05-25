@@ -3,8 +3,7 @@ defmodule QuicWeb.ParticipantLive.Show do
 
   alias Quic.Participants
   alias Quic.Sessions
-
-  require Logger
+  alias QuicWeb.QuicWebAux
 
   @impl true
   def mount(_params, _session, socket) do
@@ -32,12 +31,5 @@ defmodule QuicWeb.ParticipantLive.Show do
   end
 
   def handle_info(_, socket), do: {:noreply, socket}
-
-
-  def progress_percentage(participant_question, quiz_total_questions) when quiz_total_questions > 0 do
-    Float.round((participant_question / quiz_total_questions) * 100, 2)
-    #   steps = div(100, quiz_total_questions)
-    #   res = steps * participant_question
-  end
 
 end

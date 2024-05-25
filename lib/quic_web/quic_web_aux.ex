@@ -67,4 +67,9 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
+
+  def progress_percentage(participant_question, quiz_total_questions) when quiz_total_questions > 0 do
+    Float.round((participant_question / quiz_total_questions) * 100, 0)
+  end
+
 end

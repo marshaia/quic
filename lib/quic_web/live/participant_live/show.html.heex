@@ -20,10 +20,10 @@
 
 <%!-- PARTICIPANT PROGRESS --%>
 <% num_quiz_questions = Enum.count(@quiz.questions) %>
-<% progress = progress_percentage(@participant.current_question, num_quiz_questions) %>
+<% progress = QuicWebAux.progress_percentage(@participant.current_question, num_quiz_questions) %>
 <div class="flex justify-center mt-8">
   <div class="bg-[var(--border)] rounded-full w-[80%]"> 
-    <div class={["bg-[var(--primary-color)] text-white px-4 text-right rounded-full", "w-[#{progress}%]"]} style={"width: #{progress}%"}>
+    <div class={["bg-[var(--primary-color)] text-white px-4 py-1 text-right rounded-full"]} style={"width: #{progress}%"}>
       <%= if @participant.current_question === num_quiz_questions, do: "Completed", else: @participant.current_question %>
     </div> 
   </div> 

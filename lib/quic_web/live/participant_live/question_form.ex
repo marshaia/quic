@@ -5,6 +5,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   alias Quic.Participants
   alias Quic.Questions
   alias Quic.Sessions
+  alias QuicWeb.QuicWebAux
 
 
   @impl true
@@ -17,25 +18,27 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
       {:ok, socket |> put_flash(:error, "Session is closed!") |> redirect(to: ~p"/")}
 
     else
-      if participant.session.current_question !== question.position do
+      if session.current_question !== question.position do
         new_question_id = Enum.at(session.quiz.questions, session.current_question - 1, nil)
         {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{new_question_id}")}
 
       else
         code = participant.session.code
-        has_submitted = (Enum.any?(participant.answers, fn a -> a.question.id === question_id end))
+        has_submitted = Enum.any?(participant.answers, fn a -> a.question.id === question_id end)
+        last_question = session.current_question === Enum.count(session.quiz.questions)
 
         socket = push_event(socket, "join_session", %{code: code, username: participant.id})
         Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
         Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
 
         {:ok, socket
-              |> assign(:session_code, code)
+              |> assign(:session, session)
               |> assign(:participant, participant)
               |> assign(:selected_answer, (if question.type === :single_choice, do: nil, else: []))
               |> assign(:page_title, "Session #{code} - Question #{question.position}")
               |> assign(:question, question)
-              |> assign(:has_submitted, has_submitted)}
+              |> assign(:has_submitted, has_submitted)
+              |> assign(:last_question, last_question)}
       end
     end
   end
@@ -60,7 +63,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   @impl true
   def handle_event("submit-answer-btn", _params, socket) do
     {:noreply, socket |> push_event("participant-submit-answer", %{
-      code: socket.assigns.session_code,
+      code: socket.assigns.session.code,
       response: socket.assigns.selected_answer,
       question_id: socket.assigns.question.id,
       participant_id: socket.assigns.participant.id
@@ -84,7 +87,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   @impl true
   def handle_info("monitor-closed-session", socket) do
-    code = socket.assigns.session_code
+    code = socket.assigns.session.code
     Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code)
     Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> socket.assigns.participant.id)
 
@@ -95,8 +98,8 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   @impl true
   def handle_info({"next-question", %{"question" => question}}, socket) do
-    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> socket.assigns.session_code)
-    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> socket.assigns.session_code <> ":participant:" <> socket.assigns.participant.id)
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> socket.assigns.session.code)
+    Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> socket.assigns.session.code <> ":participant:" <> socket.assigns.participant.id)
 
     {:noreply, socket
               |> put_flash(:info, "Next Question!")
