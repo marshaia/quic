@@ -1,5 +1,8 @@
 defmodule QuicWeb.SessionParticipant do
 
+  require Logger
+
+  alias Quic.Quizzes
   alias Quic.Sessions
   alias Quic.Questions
   alias Quic.Participants
@@ -93,6 +96,23 @@ defmodule QuicWeb.SessionParticipant do
 
     else
       ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :incorrect})
+    end
+  end
+
+  def get_participant_next_question(participant_id, current_question) do
+    participant = Participants.get_participant!(participant_id)
+    session = Sessions.get_session!(participant.session.id)
+    quiz_questions = Quizzes.get_quiz_questions!(session.quiz.id)
+
+    if Enum.count(quiz_questions) === current_question do
+      {:error_max_questions, participant}
+    else
+      if current_question >= 1 && current_question < Enum.count(quiz_questions) do
+        next_question = Enum.find(quiz_questions, nil, fn q -> q.position === current_question + 1 end)
+        if next_question !== nil, do: {:ok, next_question}, else: {:error_invalid_question, participant}
+      else
+        {:error, participant}
+      end
     end
   end
 end

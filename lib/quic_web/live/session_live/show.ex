@@ -91,7 +91,7 @@ defmodule QuicWeb.SessionLive.Show do
   end
 
   @impl true
-  def handle_info({"next-question", _params}, socket) do
+  def handle_info({"next_question", _params}, socket) do
     {:noreply, socket
               |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
               |> put_flash(:info, "Next question")}

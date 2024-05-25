@@ -43,6 +43,7 @@ defmodule QuicWeb.SessionChannel do
 
 
 
+  # PARTICIPANT EVENTS
   @impl true
   def handle_in("participant_submitted_answer", %{"participant_id" => participant_id, "session_code" => code, "question_id" => question_id, "answer" => answer}, socket) do
     # verify if participant belongs to session
@@ -67,7 +68,25 @@ defmodule QuicWeb.SessionChannel do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_in("participant_next_question", %{"participant_id" => participant_id, "code" => code, "current_question" => current_question}, socket) do
+    # verify if participant belongs to session
+    if SessionParticipant.participant_already_in_session?(participant_id, code) do
+      case SessionParticipant.get_participant_next_question(participant_id, current_question) do
+        {:ok, question} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"next_question", %{"question" => question}})
+        {:error_max_questions, _} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"next_question_error", %{"msg" => "You already answered all questions!"}})
+        {:error_invalid_question, _} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"next_question_error", %{"msg" => "Invalid question request!"}})
+      end
+    else
+      Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, "submission_results_error")
+    end
 
+    {:noreply, socket}
+  end
+
+
+
+  # MONITOR EVENTS
   @impl true
   def handle_in("monitor-start-session", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
     if SessionMonitor.exists_session_with_id?(session_id) and SessionMonitor.session_belongs_to_monitor?(session_id, email) do
@@ -94,7 +113,7 @@ defmodule QuicWeb.SessionChannel do
   def handle_in("monitor-next-question", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
     if SessionMonitor.exists_session_with_id?(session_id) and SessionMonitor.session_belongs_to_monitor?(session_id, email) do
       case SessionMonitor.next_question(session_id) do
-        {:ok, next_question} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"next-question", %{"question" => next_question}})
+        {:ok, next_question} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"next_question", %{"question" => next_question}})
         {:error, _} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "error-next-question")
       end
     end

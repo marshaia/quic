@@ -95,7 +95,7 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   end
 
   @impl true
-  def handle_info({"next-question", _params}, socket) do
+  def handle_info({"next_question", _params}, socket) do
     {:noreply, socket
               |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
               |> assign(:show_correct_answers, false)

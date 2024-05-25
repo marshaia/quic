@@ -63,7 +63,20 @@
 <%!-- QUIZ QUESTIONS --%>
 <% else %>
   <%= if @session.status === :on_going do %>
-    <div class="flex justify-between mt-8">
+    <div class="flex justify-end p-2">
+      <.button
+        id="finish_btn_monitor_full_screen_responsive"
+        phx-hook="SessionChannelMonitor"
+        phx-click="close_session_btn" 
+        data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
+        class="block md:hidden redBtn"
+      >
+        Finish Session
+      </.button>
+    </div>
+
+
+    <div class="flex justify-between px-2 mt-3 md:mt-8 md:px-0">
       <h3 class="text-[var(--primary-color)] font-bold"><%= @session.quiz.name %></h3>
 
       <.button
@@ -71,7 +84,7 @@
         phx-hook="SessionChannelMonitor"
         phx-click="close_session_btn" 
         data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
-        class="redBtn"
+        class="hidden md:block redBtn"
       >
         Finish Session
       </.button>
@@ -86,7 +99,7 @@
         <.button
           phx-click="next_question"
           data-confirm="Are you sure you want to move on to the next question? Anyone who hasn't answered won't be able to do it again!" 
-          class="p-2 rounded-md bg-[var(--background-card)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
+          class="p-2 rounded-md bg-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
         >
           <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
         </.button>
@@ -95,7 +108,7 @@
 
 
     <%!-- QUESTION --%>
-    <div class="w-full mt-3">
+    <div class="w-full px-2 mt-3 md:px-0">
       <% question = Enum.at(@quiz.questions, @session.current_question - 1, nil) %>
       <div class="flex gap-5">
         <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-bold text-[var(--primary-color-text)] text-lg">
