@@ -77,7 +77,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   # SESSION CHANNEL MESSAGES
   @impl true
   def handle_info({"submission_results", %{"answer" => _results}}, socket) do
-    {:noreply, socket |> assign(:has_submitted, true)}
+    {:noreply, socket |> assign(:has_submitted, true) |> assign(:participant, Participants.get_participant!(socket.assigns.participant.id))}
   end
 
   @impl true

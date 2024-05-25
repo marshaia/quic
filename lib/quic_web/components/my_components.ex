@@ -370,6 +370,31 @@ defmodule QuicWeb.MyComponents do
   end
 
 
+  @doc """
+  Renders a horizontal progress bar.
+
+  ## Examples:
+
+    <.participant_progress_bar progress={80} current_question={1} num_quiz_questions={10} />
+  """
+  attr :current_question, :integer, default: 0
+  attr :num_quiz_questions, :integer, default: 0
+  attr :progress, :float, default: 0.0
+  attr :class, :string, default: ""
+
+  def participant_progress_bar(assigns) do
+    ~H"""
+    <div class={"flex items-center justify-center w-full gap-2 #{@class}"}>
+      <div class="bg-[var(--border)] rounded-full w-[80%]">
+        <div class={["bg-[var(--primary-color)] text-white py-1 text-right rounded-full", (if @current_question !== 0, do: "px-4" )]} style={"width: #{@progress}%"}>
+          <p class={["text-white",(if @current_question === 0, do: "py-2.5")]}><%= if @current_question === @num_quiz_questions, do: "Completed", else: (if @current_question > 0, do: @current_question) %></p>
+        </div>
+      </div>
+      <p :if={@current_question !== @num_quiz_questions}><%= @num_quiz_questions %></p>
+    </div>
+    """
+  end
+
 
 
 end

@@ -4,7 +4,7 @@ defmodule Quic.Repo.Migrations.CreateParticipantAnswers do
   def change do
     create table(:participant_answers, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :answer, :text
+      add :answer, {:array, :string}, default: []
       add :result, :string
 
       timestamps(type: :utc_datetime)

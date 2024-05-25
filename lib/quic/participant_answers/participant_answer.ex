@@ -6,7 +6,7 @@ defmodule Quic.ParticipantAnswers.ParticipantAnswer do
   @foreign_key_type :binary_id
   schema "participant_answers" do
     field :result, Ecto.Enum, values: [:correct, :incorrect, :assessing]
-    field :answer, :string
+    field :answer, {:array, :string}
 
     belongs_to :participant, Quic.Participants.Participant, foreign_key: :participant_id
     belongs_to :question, Quic.Questions.Question, foreign_key: :question_id

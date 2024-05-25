@@ -105,6 +105,10 @@
         
         <%= if question !== nil do %>
           <section id="monitor_paced_full_screen_question" phx-hook="PrismInitializer" class="increment_font_size bg-[var(--background-card)] border border-[var(--border)] pt-3 px-5 pb-5 rounded-xl w-full">
+            <%!-- QUESTION TYPE --%>
+            <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(question.type)]}>
+              <span class="text-sm text-white"> <%= QuicWebAux.readable_name(question.type) %> </span>
+            </div>
             <.markdown text={question.description} />
           </section>
         <% end %>
@@ -129,19 +133,19 @@
       </div>
 
 
-      <div id="monitor_paced_full_screen_answers" phx-hook="PrismInitializer" class="flex flex-wrap increment_font_size">
+      <div id="monitor_paced_full_screen_answers" phx-hook="PrismInitializer" class="grid w-full grid-cols-1 gap-4 md:grid-cols-2 increment_font_size" style="grid-auto-rows: 1fr">
         <%= if question.type === :true_false do %>
           <% answer = Enum.at(question.answers, 0, nil) %>
-          <div class="w-full p-3 md:w-1/2">
+          <div class="w-full h-full p-3">
             <div
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}
+              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}
             >
               <p>True</p>
             </div>
           </div>
-          <div class="w-full p-3 md:w-1/2">
+          <div class="w-full h-full p-3">
             <div 
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if @show_correct_answers && !answer.is_correct, do: "bg-green-200")]}
+              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && !answer.is_correct, do: "bg-green-200")]}
             >
               <p>False</p>
             </div>
@@ -149,8 +153,8 @@
         <% end %>
 
         <%= if question.type !== :true_false do %>
-          <div :for={answer <- question.answers} class="w-full p-3 md:w-1/2">
-            <div class={["py-2 px-4 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}>
+          <div :for={answer <- question.answers} class="w-full h-full p-3">
+            <div class={["py-2 px-4 h-full rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}>
               <.markdown class="mt-2" text={answer.answer} />
             </div>
           </div>

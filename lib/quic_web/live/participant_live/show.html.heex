@@ -5,29 +5,25 @@
 
 
 <%!-- PROFILE --%>
-<section class="flex flex-col items-center justify-center gap-4">
-  <Heroicons.user_circle class="w-24 h-24 text-[var(--primary-color)]" />
+<section class="flex justify-center w-full my-10">
+  <div class="flex flex-col items-center w-[90%] md:w-[70%] p-4 pb-6 bg-[var(--background-card)] rounded-xl border border-[var(--border)]">
+    <div class="flex items-center gap-4">
+      <Heroicons.user_circle class="w-24 h-24 text-[var(--primary-color)]" />
+      <div class="flex flex-col gap-3">
+        <h5><%= @participant.name %></h5>
+        <div class="flex items-center gap-1">
+          <Heroicons.trophy class="w-5 h-5"/>
+          <p><%= @participant.total_points %></p>
+        </div>
+      </div>
+    </div>
 
-  <h5><%= @participant.name %></h5>
-
-  <div class="flex items-center justify-center gap-1">
-    <Heroicons.trophy class="w-5 h-5"/>
-    <p><%= @participant.total_points %></p>
+    <%!-- PARTICIPANT PROGRESS --%>
+    <p class="mt-10 font-semibold">Progress</p>
+    <.participant_progress_bar class="mt-2" progress={QuicWebAux.progress_percentage(@participant.current_question, Enum.count(@quiz.questions))} current_question={@participant.current_question} num_quiz_questions={Enum.count(@quiz.questions)} />
   </div>
 </section>
 
-
-
-<%!-- PARTICIPANT PROGRESS --%>
-<% num_quiz_questions = Enum.count(@quiz.questions) %>
-<% progress = QuicWebAux.progress_percentage(@participant.current_question, num_quiz_questions) %>
-<div class="flex justify-center mt-8">
-  <div class="bg-[var(--border)] rounded-full w-[80%]"> 
-    <div class={["bg-[var(--primary-color)] text-white px-4 py-1 text-right rounded-full"]} style={"width: #{progress}%"}>
-      <%= if @participant.current_question === num_quiz_questions, do: "Completed", else: @participant.current_question %>
-    </div> 
-  </div> 
-</div>
 
 
 
@@ -43,7 +39,12 @@
         <h6><%= answer.question.position %></h6>
       </div>
       
-      <div class="w-full pt-1.5">
+      <div class="w-full">
+        <%!-- QUESTION TYPE --%>
+        <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(answer.question.type)]}>
+          <span class="text-xs text-white"> <%= QuicWebAux.readable_name(answer.question.type) %> </span>
+        </div>
+        
         <.markdown text={answer.question.description} />
       </div>
     </div>
@@ -52,18 +53,18 @@
     <hr class="border border-[var(--border)] my-5 w-full" />
 
     <%!-- ANSWERS --%>
-    <div class="flex flex-wrap">
+    <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2" style="grid-auto-rows: 1fr">
       <%= if answer.question.type === :true_false do %>
-        <div class="w-full p-3 md:w-1/2">
+        <div class="w-full h-full p-3">
           <div 
-            class={["py-2 px-4 rounded-md bg-[var(--background-card)] ", (if answer.answer === "true", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)] ", (if Enum.at(answer.answer,0,"") === "true", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
           >
             <p>True</p>
           </div>
         </div>
-        <div class="w-full p-3 md:w-1/2">
+        <div class="w-full h-full p-3">
           <div 
-            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if answer.answer === "false", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if Enum.at(answer.answer,0,"") === "false", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
           >
             <p>False</p>
           </div>
@@ -71,17 +72,23 @@
       <% end %>
 
       <%= if answer.question.type === :single_choice do %>
-        <div :for={q_answer <- answer.question.answers} class="w-full p-3 md:w-1/2">
-          <div class={["py-2 px-4 rounded-md bg-[var(--background-card)] ", (if answer.answer === q_answer.id && answer.result === :correct, do: "bg-[var(--light-green)]", else: (if answer.answer === q_answer.id && answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}>
+        <div :for={q_answer <- answer.question.answers} class="w-full h-full p-3">
+          <div 
+            class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]", 
+                  (if Enum.at(answer.answer,0,"") === q_answer.id && answer.result === :correct, do: "bg-[var(--light-green)]", 
+                  else: (if Enum.at(answer.answer,0,"") === q_answer.id && answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
+          >
             <.markdown class="mt-2" text={q_answer.answer} />
           </div>
         </div>
       <% end %>
 
       <%= if answer.question.type === :multiple_choice do %>
-        <div :for={q_answer <- answer.question.answers} class="w-full p-3 md:w-1/2">
+        <div :for={q_answer <- answer.question.answers} class="w-full h-full p-3">
           <div 
-            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]"]}
+          class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]",
+                (if Enum.member?(answer.answer, q_answer.id) && answer.result === :correct, do: "bg-[var(--light-green)]", 
+                else: (if Enum.member?(answer.answer, q_answer.id) && answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
           >
             <.markdown class="mt-2" text={q_answer.answer} />
           </div>

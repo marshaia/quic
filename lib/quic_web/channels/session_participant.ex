@@ -42,11 +42,13 @@ defmodule QuicWeb.SessionParticipant do
     #if answer.question.id === question_id do
       case question.type do
         :single_choice ->
-          ParticipantAnswers.create_participant_answer(%{"answer" => answer}, participant_id, question_id)
+          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           assess_single_choice(question, Questions.get_question_answer!(answer))
-        :multiple_choice -> assess_multiple_choice(question, answer)
-        :true_false ->
+        :multiple_choice ->
           ParticipantAnswers.create_participant_answer(%{"answer" => answer}, participant_id, question_id)
+          assess_multiple_choice(question, answer)
+        :true_false ->
+          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           assess_true_false(question, answer)
         _ -> false
       end
