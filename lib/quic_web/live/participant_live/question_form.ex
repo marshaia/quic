@@ -18,14 +18,14 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
       {:ok, socket |> put_flash(:error, "Session is closed!") |> redirect(to: ~p"/")}
 
     else
-      if session.current_question !== question.position && session.type === :monitor_paced do
+      if session.type === :monitor_paced && session.current_question !== question.position do
         new_question_id = Enum.at(session.quiz.questions, session.current_question - 1, nil)
         {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{new_question_id}")}
 
       else
         code = participant.session.code
         has_submitted = Enum.any?(participant.answers, fn a -> a.question.id === question_id end)
-        last_question = (if session.type === :monitor_paced, do: session.current_question === Enum.count(session.quiz.questions), else: participant.current_question === Enum.count(session.quiz.questions))
+        last_question = (if session.type === :monitor_paced, do: session.current_question === Enum.count(session.quiz.questions), else: (participant.current_question + 1) >= Enum.count(session.quiz.questions))
 
         socket = push_event(socket, "join_session", %{code: code, username: participant.id})
         Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
@@ -78,7 +78,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   @impl true
   def handle_info({"submission_results", %{"answer" => _results}}, socket) do
     socket = socket |> assign(:has_submitted, true) |> assign(:participant, Participants.get_participant!(socket.assigns.participant.id))
-    if socket.assigns.session.type === :participant_paced && !socket.assigns.last_question do
+    if socket.assigns.session.type === :participant_paced && (socket.assigns.last_question === false) do
       {:noreply, socket |> push_event("participant-next-question", %{participant_id: socket.assigns.participant.id, current_question: socket.assigns.question.position, code: socket.assigns.session.code})}
     else
       {:noreply, socket}

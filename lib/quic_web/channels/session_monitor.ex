@@ -1,15 +1,8 @@
 defmodule QuicWeb.SessionMonitor do
+
+  alias Quic.Participants
   alias Quic.Sessions
   alias Quic.Quizzes
-
-  # def exists_session?(code) do
-  #   session = Sessions.get_open_session_by_code(code)
-  #   session !== nil && session.status === :open
-  # end
-
-  # def get_session(code) do
-  #   Sessions.get_open_session_by_code(code)
-  # end
 
   def exists_session_with_id?(id) do
     try do
@@ -77,11 +70,14 @@ defmodule QuicWeb.SessionMonitor do
 
       if session.current_question < num_quiz_questions do
         # increment session current_question
-        Sessions.update_session(session, %{"current_question" => session.current_question + 1})
+        {:ok, session} = Sessions.update_session(session, %{"current_question" => session.current_question + 1})
+
+        # increment Participant's current_questions
+        Enum.each(session.participants, fn p -> (if p.current_question < session.current_question, do: Participants.update_participant(p, %{"current_question" => session.current_question - 1})) end)
 
         # return next question
         quiz_questions = Quizzes.get_quiz_questions!(session.quiz.id)
-        {:ok, Enum.at(quiz_questions, session.current_question, nil)}
+        {:ok, Enum.at(quiz_questions, session.current_question - 1, nil)}
       else
         {:error, nil}
       end

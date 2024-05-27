@@ -32,7 +32,7 @@
 <%= if Enum.count(@participant.answers) === 0 do %>
   <p><%= @participant.name %> has not submitted any answers yet.</p>
 <% else %>
-  <section :for={answer <- @participant.answers} id="participant-personal-page-section" phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
+  <section :for={answer <- @participant.answers} id={"participant-personal-page-answer-#{answer.id}"} phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
     <%!-- QUESTION DESCRIPTION --%>
     <div class="flex gap-5 mb-5">
       <div class="rounded-full border border-[var(--primary-color)] w-8 h-8 flex items-center justify-center">
@@ -53,18 +53,18 @@
     <hr class="border border-[var(--border)] my-5 w-full" />
 
     <%!-- ANSWERS --%>
-    <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2" style="grid-auto-rows: 1fr">
+    <div class="grid w-full grid-cols-1 gap-2 md:grid-cols-2" style="grid-auto-rows: 1fr">
       <%= if answer.question.type === :true_false do %>
-        <div class="w-full h-full p-3">
+        <div class="w-full h-full px-3 py-1">
           <div 
-            class={["py-2 px-4 rounded-md bg-[var(--background-card)] ", (if Enum.at(answer.answer,0,"") === "true", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)]", (if Enum.at(answer.answer,0,"") === "true", do: (if answer.result === :correct, do: "bg-[var(--green)]", else: "bg-[var(--light-red)]"))]}
           >
             <p>True</p>
           </div>
         </div>
-        <div class="w-full h-full p-3">
+        <div class="w-full h-full px-3 py-1">
           <div 
-            class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if Enum.at(answer.answer,0,"") === "false", do: (if answer.result === :correct, do: "bg-[var(--light-green)]", else: "bg-[var(--light-red)]"))]}
+            class={["py-2 px-4 rounded-md bg-[var(--background-card)]", (if Enum.at(answer.answer,0,"") === "false", do: (if answer.result === :correct, do: "bg-[var(--green)]", else: "bg-[var(--light-red)]"))]}
           >
             <p>False</p>
           </div>
@@ -75,7 +75,7 @@
         <div :for={q_answer <- answer.question.answers} class="w-full h-full p-3">
           <div 
             class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]", 
-                  (if Enum.at(answer.answer,0,"") === q_answer.id && answer.result === :correct, do: "bg-[var(--light-green)]", 
+                  (if Enum.at(answer.answer,0,"") === q_answer.id && answer.result === :correct, do: "bg-[var(--green)]", 
                   else: (if Enum.at(answer.answer,0,"") === q_answer.id && answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
           >
             <.markdown class="mt-2" text={q_answer.answer} />
@@ -87,7 +87,7 @@
         <div :for={q_answer <- answer.question.answers} class="w-full h-full p-3">
           <div 
           class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]",
-                (if Enum.member?(answer.answer, q_answer.id) && answer.result === :correct, do: "bg-[var(--light-green)]", 
+                (if Enum.member?(answer.answer, q_answer.id) && answer.result === :correct, do: "bg-[var(--green)]", 
                 else: (if Enum.member?(answer.answer, q_answer.id) && answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
           >
             <.markdown class="mt-2" text={q_answer.answer} />

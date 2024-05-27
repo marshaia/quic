@@ -1,7 +1,5 @@
 defmodule QuicWeb.SessionParticipant do
 
-  require Logger
-
   alias Quic.Quizzes
   alias Quic.Sessions
   alias Quic.Questions
@@ -28,14 +26,9 @@ defmodule QuicWeb.SessionParticipant do
     end
   end
 
-  def update_participant_current_question(id) do
-    participant = Participants.get_participant!(id)
-
-    if participant.current_question === nil do
-      participant |> Participants.update_participant(%{"current_question" => 1})
-    else
-      participant |> Participants.update_participant(%{"current_question" => participant.current_question + 1})
-    end
+  def update_participant_current_question(participant_id) do
+    participant = Participants.get_participant!(participant_id)
+    participant |> Participants.update_participant(%{"current_question" => participant.current_question + 1})
   end
 
   def assess_submission(participant_id, question_id, answer) do

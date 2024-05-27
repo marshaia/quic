@@ -53,7 +53,6 @@ defmodule QuicWeb.SessionChannel do
 
       # update data base with Participant's results
       SessionParticipant.update_participant_results(participant_id, question_id, results)
-
       # update participant's current question
       SessionParticipant.update_participant_current_question(participant_id)
 
