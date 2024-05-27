@@ -4,8 +4,6 @@ defmodule QuicWeb.QuestionLive.FormTrueFalse do
   alias Quic.Questions
   alias Quic.Questions.QuestionAnswer
 
-  require Logger
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -29,11 +27,6 @@ defmodule QuicWeb.QuestionLive.FormTrueFalse do
     """
   end
 
-
-  # @impl true
-  # def mount(socket) do
-
-  # end
 
   @impl true
   def update(%{answers: answers, responsive: responsive} = assigns, socket) do
@@ -63,5 +56,4 @@ defmodule QuicWeb.QuestionLive.FormTrueFalse do
   def handle_event("ignore", _params, socket) do
     {:noreply, socket}
   end
-
 end

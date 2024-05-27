@@ -46,7 +46,7 @@ defmodule Quic.Sessions do
   def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(quiz: [:questions, :author]) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
 
   def get_session_participants(id) do
-    session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
+    session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) |> Repo.preload(participants: [answers: :question])
     session.participants
   end
 

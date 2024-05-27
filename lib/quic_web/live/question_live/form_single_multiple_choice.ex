@@ -4,13 +4,6 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
   alias Quic.Questions
   alias Quic.Questions.QuestionAnswer
 
-  require Logger
-
-  # After the component is updated, render/1 is called with all assigns. On first render, we get:
-  # mount(socket) -> update(assigns, socket) -> render(assigns)
-  # On further rendering:
-  # update(assigns, socket) -> render(assigns)
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -90,14 +83,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
     """
   end
 
-  # is called once, when the component is first added to the page.
-  # @impl true
-  # def mount(socket) do
-  #   {:ok, socket}
-  # end
 
-  # is invoked with all of the assigns given to
-  # If is not defined all assigns are simply merged into the socket.
   @impl true
   def update(%{type: type, answers: answers, responsive: responsive} = assigns, socket) do
     socket = socket |> assign(assigns) |> assign(type: type)
@@ -176,6 +162,4 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
   defp all_answers_valid?(changesets) do
     Enum.reduce(changesets, true, fn changeset, acc -> if Enum.count(changeset.errors) > 0, do: false, else: acc end)
   end
-
-
 end

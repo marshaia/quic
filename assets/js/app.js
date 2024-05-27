@@ -26,11 +26,13 @@ import Prism from "../vendor/prism.js"
 import { SessionStore } from './session_store_hook.js'
 import { SessionChannelParticipant } from "./channel_participant_hook.js"
 import { SessionChannelMonitor } from "./channel_monitor_hook.js"
+import { ChartJS } from "./chats.js"
 
 let Hooks = {}
 Hooks.SessionStore = SessionStore;
 Hooks.SessionChannelParticipant = SessionChannelParticipant;
 Hooks.SessionChannelMonitor = SessionChannelMonitor;
+Hooks.ChartJS = ChartJS;
 
 Hooks.PrismInitializer = {
   mounted() {

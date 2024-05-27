@@ -376,6 +376,7 @@ defmodule QuicWeb.MyComponents do
   ## Examples:
 
     <.participant_progress_bar progress={80} current_question={1} num_quiz_questions={10} />
+    <.participant_progress_bar progress={80} current_question={1} num_quiz_questions={10} class="mt-10" />
   """
   attr :current_question, :integer, default: 0
   attr :num_quiz_questions, :integer, default: 0
@@ -395,6 +396,61 @@ defmodule QuicWeb.MyComponents do
     """
   end
 
+
+  @doc """
+  Renders quiz statistics in a session.
+
+  ## Examples:
+
+    <.participants_statistics participants={participants} />
+  """
+  attr :participants, :any, default: []
+  attr :questions, :any, default: []
+
+  def participants_statistics(assigns) do
+    ~H"""
+    <table class="w-full p-2">
+      <tr class="border-b border-[var(--border)] h-10">
+        <th class="w-[25%]">Name</th>
+        <th class="w-[10%] pr-5">Points</th>
+        <th :for={question <- @questions}>Q<%= question.position %></th>
+      </tr>
+
+      <tr :for={participant <- @participants} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
+        <td><p><%= participant.name %></p></td>
+        <td class="pr-5"><p><%= participant.total_points %></p></td>
+        <td :for={question <- @questions} class="">
+        <% answer = Enum.find(participant.answers, nil, fn a -> a.question.id === question.id end) %>
+        <% has_answered = answer !== nil %>
+
+          <div class={["flex flex-col items-center justify-center",
+            (if has_answered && answer.result === :correct, do: "bg-[var(--light-green)]",
+            else: (if has_answered && answer.result === :incorrect, do: "bg-[var(--light-red)]",
+            else: "bg-gray-200"))
+          ]}>
+            <%= if has_answered && answer.result === :correct do %>
+              <Heroicons.check class="w-5 h-5 text-[var(--dark-green)]"/>
+            <% else %>
+              <%= if has_answered && answer.result === :incorrect do %>
+                <Heroicons.x_mark class="w-5 h-5 text-[var(--dark-red)]"/>
+              <% else %>
+                <p class="text-gray-500">-</p>
+              <% end %>
+            <% end %>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td><p class="font-bold text-right">Accuracy:</p></td>
+        <td :for={_question <- @questions}>
+          <p class="text-center">--</p>
+        </td>
+      </tr>
+    </table>
+    """
+  end
 
 
 end

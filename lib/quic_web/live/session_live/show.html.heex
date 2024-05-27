@@ -172,7 +172,6 @@
           <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
             <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
             <td class=""><p><%= participant.name %></p></td>
-            <%!-- <td class=""><p><%= if participant.current_question === nil, do: 0, else: participant.current_question %> / <%= quiz_num_questions %></p></td> --%>
             <td>
               <%= if participant.current_question === quiz_num_questions do %>
                 <p class="text-[var(--primary-color)]">Completed</p>
@@ -195,7 +194,33 @@
 
   <% else %>
     <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-b border-x border-[var(--border)]">
-      <p>Stats section </p>
+
+      <%!--  FILTER STATS --%>
+      <div class="flex justify-start gap-2 mt-3">
+        <button 
+          phx-click="change_stats_filter"
+          phx-value-filter="participants"
+          class={["session-stats-btn bg-[var(--background-card)] border border-[var(--border)]", (if @stats_filter === :participants, do: "border-[var(--primary-color)]")]}
+          >
+          <Heroicons.user_group class="w-4 h-4 text-[var(--primary-color-text)]" />
+          <p class="font-normal">Participants</p>
+        </button>
+
+        <button 
+          phx-click="change_stats_filter"
+          phx-value-filter="questions"
+          class={["session-stats-btn bg-[var(--background-card)] border border-[var(--border)]", (if @stats_filter === :questions, do: "border-[var(--primary-color)]")]}
+        >
+          <Heroicons.pencil_square class="w-4 h-4 text-[var(--primary-color-text)]" />
+          <p class="font-normal">Questions</p>
+        </button>
+      </div>
+
+      <%!-- STATS --%>
+      <div class="mt-5">
+        <.live_component :if={@stats_filter === :questions} id="session-question-stats-module" module={QuicWeb.SessionLive.SessionQuizStats} />
+        <.participants_statistics :if={@stats_filter === :participants} participants={@participants} questions={@session.quiz.questions} />
+      </div>
     </div>
 
   <% end %>

@@ -37,3 +37,7 @@
 .session-form-btn {
   @apply flex items-center gap-1 px-3 py-1
 }
+
+.session-stats-btn {
+  @apply flex items-center gap-1 px-2 py-0.5 hover:bg-[var(--background-view)] rounded-full
+}
