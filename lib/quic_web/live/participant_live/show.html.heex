@@ -29,88 +29,80 @@
 
 <%!-- ANSWERS & RESULTS --%>
 <h6 class="mt-8 mb-3 font-bold">Answers</h6>
-<%= if Enum.count(@participant.answers) === 0 do %>
-  <p><%= @participant.name %> has not submitted any answers yet.</p>
-<% else %>
+<section :for={question <- @quiz.questions} id={"participant-page-answer-#{question.id}"} phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
+  <% participant_answer = Enum.find(@participant.answers, nil,fn a -> a.question.id === question.id end) %>
+  <% has_answered = participant_answer !== nil %>
 
-  <section :for={question <- @quiz.questions} id={"participant-question-answer-#{question.id}"} phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
-    <% participant_answer = Enum.find(@participant.answers, nil,fn a -> a.question.id === question.id end) %>
-    <% has_answered = participant_answer !== nil %>
+  <%!-- QUESTION DESCRIPTION --%>
+  <div class="flex gap-5 mb-5">
+    <div class="rounded-full border border-[var(--primary-color)] w-8 h-8 flex items-center justify-center">
+      <h6><%= question.position %></h6>
+    </div>
+    
+    <div class="w-full">
+      <div class="flex justify-between">
+        <%!-- QUESTION TYPE --%>
+        <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(question.type)]}>
+          <span class="text-xs text-white"> <%= QuicWebAux.readable_name(question.type) %> </span>
+        </div>
 
-    <%!-- QUESTION DESCRIPTION --%>
-    <div class="flex gap-5 mb-5">
-      <div class="rounded-full border border-[var(--primary-color)] w-8 h-8 flex items-center justify-center">
-        <h6><%= question.position %></h6>
+        <%!-- POINTS OBTAINED --%>
+        <div class="flex gap-2">
+          <Heroicons.trophy class="w-5 h-5"/>
+          <p><%= (if has_answered && participant_answer.result === :correct, do: question.points, else: 0) %></p>
+        </div>
       </div>
       
-      <div class="w-full">
-        <div class="flex justify-between">
-          <%!-- QUESTION TYPE --%>
-          <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(question.type)]}>
-            <span class="text-xs text-white"> <%= QuicWebAux.readable_name(question.type) %> </span>
-          </div>
+      <.markdown text={question.description} />
+    </div>
+  </div>
 
-          <%!-- POINTS OBTAINED --%>
-          <div class="flex gap-2">
-            <Heroicons.trophy class="w-5 h-5"/>
-            <p><%= (if has_answered && participant_answer.result === :correct, do: question.points, else: 0) %></p>
+  <%!-- DIVIDER --%>
+  <hr class="border border-[var(--border)] my-5 w-full" />
+
+  <%!-- ANSWERS --%>
+  <%= if has_answered do %>
+    <div class="grid w-full grid-cols-1 gap-2 md:grid-cols-2" style="grid-auto-rows: 1fr">
+      <%= if question.type === :true_false do %>
+        <div class="w-full h-full px-3 py-1">
+          <div class={["py-2 px-4 rounded-md bg-[var(--background-card)]", 
+              (if Enum.at(participant_answer.answer,0,"") === "true", do: (if participant_answer.result === :correct, do: "bg-[var(--green)]", else: "bg-[var(--light-red)]"))]}
+          >
+            <p>True</p>
           </div>
         </div>
-        
-        <.markdown text={question.description} />
-      </div>
+        <div class="w-full h-full px-3 py-1">
+          <div class={["py-2 px-4 rounded-md bg-[var(--background-card)]", 
+              (if Enum.at(participant_answer.answer,0,"") === "false", do: (if participant_answer.result === :correct, do: "bg-[var(--green)]", else: "bg-[var(--light-red)]"))]}
+          >
+            <p>False</p>
+          </div>
+        </div>
+      <% end %>
+
+      <%= if question.type === :single_choice do %>
+        <div :for={q_answer <- question.answers} class="w-full h-full p-3">
+          <div class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]", 
+              (if Enum.at(participant_answer.answer,0,"") === q_answer.id && participant_answer.result === :correct, do: "bg-[var(--green)]", 
+              else: (if Enum.at(participant_answer.answer,0,"") === q_answer.id && participant_answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
+          >
+            <.markdown class="mt-2" text={q_answer.answer} />
+          </div>
+        </div>
+      <% end %>
+
+      <%= if question.type === :multiple_choice do %>
+        <div :for={q_answer <- question.answers} class="w-full h-full p-3">
+          <div class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]",
+              (if Enum.member?(participant_answer.answer, q_answer.id) && participant_answer.result === :correct, do: "bg-[var(--green)]", 
+              else: (if Enum.member?(participant_answer.answer, q_answer.id) && participant_answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
+          >
+            <.markdown class="mt-2" text={q_answer.answer} />
+          </div>
+        </div>
+      <% end %>
     </div>
-
-    <%!-- DIVIDER --%>
-    <hr class="border border-[var(--border)] my-5 w-full" />
-
-    <%!-- ANSWERS --%>
-
-    <%= if has_answered do %>
-      <div class="grid w-full grid-cols-1 gap-2 md:grid-cols-2" style="grid-auto-rows: 1fr">
-        <%= if question.type === :true_false do %>
-          <div class="w-full h-full px-3 py-1">
-            <div 
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)]", (if Enum.at(participant_answer.answer,0,"") === "true", do: (if participant_answer.result === :correct, do: "bg-[var(--green)]", else: "bg-[var(--light-red)]"))]}
-            >
-              <p>True</p>
-            </div>
-          </div>
-          <div class="w-full h-full px-3 py-1">
-            <div 
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)]", (if Enum.at(participant_answer.answer,0,"") === "false", do: (if participant_answer.result === :correct, do: "bg-[var(--green)]", else: "bg-[var(--light-red)]"))]}
-            >
-              <p>False</p>
-            </div>
-          </div>
-        <% end %>
-
-        <%= if question.type === :single_choice do %>
-          <div :for={q_answer <- question.answers} class="w-full h-full p-3">
-            <div 
-              class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]", 
-                    (if Enum.at(participant_answer.answer,0,"") === q_answer.id && participant_answer.result === :correct, do: "bg-[var(--green)]", 
-                    else: (if Enum.at(participant_answer.answer,0,"") === q_answer.id && participant_answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
-            >
-              <.markdown class="mt-2" text={q_answer.answer} />
-            </div>
-          </div>
-        <% end %>
-
-        <%= if question.type === :multiple_choice do %>
-          <div :for={q_answer <- question.answers} class="w-full h-full p-3">
-            <div 
-            class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]",
-                  (if Enum.member?(participant_answer.answer, q_answer.id) && participant_answer.result === :correct, do: "bg-[var(--green)]", 
-                  else: (if Enum.member?(participant_answer.answer, q_answer.id) && participant_answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
-            >
-              <.markdown class="mt-2" text={q_answer.answer} />
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <p>Participant did not submit an answer to this question.</p>
-    <% end %>
-  </section> 
-<% end %>
+  <% else %>
+    <p>Participant <%= (if @participant.session.status !== :closed, do: "hasn't submmited", else: "did not submit") %> an answer to this question.</p>
+  <% end %>
+</section> 

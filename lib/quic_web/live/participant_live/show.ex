@@ -18,7 +18,7 @@ defmodule QuicWeb.ParticipantLive.Show do
     {:noreply,
      socket
      |> assign(:current_path, "/session/#{session_id}/participants/#{participant_id}")
-     |> assign(:page_title, "Show Participant")
+     |> assign(:page_title, "Session - Show Participant")
      |> assign(:participant, participant)
      |> assign(:quiz, Sessions.get_session_quiz(session_id))
      |> assign(:back, "/sessions/#{session_id}")}

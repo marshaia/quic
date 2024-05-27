@@ -128,8 +128,6 @@
         <Heroicons.arrows_pointing_out class="w-5 h-5" />
         Full Screen
       </.link>
-
-
     <% end %>
   </div>
   
@@ -175,13 +173,18 @@
             <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
             <td class=""><p><%= participant.name %></p></td>
             <%!-- <td class=""><p><%= if participant.current_question === nil, do: 0, else: participant.current_question %> / <%= quiz_num_questions %></p></td> --%>
-            <td class="flex flex-col items-center justify-center w-full h-full">
-              <% progress = QuicWebAux.progress_percentage(participant.current_question, Enum.count(@session.quiz.questions)) %>
-              <div class="mt-4 bg-[var(--border)] rounded-full w-[60%]">
-                <div class={["bg-[var(--primary-color)] text-white py-1 text-right rounded-full", (if participant.current_question !== 0, do: "px-4" )]} style={"width: #{progress}%"}/>
-              </div>
+            <td>
+              <%= if participant.current_question === quiz_num_questions do %>
+                <p class="text-[var(--primary-color)]">Completed</p>
+              <% else %>
+                <div class="flex flex-col items-center justify-center w-full h-full">
+                <% progress = QuicWebAux.progress_percentage(participant.current_question, quiz_num_questions) %>
+                <div class="mt-1 bg-[var(--border)] rounded-full w-[60%]">
+                  <div class={["bg-[var(--primary-color)] text-white py-1 text-right rounded-full", (if participant.current_question !== 0, do: "px-4" )]} style={"width: #{progress}%"}/>
+                </div>
+                </div>
+              <% end %>
             </td>
-
             <td class=""><p><%= participant.total_points %></p></td>
           </tr>
         </table>
