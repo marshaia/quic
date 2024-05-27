@@ -51,7 +51,7 @@ defmodule Quic.Sessions do
   end
 
   def get_session_quiz(id) do
-    session = Repo.get!(Session, id) |> Repo.preload(quiz: :questions)
+    session = Repo.get!(Session, id) |> Repo.preload(quiz: [questions: :answers])
     session.quiz
   end
 
