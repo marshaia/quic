@@ -23,7 +23,7 @@ defmodule QuicWeb.SessionLive.Show do
               |> assign(:page_title, "Show Session")
               |> assign(:current_path, "/sessions/#{id}")
               |> assign(:participants, Sessions.get_session_participants(id))
-              |> assign(:selected_view, :stats)
+              |> assign(:selected_view, :participants)
               |> assign(:stats_filter, :participants)}
   end
 

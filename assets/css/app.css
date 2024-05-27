@@ -152,7 +152,7 @@ li { @apply text-sm }
 }
 
 .screen-padding {
-  @apply sm:px-6 md:px-10 xl:px-40 2xl:px-56
+  @apply sm:px-6 md:px-10 xl:px-40 2xl:px-52
 }
 
 .increment_font_size {

@@ -3,6 +3,7 @@ defmodule QuicWeb.MyComponents do
 
   alias Phoenix.LiveView.JS
   alias QuicWeb.QuicWebAux
+  alias Quic.Sessions
 
   import QuicWeb.CoreComponents
   import Phoenix.HTML
@@ -406,6 +407,7 @@ defmodule QuicWeb.MyComponents do
   """
   attr :participants, :any, default: []
   attr :questions, :any, default: []
+  attr :session, :string, default: ""
 
   def participants_statistics(assigns) do
     ~H"""
@@ -423,10 +425,9 @@ defmodule QuicWeb.MyComponents do
         <% answer = Enum.find(participant.answers, nil, fn a -> a.question.id === question.id end) %>
         <% has_answered = answer !== nil %>
 
-          <div class={["flex flex-col items-center justify-center",
+          <div class={["flex flex-col items-center justify-center rounded-full",
             (if has_answered && answer.result === :correct, do: "bg-[var(--light-green)]",
-            else: (if has_answered && answer.result === :incorrect, do: "bg-[var(--light-red)]",
-            else: "bg-gray-200"))
+            else: (if has_answered && answer.result === :incorrect, do: "bg-[var(--light-red)]"))
           ]}>
             <%= if has_answered && answer.result === :correct do %>
               <Heroicons.check class="w-5 h-5 text-[var(--dark-green)]"/>
@@ -434,7 +435,7 @@ defmodule QuicWeb.MyComponents do
               <%= if has_answered && answer.result === :incorrect do %>
                 <Heroicons.x_mark class="w-5 h-5 text-[var(--dark-red)]"/>
               <% else %>
-                <p class="text-gray-500">-</p>
+                <p class="text-gray-500">--</p>
               <% end %>
             <% end %>
           </div>
@@ -444,8 +445,8 @@ defmodule QuicWeb.MyComponents do
       <tr>
         <td></td>
         <td><p class="font-bold text-right">Accuracy:</p></td>
-        <td :for={_question <- @questions}>
-          <p class="text-center">--</p>
+        <td :for={question <- @questions}>
+          <p class="text-center"><%= Sessions.calculate_quiz_question_accuracy(@session, question.position) %>%</p>
         </td>
       </tr>
     </table>

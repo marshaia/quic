@@ -82,6 +82,21 @@ defmodule Quic.Sessions do
   end
 
 
+  def calculate_quiz_question_accuracy(session_id, question_position) do
+    participants = get_session_participants(session_id)
+    %{correct: correct, incorrect: incorrect} = Enum.reduce(participants, %{correct: 0, incorrect: 0},
+      fn p, acc ->
+        participant_answer = Enum.find(p.answers, nil, fn a -> a.question.position === question_position end)
+        case participant_answer do
+          nil -> %{correct: acc.correct, incorrect: acc.incorrect + 1}
+          answer -> if answer.result === :correct, do: %{correct: acc.correct + 1, incorrect: acc.incorrect}, else: %{correct: acc.correct, incorrect: acc.incorrect + 1}
+        end
+      end)
+
+      Float.round((correct / (correct + incorrect)) * 100, 2)
+  end
+
+
   @doc """
   Creates a session.
 

@@ -138,7 +138,7 @@
     <div 
       phx-click="change_selected_view"
       phx-value-view="participants"
-      class={["w-1/2 text-center py-1 cursor-pointer rounded-tl-xl border-[var(--border)]", (if @selected_view === :participants, do: "bg-[var(--background-card)] border-x border-t ", else: "bg-[var(--background-view)] border-b")]}
+      class={["w-1/2 text-center py-1 hover:cursor-pointer rounded-tl-xl border-[var(--border)]", (if @selected_view === :participants, do: "bg-[var(--background-card)] border-x border-t ", else: "bg-[var(--background-view)] border-b")]}
     >
       <h6 class={["font-bold", (if @selected_view === :participants, do: "text-[var(--primary-color)]")]}>
         Participants <span class="text-sm font-normal text-[var(--primary-color-text)]">(<%= Enum.count(@participants) %>)</span>
@@ -219,7 +219,7 @@
       <%!-- STATS --%>
       <div class="mt-5">
         <.live_component :if={@stats_filter === :questions} id="session-question-stats-module" module={QuicWeb.SessionLive.SessionQuizStats} />
-        <.participants_statistics :if={@stats_filter === :participants} participants={@participants} questions={@session.quiz.questions} />
+        <.participants_statistics :if={@stats_filter === :participants} participants={@participants} questions={@session.quiz.questions} session={@session.id} />
       </div>
     </div>
 
