@@ -93,58 +93,13 @@
         </div>
 
 
-        <div
-          :for={{_colaborator, index} <- Enum.with_index(@team.authors)}
-          class="flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4"
-        >
-
-          <%!-- <% isOwner = isOwner?(quiz.id, @current_author) %> --%>
-
-          <%!-- QUIZ INFO --%>
-          <div class="flex-1 pr-2 mr-2 border-r border-[var(--border)]">
-            <div class="flex items-center gap-2">
-              <Heroicons.pencil_square class={["h-5 w-5", QuicWebAux.user_color(index + 1)]} />
-              <p class="font-bold"> Quiz 1 </p>
-            </div>
-
-
-            <%!-- <%= if String.length(team.description) > 50, do: String.slice(team.description, 0..50) <> "...", else: team.description %> --%>
-            <p class="mt-4"> Description of Quiz 1, lorem ipsulum......</p>
-
-
-            <div class="flex flex-col items-center justify-between gap-2 mt-6 sm:flex-row">
-              <div class="flex gap-1">
-                <Heroicons.list_bullet class="w-5 h-5" />
-                <%!-- <p><%= Enum.count(@quiz.questions) %> Questions</p> --%>
-                <p class="text-gray-400">1 questions</p>
-              </div>
-
-              <div class="flex gap-1">
-                <Heroicons.trophy class="w-5 h-5" />
-                <%!-- <p><%= @quiz.total_points %> Points</p> --%>
-                <p class="text-gray-400">10 points</p>
-              </div>
-
-              <div class="flex gap-1">
-                <Heroicons.user_circle class="w-5 h-5" />
-                <%!-- <p>
-                  <%= if @quiz.author.id === @current_author.id do %>
-                    You
-                  <% else %>
-                    <%= @quiz.author.id %>
-                  <% end %> 
-                </p> --%>
-                <p class="text-gray-400">You</p>
-              </div>
-            </div>
-          </div>
-
-          <%!-- QUIZ ACTIONS --%>
-          <div class="flex flex-col items-center justify-between">
-            <Heroicons.bolt class="w-5 h-5 text-[var(--primary-color)]" />
-            <Heroicons.document_duplicate class="w-5 h-5" />
-            <Heroicons.trash class="w-5 h-5" />
-          </div>
+        <div :for={{_quiz, _index} <- Enum.with_index(@team.authors)}>
+          <%!-- <.quiz_box
+            index={index + 1}
+            quiz={Quizzes.get_quiz!(quiz.id)}
+            isOwner={Quizzes.is_owner?(quiz.id, @current_author)}
+            current_author_id={@current_author.id}
+          />   --%>
         </div>
       </section>
     </div>

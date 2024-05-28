@@ -94,8 +94,8 @@
       <%= if question.type === :multiple_choice do %>
         <div :for={q_answer <- question.answers} class="w-full h-full p-3">
           <div class={["py-2 px-4 rounded-md h-full bg-[var(--background-card)] border border-[var(--border)]",
-              (if Enum.member?(participant_answer.answer, q_answer.id) && participant_answer.result === :correct, do: "bg-[var(--green)]", 
-              else: (if Enum.member?(participant_answer.answer, q_answer.id) && participant_answer.result === :incorrect, do: "bg-[var(--light-red)]"))]}
+              (if Enum.member?(participant_answer.answer, q_answer.id) && q_answer.is_correct, do: "bg-[var(--green)]", 
+              else: (if Enum.member?(participant_answer.answer, q_answer.id) && q_answer.is_correct === false, do: "bg-[var(--light-red)]"))]}
           >
             <.markdown class="mt-2" text={q_answer.answer} />
           </div>

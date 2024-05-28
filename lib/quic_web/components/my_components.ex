@@ -11,26 +11,6 @@ defmodule QuicWeb.MyComponents do
   # import QuicWeb.Gettext
 
 
-
-  @doc """
-  Renders a quiz box with all the basic information.
-
-  ## Examples
-      <.quiz_box quiz={@quiz} />
-  """
-  attr :quiz, Quic.Quizzes.Quiz, required: true, doc: "the Quiz struct"
-
-  def quiz_box(assigns) do
-    ~H"""
-    <div class="p-4 bg-yellow">
-      <p class="font.semibold">@quiz.name</p>
-      <p class="text-xs">@quiz.description</p>
-    </div>
-    """
-  end
-
-
-
   @doc """
   Renders a box with the author information.
 
@@ -349,23 +329,98 @@ defmodule QuicWeb.MyComponents do
     <.quiz_summary quiz={@quiz}/>
   """
   attr :quiz, :any, default: %{}
-  attr :author_name, :string, default: ""
 
   def quiz_summary(assigns) do
     ~H"""
-    <div class="w-full">
+    <div
+      phx-click="clicked_quiz" phx-value-id={@quiz.id}
+      class="hover:bg-[var(--background-card)] cursor-pointer px-4 pt-3 w-full"
+    >
       <p class="-mt-1 text-base font-bold text-[var(--primary-color)]"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></p>
       <p><%= if String.length(@quiz.description) > 30, do: String.slice(@quiz.description, 0..30) <> "...", else: @quiz.description %></p>
       <div class="flex justify-between gap-2 mt-4">
         <div class="flex gap-1">
-          <Heroicons.trophy class="w-5 h-5"/>
-          <p><%= @quiz.total_points %> Points</p>
+          <Heroicons.list_bullet class="w-5 h-5" />
+          <p><%= Enum.count(@quiz.questions) %> Questions</p>
         </div>
         <div class="flex gap-1">
           <Heroicons.user class="w-5 h-5"/>
-          <p><%= @author_name %></p>
+          <p><%= @quiz.author.display_name %></p>
         </div>
       </div>
+    </div>
+    """
+  end
+
+
+  @doc """
+  Renders a quiz box with name, description, nº of questions, points, author name and delete option.
+
+  ## Examples:
+    <.quiz_box quiz={@quiz}/>
+  """
+  attr :index, :integer, default: 1
+  attr :quiz, :any, default: %{}
+  attr :isOwner, :boolean, default: false
+  attr :current_author_id, :string, default: ""
+
+  def quiz_box(assigns) do
+    ~H"""
+    <div class="w-full h-full hover:cursor-pointer hover:bg-[var(--hover)] flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4" phx-click="clicked_quiz" phx-value-id={@quiz.id}>
+      <%!-- QUIZ INFO --%>
+      <div class="flex-1 flex flex-col justify-between">
+        <div class="flex justify-between">
+          <div class="flex items-center gap-2">
+            <Heroicons.pencil_square class={["h-5 w-5", QuicWebAux.user_color(@index)]} />
+            <h6 class="font-bold"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></h6>
+          </div>
+
+          <.link :if={@isOwner} phx-click={JS.push("delete", value: %{id: @quiz.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">
+            <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
+          </.link>
+        </div>
+
+
+        <p class="mt-4"><%= if String.length(@quiz.description) > 100, do: String.slice(@quiz.description, 0..100) <> "...", else: @quiz.description %></p>
+
+        <div class="flex flex-col items-center justify-between gap-2 mt-6 sm:flex-row">
+          <div class="flex gap-1">
+            <Heroicons.list_bullet class="w-5 h-5" />
+            <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
+          </div>
+
+          <div class="flex gap-1">
+            <Heroicons.trophy class="w-5 h-5" />
+            <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
+          </div>
+
+          <div class="flex gap-1">
+            <Heroicons.user_circle class="w-5 h-5" />
+            <p class="text-gray-400">
+              <%= if @quiz.author.id === @current_author_id do %>
+                You
+              <% else %>
+                <%= @quiz.author.display_name %>
+              <% end %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <%!-- QUIZ ACTIONS --%>
+      <%!-- <div class="flex flex-col items-center justify-between">
+        <.link navigate={~p"/sessions/new/quiz/#{quiz.id}"}>
+          <Heroicons.bolt class="question-box-icon" />
+        </.link>
+
+        <.link phx-click={JS.push("duplicate", value: %{id: quiz.id})}>
+          <Heroicons.document_duplicate class="question-box-icon" />
+        </.link>
+
+        <.link :if={isOwner} phx-click={JS.push("delete", value: %{id: quiz.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">
+          <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
+        </.link>
+      </div> --%>
     </div>
     """
   end

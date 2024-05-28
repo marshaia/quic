@@ -34,10 +34,10 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
           |> assign(:step, 1)
           |> assign(:quiz, nil)
           |> assign(:session_type, :monitor_paced)
-          |> assign(:filtered_quizzes, Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id))
           |> assign(:page_title, "New Session")
           |> assign(:current_path, "/sessions/new")
-          |> assign(:back, "/sessions")}
+          |> assign(:back, "/sessions")
+          |> assign(:filtered_quizzes, Enum.reject(Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id), fn quiz -> Enum.count(quiz.questions) === 0 end))}
   end
 
 
@@ -54,9 +54,15 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
 
   @impl true
   def handle_event("clicked_quiz", %{"id" => quiz_id} = _params, socket) do
-    {:noreply, socket
+    quiz = Quizzes.get_quiz!(quiz_id)
+    if Enum.count(quiz.questions) === 0 do
+      {:noreply, socket |> put_flash(:error, "You can't chose a quiz with no questions!")}
+    else
+      {:noreply, socket
               |> assign(quiz: Quizzes.get_quiz!(quiz_id))
               |> assign(:filtered_quizzes, Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id))}
+    end
+
   end
   @impl true
   def handle_event("deselect_quiz", _params, socket) do
@@ -103,11 +109,11 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
     end
   end
 
-  defp filter_author_quizzes(author_id, input) do
+  def filter_author_quizzes(author_id, input) do
     if String.length(input) === 0 do
-      Quizzes.list_all_author_available_quizzes(author_id)
+      Enum.reject(Quizzes.list_all_author_available_quizzes(author_id), fn quiz -> Enum.count(quiz.questions) === 0 end)
     else
-      Quizzes.list_all_author_quizzes_filtered(author_id, input)
+      Enum.reject(Quizzes.list_all_author_quizzes_filtered(author_id, input), fn quiz -> Enum.count(quiz.questions) === 0 end)
     end
   end
 

@@ -1,5 +1,6 @@
 <.header>
-  <h4>Listing Quizzes</h4>
+<%!-- Listing --%>
+  <h4>Quizzes</h4>
   <:actions>
     <.link patch={~p"/quizzes/new"}>
       <.button class="call2actionBtn">New Quiz</.button>
@@ -8,8 +9,36 @@
 </.header>
 
 
+<div class="flex mt-5 justify-center w-full">
+  <form phx-change="form_quiz_changed" class="flex lg:w-[50%] w-full rounded-full px-4 py-1 gap-2 bg-[var(--background-card)] border border-[var(--border)]">
+    <div class="flex items-center justify-center">
+      <Heroicons.magnifying_glass class="relative w-5 h-5 text-[var(--primary-color)]" />
+    </div>
+    <input type="text" id="quiz_name" name="quiz_input" class="bg-[var(--background-card)] border-none focus:ring-0 text-sm w-full md:w-80" placeholder="Search by name, description or author"/>
+  </form>
+</div>
 
 
+<%= if Enum.count(@quizzes) === 0 do %>
+  <p class="text-center mt-8">Nothing to show</p>
+<% else %>
+  <div class="grid w-full overflow-auto grid-cols-1 gap-2 lg:grid-cols-2 mt-8" style="grid-auto-rows: 1fr">
+    <div :for={{quiz, index} <- Enum.with_index(@quizzes)}>
+      <.quiz_box
+        index={index + 1}
+        quiz={quiz}
+        isOwner={Quizzes.is_owner?(quiz.id, @current_author)}
+        current_author_id={@current_author.id}
+      />  
+    </div>
+  </div>
+<% end %>
+
+
+
+
+
+<%!-- 
 <div class="mt-8 overflow-auto">
   <table class="w-full p-2 rounded-t-3xl">
     <tr class="bg-[var(--border)] h-10">
@@ -30,10 +59,6 @@
         </p>
       </td>
 
-      <%!-- <td class="border-b border-b-[var(--border)]">
-        <p><%= quiz.total_points %></p>
-      </td> --%>
-
       <td class="border-b border-b-[var(--border)]">
         <.link
           class="flex p-1.5 w-10 items-center justify-center text-white bg-red-700 rounded-full hover:bg-red-900"
@@ -45,7 +70,7 @@
       </td>
     </tr>
   </table>
-</div>
+</div> --%>
 
 
 

@@ -43,7 +43,7 @@ defmodule Quic.Sessions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
+  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(quiz: :questions) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
 
   def get_session_participants(id) do
     session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) |> Repo.preload(participants: [answers: :question])
@@ -85,10 +85,9 @@ defmodule Quic.Sessions do
         end
       end)
 
-      Float.round((correct / (correct + incorrect)) * 100, 2)
+      if correct + incorrect === 0, do: 0, else: Float.round((correct / (correct + incorrect)) * 100, 2)
   end
 
-  require Logger
   def calculate_quiz_question_stats(session_id, question_position) do
     participants = get_session_participants(session_id)
     %{correct: correct, incorrect: incorrect, null: null} = Enum.reduce(participants, %{correct: 0, incorrect: 0, null: 0},

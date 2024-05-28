@@ -50,10 +50,10 @@ export const ChartJS = {
     
     };
     const chart = new Chart(ctx, data);
-    this.handleEvent("update-points", function(payload){ 
-      chart.data.datasets[0].data = payload.points;
-      chart.update();
-    })
+    // this.handleEvent("update-points", function(payload){ 
+    //   chart.data.datasets[0].data = payload.points;
+    //   chart.update();
+    // })
   },
 
   updated() {

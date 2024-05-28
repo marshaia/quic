@@ -4,23 +4,15 @@ defmodule QuicWeb.QuizLive.Index do
   alias Quic.Quizzes
   alias Quic.Quizzes.Quiz
 
-  require Logger
-
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
+    {:ok, assign(socket, :quizzes, Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id))}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, socket |> assign(:current_path, "/quizzes") |> apply_action(socket.assigns.live_action, params)}
   end
-
-  # defp apply_action(socket, :edit, %{"id" => id}) do
-  #   socket
-  #   |> assign(:page_title, "Edit Quiz")
-  #   |> assign(:quiz, Quizzes.get_quiz!(id))
-  # end
 
   defp apply_action(socket, :new, _params) do
     socket
@@ -53,4 +45,17 @@ defmodule QuicWeb.QuizLive.Index do
     {:noreply, redirect(socket, to: "/quizzes/#{id}")}
   end
 
+  @impl true
+  def handle_event("form_quiz_changed", %{"quiz_input" => input}, socket) do
+    {:noreply, socket |> assign(:quizzes, filter_author_quizzes(socket.assigns.current_author.id, input))}
+  end
+
+
+  defp filter_author_quizzes(author_id, input) do
+    if String.length(input) === 0 do
+      Quizzes.list_all_author_available_quizzes(author_id)
+    else
+      Quizzes.list_all_author_quizzes_filtered(author_id, input)
+    end
+  end
 end

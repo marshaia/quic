@@ -32,24 +32,24 @@ defmodule Quic.Quizzes do
 
   def list_all_author_available_quizzes(id) do
     # add quizzes owned by author, shared within teams or with privacy set to :public
-    query = from q in Quiz,
+    query = from q in Quiz, preload: :questions, preload: :author,
       join: a in Author, on: a.id == q.author_id,
-      where: q.author_id == ^id,
-      select: %{id: q.id, name: q.name, description: q.description, total_points: q.total_points, author_name: a.display_name}
+      where: q.author_id == ^id
+      #select: %{id: q.id}
 
     Repo.all(query)
   end
 
   def list_all_author_quizzes_filtered(id, filter) do
     search_pattern = "%#{filter}%"
-    query = from q in Quiz,
+    query = from q in Quiz, preload: :questions, preload: :author,
       join: a in Author, on: a.id == q.author_id,
       where: q.author_id == ^id and (
         ilike(q.name, ^search_pattern) or
         ilike(q.description, ^search_pattern) or
         ilike(a.display_name, ^search_pattern)
-      ),
-      select: %{id: q.id, name: q.name, description: q.description, total_points: q.total_points, author_name: a.display_name}
+      )
+      #select: %{id: q.id}
 
     Repo.all(query)
   end
