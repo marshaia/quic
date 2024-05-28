@@ -67,6 +67,14 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
+  def session_status_translate(status) do
+    case status do
+      :open -> "OPEN"
+      :on_going -> "ON GOING"
+      :closed -> "CLOSED"
+    end
+  end
+
 
   def progress_percentage(participant_question, quiz_total_questions) when quiz_total_questions > 0 do
     Float.round((participant_question / quiz_total_questions) * 100, 0)

@@ -114,14 +114,4 @@ defmodule QuicWeb.SessionLive.Show do
   @impl true
   def handle_info(_, socket), do: {:noreply, socket}
 
-
-
-  def session_status_translate(status) do
-    case status do
-      :open -> "OPEN"
-      :on_going -> "ON GOING"
-      :closed -> "CLOSED"
-    end
-  end
-
 end

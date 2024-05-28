@@ -20,7 +20,7 @@
       <div class="flex justify-between">
         <div class="flex items-center gap-2">
           <div class={["w-4 h-4 rounded-full", QuicWebAux.session_status_color(@session.status)]} />
-          <p><%= session_status_translate(@session.status) %></p>     
+          <p><%= QuicWebAux.session_status_translate(@session.status) %></p>     
         </div>
 
         <div class="flex items-center gap-2">

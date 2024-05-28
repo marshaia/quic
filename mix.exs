@@ -60,7 +60,8 @@ defmodule Quic.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
-      {:earmark, "~> 1.3"}
+      {:earmark, "~> 1.3"},
+      {:calendar, "~> 1.0"}
     ]
   end
 

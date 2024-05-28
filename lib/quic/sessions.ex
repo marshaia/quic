@@ -6,7 +6,7 @@ defmodule Quic.Sessions do
   import Ecto.Query, warn: false
   alias Quic.Repo
 
-  alias Quic.Accounts.Author
+  #alias Quic.Accounts.Author
   alias Quic.Sessions.Session
   alias Quic.Participants.Participant
 
@@ -24,9 +24,28 @@ defmodule Quic.Sessions do
     Repo.all(Session)
   end
 
+  require Logger
   def list_all_author_sessions(id) do
-    author = Repo.get(Author, id) |> Repo.preload([sessions: from(s in Session, order_by: [desc: s.updated_at])]) |> Repo.preload(sessions: :quiz) #|> Repo.preload(sessions: :participants)
-    author.sessions
+    # author = Repo.get(Author, id)
+    #   |> Repo.preload([sessions: from(s in Session, group_by: [s.inserted_at, s.id], order_by: [desc: s.updated_at])])
+    #   |> Repo.preload(sessions: :quiz) #|> Repo.preload(sessions: :participants)
+
+    #   Logger.error("\n\nsessions map: #{inspect Enum.group_by(author.sessions, &(&1.inserted_at))}\n\n")
+
+    # author.sessions
+    query = from s in Session, preload: :quiz,
+      where: s.monitor_id == ^id,
+      select: %{date: fragment("date(?)", s.inserted_at), entity: s},
+      order_by: fragment("date(?)", s.inserted_at)
+
+    results = Repo.all(query)
+    grouped_results = Enum.group_by(results, &(&1.date))
+
+    grouped_results
+    |> Enum.map(fn {date, entries} ->
+      sessions = Enum.map(entries, &(&1.entity))
+      %{date: date, sessions: sessions}
+    end)
   end
 
   @doc """
