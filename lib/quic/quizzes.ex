@@ -34,7 +34,8 @@ defmodule Quic.Quizzes do
     # add quizzes owned by author, shared within teams or with privacy set to :public
     query = from q in Quiz, preload: :questions, preload: :author,
       join: a in Author, on: a.id == q.author_id,
-      where: q.author_id == ^id
+      where: q.author_id == ^id,
+      order_by: [desc: q.inserted_at]
       #select: %{id: q.id}
 
     Repo.all(query)

@@ -33,10 +33,11 @@ defmodule Quic.Sessions do
     #   Logger.error("\n\nsessions map: #{inspect Enum.group_by(author.sessions, &(&1.inserted_at))}\n\n")
 
     # author.sessions
-    query = from s in Session, preload: :quiz,
+    query = from s in Session,
       where: s.monitor_id == ^id,
-      select: %{date: fragment("date(?)", s.inserted_at), entity: s},
-      order_by: fragment("date(?)", s.inserted_at)
+      order_by: [desc: s.start_date],
+      select: %{date: fragment("date(?)", s.start_date), entity: s},
+      preload: :quiz
 
     results = Repo.all(query)
     grouped_results = Enum.group_by(results, &(&1.date))

@@ -1,5 +1,5 @@
 <.header>
-  <h4 class="mb-5">Sessions</h4>
+  <h4>Sessions</h4>
   <:actions>
     <.link patch={~p"/sessions/new"}>
       <.button class="call2actionBtn">New Session</.button>
@@ -7,9 +7,9 @@
   </:actions>
 </.header>
 
+<div class="my-10" />
 
-
-<div :for={%{date: date, sessions: sessions} <- @sessions} class="w-full mt-5 overflow-auto">
+<div :for={%{date: date, sessions: sessions} <- @sessions} class="w-full overflow-auto">
   <% date_calendar = Calendar.strftime(date, "%a, %B %d") %>
   <% todays_date = Calendar.strftime(DateTime.utc_now(), "%a, %B %d") %>
   <h6 class="mb-2">
@@ -20,7 +20,7 @@
   <div 
     :for={{session, index} <- Enum.with_index(sessions)}
     phx-click="clicked_session" phx-value-id={session.id}
-    class={["flex items-center border border-[var(--border)] bg-[var(--background-card)] p-2 md:px-6 justify-between md:ml-10 overflow-x-auto",
+    class={["flex items-center border border-[var(--border)] bg-[var(--background-card)] p-2 md:px-6 justify-between md:ml-8 overflow-x-auto",
       "hover:bg-[var(--hover)] hover:cursor-pointer",
       (if index === 0, do: "rounded-t-xl"),
       (if index === (Enum.count(sessions) - 1), do: "rounded-b-xl")
@@ -33,20 +33,20 @@
     <p class="min-w-18 w-[5%] text-left md:text-center text-base font-bold"><%= session.code %></p>
 
     <%!-- QUIZ --%>
-    <p class="min-w-28 w-[5%] ml-5 md:ml-0 text-center"><%= if String.length(session.quiz.name) > 15, do: String.slice(session.quiz.name, 0..15) <> "...", else: session.quiz.name %></p>
+    <p class="hidden md:block min-w-28 w-[5%] ml-5 md:ml-0 text-center"><%= if String.length(session.quiz.name) > 15, do: String.slice(session.quiz.name, 0..15) <> "...", else: session.quiz.name %></p>
 
     <%!-- TYPE --%>
     <p class="hidden lg:block min-w-32 text-center w-[10%]"><%= if session.type === :monitor_paced, do: "Monitor Paced", else: "Participant Paced" %></p>
 
     <%!-- HOURS --%>
-    <%!-- <div class="hidden md:flex items-center justify-center gap-1 mx-4">
-      <p class=""><%= DateTime.to_time(session.start_date) %></p>
+    <div class="flex items-center justify-center gap-1 mx-4">
+      <p><%= session.start_date.hour %>:<%= session.start_date.minute %></p>
       <Heroicons.arrow_right_circle class="w-5 h-5" />
-      <p><%= if session.end_date === nil, do: "Now", else: DateTime.to_time(session.end_date) %></p>
-    </div> --%>
+      <p><%= if session.end_date === nil, do: "Now", else: "#{session.end_date.hour}:#{session.end_date.minute}" %></p>
+    </div>
 
     <%!-- STATUS --%>
-    <div class="flex gap-2 items-center mr-5 md:mr-0">
+    <div class="flex items-center gap-2 mr-5 md:mr-0">
       <div class={["w-4 h-4 rounded-full", QuicWebAux.session_status_color(session.status)]} />
       <%!-- <p class="hidden md:block"><%= QuicWebAux.session_status_translate(session.status) %></p> --%>
     </div>
