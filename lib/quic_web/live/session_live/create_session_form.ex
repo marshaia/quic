@@ -13,7 +13,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
             |> assign(:step, 1)
             |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
             |> assign(:session_type, :monitor_paced)
-            |> assign(:filtered_quizzes, Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id))
+            |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
             |> assign(:page_title, "New Session")
             |> assign(:current_path, "/sessions/new/quiz/#{quiz_id}")
             |> assign(:back, "/quizzes/#{quiz_id}")}
@@ -37,7 +37,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
           |> assign(:page_title, "New Session")
           |> assign(:current_path, "/sessions/new")
           |> assign(:back, "/sessions")
-          |> assign(:filtered_quizzes, Enum.reject(Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id), fn quiz -> Enum.count(quiz.questions) === 0 end))}
+          |> assign(:filtered_quizzes, Enum.reject(Quizzes.list_all_author_quizzes(socket.assigns.current_author.id), fn quiz -> Enum.count(quiz.questions) === 0 end))}
   end
 
 
@@ -60,7 +60,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
     else
       {:noreply, socket
               |> assign(quiz: Quizzes.get_quiz!(quiz_id))
-              |> assign(:filtered_quizzes, Quizzes.list_all_author_available_quizzes(socket.assigns.current_author.id))}
+              |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
     end
 
   end
@@ -111,9 +111,9 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
 
   def filter_author_quizzes(author_id, input) do
     if String.length(input) === 0 do
-      Enum.reject(Quizzes.list_all_author_available_quizzes(author_id), fn quiz -> Enum.count(quiz.questions) === 0 end)
+      Enum.reject(Quizzes.list_all_author_quizzes(author_id), fn quiz -> Enum.count(quiz.questions) === 0 end)
     else
-      Enum.reject(Quizzes.list_all_author_quizzes_filtered(author_id, input), fn quiz -> Enum.count(quiz.questions) === 0 end)
+      Enum.reject(Quizzes.filter_author_quizzes(author_id, input), fn quiz -> Enum.count(quiz.questions) === 0 end)
     end
   end
 

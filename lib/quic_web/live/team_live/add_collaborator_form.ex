@@ -4,8 +4,6 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
   alias Quic.Teams
   alias Quic.Accounts
 
-  require Logger
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -15,7 +13,7 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
         <:subtitle></:subtitle>
       </.header>
 
-      <.simple_form
+      <%!-- <.simple_form
         :let={f}
         for={@form}
         id="add-collaborator-team-form"
@@ -24,12 +22,8 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
         phx-submit="save"
       >
         <.input field={f[:input]} type="text" label="Search Name or Username" />
-        <%!-- <:actions>
-          <.button phx-disable-with="Saving..." class="call2actionBtn">Save Team</.button>
-        </:actions> --%>
       </.simple_form>
 
-      <%= if String.length(@input_text) > 0 do %>
       <div class="flex flex-col w-full overflow-y-auto max-h-40 border border-[var(--border)] rounded-md mt-3">
         <div :for={user <- @searched_users}>
             <% already_in_team = is_user_already_in_team(@team.authors, user.username) %>
@@ -46,9 +40,27 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
               </p>
             </.link>
         </div>
-      </div>
-      <% end %>
+      </div> --%>
 
+      <form phx-target={@myself} phx-change="validate" class="flex mt-8 rounded-t-xl px-4 py-1 gap-2 bg-[var(--background-view)]">
+        <div class="flex items-center justify-center">
+          <Heroicons.magnifying_glass class="relative w-5 h-5 text-[var(--primary-color)]" />
+        </div>
+        <input type="text" id="add_collaborator_input" name="input" class="bg-[var(--background-view)] border-none focus:ring-0 text-sm w-full md:w-80" placeholder="Search by display name or username"/>
+      </form>
+
+      <div class="mb-3 h-[233px] rounded-b-xl border-t border-[var(--border)] overflow-auto bg-[var(--background-view)]">
+        <%= if Enum.count(@searched_users) === 0 do %>
+          <p class="mt-3 text-xs text-center">Nothing to show</p>
+        <% else %>
+          <div :for={user <- @searched_users} class="hover:bg-[var(--background-card)] cursor-pointer px-4 py-5 w-full border-t border-[var(--border)]" phx-target={@myself} phx-click="clicked_user" phx-value-username={user.username}>
+            <p class="font-semibold">
+              <%= user.display_name %>
+              <span class="ml-2 text-sm font-normal">@<%= user.username %></span>
+            </p>
+          </div>
+        <% end %>
+      </div>
     </div>
     """
   end
@@ -56,7 +68,7 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
   @impl true
   def mount(socket) do
     {:ok, socket
-          |> assign(:form, %{"input" => ""})
+          #|> assign(:form, %{"input" => ""})
           |> assign(:input_text, "")
           |> assign(:searched_users, %{})}
   end
@@ -64,8 +76,13 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
 
   @impl true
   def handle_event("validate", %{"input" => input}, socket) do
-    users = Accounts.get_author_by_name_or_username(input)
-    {:noreply, assign(socket, searched_users: users, input_text: input)}
+    if String.length(input) === 0 do
+      {:noreply, assign(socket, searched_users: [], input_text: input)}
+    else
+      users = Accounts.get_author_by_name_or_username(input)
+      result = Enum.reject(users, fn user -> is_user_already_in_team(socket.assigns.team.authors, user.username) end)
+      {:noreply, assign(socket, searched_users: result, input_text: input)}
+    end
   end
 
   @impl true

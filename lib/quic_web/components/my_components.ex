@@ -332,10 +332,7 @@ defmodule QuicWeb.MyComponents do
 
   def quiz_summary(assigns) do
     ~H"""
-    <div
-      phx-click="clicked_quiz" phx-value-id={@quiz.id}
-      class="hover:bg-[var(--background-card)] cursor-pointer px-4 pt-3 w-full"
-    >
+    <div phx-click="clicked_quiz" phx-value-id={@quiz.id}>
       <p class="-mt-1 text-base font-bold text-[var(--primary-color)]"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></p>
       <p><%= if String.length(@quiz.description) > 30, do: String.slice(@quiz.description, 0..30) <> "...", else: @quiz.description %></p>
       <div class="flex justify-between gap-2 mt-4">
@@ -366,7 +363,7 @@ defmodule QuicWeb.MyComponents do
 
   def quiz_box(assigns) do
     ~H"""
-    <div class="w-full h-full hover:cursor-pointer hover:bg-[var(--hover)] flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4" phx-click="clicked_quiz" phx-value-id={@quiz.id}>
+    <div class="w-full h-full hover:cursor-pointer hover:bg-[var(--hover)] flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4" phx-click="clicked_quiz" phx-value-id={@quiz.id}>
       <%!-- QUIZ INFO --%>
       <div class="flex-1 flex flex-col justify-between">
         <div class="flex justify-between">
@@ -381,9 +378,9 @@ defmodule QuicWeb.MyComponents do
         </div>
 
 
-        <p class="mt-4"><%= if String.length(@quiz.description) > 100, do: String.slice(@quiz.description, 0..100) <> "...", else: @quiz.description %></p>
+        <p><%= if String.length(@quiz.description) > 100, do: String.slice(@quiz.description, 0..100) <> "...", else: @quiz.description %></p>
 
-        <div class="flex flex-col items-center justify-between gap-2 mt-6 sm:flex-row">
+        <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
           <div class="flex gap-1">
             <Heroicons.list_bullet class="w-5 h-5" />
             <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
@@ -421,6 +418,49 @@ defmodule QuicWeb.MyComponents do
           <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
         </.link>
       </div> --%>
+    </div>
+    """
+  end
+
+
+  @doc """
+  Renders a team box with name, description, nº of collaborators, etc.
+
+  ## Examples:
+    <.team_box team={@team}/>
+  """
+  attr :index, :integer, default: 1
+  attr :team, :any, default: %{}
+
+  def team_box(assigns) do
+    ~H"""
+    <div class="w-full h-full hover:cursor-pointer hover:bg-[var(--hover)] flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4" phx-click="clicked_team" phx-value-id={@team.id}>
+      <div class="flex-1 flex flex-col justify-between">
+        <div class="flex justify-between">
+          <div class="flex items-center gap-2">
+            <Heroicons.users class={["h-5 w-5", QuicWebAux.user_color(@index)]} />
+            <h6 class="font-bold"><%= if String.length(@team.name) > 15, do: String.slice(@team.name, 0..15) <> "...", else: @team.name %></h6>
+          </div>
+
+          <.link phx-click={JS.push("delete", value: %{id: @team.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">
+            <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
+          </.link>
+        </div>
+
+        <p><%= if String.length(@team.description) > 100, do: String.slice(@team.description, 0..100) <> "...", else: @team.description %></p>
+
+        <div class="flex flex-col items-center justify-end gap-2 sm:flex-row">
+          <div class="flex gap-1">
+            <Heroicons.user_group class="w-5 h-5" />
+            <p class="text-gray-400"><%= Enum.count(@team.authors) %> Collaborators</p>
+          </div>
+
+          <%!-- <div class="flex gap-1">
+            <Heroicons.trophy class="w-5 h-5" />
+            <p class="text-gray-400"><%= Enum.count(@team.quizzes) %> Quizzes</p>
+          </div> --%>
+        </div>
+      </div>
     </div>
     """
   end

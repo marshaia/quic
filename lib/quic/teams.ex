@@ -24,7 +24,7 @@ defmodule Quic.Teams do
 
 
   def list_all_author_teams(id) do
-    author = Repo.get(Author, id) |> Repo.preload(:teams)
+    author = Repo.get(Author, id) |> Repo.preload(teams: :authors)
     author.teams
   end
 

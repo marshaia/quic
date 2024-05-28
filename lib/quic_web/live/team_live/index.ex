@@ -50,4 +50,20 @@ defmodule QuicWeb.TeamLive.Index do
   def handle_event("clicked_team", %{"id" => id}, socket) do
     {:noreply, redirect(socket, to: "/teams/#{id}")}
   end
+
+  @impl true
+  def handle_event("form_team_changed", %{"team_input" => input}, socket) do
+    {:noreply, socket |> assign(:teams, filter_author_teams(socket.assigns.current_author.id, input))}
+  end
+
+  defp filter_author_teams(author_id, input) do
+    if String.length(input) === 0 do
+      Teams.list_all_author_teams(author_id)
+    else
+      Enum.reduce(Teams.list_all_author_teams(author_id), [],
+        fn team, acc ->
+          if String.match?(team.name, ~r/\w*#{input}\w*/i) || String.match?(team.description, ~r/\w*#{input}\w*/i), do: [team | acc], else: acc
+        end)
+    end
+  end
 end

@@ -25,12 +25,12 @@ defmodule Quic.Quizzes do
     Repo.all(Quiz)
   end
 
-  def list_all_author_quizzes(id) do
-    author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])])
-    author.quizzes
-  end
+  # def list_all_author_quizzes(id) do
+  #   author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])])
+  #   author.quizzes
+  # end
 
-  def list_all_author_available_quizzes(id) do
+  def list_all_author_quizzes(id) do
     # add quizzes owned by author, shared within teams or with privacy set to :public
     query = from q in Quiz, preload: :questions, preload: :author,
       join: a in Author, on: a.id == q.author_id,
@@ -40,18 +40,32 @@ defmodule Quic.Quizzes do
     Repo.all(query)
   end
 
-  def list_all_author_quizzes_filtered(id, filter) do
-    search_pattern = "%#{filter}%"
-    query = from q in Quiz, preload: :questions, preload: :author,
-      join: a in Author, on: a.id == q.author_id,
-      where: q.author_id == ^id and (
-        ilike(q.name, ^search_pattern) or
-        ilike(q.description, ^search_pattern) or
-        ilike(a.display_name, ^search_pattern)
-      )
-      #select: %{id: q.id}
+  # def list_all_author_quizzes_filtered(id, filter) do
+  #   search_pattern = "%#{filter}%"
+  #   query = from q in Quiz, preload: :questions, preload: :author,
+  #     join: a in Author, on: a.id == q.author_id,
+  #     where: q.author_id == ^id and (
+  #       ilike(q.name, ^search_pattern) or
+  #       ilike(q.description, ^search_pattern) or
+  #       ilike(a.display_name, ^search_pattern)
+  #     )
+  #     #select: %{id: q.id}
 
-    Repo.all(query)
+  #   Repo.all(query)
+  # end
+
+  def filter_author_quizzes(author_id, input) do
+    if String.length(input) === 0 do
+      list_all_author_quizzes(author_id)
+    else
+      Enum.reduce(list_all_author_quizzes(author_id), [],
+        fn quiz, acc ->
+          if (String.match?(quiz.name, ~r/\w*#{input}\w*/i) ||
+              String.match?(quiz.description, ~r/\w*#{input}\w*/i) ||
+              String.match?(quiz.author.display_name,  ~r/\w*#{input}\w*/i)),
+          do: [quiz | acc], else: acc
+        end)
+    end
   end
 
   @doc """
