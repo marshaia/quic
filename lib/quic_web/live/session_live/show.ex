@@ -2,6 +2,7 @@ defmodule QuicWeb.SessionLive.Show do
   use QuicWeb, :author_live_view
 
   alias Quic.Sessions
+  alias Quic.Quizzes
   alias QuicWeb.QuicWebAux
 
   @impl true
@@ -20,6 +21,7 @@ defmodule QuicWeb.SessionLive.Show do
 
     {:noreply, socket
               |> assign(:session, session)
+              |> assign(:quiz, Quizzes.get_quiz!(session.quiz.id))
               |> assign(:page_title, "Show Session")
               |> assign(:current_path, "/sessions/#{id}")
               |> assign(:participants, Sessions.get_session_participants(id))

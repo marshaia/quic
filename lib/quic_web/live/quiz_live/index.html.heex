@@ -13,17 +13,13 @@
 <div class="mt-8 overflow-auto">
   <table class="w-full p-2 rounded-t-3xl">
     <tr class="bg-[var(--border)] h-10">
-      <th></th>
       <th>Name</th>
       <th>Description</th>
-      <%!-- <th>Total Points</th> --%>
       <th></th>
     </tr>
     
     
-    <tr :for={quiz <- @quizzes} class="h-12 text-center  hover:cursor-pointer hover:bg-[var(--hover)]" phx-click="clicked_quiz" phx-value-id={quiz.id}>
-      <td class="px-2"></td>
-
+    <tr :for={quiz <- @quizzes} class="h-12 text-center hover:cursor-pointer hover:bg-[var(--hover)]" phx-click="clicked_quiz" phx-value-id={quiz.id}>
       <td class="border-b border-b-[var(--border)]">
         <p class="font-bold"> <%= quiz.name %> </p>
       </td>
@@ -38,7 +34,7 @@
         <p><%= quiz.total_points %></p>
       </td> --%>
 
-      <td class="border-b border-b-[var(--border)] px-4">
+      <td class="border-b border-b-[var(--border)]">
         <.link
           class="flex p-1.5 w-10 items-center justify-center text-white bg-red-700 rounded-full hover:bg-red-900"
           phx-click={JS.push("delete", value: %{id: quiz.id})}

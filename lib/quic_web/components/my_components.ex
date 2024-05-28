@@ -411,11 +411,11 @@ defmodule QuicWeb.MyComponents do
 
   def participants_statistics(assigns) do
     ~H"""
-    <table class="w-full p-2">
+    <table class="w-full p-2 overflow-auto">
       <tr class="border-b border-[var(--border)] h-10">
-        <th class="w-[25%]">Name</th>
-        <th class="w-[10%] pr-5">Points</th>
-        <th :for={question <- @questions}>Q<%= question.position %></th>
+        <th class="min-w-40 w-[25%]">Name</th>
+        <th class="min-w-[10%] pr-5">Points</th>
+        <th :for={question <- @questions} class="min-w-14">Q<%= question.position %></th>
       </tr>
 
       <tr :for={participant <- @participants} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
@@ -450,6 +450,31 @@ defmodule QuicWeb.MyComponents do
         </td>
       </tr>
     </table>
+    """
+  end
+
+
+  @doc """
+  Renders a doughnut chart with the points and labels passed.
+
+  ## Examples:
+
+    <.participants_statistics participants={participants} />
+  """
+  attr :id, :string, default: ""
+  attr :points, :any, default: []
+  attr :labels, :any, default: []
+
+  def doughnut_chart(assigns) do
+    ~H"""
+    <div class="h-24">
+      <canvas
+        id={@id}
+        phx-hook="ChartJS"
+        data-points={Jason.encode!(@points)}
+        data-labels={Jason.encode!(@labels)}
+      ></canvas>
+    </div>
     """
   end
 

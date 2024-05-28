@@ -43,7 +43,7 @@ defmodule Quic.Sessions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(quiz: [:questions, :author]) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
+  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
 
   def get_session_participants(id) do
     session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) |> Repo.preload(participants: [answers: :question])
@@ -54,14 +54,6 @@ defmodule Quic.Sessions do
     session = Repo.get!(Session, id) |> Repo.preload(quiz: [questions: :answers])
     session.quiz
   end
-
-  # def get_session_by_code(code) do
-  #   Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
-  # end
-
-  # def get_open_session_by_code(code) do
-  #   Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:monitor) |> Repo.preload(:quiz) |> Repo.preload(:participants)
-  # end
 
   def get_open_session_by_code(code) do
     Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:participants)
@@ -94,6 +86,20 @@ defmodule Quic.Sessions do
       end)
 
       Float.round((correct / (correct + incorrect)) * 100, 2)
+  end
+
+  require Logger
+  def calculate_quiz_question_stats(session_id, question_position) do
+    participants = get_session_participants(session_id)
+    %{correct: correct, incorrect: incorrect, null: null} = Enum.reduce(participants, %{correct: 0, incorrect: 0, null: 0},
+      fn p, acc ->
+        participant_answer = Enum.find(p.answers, nil, fn a -> a.question.position === question_position end)
+        case participant_answer do
+          nil -> %{correct: acc.correct, incorrect: acc.incorrect, null: acc.null + 1}
+          answer -> if answer.result === :correct, do: %{correct: acc.correct + 1, incorrect: acc.incorrect, null: acc.null}, else: %{correct: acc.correct, incorrect: acc.incorrect + 1, null: acc.null}
+        end
+      end)
+    [correct, incorrect, null]
   end
 
 

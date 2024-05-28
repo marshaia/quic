@@ -18,7 +18,7 @@
     </tr>
     
     
-    <tr :for={team <- @teams} class="h-12 text-center  hover:cursor-pointer hover:bg-[var(--hover)]" phx-click="clicked_team" phx-value-id={team.id}>
+    <tr :for={team <- @teams} class="h-12 text-center hover:cursor-pointer hover:bg-[var(--hover)]" phx-click="clicked_team" phx-value-id={team.id}>
 
       <td class="border-b border-b-[var(--border)]">
         <p class="font-bold"> <%= team.name %> </p>

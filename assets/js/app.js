@@ -1,20 +1,3 @@
-// If you want to use Phoenix channels, run `mix help phx.gen.channel`
-// to get started and then uncomment the line below.
-// import "./user_socket.js"
-
-// You can include dependencies in two ways.
-//
-// The simplest option is to put them in assets/vendor and
-// import them using relative paths:
-//
-//     import "../vendor/some-package.js"
-//
-// Alternatively, you can `npm install some-package --prefix assets` and import
-// them using a path starting with the package name:
-//
-//     import "some-package"
-//
-
 // Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
 import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
@@ -26,7 +9,7 @@ import Prism from "../vendor/prism.js"
 import { SessionStore } from './session_store_hook.js'
 import { SessionChannelParticipant } from "./channel_participant_hook.js"
 import { SessionChannelMonitor } from "./channel_monitor_hook.js"
-import { ChartJS } from "./chats.js"
+import { ChartJS } from "./charts.js"
 
 let Hooks = {}
 Hooks.SessionStore = SessionStore;

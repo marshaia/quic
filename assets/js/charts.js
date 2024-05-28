@@ -8,37 +8,31 @@ export const ChartJS = {
   mounted() {
     const ctx = this.el;
     const data = {
-      type: 'bar',
+      type: 'doughnut',
       data: {
         labels: this.labels(),
         datasets: [{
           data: this.dataset(), 
-          backgroundColor: [
-            '#22c55e',
-            '#B91C1C'
-          ],
-          borderColor: [
-            '#22c55e',
-            '#B91C1C'
-          ],
+          backgroundColor: ['#22c55e', '#B91C1C', '#d1d5db'],
+          borderColor: ['#22c55e', '#B91C1C', '#d1d5db'],
           borderWidth: 1,
-          barThickness: 15,
+          // barThickness: 15,
         }]
       },
       options: {
-        indexAxis: 'y',
-        scales: { 
-          x: { 
-            display: true,
-            grid: { display: false },
-            ticks: { display: false }
-          },
-          y: { 
-            beginAtZero: true,
-            grid: { display: false },
-          }
-          // y: { beginAtZero: true, display: false}
-        },
+        // indexAxis: 'y',
+        // scales: { 
+        //   x: { 
+        //     display: true,
+        //     grid: { display: false },
+        //     ticks: { display: false }
+        //   },
+        //   y: { 
+        //     beginAtZero: true,
+        //     grid: { display: false },
+        //   }
+        //   // y: { beginAtZero: true, display: false}
+        // },
         // elements: { 
         //   bar: { 
         //     // borderWidth: 2,

@@ -45,16 +45,16 @@
 
 
     <%!-- SESSION QUIZ --%>
-    <% quiz_num_questions = Enum.count(@session.quiz.questions) %>
+    <% quiz_num_questions = Enum.count(@quiz.questions) %>
 
-    <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" navigate={~p"/quizzes/#{@session.quiz.id}"}>
+    <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" navigate={~p"/quizzes/#{@quiz.id}"}>
 
       <div class="flex items-center gap-2">
         <Heroicons.pencil_square class="w-5 h-5 text-[var(--third-color)]" />
-        <h6 class="font-bold"><%= @session.quiz.name %></h6>
+        <h6 class="font-bold"><%= @quiz.name %></h6>
       </div>
 
-      <p><%= if String.length(@session.quiz.description) > 50, do: String.slice(@session.quiz.description, 0..50) <> "...", else: @session.quiz.description %></p>
+      <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
 
       <div class="flex-1"></div>
       
@@ -66,16 +66,16 @@
 
         <div class="flex gap-1">
           <Heroicons.trophy class="w-5 h-5" />
-          <p><%= @session.quiz.total_points %> Points</p>
+          <p><%= @quiz.total_points %> Points</p>
         </div>
 
         <div class="flex gap-1">
           <Heroicons.user_circle class="w-5 h-5" />
           <p>
-            <%= if @session.quiz.author.id === @current_author.id do %>
+            <%= if @quiz.author.id === @current_author.id do %>
             You
             <% else %>
-              <%= @session.quiz.author.id %>
+              <%= @quiz.author.id %>
             <% end %> </p>
         </div>
       </div>
@@ -103,10 +103,10 @@
       <%= if @session.status === :on_going do %>
         <div class="flex items-center justify-center gap-4">
           <h6 class="text-gray-500 ">
-            <%= @session.current_question %> of <%= Enum.count(@session.quiz.questions) %>
+            <%= @session.current_question %> of <%= Enum.count(@quiz.questions) %>
           </h6>
 
-          <%= if @session.current_question < Enum.count(@session.quiz.questions) do %>
+          <%= if @session.current_question < Enum.count(@quiz.questions) do %>
             <.button
               phx-click="next_question"
               data-confirm="Are you sure you want to move on to the next question? Anyone who hasn't answered won't be able to do it again!" 
@@ -160,23 +160,23 @@
         <p class="mt-1">No participants to report.</p>
       <% else %>
 
-      <div class="overflow-auto">
+      <div class="w-full overflow-auto">
         <table class="w-full p-2">
           <tr class="border-b border-[var(--border)] h-10">
             <th>#</th>
-            <th>Name</th>
-            <th>Progress</th>
+            <th class="min-w-32 w-[25%]">Name</th>
+            <th class="min-w-40">Progress</th>
             <th>Points</th>
           </tr>
           
           <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
             <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
-            <td class=""><p><%= participant.name %></p></td>
+            <td><p><%= participant.name %></p></td>
             <td>
               <%= if participant.current_question === quiz_num_questions do %>
                 <p class="text-[var(--primary-color)]">Completed</p>
               <% else %>
-                <div class="flex flex-col items-center justify-center w-full h-full">
+                <div class="flex flex-col items-center justify-center w-full">
                 <% progress = QuicWebAux.progress_percentage(participant.current_question, quiz_num_questions) %>
                 <div class="mt-1 bg-[var(--border)] rounded-full w-[60%]">
                   <div class={["bg-[var(--primary-color)] text-white py-1 text-right rounded-full", (if participant.current_question !== 0, do: "px-4" )]} style={"width: #{progress}%"}/>
@@ -196,7 +196,7 @@
     <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-b border-x border-[var(--border)]">
 
       <%!--  FILTER STATS --%>
-      <div class="flex justify-start gap-2 mt-3">
+      <div class="flex justify-center md:justify-start gap-2 mt-3">
         <button 
           phx-click="change_stats_filter"
           phx-value-filter="participants"
@@ -218,8 +218,68 @@
 
       <%!-- STATS --%>
       <div class="mt-5">
-        <.live_component :if={@stats_filter === :questions} id="session-question-stats-module" module={QuicWeb.SessionLive.SessionQuizStats} />
-        <.participants_statistics :if={@stats_filter === :participants} participants={@participants} questions={@session.quiz.questions} session={@session.id} />
+        <div :if={@stats_filter === :questions}>
+          <div :for={question <- @quiz.questions} id={"question-section-stats-#{question.id}"} phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
+
+            <%!-- QUESTION DESCRIPTION --%>
+            <div class="flex gap-5 mb-5">
+              <div class="rounded-full border border-[var(--primary-color)] w-8 h-8 flex items-center justify-center">
+                <h6><%= question.position %></h6>
+              </div>
+              
+              <div class="w-full">
+                <div class="flex justify-between">
+                  <%!-- QUESTION TYPE --%>
+                  <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(question.type)]}>
+                    <span class="text-xs text-white"> <%= QuicWebAux.readable_name(question.type) %> </span>
+                  </div>
+
+                  <%!-- POINTS OBTAINED --%>
+                  <div class="flex gap-2">
+                    <Heroicons.trophy class="w-5 h-5"/>
+                    <p><%= question.points %></p>
+                  </div>
+                </div>
+                
+                <.markdown text={question.description} />
+              </div>
+            </div>
+
+            <%!-- DIVIDER --%>
+            <hr class="border border-[var(--border)] my-5 w-full" />
+
+
+            <div class="flex flex-col md:flex-row items-center gap-4 overflow-auto">
+              <%!-- ANSWERS --%>
+              <div class="flex-1 flex-col w-full gap-3">
+                <%= if question.type === :true_false do %>
+                  <div class="flex justify-start w-full h-full px-3 py-1">
+                    <.true_or_false is_true={Enum.at(question.answers, 0, false).is_correct} />
+                  </div>
+
+                <% else %>
+                  <div :for={q_answer <- question.answers} class="flex justify-start gap-2 pt-2 px-4 rounded-md h-full">
+                    <div :if={q_answer.is_correct} class="min-w-4 w-4 h-4 min-h-4 rounded-full bg-[var(--green)]"></div>
+                    <div :if={q_answer.is_correct} class="w-full -mt-0.5">
+                      <.markdown class="w-full" text={q_answer.answer} />
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+
+              <%!-- DOUGHNUT GRAPH --%>
+              <.doughnut_chart
+                id={"doughnut-chart-question-#{question.id}"} 
+                points={Sessions.calculate_quiz_question_stats(@session.id, question.position)} 
+                labels={["Correct", "Incorrect", "Blank"]} 
+              />
+            </div>
+          </div>
+        </div>
+
+        <div :if={@stats_filter === :participants} class="w-full overflow-auto">
+          <.participants_statistics participants={@participants} questions={@quiz.questions} session={@session.id} />
+        </div>
       </div>
     </div>
 
