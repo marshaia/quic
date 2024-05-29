@@ -4,17 +4,17 @@
   <div class="flex justify-center mt-5">
     <div class="flex w-full mx-3 flex-col items-center bg-[var(--background-card)] p-3 rounded-xl border border-[var(--border)]">
       <%!-- SESSION CODE --%>
-      <div class="flex items-center gap-5 md:gap-12">
-        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--third-color)]" />
+      <div class="flex items-center justify-between w-full px-5 md:px-10">
+        <Heroicons.rocket_launch class="hidden sm:block w-12 h-12 text-[var(--second-color)]" />
         <h1 class="text-[var(--primary-color)] text-7xl"><%= @session.code %></h1>
-        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--fourth-color)]" />
+        <Heroicons.pencil_square class="hidden sm:block w-12 h-12 text-[var(--fifth-color)]" />
       </div>
 
       <%!-- WHERE TO JOIN --%>
       <div class="flex w-full justify-evenly">
-        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--second-color)]" />
+        <Heroicons.code_bracket_square class="hidden sm:block w-12 h-12 text-[var(--green)]" />
         <p class="mt-5 text-center">Join at <b>www.joana.di.uminho.pt</b></p>
-        <Heroicons.bolt class="hidden sm:block w-12 h-12 text-[var(--fifth-color)]" />
+        <Heroicons.computer_desktop class="hidden sm:block w-12 h-12 text-[var(--blue)]" />
       </div>
     </div>
   </div>
@@ -32,10 +32,10 @@
       phx-hook="SessionChannelMonitor"
       phx-click="start_session_btn"
       data-confirm="Are you sure? Once started, no more participants can join the Session!"
-      class="flex items-center gap-2 px-4 bg-[var(--primary-color)] text-white"
+      class="flex items-center gap-2 call2actionBtn"
     >
       <Heroicons.play class="w-5 h-5"/>
-      START
+      <p class="font-normal text-white">START</p>
     </.button>
   </div>
 
@@ -63,15 +63,15 @@
 <%!-- QUIZ QUESTIONS --%>
 <% else %>
   <%= if @session.status === :on_going do %>
+  <div id="full-screen-on-going-session-section" phx-hook="SessionChannelMonitor">
     <div class="flex justify-end p-2">
       <.button
         id="finish_btn_monitor_full_screen_responsive"
-        phx-hook="SessionChannelMonitor"
         phx-click="close_session_btn" 
         data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
         class="block md:hidden redBtn"
       >
-        Finish Session
+        <p class="font-normal text-white">Finish Session</p>
       </.button>
     </div>
 
@@ -81,12 +81,11 @@
 
       <.button
         id="finish_btn_monitor_full_screen"
-        phx-hook="SessionChannelMonitor"
         phx-click="close_session_btn" 
         data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
         class="hidden md:block redBtn"
       >
-        Finish Session
+        <p class="font-normal text-white">Finish Session</p>
       </.button>
     </div>
 
@@ -173,8 +172,8 @@
           </div>
         <%end %>
       </div>
-    
     </div>
+  </div>
   
   <%!-- SESSION IS CLOSED --%>
   <% else %>

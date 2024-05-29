@@ -63,17 +63,23 @@ defmodule QuicWeb.SessionMonitor do
     end
   end
 
+  require Logger
   def next_question(id) do
     try do
       session = Sessions.get_session!(id)
       num_quiz_questions = Enum.count(session.quiz.questions)
 
+      Logger.error("\n\n num questions quiz: #{num_quiz_questions} --- session-current-question: #{session.current_question}\n")
+
       if session.current_question < num_quiz_questions do
+        Logger.error("\n\n entrei no if do session mopnitor!\n")
         # increment session current_question
         {:ok, session} = Sessions.update_session(session, %{"current_question" => session.current_question + 1})
-
+        Logger.error("\n\n nova current question: #{session.current_question} \n")
         # increment Participant's current_questions
-        Enum.each(session.participants, fn p -> (if p.current_question < session.current_question, do: Participants.update_participant(p, %{"current_question" => session.current_question - 1})) end)
+        if Enum.count(session.participants) > 0 do
+          Enum.each(session.participants, fn p -> (if p.current_question < session.current_question, do: Participants.update_participant(p, %{"current_question" => session.current_question - 1})) end)
+        end
 
         # return next question
         quiz_questions = Quizzes.get_quiz_questions!(session.quiz.id)

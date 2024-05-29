@@ -21,7 +21,7 @@ defmodule QuicWeb.TeamLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="text" label="Description" />
         <:actions>
-          <.button phx-disable-with="Saving..." class="call2actionBtn">Save Team</.button>
+          <.button phx-disable-with="Saving..." class="call2actionBtn"><p class="font-normal text-white">Save Team</p></.button>
         </:actions>
       </.simple_form>
     </div>

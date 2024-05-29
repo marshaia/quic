@@ -46,27 +46,27 @@ export const SessionChannelMonitor = {
   startSession(code, session_id, email) {
     channel.push("monitor-start-session", 
       {
-        "session_code" : code,
+        "session_code": code,
         "session_id": session_id,
-        "email" : email,
+        "email": email,
       })
   },
 
   closeSession(code, session_id, email) {
     channel.push("monitor-close-session", 
     {
-      "session_code" : code,
+      "session_code": code,
       "session_id": session_id,
-      "email" : email,
+      "email": email,
     })
   },
 
   nextQuestion(code, session_id, email) {
     channel.push("monitor-next-question", 
     {
-      "session_code" : code,
+      "session_code": code,
       "session_id": session_id,
-      "email" : email,
+      "email": email,
     })
   }
 

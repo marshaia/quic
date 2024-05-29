@@ -38,7 +38,9 @@ defmodule QuicWeb.AuthorRegistrationLive do
         <.input field={@form[:password]} type="password" label="Password" placeholder="*****" required />
 
         <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full call2actionBtn">Create an account</.button>
+          <.button phx-disable-with="Creating account..." class="w-full call2actionBtn">
+            <p class="text-base font-normal text-white">Create an account</p>
+          </.button>
         </:actions>
       </.simple_form>
     </div>

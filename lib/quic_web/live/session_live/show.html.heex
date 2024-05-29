@@ -5,10 +5,10 @@
       <.button 
         phx-click="close-session-btn" 
         data-confirm="Are you sure? A closed session cannot be opened again!"
-        class="flex items-center gap-2 p-2 bg-red-700 sm:px-2 hover:bg-red-900"
+        class="flex items-center gap-2 bg-red-700 sm:px-2 hover:bg-red-900"
       >
         <Heroicons.x_mark class="w-5 h-5" />
-        <span>Close Session</span>
+        <span class="font-normal text-white">Close Session</span>
       </.button>
     <% end %>
   </div>
@@ -86,7 +86,7 @@
 
   <%!-- SESSION CONTROL BUTTONS --%>
   <%!-- <h6 class="mt-10 font-bold">Controls</h6> --%>
-  <div class="flex items-center justify-between my-10">
+  <div class="flex items-center justify-between my-8">
     <%= if @session.status === :open do %>
       <.button 
         class="flex items-center gap-2 mr-5 call2actionBtn" 
@@ -95,7 +95,7 @@
 
       >
         <Heroicons.play class="w-5 h-5" />
-        START
+        <p class="font-normal text-white">START</p>
       </.button>
     <% end %>
     

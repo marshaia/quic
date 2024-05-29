@@ -13,35 +13,6 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
         <:subtitle></:subtitle>
       </.header>
 
-      <%!-- <.simple_form
-        :let={f}
-        for={@form}
-        id="add-collaborator-team-form"
-        phx-target={@myself}
-        phx-change="validate"
-        phx-submit="save"
-      >
-        <.input field={f[:input]} type="text" label="Search Name or Username" />
-      </.simple_form>
-
-      <div class="flex flex-col w-full overflow-y-auto max-h-40 border border-[var(--border)] rounded-md mt-3">
-        <div :for={user <- @searched_users}>
-            <% already_in_team = is_user_already_in_team(@team.authors, user.username) %>
-            <.link
-              :if={!already_in_team}
-              phx-target={@myself}
-              class="flex flex-col w-full justify-center p-2 bg-[var(--background-card)]  rounded-md gap-4 active:hover:bg-[--hover] hover:bg-[--hover]"
-              phx-click="clicked_user"
-              phx-value-username={user.username}
-            >
-              <p class="font-semibold">
-                <%= user.display_name %>
-                <span class="ml-2 text-sm font-normal">@<%= user.username %></span>
-              </p>
-            </.link>
-        </div>
-      </div> --%>
-
       <form phx-target={@myself} phx-change="validate" class="flex mt-8 rounded-t-xl px-4 py-1 gap-2 bg-[var(--background-view)]">
         <div class="flex items-center justify-center">
           <Heroicons.magnifying_glass class="relative w-5 h-5 text-[var(--primary-color)]" />
@@ -68,7 +39,6 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
   @impl true
   def mount(socket) do
     {:ok, socket
-          #|> assign(:form, %{"input" => ""})
           |> assign(:input_text, "")
           |> assign(:searched_users, %{})}
   end
