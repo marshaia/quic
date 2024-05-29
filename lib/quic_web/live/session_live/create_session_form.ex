@@ -60,7 +60,7 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
     else
       {:noreply, socket
               |> assign(quiz: Quizzes.get_quiz!(quiz_id))
-              |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))}
+              |> assign(:filtered_quizzes, filter_author_quizzes(socket.assigns.current_author.id, ""))}
     end
 
   end

@@ -196,7 +196,7 @@
     <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-b border-x border-[var(--border)]">
 
       <%!--  FILTER STATS --%>
-      <div class="flex justify-center md:justify-start gap-2 mt-3">
+      <div class="flex justify-center gap-2 mt-3 md:justify-start">
         <button 
           phx-click="change_stats_filter"
           phx-value-filter="participants"
@@ -246,21 +246,26 @@
             </div>
 
             <%!-- DIVIDER --%>
-            <hr class="border border-[var(--border)] my-5 w-full" />
+            <hr class="border border-[var(--border)] mt-5 mb-2 w-full" />
 
 
-            <div class="flex flex-col md:flex-row items-center gap-5 overflow-auto lg:px-10">
+            <div class="flex flex-col items-center gap-5 overflow-auto md:flex-row lg:px-10">
               <%!-- ANSWERS --%>
-              <div class="flex-1 flex-col w-full gap-3">
+              <div class="flex-col flex-1 w-full gap-3">
                 <%= if question.type === :true_false do %>
                   <div class="flex justify-start w-full h-full px-3 py-1">
                     <.true_or_false is_true={Enum.at(question.answers, 0, false).is_correct} />
                   </div>
 
                 <% else %>
-                  <div :for={q_answer <- question.answers} class="flex justify-start gap-2 pt-2 px-4 rounded-md h-full">
-                    <div :if={q_answer.is_correct} class="min-w-4 w-4 h-4 min-h-4 rounded-full bg-[var(--green)]"></div>
-                    <div :if={q_answer.is_correct} class="w-full -mt-0.5">
+                  <% correct_answers = Enum.filter(question.answers, fn qa -> qa.is_correct end) %>
+                  <div :for={{q_answer, index} <- Enum.with_index(correct_answers)} 
+                    class={["flex items-center justify-start h-full gap-3 px-4 py-2",
+                      (if index !== 0 && question.type === :multiple_choice, do: "border-t border-[var(--border)]")
+                  ]}>
+                    <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+                    <%!-- <div :if={q_answer.is_correct} class="min-w-4 w-4 h-4 min-h-4 rounded-full bg-[var(--green)]"></div> --%>
+                    <div class="w-full">
                       <.markdown class="w-full" text={q_answer.answer} />
                     </div>
                   </div>

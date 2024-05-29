@@ -7,9 +7,9 @@
   </:actions>
 </.header>
 
-<div class="my-10" />
+<div class="mt-10 mb-5" />
 
-<div :for={%{date: date, sessions: sessions} <- @sessions} class="w-full overflow-auto">
+<div :for={{%{date: date, sessions: sessions}, date_index} <- Enum.with_index(@sessions)} class="w-full mt-5 overflow-auto">
   <% date_calendar = Calendar.strftime(date, "%a, %B %d") %>
   <% todays_date = Calendar.strftime(DateTime.utc_now(), "%a, %B %d") %>
   <h6 class="mb-2">
@@ -27,7 +27,7 @@
     ]}
   >
     <%!-- ICON --%>
-    <Heroicons.rocket_launch class={["hidden md:block w-6 h-6", QuicWebAux.user_color(index + 1)]} />
+    <Heroicons.rocket_launch class={["hidden md:block w-6 h-6", QuicWebAux.user_color(index + date_index)]} />
     
     <%!-- CODE --%>
     <p class="min-w-18 w-[5%] text-left md:text-center text-base font-bold"><%= session.code %></p>

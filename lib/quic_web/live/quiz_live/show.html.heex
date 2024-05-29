@@ -129,11 +129,12 @@
               <.true_or_false is_true={answer.is_correct} />
             </div>
           <% end %>
-          <div :if={question.type !== :open_answer && question.type !== :true_false} class="grid w-full overflow-auto grid-cols-1 gap-2 md:grid-cols-2" style="grid-auto-rows: 1fr">
-            <div :for={answer <- question.answers} class="w-full h-full p-1 px-5">
-                <div class="flex justify-start w-full h-full gap-3">
-                  <div class={["min-w-4 w-4 h-4 min-h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
-                  <div class="flex-1 -mt-0.5">
+          <div :if={question.type !== :open_answer && question.type !== :true_false} class="grid w-full grid-cols-1 gap-2 overflow-auto md:grid-cols-2" style="grid-auto-rows: 1fr">
+            <div :for={{answer, index} <- Enum.with_index(question.answers)} class={["w-full h-full p-1 px-5", (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")]}>
+                <div class="flex items-center justify-start w-full h-full gap-3">
+                  <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+                  <%!-- <div class={["min-w-4 w-4 h-4 min-h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
+                  <div class="flex-1">
                     <.markdown class="w-full" text={answer.answer} />
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 .baseBtn {
-  @apply py-2 px-4 rounded-full
+  @apply py-1.5 px-4 rounded-full
 }
 
 .loginBtn {
@@ -40,4 +40,8 @@
 
 .session-stats-btn {
   @apply flex items-center gap-1 px-2 py-0.5 hover:bg-[var(--background-view)] rounded-full
+}
+
+.clearBorderPrimaryBtn {
+  @apply flex items-center gap-1 px-3 py-1 bg-[var(--background-card)] hover:bg-[var(--hover)] border border-[var(--primary-color)] rounded-full
 }

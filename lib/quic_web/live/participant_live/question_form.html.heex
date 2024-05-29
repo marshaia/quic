@@ -63,7 +63,7 @@
             <div 
               phx-click="selected-answer"
               phx-value-answer={answer.id}
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if Enum.member?(@selected_answer, answer.id), do: "border-[var(--primary-color)]")]}
+              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if Enum.member?(@selected_answer, answer.id), do: "border-[var(--primary-color)]")]}
             >
               <.markdown class="mt-2" text={answer.answer} />
             </div>

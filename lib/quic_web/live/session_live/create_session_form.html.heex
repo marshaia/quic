@@ -131,7 +131,7 @@
       <div :if={@step === 1}></div>
       <.button 
         :if={@step !== 1}
-        class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)]" 
+        class="clearBorderPrimaryBtn" 
         phx-click="previous_step"
       >
         <Heroicons.chevron_left class="w-4 h-4 text-[var(--primary-color-text)]" />
@@ -141,7 +141,7 @@
       <.button 
         :if={@step !== 3}
         disabled={(@step === 1 && @session_type === nil) || (@step === 2 && @quiz === nil)}
-        class="session-form-btn bg-[var(--primary-color)]" 
+        class="flex items-center gap-2 call2actionBtn" 
         phx-click="next_step"
       >
         <Heroicons.chevron_right class="w-4 h-4 text-white" />
@@ -150,11 +150,11 @@
 
       <.button 
         :if={@step === 3}
-        class="session-form-btn bg-[var(--primary-color)]"
+        class="flex items-center gap-2 call2actionBtn" 
         phx-click="save"
       >
-        <Heroicons.bolt class="w-5 h-5" />
-        <p class="text-base font-normal text-white">Create Session</p>
+        <Heroicons.bolt class="w-4 h-4" />
+        <p class="font-normal">Create Session</p>
       </.button>
     </div>
   </div>

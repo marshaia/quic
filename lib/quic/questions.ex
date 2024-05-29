@@ -38,10 +38,10 @@ defmodule Quic.Questions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_question!(id), do: Repo.get!(Question, id) |> Repo.preload(:quiz) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: [desc: a.inserted_at])])
+  def get_question!(id), do: Repo.get!(Question, id) |> Repo.preload(:quiz) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: a.inserted_at)])
 
   def get_question_answers!(id) do
-    question = Repo.get!(Question, id) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: [desc: a.inserted_at])])
+    question = Repo.get!(Question, id) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: a.inserted_at)])
     question.answers
   end
 
@@ -184,8 +184,6 @@ defmodule Quic.Questions do
   def change_question(%Question{} = question, attrs \\ %{}) do
     Question.changeset(question, attrs)
   end
-
-  alias Quic.Questions.QuestionAnswer
 
   @doc """
   Returns the list of question_answers.

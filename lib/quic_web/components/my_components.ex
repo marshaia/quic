@@ -209,6 +209,45 @@ defmodule QuicWeb.MyComponents do
 
 
 
+  @doc"""
+  Renders a right or wing square.
+
+  ## Examples.
+    <.right_or_wrong is_correct={true} />
+  """
+  attr :is_correct, :boolean, default: false
+  attr :class, :string, default: ""
+
+  def right_or_wrong(assigns) do
+    ~H"""
+    <div class={["p-1 rounded-lg #{@class}", (if @is_correct, do: "dark:bg-[var(--dark-green)] bg-[var(--light-green)]", else: "dark:bg-[var(--dark-red)] bg-[var(--light-red)]")]}>
+      <%= if @is_correct do %>
+        <Heroicons.check class="w-4 h-4 dark:text-[var(--light-green)] text-[var(--dark-green)]"/>
+      <% else %>
+        <Heroicons.x_mark class="w-4 h-4 dark:text-[var(--light-red)] text-[var(--dark-red)]"/>
+      <% end %>
+    </div>
+    """
+  end
+
+
+  @doc"""
+  Renders a blank answer square.
+
+  ## Examples.
+    <.blank_square class="..." />
+  """
+  attr :class, :string, default: ""
+
+  def blank_square(assigns) do
+    ~H"""
+    <div class={"p-1 rounded-lg bg-[var(--border)] #{@class}"}>
+    </div>
+    """
+  end
+
+
+
 
 
   @doc """
@@ -223,16 +262,17 @@ defmodule QuicWeb.MyComponents do
   def markdown_previewer_answers(assigns) do
     ~H"""
     <div
-      :for={answer_changeset <- @answers}
-      class="mt-4 rounded-md bg-[var(--background-card)] px-4"
+      :for={{answer_changeset, index} <- Enum.with_index(@answers)}
+      class={["mt-4 bg-[var(--background-card)] px-4", (if index !== 0, do: "border-t border-[var(--border)]")]}
     >
       <% changes = answer_changeset.changes %>
       <div class="flex my-5">
-        <div class="flex flex-col items-center justify-start">
-          <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} />
+        <div class="flex flex-col items-center justify-center">
+          <.right_or_wrong is_correct={(Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct)} class="w-6 h-6 min-h-6 min-w-6" />
+          <%!-- <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
         </div>
 
-        <div class="flex-1 -mt-1">
+        <div class="flex-1">
           <div class="flex-1 px-2 mx-3">
             <%= if Map.has_key?(changes, :answer) do %>
               <.markdown text={changes.answer} />
@@ -365,7 +405,7 @@ defmodule QuicWeb.MyComponents do
     ~H"""
     <div class="w-full h-full hover:cursor-pointer hover:bg-[var(--hover)] flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4" phx-click="clicked_quiz" phx-value-id={@quiz.id}>
       <%!-- QUIZ INFO --%>
-      <div class="flex-1 flex flex-col justify-between">
+      <div class="flex flex-col justify-between flex-1">
         <div class="flex justify-between">
           <div class="flex items-center gap-2">
             <Heroicons.pencil_square class={["h-5 w-5", QuicWebAux.user_color(@index)]} />
@@ -435,7 +475,7 @@ defmodule QuicWeb.MyComponents do
   def team_box(assigns) do
     ~H"""
     <div class="w-full h-full hover:cursor-pointer hover:bg-[var(--hover)] flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-24 mb-4" phx-click="clicked_team" phx-value-id={@team.id}>
-      <div class="flex-1 flex flex-col justify-between">
+      <div class="flex flex-col justify-between flex-1">
         <div class="flex justify-between">
           <div class="flex items-center gap-2">
             <Heroicons.users class={["h-5 w-5", QuicWebAux.user_color(@index)]} />

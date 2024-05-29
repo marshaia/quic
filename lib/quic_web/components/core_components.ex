@@ -117,8 +117,8 @@ defmodule QuicWeb.CoreComponents do
       role="alert"
       class={[
         "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 dark:bg-emerald-600 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 dark:bg-rose-600 shadow-md ring-rose-500 fill-rose-900"
+        @kind == :info && "bg-emerald-100 dark:bg-emerald-600 ring-emerald-500 fill-cyan-900",
+        @kind == :error && "bg-rose-100 dark:bg-rose-600 shadow-md ring-rose-500 fill-rose-900"
       ]}
       {@rest}
     >

@@ -33,7 +33,7 @@
     </div>
 
 
-    <p id="question-page-prism-hook" phx-hook="PrismInitializer" class="mt-4 text-justify overflow-auto"><.markdown text={@question.description} /></p>
+    <p id="question-page-prism-hook" phx-hook="PrismInitializer" class="mt-4 overflow-auto text-justify"><.markdown text={@question.description} /></p>
 
     <%= if @question.type === :true_false do %>
       <hr class="mt-8" />
@@ -62,7 +62,8 @@
 
           <%!-- ANSWER VALIDITY --%>
           <div class="flex flex-col items-center justify-start">
-            <div class={["min-w-4 w-4 h-4 min-h-4 rounded-full mt-2", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} />
+            <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 mt-1 min-h-6 min-w-6" />
+            <%!-- <div class={["min-w-4 w-4 h-4 min-h-4 rounded-full mt-2", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
           </div> 
 
           <%!-- ANSWER INFO --%>

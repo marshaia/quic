@@ -7,6 +7,7 @@ defmodule Quic.Sessions do
   alias Quic.Repo
 
   #alias Quic.Accounts.Author
+  alias Quic.Quizzes
   alias Quic.Sessions.Session
   alias Quic.Participants.Participant
 
@@ -35,7 +36,8 @@ defmodule Quic.Sessions do
     # author.sessions
     query = from s in Session,
       where: s.monitor_id == ^id,
-      order_by: [desc: s.start_date],
+      order_by: [desc: s.start_date], # sorting by full datetime
+      #order_by: [desc: fragment("date(?)", s.start_date)], # Ensure sorting by date part
       select: %{date: fragment("date(?)", s.start_date), entity: s},
       preload: :quiz
 
@@ -43,10 +45,11 @@ defmodule Quic.Sessions do
     grouped_results = Enum.group_by(results, &(&1.date))
 
     grouped_results
-    |> Enum.map(fn {date, entries} ->
-      sessions = Enum.map(entries, &(&1.entity))
-      %{date: date, sessions: sessions}
-    end)
+      |> Enum.map(fn {date, entries} ->
+        sessions = Enum.map(entries, &(&1.entity))
+        %{date: date, sessions: sessions}
+      end)
+      |> Enum.sort_by(& &1.date, :desc) # Ensure final sorting by date
   end
 
   @doc """
@@ -71,8 +74,8 @@ defmodule Quic.Sessions do
   end
 
   def get_session_quiz(id) do
-    session = Repo.get!(Session, id) |> Repo.preload(quiz: [questions: :answers])
-    session.quiz
+    session = get_session!(id)
+    Quizzes.get_quiz!(session.quiz.id)
   end
 
   def get_open_session_by_code(code) do
