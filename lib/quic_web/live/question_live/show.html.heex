@@ -57,7 +57,7 @@
           :for={answer <- @question.answers}
           id={"question-page-answer-#{answer.id}-hook"}
           phx-hook="PrismInitializer"
-          class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-20 mb-4 border border-[var(--border)] overflow-auto"
+          class="flex rounded-md bg-[var(--background-card)] py-2 px-4 min-h-20 mb-4 border border-[var(--border)]"
         >
 
           <%!-- ANSWER VALIDITY --%>
@@ -67,7 +67,7 @@
           </div> 
 
           <%!-- ANSWER INFO --%>
-          <div class="flex-1 ml-3 border-l border-[var(--border)]">
+          <div class="flex-1 ml-3 border-l border-[var(--border)] overflow-auto">
             <div class="flex-1 px-2 mx-3">
               <.markdown text={answer.answer} />
             </div>

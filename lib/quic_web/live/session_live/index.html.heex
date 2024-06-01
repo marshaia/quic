@@ -30,7 +30,7 @@
     <Heroicons.rocket_launch class={["hidden md:block w-6 h-6", QuicWebAux.user_color(index + date_index)]} />
     
     <%!-- CODE --%>
-    <p class="min-w-18 w-[5%] text-left md:text-center text-base font-bold"><%= session.code %></p>
+    <p class="min-w-12 w-[5%] text-left md:text-center text-base mr-3 md:mr-0 font-bold"><%= session.code %></p>
 
     <%!-- QUIZ --%>
     <p class="hidden md:block min-w-28 w-[5%] ml-5 md:ml-0 text-center"><%= if String.length(session.quiz.name) > 15, do: String.slice(session.quiz.name, 0..15) <> "...", else: session.quiz.name %></p>
@@ -39,20 +39,20 @@
     <p class="hidden lg:block min-w-32 text-center w-[10%]"><%= if session.type === :monitor_paced, do: "Monitor Paced", else: "Participant Paced" %></p>
 
     <%!-- HOURS --%>
-    <div class="flex items-center justify-center gap-1 mx-4">
+    <div class="flex items-center justify-center gap-1 min-w-28">
       <p><%= session.start_date.hour %>:<%= session.start_date.minute %></p>
       <Heroicons.arrow_right_circle class="w-5 h-5" />
       <p><%= if session.end_date === nil, do: "Now", else: "#{session.end_date.hour}:#{session.end_date.minute}" %></p>
     </div>
 
     <%!-- STATUS --%>
-    <div class="flex items-center gap-2 mr-5 md:mr-0">
+    <div class="flex items-center gap-2 mr-3 md:mr-0">
       <div class={["w-4 h-4 rounded-full", QuicWebAux.session_status_color(session.status)]} />
       <%!-- <p class="hidden md:block"><%= QuicWebAux.session_status_translate(session.status) %></p> --%>
     </div>
     <%!-- DELETE --%>
     <.link
-      class="flex p-1.5 w-10 items-center justify-center text-white bg-red-700 rounded-full hover:bg-red-900"
+      class="flex p-1.5 w-8 items-center justify-center text-white bg-[var(--red)] rounded-full hover:bg-[var(--dark-red)]"
       phx-click={JS.push("delete", value: %{id: session.id}) |> hide("##{session.id}")}
       data-confirm="Are you sure? Once deleted, it cannot be recovered!"
     >

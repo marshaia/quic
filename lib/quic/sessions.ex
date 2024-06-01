@@ -49,7 +49,7 @@ defmodule Quic.Sessions do
         sessions = Enum.map(entries, &(&1.entity))
         %{date: date, sessions: sessions}
       end)
-      |> Enum.sort_by(& &1.date, :desc) # Ensure final sorting by date
+      |> Enum.sort_by(& &1.date, :asc) # Ensure final sorting by date
   end
 
   @doc """
