@@ -137,7 +137,7 @@
 
 
         <%!-- ACTIONS --%>
-        <div :if={isOwner} class="flex md:flex-col items-center justify-between border-t py-1 md:py-0 border-[var(--border)] md:border-0">
+        <div :if={isOwner} class="flex md:flex-col mt-3 items-center justify-between border-t py-2 md:py-0 border-[var(--border)] md:border-0">
           <.link 
             phx-click="clicked_edit"
             phx-value-id={question.id}
