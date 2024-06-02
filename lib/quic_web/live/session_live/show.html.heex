@@ -222,12 +222,12 @@
           <div :for={question <- @quiz.questions} id={"question-section-stats-#{question.id}"} phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
 
             <%!-- QUESTION DESCRIPTION --%>
-            <div class="flex gap-5 mb-5">
-              <div class="rounded-full border border-[var(--primary-color)] w-8 h-8 flex items-center justify-center">
+            <div class="flex w-full gap-3 md:gap-5 mb-5">
+              <div class="rounded-full border border-[var(--primary-color)] min-h-8 min-w-8 w-8 h-8 flex items-center justify-center">
                 <h6><%= question.position %></h6>
               </div>
               
-              <div class="w-full">
+              <div class="flex-1 overflow-auto">
                 <div class="flex justify-between">
                   <%!-- QUESTION TYPE --%>
                   <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(question.type)]}>
@@ -236,7 +236,7 @@
 
                   <%!-- POINTS OBTAINED --%>
                   <div class="flex gap-2">
-                    <Heroicons.trophy class="w-5 h-5"/>
+                    <Heroicons.trophy class="min-h-5 min-w-5 w-5 h-5"/>
                     <p><%= question.points %></p>
                   </div>
                 </div>
@@ -249,9 +249,9 @@
             <hr class="border border-[var(--border)] mt-5 mb-2 w-full" />
 
 
-            <div class="flex flex-col items-center gap-5 overflow-auto lg:flex-row lg:px-10">
+            <div class="flex flex-col justify-center lg:items-center gap-5 lg:flex-row lg:px-8">
               <%!-- ANSWERS --%>
-              <div class="flex-col flex-1 w-full gap-3">
+              <div class="flex-col flex-1 overflow-auto gap-3">
                 <%= if question.type === :true_false do %>
                   <div class="flex justify-start w-full h-full px-3 py-1">
                     <.true_or_false is_true={Enum.at(question.answers, 0, false).is_correct} />
@@ -263,17 +263,23 @@
                     class={["flex items-center justify-start h-full gap-3 px-4 py-2",
                       (if index !== 0 && question.type === :multiple_choice, do: "border-t border-[var(--border)]")
                   ]}>
-                    <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
-                    <%!-- <div :if={q_answer.is_correct} class="min-w-4 w-4 h-4 min-h-4 rounded-full bg-[var(--green)]"></div> --%>
-                    <div class="w-full">
-                      <.markdown class="w-full" text={q_answer.answer} />
+                    <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
+                      <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+                      <div class="flex-1">
+                        <.markdown class="w-full" text={q_answer.answer} />
+                      </div>
                     </div>
+
+                    <%!-- <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+                    <div class="">
+                      <.markdown class="w-full" text={q_answer.answer} />
+                    </div> --%>
                   </div>
                 <% end %>
               </div>
 
               <%!-- DOUGHNUT GRAPH --%>
-              <div class="flex justify-center mb-3">
+              <div class="flex justify-center">
                 <.doughnut_chart
                   id={"doughnut-chart-question-#{question.id}"} 
                   points={Sessions.calculate_quiz_question_stats(@session.id, question.position)} 

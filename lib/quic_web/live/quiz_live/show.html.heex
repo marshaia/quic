@@ -97,8 +97,6 @@
           phx-value-id={question.id}
         >
           <div class="flex flex-col md:justify-between md:items-center md:flex-row">
-            <%!-- <p class="font-bold"> <%= question.title %> </p> --%>
-
             <%!-- QUESTION TYPE --%>
             <div class={["rounded-md px-2 max-w-fit", QuicWebAux.get_type_color(question.type)]}>
               <span class="text-xs text-white"> <%= QuicWebAux.readable_name(question.type) %> </span>
@@ -123,21 +121,24 @@
             </div>
           <% end %>
           <div :if={question.type !== :open_answer && question.type !== :true_false} class="grid w-full grid-cols-1 gap-2 overflow-auto lg:grid-cols-2" style="grid-auto-rows: 1fr">
-            <div :for={{answer, index} <- Enum.with_index(question.answers)} class={["h-full p-1 px-5 lg:overflow-auto", (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")]}>
-                <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
-                  <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
-                  <%!-- <div class={["min-w-4 w-4 h-4 min-h-4 rounded-full", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
-                  <div class="flex-1">
-                    <.markdown class="w-full" text={answer.answer} />
-                  </div>
+            <div :for={{answer, index} <- Enum.with_index(question.answers)} 
+              class={["h-full p-1 px-5 overflow-auto", 
+                (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
+                (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
+            ]}>
+              <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
+                <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+                <div class="flex-1">
+                  <.markdown class="w-full" text={answer.answer} />
                 </div>
+              </div>
             </div>
           </div>
         </.link>
 
 
         <%!-- ACTIONS --%>
-        <div :if={isOwner} class="flex md:flex-col mt-3 items-center justify-between border-t py-2 md:py-0 border-[var(--border)] md:border-0">
+        <div :if={isOwner} class="flex md:flex-col mt-3 md:mt-0 items-center justify-between border-t py-2 md:py-0 border-[var(--border)] md:border-0">
           <.link 
             phx-click="clicked_edit"
             phx-value-id={question.id}
@@ -155,7 +156,6 @@
           <.link phx-click={JS.push("duplicate", value: %{id: question.id})}>
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
-          
         </div>
       </div>
 

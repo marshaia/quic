@@ -272,7 +272,7 @@ defmodule QuicWeb.MyComponents do
           <%!-- <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
         </div>
 
-        <div class="flex-1">
+        <div class="flex-1 overflow-auto">
           <div class="flex-1 px-2 mx-3">
             <%= if Map.has_key?(changes, :answer) do %>
               <.markdown text={changes.answer} />

@@ -17,7 +17,7 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
     socket = assign(socket, :error_name, "")
 
     # if String.length(code) === 5, do: Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
-
+    code = String.upcase(code)
     changeset = %Participant{} |> Participants.change_participant_validate(%{"name" => name}, code)
 
     if Enum.count(changeset.errors) > 0 do
@@ -35,7 +35,7 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
   def handle_event("save", %{"code" => code, "name" => username}, socket) do
     # Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code))
     # Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> String.upcase(code) <> ":participant:" <> username)
-
+    code = String.upcase(code)
     socket = push_event(socket, "join_session", %{"username" => username, "code" => code})
     {:noreply, assign(socket, :code, code)}
   end

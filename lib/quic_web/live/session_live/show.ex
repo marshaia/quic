@@ -66,6 +66,7 @@ defmodule QuicWeb.SessionLive.Show do
   # Session Channel Events
   @impl true
   def handle_info("participant_submitted_answer", socket) do
+    socket = send_update_points(socket)
     {:noreply, socket |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
   end
 
@@ -114,4 +115,18 @@ defmodule QuicWeb.SessionLive.Show do
   @impl true
   def handle_info(_, socket), do: {:noreply, socket}
 
+
+  defp send_update_points(socket) do
+    session_id = socket.assigns.session.id
+    questions = socket.assigns.quiz.questions
+
+    Enum.reduce(questions, socket, fn question, acc ->
+      points = Sessions.calculate_quiz_question_stats(session_id, question.position)
+      acc = push_event(acc, "update-points", %{
+        id: "doughnut-chart-question-#{question.id}",
+        points: points
+      })
+      acc
+    end)
+  end
 end

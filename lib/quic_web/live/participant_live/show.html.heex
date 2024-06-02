@@ -39,7 +39,7 @@
       <h6><%= question.position %></h6>
     </div>
     
-    <div class="w-full">
+    <div class="w-full overflow-auto">
       <div class="flex justify-between">
         <%!-- QUESTION TYPE --%>
         <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(question.type)]}>
@@ -58,11 +58,11 @@
   </div>
 
   <%!-- DIVIDER --%>
-  <hr class="border border-[var(--border)] mt-7 mb-5 w-full" />
+  <hr class="border border-[var(--border)] mt-7 mb-2 w-full" />
 
   <%!-- ANSWERS --%>
   <%= if has_answered do %> 
-    <div class="grid w-full grid-cols-1 gap-2 md:grid-cols-2" style="grid-auto-rows: 1fr">
+    <div class="grid w-full grid-cols-1 gap-2 lg:grid-cols-2 lg:px-8 px-3" style="grid-auto-rows: 1fr">
       <%= if question.type === :true_false do %>
         <% answer = Enum.at(question.answers, 0, nil) %>
         <% participant_answer = Enum.at(participant_answer.answer,0,"") %>
@@ -75,33 +75,40 @@
 
       <%= if question.type === :single_choice do %>
         <div :for={{q_answer, index} <- Enum.with_index(question.answers)} 
-          class={["flex items-center justify-start w-full h-full gap-3 px-4",
+          class={["h-full p-1 px-5 overflow-auto",
             (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
             (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
         ]}>
-          <%= if Enum.at(participant_answer.answer,0,"") === q_answer.id do %>
-            <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
-          <% else %>
-            <.blank_square class="w-6 h-6 min-h-6 min-w-6" />
-          <% end %>
-          
-          <.markdown class="w-full" text={q_answer.answer} />
-        </div>
-      <% end %>
-
-      <%= if question.type === :multiple_choice do %>
-          <div :for={{q_answer, index} <- Enum.with_index(question.answers)}
-            class={["flex items-center justify-start w-full h-full gap-3 px-4", 
-              (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
-              (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
-          ]}>
+          <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
             <%= if Enum.member?(participant_answer.answer, q_answer.id) do %>
               <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
             <% else %>
               <.blank_square class="w-6 h-6 min-h-6 min-w-6" />
             <% end %>
-            <.markdown class="w-full" text={q_answer.answer} />
+            <div class="flex-1">
+              <.markdown class="w-full" text={q_answer.answer} />
+            </div>
           </div>
+        </div>
+      <% end %>
+
+      <%= if question.type === :multiple_choice do %>
+        <div :for={{q_answer, index} <- Enum.with_index(question.answers)}
+          class={["h-full p-1 px-5 overflow-auto", 
+            (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
+            (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
+        ]}>
+          <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
+            <%= if Enum.member?(participant_answer.answer, q_answer.id) do %>
+              <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+            <% else %>
+              <.blank_square class="w-6 h-6 min-h-6 min-w-6" />
+            <% end %>
+            <div class="flex-1">
+              <.markdown class="w-full" text={q_answer.answer} />
+            </div>
+          </div>
+        </div>
       <% end %>
     </div>
     

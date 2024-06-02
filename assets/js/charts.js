@@ -49,15 +49,20 @@ export const ChartJS = {
       },
     
     };
-    const chart = new Chart(ctx, data);
-    // this.handleEvent("update-points", function(payload){ 
-    //   chart.data.datasets[0].data = payload.points;
-    //   chart.update();
-    // })
+    // const chart = new Chart(ctx, data);
+    this.chart = new Chart(ctx, data);
+
+    this.handleEvent("update-points", (payload) => {
+      if (payload.id === this.el.id) {
+        this.chart.data.datasets[0].data = payload.points;
+        this.chart.update();
+      }
+    });
   },
 
-  updated() {
-    this.el.chart.data.datasets[0].data = this.dataset()
-    this.el.chart.data.labels = this.labels()
-  }
+  // updated() {
+  //   this.el.chart.data.datasets[0].data = this.dataset()
+  //   this.el.chart.data.labels = this.labels()
+  //   this.el.chart.update()
+  // }
 } 

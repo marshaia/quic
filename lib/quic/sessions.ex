@@ -42,6 +42,7 @@ defmodule Quic.Sessions do
       preload: :quiz
 
     results = Repo.all(query)
+    # Group results by date
     grouped_results = Enum.group_by(results, &(&1.date))
 
     grouped_results
@@ -49,7 +50,7 @@ defmodule Quic.Sessions do
         sessions = Enum.map(entries, &(&1.entity))
         %{date: date, sessions: sessions}
       end)
-      |> Enum.sort_by(& &1.date, :asc) # Ensure final sorting by date
+      |> Enum.sort_by(& &1.date, {:desc, Date}) # Ensure final sorting by date
   end
 
   @doc """
