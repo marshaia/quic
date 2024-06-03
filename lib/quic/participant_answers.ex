@@ -4,11 +4,10 @@ defmodule Quic.ParticipantAnswers do
   """
 
   import Ecto.Query, warn: false
-  alias Quic.Questions
   alias Quic.Repo
 
-  alias Quic.ParticipantAnswers.ParticipantAnswer
   alias Quic.Participants
+  alias Quic.ParticipantAnswers.ParticipantAnswer
 
   @doc """
   Returns the list of participant_answers.
@@ -37,7 +36,7 @@ defmodule Quic.ParticipantAnswers do
       ** (Ecto.NoResultsError)
 
   """
-  def get_participant_answer!(id), do: Repo.get!(ParticipantAnswer, id) |> Repo.preload(question: :answers)
+  def get_participant_answer!(id), do: Repo.get!(ParticipantAnswer, id) #|> Repo.preload(question: :answers)
 
   @doc """
   Creates a participant_answer.
@@ -59,11 +58,11 @@ defmodule Quic.ParticipantAnswers do
 
   def create_participant_answer(attrs \\ %{}, participant_id, question_id) do
     participant = Participants.get_participant!(participant_id)
-    question = Questions.get_question!(question_id)
-    attrs = Map.put(attrs, "result", :assessing)
+    #question = Questions.get_question!(question_id)
+    attrs = Map.put(attrs, "result", :assessing) |> Map.put("question_id", question_id)
 
     %ParticipantAnswer{}
-    |> ParticipantAnswer.changeset(attrs, participant, question)
+    |> ParticipantAnswer.changeset(attrs, participant)
     |> Repo.insert()
   end
 

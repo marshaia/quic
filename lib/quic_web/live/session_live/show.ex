@@ -120,7 +120,7 @@ defmodule QuicWeb.SessionLive.Show do
     questions = socket.assigns.quiz.questions
 
     Enum.reduce(questions, socket, fn question, acc ->
-      points = Sessions.calculate_quiz_question_stats(session_id, question.position)
+      points = Sessions.calculate_quiz_question_stats(session_id, question.id)
       acc = push_event(acc, "update-points", %{
         id: "doughnut-chart-question-#{question.id}",
         points: points

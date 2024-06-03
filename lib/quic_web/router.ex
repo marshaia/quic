@@ -63,7 +63,7 @@ defmodule QuicWeb.Router do
       # PARTICIPANT
       live "/enter-session", ParticipantLive.EnterSessionForm
       live "/live-session/:code/:id", ParticipantLive.WaitRoom
-      live "/live-session/:participant_id/question/:question_id", ParticipantLive.QuestionForm
+      live "/live-session/:participant_id/question/:question_position", ParticipantLive.QuestionForm
     end
 
     post "/authors/log_in", AuthorSessionController, :create

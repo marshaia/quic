@@ -558,7 +558,7 @@ defmodule QuicWeb.MyComponents do
         <td><p><%= participant.name %></p></td>
         <td class="pr-5"><p><%= participant.total_points %></p></td>
         <td :for={question <- @questions} class="">
-        <% answer = Enum.find(participant.answers, nil, fn a -> a.question.id === question.id end) %>
+        <% answer = Enum.find(participant.answers, nil, fn a -> a.question_id === question.id end) %>
         <% has_answered = answer !== nil %>
 
           <div class={["flex flex-col items-center justify-center rounded-full",
@@ -582,7 +582,7 @@ defmodule QuicWeb.MyComponents do
         <td></td>
         <td><p class="font-bold text-right">Accuracy:</p></td>
         <td :for={question <- @questions}>
-          <p class="text-center"><%= Sessions.calculate_quiz_question_accuracy(@session, question.position) %>%</p>
+          <p class="text-center"><%= Sessions.calculate_quiz_question_accuracy(@session, question.id) %>%</p>
         </td>
       </tr>
     </table>

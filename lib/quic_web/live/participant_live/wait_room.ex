@@ -34,7 +34,7 @@ defmodule QuicWeb.ParticipantLive.WaitRoom do
 
     {:noreply, socket
               |> put_flash(:info, "Session started!")
-              |> redirect(to: ~p"/live-session/#{socket.assigns.participant.id}/question/#{question.id}")}
+              |> redirect(to: ~p"/live-session/#{socket.assigns.participant.id}/question/#{question.position}")}
   end
 
 

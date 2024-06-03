@@ -2,30 +2,31 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   use QuicWeb, :live_view
 
-  alias Quic.Participants
-  alias Quic.Questions
   alias Quic.Sessions
+  alias Quic.Participants
   alias QuicWeb.QuicWebAux
 
 
   @impl true
-  def mount(%{"participant_id" => participant_id, "question_id" => question_id}, _session, socket) do
+  def mount(%{"participant_id" => participant_id, "question_position" => question_position}, _session, socket) do
+    {question_position, _} = Integer.parse(question_position)
     participant = Participants.get_participant!(participant_id)
-    question = Questions.get_question!(question_id)
     session = Sessions.get_session!(participant.session.id)
+    question = Enum.find(session.quiz.questions, fn q -> q.position === question_position end)
 
     if participant.session.status === :closed do
       {:ok, socket |> put_flash(:error, "Session is closed!") |> redirect(to: ~p"/")}
 
     else
       if session.type === :monitor_paced && session.current_question !== question.position do
-        new_question_id = Enum.at(session.quiz.questions, session.current_question - 1, nil)
-        {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{new_question_id}")}
+        new_question = Enum.find(session.quiz.questions, nil, fn q -> q.position === session.current_question end)
+        {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{new_question.position}")}
 
       else
         code = participant.session.code
-        has_submitted = Enum.any?(participant.answers, fn a -> a.question.id === question_id end)
+        has_submitted = Enum.any?(participant.answers, fn a -> a.question_id === question.id end)
         last_question = (if session.type === :monitor_paced, do: session.current_question === Enum.count(session.quiz.questions), else: (participant.current_question + 1) >= Enum.count(session.quiz.questions))
+        answers = Enum.filter(session.quiz.answers, fn a -> a.question_id === question.id end)
 
         socket = push_event(socket, "join_session", %{code: code, username: participant.id})
         Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
@@ -37,6 +38,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
               |> assign(:selected_answer, (if question.type === :single_choice, do: nil, else: []))
               |> assign(:page_title, "Session #{code} - Question #{question.position}")
               |> assign(:question, question)
+              |> assign(:answers, answers)
               |> assign(:has_submitted, has_submitted)
               |> assign(:last_question, last_question)}
       end
@@ -106,7 +108,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
     Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> socket.assigns.session.code)
     Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> socket.assigns.session.code <> ":participant:" <> socket.assigns.participant.id)
 
-    {:noreply, socket |> redirect(to: ~p"/live-session/#{socket.assigns.participant.id}/question/#{question.id}")}
+    {:noreply, socket |> redirect(to: ~p"/live-session/#{socket.assigns.participant.id}/question/#{question.position}")}
   end
 
   @impl true

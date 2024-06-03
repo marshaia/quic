@@ -70,13 +70,14 @@ defmodule Quic.Sessions do
   def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) #|> Repo.preload(quiz: :questions)
 
   def get_session_participants(id) do
-    session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) |> Repo.preload(participants: [answers: :question])
+    session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) |> Repo.preload(participants: :answers)
     session.participants
   end
 
   def get_session_quiz(id) do
     session = get_session!(id)
-    Quizzes.get_quiz!(session.quiz.id)
+    session.quiz
+    #Quizzes.get_quiz!(session.quiz.id)
   end
 
   def get_open_session_by_code(code) do
@@ -98,11 +99,11 @@ defmodule Quic.Sessions do
   end
 
 
-  def calculate_quiz_question_accuracy(session_id, question_position) do
+  def calculate_quiz_question_accuracy(session_id, question_id) do
     participants = get_session_participants(session_id)
     %{correct: correct, incorrect: incorrect} = Enum.reduce(participants, %{correct: 0, incorrect: 0},
       fn p, acc ->
-        participant_answer = Enum.find(p.answers, nil, fn a -> a.question.position === question_position end)
+        participant_answer = Enum.find(p.answers, nil, fn a -> a.question_id === question_id end)
         case participant_answer do
           nil -> %{correct: acc.correct, incorrect: acc.incorrect + 1}
           answer -> if answer.result === :correct, do: %{correct: acc.correct + 1, incorrect: acc.incorrect}, else: %{correct: acc.correct, incorrect: acc.incorrect + 1}
@@ -112,11 +113,11 @@ defmodule Quic.Sessions do
       if correct + incorrect === 0, do: 0, else: Float.round((correct / (correct + incorrect)) * 100, 2)
   end
 
-  def calculate_quiz_question_stats(session_id, question_position) do
+  def calculate_quiz_question_stats(session_id, question_id) do
     participants = get_session_participants(session_id)
     %{correct: correct, incorrect: incorrect, null: null} = Enum.reduce(participants, %{correct: 0, incorrect: 0, null: 0},
       fn p, acc ->
-        participant_answer = Enum.find(p.answers, nil, fn a -> a.question.position === question_position end)
+        participant_answer = Enum.find(p.answers, nil, fn a -> a.question_id === question_id end)
         case participant_answer do
           nil -> %{correct: acc.correct, incorrect: acc.incorrect, null: acc.null + 1}
           answer -> if answer.result === :correct, do: %{correct: acc.correct + 1, incorrect: acc.incorrect, null: acc.null}, else: %{correct: acc.correct, incorrect: acc.incorrect + 1, null: acc.null}

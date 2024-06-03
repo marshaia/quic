@@ -195,7 +195,7 @@
   <% else %>
     <div class="bg-[var(--background-card)] rounded-b-xl p-2 px-4 border-b border-x border-[var(--border)]">
 
-      <%!--  FILTER STATS --%>
+      <%!-- FILTER STATS --%>
       <div class="flex justify-center gap-2 mt-3 md:justify-start">
         <button 
           phx-click="change_stats_filter"
@@ -258,7 +258,8 @@
                   </div>
 
                 <% else %>
-                  <% correct_answers = Enum.filter(question.answers, fn qa -> qa.is_correct end) %>
+                  <% question_answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
+                  <% correct_answers = Enum.filter(question_answers, fn qa -> qa.is_correct end) %>
                   <div :for={{q_answer, index} <- Enum.with_index(correct_answers)} 
                     class={["flex items-center justify-start h-full gap-3 px-4 py-2",
                       (if index !== 0 && question.type === :multiple_choice, do: "border-t border-[var(--border)]")
@@ -282,7 +283,7 @@
               <div class="flex justify-center">
                 <.doughnut_chart
                   id={"doughnut-chart-question-#{question.id}"} 
-                  points={Sessions.calculate_quiz_question_stats(@session.id, question.position)} 
+                  points={Sessions.calculate_quiz_question_stats(@session.id, question.id)} 
                   labels={["Correct", "Incorrect", "Blank"]} 
                 />
               </div>
@@ -295,6 +296,5 @@
         </div>
       </div>
     </div>
-
   <% end %>
 </div>

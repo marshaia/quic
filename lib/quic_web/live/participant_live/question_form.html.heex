@@ -47,7 +47,7 @@
         <% end %>
 
         <%= if @question.type === :single_choice do %>
-          <div :for={answer <- @question.answers} class="w-full h-full p-3">
+          <div :for={answer <- @answers} class="w-full h-full p-3">
             <div 
               phx-click="selected-answer"
               phx-value-answer={answer.id}
@@ -59,7 +59,7 @@
         <% end %>
 
         <%= if @question.type === :multiple_choice do %>
-          <div :for={answer <- @question.answers} class="w-full h-full p-3">
+          <div :for={answer <- @answers} class="w-full h-full p-3">
             <div 
               phx-click="selected-answer"
               phx-value-answer={answer.id}

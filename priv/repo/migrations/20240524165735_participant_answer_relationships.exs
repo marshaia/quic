@@ -4,7 +4,7 @@ defmodule Quic.Repo.Migrations.ParticipantAnswerRelationships do
   def change do
     alter table(:participant_answers) do
       add :participant_id, references(:participants, on_delete: :delete_all, type: :binary_id)
-      add :question_id, references(:questions, on_delete: :delete_all, type: :binary_id)
+      #add :question_id, references(:questions, on_delete: :delete_all, type: :binary_id)
     end
   end
 end

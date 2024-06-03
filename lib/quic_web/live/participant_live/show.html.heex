@@ -30,7 +30,7 @@
 <%!-- ANSWERS & RESULTS --%>
 <h6 class="mt-8 mb-3 font-bold">Answers</h6>
 <section :for={question <- @quiz.questions} id={"participant-page-answer-#{question.id}"} phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
-  <% participant_answer = Enum.find(@participant.answers, nil,fn a -> a.question.id === question.id end) %>
+  <% participant_answer = Enum.find(@participant.answers, nil,fn a -> a.question_id === question.id end) %>
   <% has_answered = participant_answer !== nil %>
 
   <%!-- QUESTION DESCRIPTION --%>
@@ -62,9 +62,11 @@
 
   <%!-- ANSWERS --%>
   <%= if has_answered do %> 
-    <div class="grid w-full grid-cols-1 gap-2 lg:grid-cols-2 lg:px-8 px-3" style="grid-auto-rows: 1fr">
+    <% question_answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
+    
+    <div class="grid w-full grid-cols-1 gap-2 px-3 lg:grid-cols-2 lg:px-8" style="grid-auto-rows: 1fr">
       <%= if question.type === :true_false do %>
-        <% answer = Enum.at(question.answers, 0, nil) %>
+        <% answer = Enum.at(question_answers, 0, nil) %>
         <% participant_answer = Enum.at(participant_answer.answer,0,"") %>
         <% correct_answer? = (participant_answer === "true" && answer.is_correct) || (participant_answer === "false" && answer.is_correct === false) %>
         <div class="flex items-center justify-start h-full gap-3 px-5">
@@ -74,7 +76,7 @@
       <% end %>
 
       <%= if question.type === :single_choice do %>
-        <div :for={{q_answer, index} <- Enum.with_index(question.answers)} 
+        <div :for={{q_answer, index} <- Enum.with_index(question_answers)} 
           class={["h-full p-1 px-5 overflow-auto",
             (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
             (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
