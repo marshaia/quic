@@ -9,7 +9,7 @@
 
     <%!-- QUIZ SPECS --%>
     <section class="w-full bg-[var(--background-card)] p-4 rounded-md border border-[var(--border)]">
-      <div class="flex justify-end">
+      <div class="flex justify-end -mt-1">
         <.link 
           :if={isOwner} 
           patch={~p"/quizzes/#{@quiz}/show/edit"} 
@@ -21,7 +21,7 @@
       </div>
       
 
-      <h4 class="text-center text-[var(--primary-color)]"> <%= @quiz.name %> </h4>
+      <h4 class="text-center text-[var(--primary-color)] mt-1"> <%= @quiz.name %> </h4>
       <p class="mt-4 text-justify xl:text-center"><%= @quiz.description %></p>
 
 
@@ -39,10 +39,10 @@
         <div class="flex gap-1">
           <Heroicons.user_circle class="w-5 h-5" />
           <p>
-            <%= if @quiz.author.id === @current_author.id do %>
+            <%= if @quiz.author_id === @current_author.id do %>
               You
             <% else %>
-              <%= @quiz.author.id %>
+              <%= @quiz.author.display_name %>
             <% end %> 
           </p>
         </div>

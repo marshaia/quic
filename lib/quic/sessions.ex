@@ -38,8 +38,8 @@ defmodule Quic.Sessions do
       where: s.monitor_id == ^id,
       order_by: [desc: s.start_date], # sorting by full datetime
       #order_by: [desc: fragment("date(?)", s.start_date)], # Ensure sorting by date part
-      select: %{date: fragment("date(?)", s.start_date), entity: s},
-      preload: :quiz
+      select: %{date: fragment("date(?)", s.start_date), entity: s}
+      #preload: :quiz
 
     results = Repo.all(query)
     # Group results by date
@@ -67,7 +67,7 @@ defmodule Quic.Sessions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload(quiz: :questions) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
+  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) #|> Repo.preload(quiz: :questions)
 
   def get_session_participants(id) do
     session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) |> Repo.preload(participants: [answers: :question])
@@ -144,10 +144,27 @@ defmodule Quic.Sessions do
             |> Map.put("start_date", DateTime.utc_now())
             |> Map.put("current_question", 0)
 
+    quiz_new = %{
+      "name" => quiz.name,
+      "description" => quiz.description,
+      "total_points" => quiz.total_points,
+      "author_id" => quiz.author.id,
+      "author_name" => quiz.author.display_name,
+    }
+
+    answers = Enum.reduce(quiz.questions, [],
+      fn question, acc ->
+        acc =Enum.concat(acc, question.answers)
+        acc
+      end
+    )
+
+    quiz_new = Quizzes.EmbeddedQuiz.changeset(%Quizzes.EmbeddedQuiz{}, quiz_new, quiz.questions, answers)
     %Session{}
     |> Session.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:monitor, monitor)
-    |> Ecto.Changeset.put_assoc(:quiz, quiz)
+    #|> Ecto.Changeset.put_assoc(:quiz, quiz)
+    |> Ecto.Changeset.put_embed(:quiz, quiz_new)
     |> Repo.insert()
   end
 

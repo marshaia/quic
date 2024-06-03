@@ -1,0 +1,102 @@
+
+<div class="flex justify-center w-full px-2 mt-5">
+  <main class="w-full "> <%!-- max-3-xl --%>
+
+    <%!-- QUIZ SPECS --%>
+    <section class="w-full bg-[var(--background-card)] p-4 rounded-md border border-[var(--border)]">
+      
+      <h4 class="text-center text-[var(--primary-color)]"> <%= @quiz.name %> </h4>
+      <p class="mt-4 text-justify xl:text-center"><%= @quiz.description %></p>
+
+
+      <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
+        <div class="flex gap-1">
+          <Heroicons.list_bullet class="w-5 h-5" />
+          <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
+        </div>
+
+        <div class="flex gap-1">
+          <Heroicons.trophy class="w-5 h-5" />
+          <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
+        </div>
+
+        <div class="flex gap-1">
+          <Heroicons.user_circle class="w-5 h-5" />
+          <p class="text-gray-400"><%= @quiz.author_name %></p>
+        </div>
+      </div>
+    </section>
+
+
+    <%!-- LAUNCH DIVIDER
+    <div class="flex flex-col items-center mb-7 mt-14">
+      <hr />
+      <.link :if={Enum.count(@quiz.questions) > 0 && assigns[:current_author]} navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 -mt-5 text-white call2actionBtn">
+        <Heroicons.bolt class="w-5 h-5" />
+        Launch Quiz
+      </.link>
+    </div> --%>
+
+
+
+    <%!-- QUIZ QUESTIONS --%>
+    <section id="quiz-page-questions-section-prism-hook" phx-hook="PrismInitializer" class="w-full mt-10">
+      <h6 class="mb-2 font-bold">Questions</h6>
+      <div 
+        :for={question<- @quiz.questions}
+        class="flex flex-col border border-[var(--border)] rounded-md bg-[var(--background-card)] py-2 px-4 mb-4"
+      >
+        <div class="flex">
+          <%!-- POSITION --%>
+          <h6 class="flex items-center justify-center min-h-8 min-w-8 h-8 w-8 border border-[var(--primary-color)] rounded-full text-[var(--primary-color)] text-xl"><%= question.position %></h6>
+
+          <div class="flex-1 mx-3 overflow-auto">
+            <div class="flex flex-col md:justify-between md:items-center md:flex-row">
+              <%!-- QUESTION TYPE --%>
+              <div class={["rounded-md px-2 max-w-fit", QuicWeb.QuicWebAux.get_type_color(question.type)]}>
+                <span class="text-xs text-white"> <%= QuicWeb.QuicWebAux.readable_name(question.type) %> </span>
+              </div>
+
+              <div class="hidden gap-1 md:flex">
+                <Heroicons.trophy class="w-5 h-5" />
+                <p><%= question.points %> Points</p>
+              </div>
+            </div>
+
+            <%!-- QUESTION DESCRIPTION --%>
+            <.markdown class="mt-2" text={question.description} />
+          </div>
+        </div>
+
+
+        <%!-- DIVIDER --%>
+        <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="w-full my-4" />
+
+
+        <%!-- QUESTION ANSWERS --%>
+        <%= if question.type === :true_false do %>
+          <div class="px-2">
+            <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
+            <.true_or_false is_true={answer.is_correct} />
+          </div>
+        <% end %>
+
+        <div :if={question.type !== :open_answer && question.type !== :true_false} class="grid w-full grid-cols-1 gap-2 overflow-auto md:grid-rows-1 md:grid-cols-2" >
+          <% answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
+          <div :for={{answer, index} <- Enum.with_index(answers)} 
+            class={["h-full p-1 px-5 overflow-auto", 
+              (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
+              (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
+          ]}>
+            <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
+              <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+              <div class="flex-1">
+                <.markdown class="w-full" text={answer.answer} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

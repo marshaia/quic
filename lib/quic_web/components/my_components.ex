@@ -37,8 +37,9 @@ defmodule QuicWeb.MyComponents do
     <div class="sidebar-group">
       <span class="text-sm font-semibold">GENERAL</span>
 
-      <.link href={"/authors"} class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
-      <Heroicons.home class="sidebar-icon"/>
+      <.link href={"/authors"}
+        class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "home"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <Heroicons.home class="sidebar-icon"/>
           <span>Home</span>
       </.link>
 

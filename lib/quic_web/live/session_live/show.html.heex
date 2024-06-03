@@ -47,7 +47,7 @@
     <%!-- SESSION QUIZ --%>
     <% quiz_num_questions = Enum.count(@quiz.questions) %>
 
-    <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" navigate={~p"/quizzes/#{@quiz.id}"}>
+    <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" target="_blank" href={~p"/sessions/#{@session.id}/quiz"}>
 
       <div class="flex items-center gap-2">
         <Heroicons.pencil_square class="w-5 h-5 text-[var(--third-color)]" />
@@ -72,10 +72,10 @@
         <div class="flex gap-1">
           <Heroicons.user_circle class="w-5 h-5" />
           <p>
-            <%= if @quiz.author.id === @current_author.id do %>
+            <%= if @quiz.author_id === @current_author.id do %>
             You
             <% else %>
-              <%= @quiz.author.id %>
+              <%= @quiz.author_name %>
             <% end %> </p>
         </div>
       </div>
@@ -222,7 +222,7 @@
           <div :for={question <- @quiz.questions} id={"question-section-stats-#{question.id}"} phx-hook="PrismInitializer" class="bg-[var(--background-card)] border border-[var(--border)] rounded-md p-3 mb-5">
 
             <%!-- QUESTION DESCRIPTION --%>
-            <div class="flex w-full gap-3 md:gap-5 mb-5">
+            <div class="flex w-full gap-3 mb-5 md:gap-5">
               <div class="rounded-full border border-[var(--primary-color)] min-h-8 min-w-8 w-8 h-8 flex items-center justify-center">
                 <h6><%= question.position %></h6>
               </div>
@@ -236,7 +236,7 @@
 
                   <%!-- POINTS OBTAINED --%>
                   <div class="flex gap-2">
-                    <Heroicons.trophy class="min-h-5 min-w-5 w-5 h-5"/>
+                    <Heroicons.trophy class="w-5 h-5 min-h-5 min-w-5"/>
                     <p><%= question.points %></p>
                   </div>
                 </div>
@@ -249,9 +249,9 @@
             <hr class="border border-[var(--border)] mt-5 mb-2 w-full" />
 
 
-            <div class="flex flex-col justify-center lg:items-center gap-5 lg:flex-row lg:px-8">
+            <div class="flex flex-col justify-center gap-5 lg:items-center lg:flex-row lg:px-8">
               <%!-- ANSWERS --%>
-              <div class="flex-col flex-1 overflow-auto gap-3">
+              <div class="flex-col flex-1 gap-3 overflow-auto">
                 <%= if question.type === :true_false do %>
                   <div class="flex justify-start w-full h-full px-3 py-1">
                     <.true_or_false is_true={Enum.at(question.answers, 0, false).is_correct} />
