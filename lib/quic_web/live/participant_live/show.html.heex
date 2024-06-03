@@ -95,7 +95,7 @@
       <% end %>
 
       <%= if question.type === :multiple_choice do %>
-        <div :for={{q_answer, index} <- Enum.with_index(question.answers)}
+        <div :for={{q_answer, index} <- Enum.with_index(question_answers)}
           class={["h-full p-1 px-5 overflow-auto", 
             (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
             (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")

@@ -3,26 +3,26 @@
   <main class="w-full "> <%!-- max-3-xl --%>
 
     <%!-- QUIZ SPECS --%>
-    <section class="w-full bg-[var(--background-card)] p-4 rounded-md border border-[var(--border)]">
-      
-      <h4 class="text-center text-[var(--primary-color)]"> <%= @quiz.name %> </h4>
-      <p class="mt-4 text-justify xl:text-center"><%= @quiz.description %></p>
+    <section class="px-3 md:px-10">
+      <div class="bg-[var(--background-card)] px-10 py-8 rounded-md border border-[var(--border)]">
+        <h5 class="text-center text-[var(--primary-color)]"><%= @quiz.name %></h5>
+        <p class="mt-4 text-justify xl:text-center"><%= @quiz.description %></p>
 
+        <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
+          <div class="flex gap-1">
+            <Heroicons.list_bullet class="w-5 h-5" />
+            <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
+          </div>
 
-      <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
-        <div class="flex gap-1">
-          <Heroicons.list_bullet class="w-5 h-5" />
-          <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
-        </div>
+          <div class="flex gap-1">
+            <Heroicons.trophy class="w-5 h-5" />
+            <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
+          </div>
 
-        <div class="flex gap-1">
-          <Heroicons.trophy class="w-5 h-5" />
-          <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
-        </div>
-
-        <div class="flex gap-1">
-          <Heroicons.user_circle class="w-5 h-5" />
-          <p class="text-gray-400"><%= @quiz.author_name %></p>
+          <div class="flex gap-1">
+            <Heroicons.user_circle class="w-5 h-5" />
+            <p class="text-gray-400"><%= @quiz.author_name %></p>
+          </div>
         </div>
       </div>
     </section>
@@ -89,7 +89,12 @@
               (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
           ]}>
             <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
-              <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+              <%= if answer.is_correct do %>
+                <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
+              <% else %>
+                <.blank_square class="w-6 h-6 min-h-6 min-w-6" />
+              <% end %>
+
               <div class="flex-1">
                 <.markdown class="w-full" text={answer.answer} />
               </div>

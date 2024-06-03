@@ -50,8 +50,8 @@
     <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" target="_blank" href={~p"/sessions/#{@session.id}/quiz"}>
 
       <div class="flex items-center gap-2">
-        <Heroicons.pencil_square class="w-5 h-5 text-[var(--third-color)]" />
-        <h6 class="font-bold"><%= @quiz.name %></h6>
+        <Heroicons.pencil_square class="min-h-5 min-w-5 w-5 h-5 text-[var(--third-color)]" />
+        <h6 class="font-bold"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></h6>
       </div>
 
       <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
@@ -73,7 +73,7 @@
           <Heroicons.user_circle class="w-5 h-5" />
           <p>
             <%= if @quiz.author_id === @current_author.id do %>
-            You
+              You
             <% else %>
               <%= @quiz.author_name %>
             <% end %> </p>
@@ -85,14 +85,12 @@
 
 
   <%!-- SESSION CONTROL BUTTONS --%>
-  <%!-- <h6 class="mt-10 font-bold">Controls</h6> --%>
   <div class="flex items-center justify-between my-8">
     <%= if @session.status === :open do %>
       <.button 
         class="flex items-center gap-2 mr-5 call2actionBtn" 
         data-confirm="Are you sure? Once started, no more participants can join the Session!"
         phx-click="start-session-btn"
-
       >
         <Heroicons.play class="w-5 h-5" />
         <p class="font-normal text-white">START</p>
@@ -252,13 +250,14 @@
             <div class="flex flex-col justify-center gap-5 lg:items-center lg:flex-row lg:px-8">
               <%!-- ANSWERS --%>
               <div class="flex-col flex-1 gap-3 overflow-auto">
+                <% question_answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
+                
                 <%= if question.type === :true_false do %>
                   <div class="flex justify-start w-full h-full px-3 py-1">
-                    <.true_or_false is_true={Enum.at(question.answers, 0, false).is_correct} />
+                    <.true_or_false is_true={Enum.at(question_answers, 0, false).is_correct} />
                   </div>
 
                 <% else %>
-                  <% question_answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
                   <% correct_answers = Enum.filter(question_answers, fn qa -> qa.is_correct end) %>
                   <div :for={{q_answer, index} <- Enum.with_index(correct_answers)} 
                     class={["flex items-center justify-start h-full gap-3 px-4 py-2",

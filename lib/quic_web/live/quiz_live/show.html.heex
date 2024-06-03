@@ -28,17 +28,17 @@
       <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
         <div class="flex gap-1">
           <Heroicons.list_bullet class="w-5 h-5" />
-          <p><%= Enum.count(@quiz.questions) %> Questions</p>
+          <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
         </div>
 
         <div class="flex gap-1">
           <Heroicons.trophy class="w-5 h-5" />
-          <p><%= @quiz.total_points %> Points</p>
+          <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
         </div>
 
         <div class="flex gap-1">
           <Heroicons.user_circle class="w-5 h-5" />
-          <p>
+          <p class="text-gray-400">
             <%= if @quiz.author_id === @current_author.id do %>
               You
             <% else %>
@@ -127,7 +127,12 @@
                 (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
             ]}>
               <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
-                <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+                <%= if answer.is_correct do %>
+                  <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
+                <% else %>
+                  <.blank_square class="w-6 h-6 min-h-6 min-w-6" />
+                <% end %>
+                
                 <div class="flex-1">
                   <.markdown class="w-full" text={answer.answer} />
                 </div>
