@@ -7,20 +7,20 @@
 <%!-- PROFILE --%>
 <section class="flex justify-center w-full my-10">
   <div class="flex flex-col items-center w-[90%] md:w-[70%] p-4 pb-6 bg-[var(--background-card)] rounded-xl border border-[var(--border)]">
-    <div class="flex items-center gap-4">
-      <Heroicons.user_circle class="w-24 h-24 text-[var(--primary-color)]" />
-      <div class="flex flex-col gap-3">
+    <div class="flex flex-col items-center justify-between gap-4">
+      <%!-- <Heroicons.user_circle class="w-24 h-24 text-[var(--primary-color-text)]" /> --%>
+      <%!-- <div class="flex flex-col gap-3"> --%>
         <h5><%= @participant.name %></h5>
         <div class="flex items-center gap-1">
-          <Heroicons.trophy class="w-5 h-5"/>
+          <Heroicons.trophy class="w-5 h-5 text-[var(--primary-color)]"/>
           <p><%= @participant.total_points %> of <%= @quiz.total_points %></p>
         </div>
-      </div>
+      <%!-- </div> --%>
     </div>
 
-    <%!-- PARTICIPANT PROGRESS --%>
-    <p class="mt-10 font-semibold">Progress</p>
-    <.participant_progress_bar class="mt-2" progress={QuicWebAux.progress_percentage(@participant.current_question, Enum.count(@quiz.questions))} current_question={@participant.current_question} num_quiz_questions={Enum.count(@quiz.questions)} />
+    <%!-- PARTICIPANT PROGRESS
+    <%!-- <p class="mt-10 font-semibold">Progress</p> --%>
+    <.participant_progress_bar class="mt-6" progress={QuicWebAux.progress_percentage(@participant.current_question, Enum.count(@quiz.questions))} current_question={@participant.current_question} num_quiz_questions={Enum.count(@quiz.questions)} /> 
   </div>
 </section>
 
@@ -78,8 +78,8 @@
       <%= if question.type === :single_choice do %>
         <div :for={{q_answer, index} <- Enum.with_index(question_answers)} 
           class={["h-full p-1 pb-2 px-5 overflow-auto",
-            (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
-            (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
+            (if index + 1 !== Enum.count(question_answers), do: "border-b border-[var(--border)] lg:border-0"), 
+            (if index === 0 || index === 1, do: "lg:border-b lg:border-[var(--border)]")
         ]}>
           <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
             <%= if Enum.member?(participant_answer.answer, q_answer.id) do %>
@@ -97,8 +97,8 @@
       <%= if question.type === :multiple_choice do %>
         <div :for={{q_answer, index} <- Enum.with_index(question_answers)}
           class={["h-full p-1 px-5 overflow-auto", 
-            (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
-            (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
+            (if index + 1 !== Enum.count(question_answers), do: "border-b border-[var(--border)] lg:border-0"), 
+            (if index === 0 || index === 1, do: "lg:border-b lg:border-[var(--border)]")
         ]}>
           <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
             <%= if Enum.member?(participant_answer.answer, q_answer.id) do %>
@@ -118,15 +118,15 @@
         <% question_answer = Enum.at(question_answers, 0, nil) %>
         <% participant_text = Enum.at(participant_answer.answer,0,"") %>
         <%!-- QUESTION ANSWER --%>
-        <div class="h-full p-1 px-5 overflow-auto">
+        <div class="h-full p-1 px-5 overflow-auto border-b border-[var(--border)] md:border-0">
           <div class="flex items-center justify-start w-full gap-2">
-            <Heroicons.check class="w-4 h-4 text-[var(--primary-color-text)]" />
+            <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" />
             <p><.markdown class="w-full" text={question_answer.answer} /></p>
           </div>
         </div>
 
         <%!-- PARTICIPANT ANSWER --%>
-        <div class="h-full p-1 px-5 overflow-auto border-t border-[var(--border)] md:border-0">
+        <div class="h-full p-1 px-5 overflow-auto">
           <div class="flex items-center justify-start w-full gap-2">
             <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
             <.markdown class="w-full" text={participant_text} />

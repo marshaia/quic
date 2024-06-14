@@ -6,7 +6,7 @@ defmodule QuicWeb.QuizLive.NewQuestionForm do
     ~H"""
     <div>
       <.header>
-        <h4 class="text-[var(--primary-color)]">New Question</h4>
+        <h5 class="text-[var(--primary-color)]">New Question</h5>
         <:subtitle>
           <p>Please choose the question's type</p>
         </:subtitle>

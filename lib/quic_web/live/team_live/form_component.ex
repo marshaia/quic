@@ -8,7 +8,7 @@ defmodule QuicWeb.TeamLive.FormComponent do
     ~H"""
     <div>
       <.header>
-      <h4 class="text-[var(--primary-color)]"><%= @title %></h4>
+        <h5 class="text-[var(--primary-color)]"><%= @title %></h5>
       </.header>
 
       <.simple_form

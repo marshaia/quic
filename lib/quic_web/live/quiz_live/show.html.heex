@@ -131,11 +131,11 @@
             <% end %>
 
           <% end %>
-          <div :if={question.type === :single_choice && question.type === :multiple_choice} class="grid w-full grid-cols-1 gap-2 overflow-auto lg:grid-cols-2" style="grid-auto-rows: 1fr">
+          <div :if={question.type === :single_choice || question.type === :multiple_choice} class="grid w-full grid-cols-1 gap-2 overflow-auto lg:grid-cols-2" style="grid-auto-rows: 1fr">
             <div :for={{answer, index} <- Enum.with_index(question.answers)} 
-              class={["h-full p-1 px-5 overflow-auto", 
-                (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
-                (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
+              class={["h-full p-1 pb-2 px-5 overflow-auto", 
+                (if index + 1 !== Enum.count(question.answers), do: "border-b border-[var(--border)] lg:border-0"), 
+                (if index === 0 || index === 1, do: "lg:border-b lg:border-[var(--border)]")
             ]}>
               <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
                 <%= if answer.is_correct do %>

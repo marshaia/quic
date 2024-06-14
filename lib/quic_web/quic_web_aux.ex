@@ -14,11 +14,11 @@ defmodule QuicWeb.QuicWebAux do
 
   def get_type_color(type) when is_atom(type) do
     case type do
-      :single_choice -> "bg-[var(--turquoise)]"
+      :single_choice -> "bg-[var(--blue)]"
       :multiple_choice -> "bg-[var(--second-color)]"
-      :true_false -> "bg-gray-500"
-      :open_answer -> "bg-[var(--dark-green)]"
-      :fill_the_blanks -> "bg-[var(--fifth-color)]"
+      :true_false -> "bg-gray-400"
+      :open_answer -> "dark:bg-[var(--dark-green-2)] bg-[var(--dark-green)]"
+      :fill_the_blanks -> "bg-[var(--fifth-color)] dark:bg-[#d69825]"
       :fill_the_code -> "bg-[var(--third-color)]"
       :code -> "bg-[var(--fourth-color)]"
     end

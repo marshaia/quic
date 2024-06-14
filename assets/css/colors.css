@@ -10,7 +10,7 @@
   --second-color: #E255D0;
   --third-color: #FF609E;
   --fourth-color: #FF8F70;
-  --fifth-color: #FFC659;
+  --fifth-color: #f7b53a;
   --sixth-color: #F9F871;
 
   --green: #22c55e;
@@ -38,4 +38,12 @@
   --hover: rgba(255,255,255,.03);
   --focus-ring: 0 0 0 0.2rem rgba(129, 140, 248, 0.2);
   --code-previewer-selection: #494949;
+}
+
+.gradient {
+  @apply bg-gradient-to-r from-[var(--primary-color)] via-purple-500 to-[var(--second-color)]
+}
+
+.text-gradient {
+  @apply bg-gradient-to-r from-[var(--primary-color)] via-purple-500 to-[var(--second-color)] text-transparent bg-clip-text
 }

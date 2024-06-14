@@ -524,7 +524,8 @@ defmodule QuicWeb.MyComponents do
     ~H"""
     <div class={"flex items-center justify-center w-full gap-2 #{@class}"}>
       <div class="bg-[var(--border)] rounded-full w-[80%]">
-        <div class={["bg-[var(--primary-color)] text-white py-1 text-right rounded-full", (if @current_question !== 0, do: "px-4" )]} style={"width: #{@progress}%"}>
+        <div class={["gradient text-white py-1 text-right rounded-full", (if @current_question !== 0, do: "px-4" )]} style={"width: #{@progress}%"}
+        >
           <p class={["text-white",(if @current_question === 0, do: "py-2.5")]}><%= if @current_question === @num_quiz_questions, do: "Completed", else: (if @current_question > 0, do: @current_question) %></p>
         </div>
       </div>

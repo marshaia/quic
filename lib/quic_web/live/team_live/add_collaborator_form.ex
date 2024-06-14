@@ -9,15 +9,14 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
     ~H"""
     <div>
       <.header>
-        <h4 class="text-[var(--primary-color)]"><%= @title %></h4>
-        <:subtitle></:subtitle>
+        <h5 class="text-[var(--primary-color)]"><%= @title %></h5>
       </.header>
 
       <form phx-target={@myself} phx-change="validate" class="flex mt-8 rounded-t-xl px-4 py-1 gap-2 bg-[var(--background-view)]">
         <div class="flex items-center justify-center">
           <Heroicons.magnifying_glass class="relative w-5 h-5 text-[var(--primary-color)]" />
         </div>
-        <input type="text" id="add_collaborator_input" name="input" class="bg-[var(--background-view)] border-none focus:ring-0 text-sm w-full md:w-80" placeholder="Search by display name or username"/>
+        <input type="text" id="add_collaborator_input" name="input" class="bg-[var(--background-view)] border-none focus:ring-0 text-sm w-full md:w-80" placeholder="display name or username"/>
       </form>
 
       <div class="mb-3 h-[233px] rounded-b-xl border-t border-[var(--border)] overflow-auto bg-[var(--background-view)]">

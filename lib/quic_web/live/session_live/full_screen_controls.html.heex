@@ -4,17 +4,17 @@
   <div class="flex justify-center mt-5">
     <div class="flex w-full mx-3 flex-col items-center bg-[var(--background-card)] p-3 rounded-xl border border-[var(--border)]">
       <%!-- SESSION CODE --%>
-      <div class="flex items-center justify-between w-full px-5 md:px-10">
-        <Heroicons.rocket_launch class="hidden sm:block w-12 h-12 text-[var(--second-color)]" />
-        <h1 class="text-[var(--primary-color)] text-7xl"><%= @session.code %></h1>
-        <Heroicons.pencil_square class="hidden sm:block w-12 h-12 text-[var(--fifth-color)]" />
+      <div class="flex items-center justify-center w-full px-5 md:px-10">
+        <%!-- <Heroicons.rocket_launch class="hidden sm:block w-12 h-12 text-[var(--second-color)]" /> --%>
+        <h1 class="text-gradient text-7xl"><%= @session.code %></h1>
+        <%!-- <Heroicons.pencil_square class="hidden sm:block w-12 h-12 text-[var(--fifth-color)]" /> --%>
       </div>
 
       <%!-- WHERE TO JOIN --%>
       <div class="flex w-full justify-evenly">
-        <Heroicons.code_bracket_square class="hidden sm:block w-12 h-12 text-[var(--green)]" />
+        <%!-- <Heroicons.code_bracket_square class="hidden sm:block w-12 h-12 text-[var(--green)]" /> --%>
         <p class="mt-5 text-center">Join at <b>www.joana.di.uminho.pt</b></p>
-        <Heroicons.computer_desktop class="hidden sm:block w-12 h-12 text-[var(--blue)]" />
+        <%!-- <Heroicons.computer_desktop class="hidden sm:block w-12 h-12 text-[var(--blue)]" /> --%>
       </div>
     </div>
   </div>
@@ -77,7 +77,7 @@
 
 
     <div class="flex justify-between px-2 mt-3 md:mt-8 md:px-0">
-      <h3 class="text-[var(--primary-color)] font-bold"><%= @quiz.name %></h3>
+      <h3 class="text-[var(--primary-color)] font-medium"><%= @quiz.name %></h3>
 
       <.button
         id="finish_btn_monitor_full_screen"
@@ -90,17 +90,17 @@
     </div>
 
     <div class="flex items-center justify-center gap-4 my-3 mb-5">
-      <h5 class="text-gray-500 ">
+      <h6 class="text-xl text-gray-500">
         <%= @session.current_question %> of <%= Enum.count(@quiz.questions) %>
-      </h5>
+      </h6>
 
       <%= if @session.current_question < Enum.count(@quiz.questions) do %>
         <.button
           phx-click="next_question"
           data-confirm="Are you sure you want to move on to the next question? Anyone who hasn't answered won't be able to do it again!" 
-          class="p-2 rounded-md bg-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
+          class="p-1 rounded-md bg-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-indigo-600"
         >
-          <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
+          <Heroicons.chevron_right class="w-5 h-5 text-white"/>
         </.button>
       <% end %>
     </div>
@@ -110,8 +110,8 @@
     <div class="w-full px-2 mt-3 md:px-0">
       <% question = Enum.find(@quiz.questions, fn q -> q.position === @session.current_question end) %>
       <div class="flex gap-5">
-        <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-bold text-[var(--primary-color-text)] text-lg">
-          <%= question.position %>
+        <div class="rounded-full border-2 border-[var(--primary-color)] w-12 h-12 flex items-center justify-center">
+          <h6 class="font-bold text-[var(--primary-color-text)] text-lg"><%= question.position %></h6>
         </div>
         
         
@@ -128,7 +128,7 @@
 
 
       <%!-- SHOW CORRECT ANSWERS --%>
-      <div class="flex justify-end mt-8 mb-5">
+      <div :if={question.type === :single_choice || question.type === :multiple_choice || question.type === :true_false} class="flex justify-end mt-8 mb-5">
         <.button 
           class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)]" 
           phx-click="toggle_correct_answers"
@@ -139,8 +139,9 @@
             <Heroicons.eye class="w-4 h-4 text-[var(--primary-color-text)]" />
           <% end %>
           <p class="font-normal">
-          <%= if @show_correct_answers, do: "Hide", else: "Show" %> 
-          Correct Answer</p>
+            <%= if @show_correct_answers, do: "Hide", else: "Show" %> 
+            Correct Answer
+          </p>
         </.button>
       </div>
 
@@ -151,23 +152,23 @@
           <% answer = Enum.at(question_answers, 0, nil) %>
           <div class="w-full h-full p-3">
             <div
-              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}
+              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "border-[var(--primary-color)]")]}
             >
               <p>True</p>
             </div>
           </div>
           <div class="w-full h-full p-3">
             <div 
-              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && !answer.is_correct, do: "bg-green-200")]}
+              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && !answer.is_correct, do: "border-[var(--primary-color)]")]}
             >
               <p>False</p>
             </div>
           </div>
         <% end %>
 
-        <%= if question.type !== :true_false do %>
+        <%= if question.type === :single_choice || question.type === :multiple_choice do %>
           <div :for={answer <- question_answers} class="w-full h-full p-3">
-            <div class={["py-2 px-4 h-full rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}>
+            <div class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "border-[var(--primary-color)]")]}>
               <.markdown class="mt-2" text={answer.answer} />
             </div>
           </div>

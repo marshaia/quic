@@ -9,7 +9,7 @@
 
     <%!-- QUIZ SPECS --%>
     <section class="px-3 md:px-10">
-      <div class="bg-[var(--background-card)] px-10 py-8 rounded-md border border-[var(--border)]">
+      <div class="bg-[var(--background-card)] px-5 py-5 rounded-md border border-[var(--border)]">
         <h5 class="text-center text-[var(--primary-color)]"><%= @quiz.name %></h5>
         <p class="mt-4 text-justify "><%= @quiz.description %></p>
 
@@ -75,7 +75,7 @@
 
 
         <%!-- DIVIDER --%>
-        <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="w-full my-4" />
+        <hr :if={question.type !== :open_answer} class="w-full my-4" />
 
 
         <%!-- QUESTION ANSWERS --%>
@@ -84,14 +84,26 @@
             <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
             <.true_or_false is_true={answer.is_correct} />
           </div>
+        
+        <% else %>
+          <%= if question.type === :fill_the_blanks do %>
+            <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
+            <div class="flex items-center justify-start w-full gap-2">
+              <%!-- <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" /> --%>
+              <Heroicons.check class="w-4 h-4 text-[var(--primary-color-text)] min-h-4 min-w-4" />
+              <div class="flex-1">
+                <.markdown class="w-full" text={answer.answer} />
+              </div>
+            </div>
+          <% end %>
         <% end %>
 
-        <div :if={question.type !== :open_answer && question.type !== :true_false} class="grid w-full grid-cols-1 gap-2 overflow-auto md:grid-rows-1 md:grid-cols-2" >
+        <div :if={question.type === :single_choice || question.type === :multiple_choice} class="grid w-full grid-cols-1 gap-2 px-3 overflow-auto md:grid-rows-1 md:grid-cols-2" >
           <% answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
           <div :for={{answer, index} <- Enum.with_index(answers)} 
-            class={["h-full p-1 px-5 overflow-auto", 
-              (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
-              (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
+            class={["h-full p-1 pb-2 px-5 overflow-auto", 
+              (if index + 1 !== Enum.count(answers), do: "border-b border-[var(--border)] lg:border-0"), 
+              (if index === 0 || index === 1, do: "lg:border-b lg:border-[var(--border)]")
           ]}>
             <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
               <%= if answer.is_correct do %>
