@@ -77,7 +77,7 @@
 
       <%= if question.type === :single_choice do %>
         <div :for={{q_answer, index} <- Enum.with_index(question_answers)} 
-          class={["h-full p-1 px-5 overflow-auto",
+          class={["h-full p-1 pb-2 px-5 overflow-auto",
             (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 
             (if index === 0 || index === 1, do: "md:border-b md:border-[var(--border)]")
         ]}>
@@ -112,7 +112,37 @@
           </div>
         </div>
       <% end %>
+
+
+      <%= if question.type === :fill_the_blanks do %>
+        <% question_answer = Enum.at(question_answers, 0, nil) %>
+        <% participant_text = Enum.at(participant_answer.answer,0,"") %>
+        <%!-- QUESTION ANSWER --%>
+        <div class="h-full p-1 px-5 overflow-auto">
+          <div class="flex items-center justify-start w-full gap-2">
+            <Heroicons.check class="w-4 h-4 text-[var(--primary-color-text)]" />
+            <p><.markdown class="w-full" text={question_answer.answer} /></p>
+          </div>
+        </div>
+
+        <%!-- PARTICIPANT ANSWER --%>
+        <div class="h-full p-1 px-5 overflow-auto border-t border-[var(--border)] md:border-0">
+          <div class="flex items-center justify-start w-full gap-2">
+            <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
+            <.markdown class="w-full" text={participant_text} />
+          </div>
+          
+        </div>
+      <% end %>
     </div>
+
+    <% participant_answer = Enum.at(participant_answer.answer,0,"") %>
+    <%= if question.type === :open_answer do %>
+      <div class="px-2 md:px-5 lg:px-10">
+        <p class="text-[var(--primary-color)] font-semibold">Response:</p>
+        <.markdown class="w-full" text={participant_answer} />
+      </div>
+    <% end %>
     
   <% else %>
     <p>Participant <%= (if @participant.session.status !== :closed, do: "hasn't submmited", else: "did not submit") %> an answer to this question.</p>

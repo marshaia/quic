@@ -70,6 +70,32 @@
           </div>
         <% end %>
       </div>
+
+      <%= if @question.type === :fill_the_blanks do %>
+        <.simple_form
+          class="w-full"
+          :let={f}
+          for={@answer_changeset}
+          id={"participant-question-blanks-answer-form"}
+          phx-change="validate_participant_answer"
+          phx-submit="ignore"
+        >
+          <.input field={f[:answer]} type="text" class="w-full"/>
+        </.simple_form>
+      <% end %>
+
+      <%= if @question.type === :open_answer do %>
+        <.simple_form
+          class="w-full"
+          :let={f}
+          for={@answer_changeset}
+          id={"participant-question-open-answer-form"}
+          phx-change="validate_participant_answer"
+          phx-submit="ignore"
+        >
+          <.input field={f[:answer]} type="textarea" rows="1" class="flex-1 w-full"/>
+        </.simple_form>
+      <% end %>
     </div>
     
     <%!-- SUBMIT BUTTON --%>
@@ -77,10 +103,11 @@
       <.button 
         id="participant-submit-answer-btn" 
         class="call2actionBtn" 
-        disabled={@selected_answer === nil || @selected_answer === []}
+        disabled={cant_submit?(@question.type, @selected_answer, @answer_changeset)}
         phx-click="submit-answer-btn"
+        phx-disable-with="..."
       >
-        Submit
+        <p class="font-normal text-white">Submit</p>
       </.button>
     </div>
 

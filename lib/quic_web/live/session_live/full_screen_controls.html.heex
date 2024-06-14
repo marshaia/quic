@@ -49,7 +49,7 @@
     <div class="flex flex-wrap justify-center gap-5 px-4">
       <div 
         :for={{participant, index} <- Enum.with_index(@participants)}
-        class="flex gap-2 bg-[var(--background-card)] p-2 px-4 rounded-md border border-[var(--primary-color)]"
+        class="flex gap-2 bg-[var(--background-card)] p-2 px-4 rounded-xl border border-[var(--border)]"
       >
         <Heroicons.user class={["w-7 h-7", QuicWebAux.user_color(index + 1)]}/>
         <h6><%= participant.name %></h6>
@@ -90,9 +90,9 @@
     </div>
 
     <div class="flex items-center justify-center gap-4 my-3 mb-5">
-      <h6 class="text-gray-500 ">
+      <h5 class="text-gray-500 ">
         <%= @session.current_question %> of <%= Enum.count(@quiz.questions) %>
-      </h6>
+      </h5>
 
       <%= if @session.current_question < Enum.count(@quiz.questions) do %>
         <.button
@@ -108,7 +108,7 @@
 
     <%!-- QUESTION --%>
     <div class="w-full px-2 mt-3 md:px-0">
-      <% question = Enum.at(@quiz.questions, @session.current_question - 1, nil) %>
+      <% question = Enum.find(@quiz.questions, fn q -> q.position === @session.current_question end) %>
       <div class="flex gap-5">
         <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-bold text-[var(--primary-color-text)] text-lg">
           <%= question.position %>
@@ -146,8 +146,9 @@
 
 
       <div id="monitor_paced_full_screen_answers" phx-hook="PrismInitializer" class="grid w-full grid-cols-1 gap-4 md:grid-cols-2 increment_font_size" style="grid-auto-rows: 1fr">
+        <% question_answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
         <%= if question.type === :true_false do %>
-          <% answer = Enum.at(question.answers, 0, nil) %>
+          <% answer = Enum.at(question_answers, 0, nil) %>
           <div class="w-full h-full p-3">
             <div
               class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}
@@ -165,7 +166,7 @@
         <% end %>
 
         <%= if question.type !== :true_false do %>
-          <div :for={answer <- question.answers} class="w-full h-full p-3">
+          <div :for={answer <- question_answers} class="w-full h-full p-3">
             <div class={["py-2 px-4 h-full rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "bg-green-200")]}>
               <.markdown class="mt-2" text={answer.answer} />
             </div>

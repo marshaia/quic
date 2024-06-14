@@ -67,13 +67,13 @@
           <Heroicons.pencil class="w-5 h-5 text-[var(--primary-color)]"/>
           <div class="w-full">
             <div class="flex justify-between">
-              <p class="-mt-1 text-base font-bold"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></p>
+              <p class="-mt-1 text-base font-bold"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></p>
               <Heroicons.x_circle 
                 class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--primary-color)] -mt-2 -mr-2 hover:cursor-pointer"
                 phx-click="deselect_quiz"
               />
             </div>
-            <p><%= if String.length(@quiz.description) > 30, do: String.slice(@quiz.description, 0..30) <> "...", else: @quiz.description %></p>
+            <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
             <div class="flex justify-between gap-2 mt-4">
               <div class="flex gap-1">
                 <Heroicons.trophy class="w-5 h-5"/>

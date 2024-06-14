@@ -40,7 +40,8 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
               |> assign(:question, question)
               |> assign(:answers, answers)
               |> assign(:has_submitted, has_submitted)
-              |> assign(:last_question, last_question)}
+              |> assign(:last_question, last_question)
+              |> assign(:answer_changeset, %{"answer" => ""})}
       end
     end
   end
@@ -64,12 +65,27 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   @impl true
   def handle_event("submit-answer-btn", _params, socket) do
-    {:noreply, socket |> push_event("participant-submit-answer", %{
-      code: socket.assigns.session.code,
-      response: socket.assigns.selected_answer,
-      question_id: socket.assigns.question.id,
-      participant_id: socket.assigns.participant.id
-    })}
+    question_type = socket.assigns.question.type
+    if question_type === :true_false || question_type === :single_choice || question_type === :multiple_choice do
+      {:noreply, socket |> push_event("participant-submit-answer", %{
+        code: socket.assigns.session.code,
+        response: socket.assigns.selected_answer,
+        question_id: socket.assigns.question.id,
+        participant_id: socket.assigns.participant.id
+      })}
+    else
+      {:noreply, socket |> push_event("participant-submit-answer", %{
+        code: socket.assigns.session.code,
+        response: Map.get(socket.assigns.answer_changeset, "answer", ""),
+        question_id: socket.assigns.question.id,
+        participant_id: socket.assigns.participant.id
+      })}
+    end
+  end
+
+  @impl true
+  def handle_event("validate_participant_answer", %{"answer" => answer}, socket) do
+    {:noreply, socket |> assign(:answer_changeset, %{"answer" => answer})}
   end
 
   def handle_event(_, _, socket), do: {:noreply, socket}
@@ -116,6 +132,14 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
     {:noreply, put_flash(socket, :error, msg)}
   end
 
-
   def handle_info(_, socket), do: {:noreply, socket}
+
+
+  defp cant_submit?(question_type, selected_answer, changeset) do
+    if question_type === :true_false || question_type === :single_choice || question_type === :multiple_choice do
+      selected_answer === nil || selected_answer === []
+    else
+      String.length(Map.get(changeset, "answer", "")) === 0
+    end
+  end
 end

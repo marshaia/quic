@@ -22,7 +22,7 @@
       
 
       <h4 class="text-center text-[var(--primary-color)] mt-1"> <%= @quiz.name %> </h4>
-      <p class="mt-4 text-justify xl:text-center"><%= @quiz.description %></p>
+      <p class="mt-4 text-justify "><%= @quiz.description %></p>
 
 
       <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
@@ -111,7 +111,7 @@
           <%!-- QUESTION DESCRIPTION --%>
           <.markdown class="mt-2" text={question.description} />
 
-          <hr :if={question.type !== :open_answer && question.type !== :fill_the_blanks} class="w-full my-4" />
+          <hr :if={question.type !== :open_answer} class="w-full my-4" />
 
           <%!-- QUESTION ANSWERS --%>
           <%= if question.type === :true_false do %>
@@ -119,8 +119,19 @@
               <% answer = Enum.at(question.answers, 0, %{}) %>
               <.true_or_false is_true={answer.is_correct} />
             </div>
+          <% else %>
+            <%= if question.type === :fill_the_blanks do %>
+              <% answer = Enum.at(question.answers, 0, %{}) %>
+              <div class="flex items-center justify-start w-full gap-2">
+                <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
+                <div class="flex-1">
+                  <.markdown class="w-full" text={answer.answer} />
+                </div>
+              </div>
+            <% end %>
+
           <% end %>
-          <div :if={question.type !== :open_answer && question.type !== :true_false} class="grid w-full grid-cols-1 gap-2 overflow-auto lg:grid-cols-2" style="grid-auto-rows: 1fr">
+          <div :if={question.type === :single_choice && question.type === :multiple_choice} class="grid w-full grid-cols-1 gap-2 overflow-auto lg:grid-cols-2" style="grid-auto-rows: 1fr">
             <div :for={{answer, index} <- Enum.with_index(question.answers)} 
               class={["h-full p-1 px-5 overflow-auto", 
                 (if index !== 0, do: "border-t border-[var(--border)] md:border-0"), 

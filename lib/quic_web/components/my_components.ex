@@ -331,7 +331,7 @@ defmodule QuicWeb.MyComponents do
 
       <%!-- QUESTION DESCRIPTION --%>
       <%!-- <p class="mt-8 font-bold">Description</p> --%>
-      <div class="mt-8 bg-[var(--background-card)] rounded-md">
+      <div class="my-8 bg-[var(--background-card)] rounded-md">
         <%= if Map.has_key?(@question_changeset.changes, :description) do %>
           <.markdown text={@question_changeset.changes.description} />
         <% else %>
@@ -343,9 +343,9 @@ defmodule QuicWeb.MyComponents do
 
       <%= if @type === :true_false do %>
         <% answer = Enum.at(@answers, 0, nil) %>
-        <hr class="mt-8" />
+        <hr />
         <.true_or_false
-          class="mt-3 ml-2"
+          class="my-3 ml-2"
           is_true={(Map.has_key?(answer.changes, :is_correct) && answer.changes.is_correct) || (Map.has_key?(answer.data, :is_correct) && answer.data.is_correct)}
         />
       <% end %>
@@ -374,8 +374,8 @@ defmodule QuicWeb.MyComponents do
   def quiz_summary(assigns) do
     ~H"""
     <div phx-click="clicked_quiz" phx-value-id={@quiz.id}>
-      <p class="-mt-1 text-base font-bold text-[var(--primary-color)]"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></p>
-      <p><%= if String.length(@quiz.description) > 30, do: String.slice(@quiz.description, 0..30) <> "...", else: @quiz.description %></p>
+      <p class="-mt-1 text-base font-bold text-[var(--primary-color)]"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></p>
+      <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
       <div class="flex justify-between gap-2 mt-4">
         <div class="flex gap-1">
           <Heroicons.list_bullet class="w-5 h-5" />

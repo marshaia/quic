@@ -1,4 +1,9 @@
 
+<div class="flex justify-start">
+  <.my_back navigate={~p"/sessions/#{@session_id}"}>Back to session</.my_back>
+</div>
+
+
 <div class="flex justify-center w-full px-2 mt-5">
   <main class="w-full "> <%!-- max-3-xl --%>
 
@@ -6,7 +11,7 @@
     <section class="px-3 md:px-10">
       <div class="bg-[var(--background-card)] px-10 py-8 rounded-md border border-[var(--border)]">
         <h5 class="text-center text-[var(--primary-color)]"><%= @quiz.name %></h5>
-        <p class="mt-4 text-justify xl:text-center"><%= @quiz.description %></p>
+        <p class="mt-4 text-justify "><%= @quiz.description %></p>
 
         <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
           <div class="flex gap-1">

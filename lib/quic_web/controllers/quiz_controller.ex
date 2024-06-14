@@ -4,11 +4,13 @@ defmodule QuicWeb.QuizController do
   alias Quic.Sessions
 
   def show(conn, %{"session_id" => session_id}) do
-    # if conn.assigns.current_author do
+    if conn.assigns.current_author do
     session = Sessions.get_session!(session_id)
-    render(conn, :show, page_title: "Show Session Quiz", current_path: "/sessions/#{session_id}/quiz", quiz: session.quiz)
-    # else
-    #   conn |> redirect(to: ~p"/")
-    # end
+    conn
+    |> put_layout(html: :author)
+    |> render(:show, page_title: "Show Session Questions", current_path: "/sessions/#{session_id}/quiz", quiz: session.quiz, session_id: session_id)
+    else
+      conn |> redirect(to: ~p"/")
+    end
   end
 end

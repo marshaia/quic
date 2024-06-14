@@ -26,7 +26,7 @@ defmodule QuicWeb.QuizLive.NewQuestionForm do
           type="select"
           label="Type"
           prompt="Choose a value"
-          options={["Single Choice": :single_choice, "Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blanks": :fill_the_blanks, "Fill the Code": :fill_the_code, "Open Answer": :open_answer, "Code": :code]}
+          options={["Single Choice": :single_choice, "Multiple Choice": :multiple_choice, "True or False": :true_false, "Fill in the Blank": :fill_the_blanks, "Fill the Code": :fill_the_code, "Open Answer": :open_answer, "Code": :code]}
         />
 
         <:actions>

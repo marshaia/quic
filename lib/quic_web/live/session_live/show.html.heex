@@ -47,7 +47,7 @@
     <%!-- SESSION QUIZ --%>
     <% quiz_num_questions = Enum.count(@quiz.questions) %>
 
-    <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" target="_blank" href={~p"/sessions/#{@session.id}/quiz"}>
+    <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" navigate={~p"/sessions/#{@session.id}/quiz"}>
 
       <div class="flex items-center gap-2">
         <Heroicons.pencil_square class="min-h-5 min-w-5 w-5 h-5 text-[var(--third-color)]" />
@@ -108,7 +108,7 @@
             <.button
               phx-click="next_question"
               data-confirm="Are you sure you want to move on to the next question? Anyone who hasn't answered won't be able to do it again!" 
-              class="p-2 rounded-md bg-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
+              class="p-1 rounded-md bg-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-[var(--hover)]"
             >
               <Heroicons.chevron_right class="w-5 h-5 text-[var(--primary-color-text)]"/>
             </.button>

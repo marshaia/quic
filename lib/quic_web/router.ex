@@ -22,7 +22,6 @@ defmodule QuicWeb.Router do
     pipe_through [:browser]
 
     get "/", PageController, :home
-    get "/sessions/:session_id/quiz", QuizController, :show
   end
 
   # Other scopes may use custom stacks.
@@ -73,6 +72,7 @@ defmodule QuicWeb.Router do
     pipe_through [:browser, :require_authenticated_author]
 
     get "/authors", AuthorController, :home
+    get "/sessions/:session_id/quiz", QuizController, :show
 
     live_session :require_authenticated_author,
       on_mount: [{QuicWeb.AuthorAuth, :ensure_authenticated}] do

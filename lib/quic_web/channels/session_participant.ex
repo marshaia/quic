@@ -45,7 +45,15 @@ defmodule QuicWeb.SessionParticipant do
         :true_false ->
           ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           assess_true_false(question_answers, answer)
-        _ -> false
+        :fill_the_blanks ->
+          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          assess_fill_the_blanks(question_answers, answer)
+        :open_answer ->
+          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          true
+        _ ->
+          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          false
       end
     #else
     #  false
@@ -78,16 +86,18 @@ defmodule QuicWeb.SessionParticipant do
     end
   end
 
-  require Logger
+  def assess_fill_the_blanks(question_answers, participant_answer) do
+    question_answer = Enum.at(question_answers, 0, nil)
+    case question_answer do
+      nil -> false
+      answer -> String.match?(participant_answer, ~r/^ *#{answer.answer} *$/i)
+    end
+  end
+
   def update_participant_results(participant_id, question_id, results) do
     participant = Participants.get_participant!(participant_id)
     question = Enum.find(participant.session.quiz.questions, fn q -> q.id === question_id end)
-
-    Logger.error("\n\nanswers: \n#{inspect participant.answers}\n\n")
-
     participant_answer = Enum.find(participant.answers, nil, fn a -> a.question_id === question_id end)
-
-
 
     if results do
       participant |> Participants.update_participant(%{"total_points" => participant.total_points + question.points})

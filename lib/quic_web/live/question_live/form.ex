@@ -6,9 +6,6 @@ defmodule QuicWeb.QuestionLive.Form do
   alias Quic.Questions.Question
   alias Quic.Questions.QuestionAnswer
 
-  require Logger
-
-
   @impl true
   def mount(%{"question_id" => question_id, "quiz_id" => quiz_id} = _params, _session, socket) do
     if Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
@@ -36,11 +33,11 @@ defmodule QuicWeb.QuestionLive.Form do
   @impl true
   def mount(%{"type" => type, "quiz_id" => quiz_id} = _params, _session, socket) do
     if Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
-      question_changeset = Questions.change_question(%Question{}, %{type: type}) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
+      question_changeset = Questions.change_question(%Question{}, %{type: type, points: 0}) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
 
       {:ok, socket
             |> assign(:cant_submit_question, true)
-            |> assign(:cant_submit_answers, (if type === "true_false", do: false, else: true))
+            |> assign(:cant_submit_answers, (if type === "true_false" || type === "open_answer", do: false, else: true))
             |> assign(:error_answers, nil)
             |> assign(:type, String.to_atom(type))
             |> assign(:quiz_id, quiz_id)
@@ -74,6 +71,8 @@ defmodule QuicWeb.QuestionLive.Form do
     question_params = params
       |> Map.put("type", socket.assigns.type)
       |> Map.put("position", position)
+
+    question_params = (if socket.assigns.type === :open_answer, do: Map.put(question_params, "points", 0), else: question_params)
 
     changeset =
       %Question{}
@@ -119,10 +118,6 @@ defmodule QuicWeb.QuestionLive.Form do
       "points" => (if Map.has_key?(changes_map, :points), do: changes_map.points, else: question.points),
       "type" => (if Map.has_key?(changes_map, :type), do: changes_map.type, else: question.type),
     }
-
-    Logger.error("os que já existiam: \n#{inspect question.answers}")
-    Logger.debug("\nos que foram alterados: \n#{inspect answers_params}")
-
 
     case Questions.update_question(question, question_params, question.answers, answers_params) do
       {:ok, question} ->
@@ -176,7 +171,7 @@ defmodule QuicWeb.QuestionLive.Form do
 
         :true_false -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => false, "answer" => "."})]
         :open_answer -> []
-        _ -> [Questions.change_question_answer(%QuestionAnswer{})]
+        _ -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true})]
       end
 
     else

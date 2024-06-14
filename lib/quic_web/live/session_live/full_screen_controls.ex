@@ -2,7 +2,6 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   use QuicWeb, :live_view
 
   alias Quic.Sessions
-  alias Quic.Quizzes
   alias QuicWeb.QuicWebAux
 
   @impl true
@@ -14,7 +13,7 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   def handle_params(%{"id" => id}, _, socket) do
     session = Sessions.get_session!(id)
     if session.type === :monitor_paced do
-      quiz = Quizzes.get_quiz!(session.quiz.id)
+      quiz = session.quiz
 
       socket = push_event(socket, "join_session", %{code: session.code, email: socket.assigns.current_author.email, session_id: session.id})
 

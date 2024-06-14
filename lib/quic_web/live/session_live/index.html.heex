@@ -52,7 +52,8 @@
 
     <%!-- STATUS --%>
     <div class="flex items-center gap-2 mr-3 md:mr-0">
-      <div class={["w-4 h-4 rounded-full", QuicWebAux.session_status_color(session.status)]} />
+      <%!-- <div class={["w-4 h-4 rounded-full", QuicWebAux.session_status_color(session.status)]} /> --%>
+      <div class={["w-4 h-4 rounded-full", (if session.status === :open, do: "bg-[var(--green)]", else: (if session.status === :on_going, do: "bg-yellow-500"))]} />
       <%!-- <p class="hidden md:block"><%= QuicWebAux.session_status_translate(session.status) %></p> --%>
     </div>
     <%!-- DELETE --%>
