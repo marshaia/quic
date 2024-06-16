@@ -64,29 +64,29 @@
 <% else %>
   <%= if @session.status === :on_going do %>
   <div id="full-screen-on-going-session-section" phx-hook="SessionChannelMonitor">
-    <div class="flex justify-end p-2">
+    <%!-- <div class="flex justify-end p-2">
       <.button
         id="finish_btn_monitor_full_screen_responsive"
         phx-click="close_session_btn" 
         data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
         class="block md:hidden redBtn"
       >
-        <p class="font-normal text-white">Finish Session</p>
+        <p class="font-normal text-white">Close</p>
       </.button>
-    </div>
+    </div> --%>
 
 
     <div class="flex justify-between px-2 mt-3 md:mt-8 md:px-0">
-      <h3 class="text-[var(--primary-color)] font-medium"><%= @quiz.name %></h3>
+      <h3 class="text-[var(--primary-color-text)] font-normal"><%= @quiz.name %></h3>
 
-      <.button
+      <%!-- <.button
         id="finish_btn_monitor_full_screen"
         phx-click="close_session_btn" 
         data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
         class="hidden md:block redBtn"
       >
-        <p class="font-normal text-white">Finish Session</p>
-      </.button>
+        <p class="font-normal text-white">Close</p>
+      </.button> --%>
     </div>
 
     <div class="flex items-center justify-center gap-4 my-3 mb-5">
@@ -98,7 +98,7 @@
         <.button
           phx-click="next_question"
           data-confirm="Are you sure you want to move on to the next question? Anyone who hasn't answered won't be able to do it again!" 
-          class="p-1 rounded-md bg-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-indigo-600"
+          class="p-1 rounded-md gradient"
         >
           <Heroicons.chevron_right class="w-5 h-5 text-white"/>
         </.button>
@@ -130,15 +130,15 @@
       <%!-- SHOW CORRECT ANSWERS --%>
       <div :if={question.type === :single_choice || question.type === :multiple_choice || question.type === :true_false} class="flex justify-end mt-8 mb-5">
         <.button 
-          class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)]" 
+          class="flex items-center gap-2 p-1 px-4 gradient" 
           phx-click="toggle_correct_answers"
         > 
           <%= if @show_correct_answers do %>
-            <Heroicons.eye_slash class="w-4 h-4 text-[var(--primary-color-text)]" />
+            <Heroicons.eye_slash class="w-4 h-4 text-white" />
           <% else %>
-            <Heroicons.eye class="w-4 h-4 text-[var(--primary-color-text)]" />
+            <Heroicons.eye class="w-4 h-4 text-white" />
           <% end %>
-          <p class="font-normal">
+          <p class="font-normal text-white">
             <%= if @show_correct_answers, do: "Hide", else: "Show" %> 
             Correct Answer
           </p>

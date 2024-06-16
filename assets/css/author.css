@@ -22,3 +22,7 @@
 .question-box-icon {
   @apply w-5 h-5 hover:text-[var(--primary-color)]
 }
+
+.transition_custom {
+  @apply transition ease-in-out duration-200
+} 

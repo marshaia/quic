@@ -119,10 +119,10 @@
       <.participant_progress_bar class="my-8" progress={QuicWebAux.progress_percentage(@participant.current_question, Enum.count(@session.quiz.questions))} current_question={@participant.current_question} num_quiz_questions={Enum.count(@session.quiz.questions)} />
 
       <%= if @last_question do %>
-        <h3 class="my-10 text-center">Quiz completed!</h3>
+        <h3 class="my-10 font-normal text-center">Quiz completed!</h3>
         <h6 :if={@session.type === :monitor_paced} class="font-normal text-center">Waiting for Monitor to close the session...</h6>
       <% else %>
-        <h3 class="my-10 text-center">Answer submitted!</h3>
+        <h3 class="my-10 font-normal text-center">Answer submitted!</h3>
         <h6 :if={@session.type === :monitor_paced} class="font-normal text-center">Waiting for Monitor to send the next question...</h6>
       <% end %>
         <div :if={!@last_question} role="status" class="mt-10">

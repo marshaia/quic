@@ -21,7 +21,7 @@
       </div>
       
 
-      <h4 class="text-center text-[var(--primary-color)] mt-1"> <%= @quiz.name %> </h4>
+      <h4 class="mt-1 text-center text-gradient"> <%= @quiz.name %> </h4>
       <p class="mt-4 text-justify "><%= @quiz.description %></p>
 
 
@@ -53,7 +53,7 @@
     <%!-- LAUNCH DIVIDER --%>
     <div class="flex flex-col items-center mb-7 mt-14">
       <hr />
-      <.link :if={Enum.count(@quiz.questions) > 0} navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 -mt-5 text-white call2actionBtn">
+      <.link :if={Enum.count(@quiz.questions) > 0} navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 p-1 px-4 -mt-5 text-white rounded-full gradient gradient-hover">
         <Heroicons.bolt class="w-5 h-5" />
         Launch Quiz
       </.link>

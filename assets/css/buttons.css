@@ -11,7 +11,7 @@
 }
 
 .call2actionBtn {
-  @apply baseBtn bg-[var(--primary-color)] hover:bg-indigo-600 text-white
+  @apply baseBtn gradient text-white
 }
 
 .redBtn {

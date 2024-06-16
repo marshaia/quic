@@ -131,14 +131,13 @@
             <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
             <.markdown class="w-full" text={participant_text} />
           </div>
-          
         </div>
       <% end %>
     </div>
 
     <% participant_answer = Enum.at(participant_answer.answer,0,"") %>
     <%= if question.type === :open_answer do %>
-      <div class="px-2 md:px-5 lg:px-10">
+      <div class="px-2 md:px-5 lg:px-8">
         <p class="text-[var(--primary-color)] font-semibold">Response:</p>
         <.markdown class="w-full" text={participant_answer} />
       </div>

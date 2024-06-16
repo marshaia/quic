@@ -153,9 +153,9 @@ defmodule QuicWeb.MyComponents do
   def my_back(assigns) do
     ~H"""
     <div class="mt-2">
-      <a href={@navigate} class="flex items-center gap-2 px-2 py-1.5 border-2 border-[var(--primary-color-text)] rounded-full">
+      <a href={@navigate} class="flex items-center gap-2 px-2 py-1.5 border border-[var(--primary-color-text)] rounded-full hover:bg-[var(--hover)]">
         <Heroicons.arrow_left class="w-4 h-4" />
-        <span class="text-sm font-bold"><%= render_slot(@inner_block) %></span>
+        <span class="text-sm font-medium"><%= render_slot(@inner_block) %></span>
       </a>
     </div>
     """

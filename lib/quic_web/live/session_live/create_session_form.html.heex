@@ -9,18 +9,18 @@
   <div class="p-6 bg-[var(--background-card)] rounded-md lg:min-w-[600px] max-w-xl border border-[var(--border)]">
     <%!-- STEPS --%>
     <div class="flex items-center justify-center gap-2">
-      <div class={["session-form-circle ", "bg-[var(--primary-color)]"]}>
+      <div class="session-form-circle gradient-color">
         <h6 class="text-white">1</h6>
       </div>
 
-      <div class={["session-form-step-line bg-[var(--border)]", (if @step !== 1, do: "bg-[var(--primary-color)]")]} />
-      <div class={["session-form-circle border border-[var(--border)]", (if @step !== 1, do: "bg-[var(--primary-color)] border-[var(--primary-color)]")]}>
-        <h6 class={["", (if @step !== 1, do: "text-white")]}>2</h6>
+      <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step !== 1, do: "gradient-color")]} />
+      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step !== 1, do: "gradient-color border-[var(--primary-color)]")]}>
+        <h6 class={["transition_custom", (if @step !== 1, do: "text-white")]}>2</h6>
       </div>
 
-      <div class={["session-form-step-line bg-[var(--border)]", (if @step === 3, do: "bg-[var(--primary-color)]")]} />
-      <div class={["session-form-circle border border-[var(--border)]", (if @step === 3, do: "bg-[var(--primary-color)] border-[var(--primary-color)]")]}>
-        <h6 class={["", (if @step === 3, do: "text-white")]}>3</h6>
+      <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step === 3, do: "gradient-color")]} />
+      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step === 3, do: "gradient-color border-[var(--primary-color)]")]}>
+        <h6 class={["transition_custom", (if @step === 3, do: "text-white")]}>3</h6>
       </div>
     </div>
 
@@ -41,14 +41,14 @@
           <div class="flex flex-col gap-5">
             <div class={["px-4 py-2 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === :monitor_paced, do: "border-[var(--primary-color)] bg-[var(--background-view)]")]}>
               <input type="radio" id="teacher_paced_radio" name="type" value={:monitor_paced} checked={@session_type === :monitor_paced}>
-              <label for="teacher_paced_radio" class="ml-2 mt-0.5 font-semibold">Monitor Paced</label>
-              <p class="mt-2">You control the flow of the questions, i.e., every Participant is answering the same question at the same time, and you decide when it's time to move on to the next question</p>
+              <label for="teacher_paced_radio" class="ml-2 mt-0.5 font-medium">Monitor Paced</label>
+              <p class="mt-2 text-gray-600 dark:text-gray-300">You control the flow of the questions, i.e., every Participant is answering the same question at the same time, and you decide when it's time to move on to the next question</p>
             </div>
 
             <div class={["px-4 py-2 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === :participant_paced, do: "border-[var(--primary-color)] bg-[var(--background-view)]")]}>
               <input type="radio" id="student_paced_radio" name="type" value={:participant_paced} checked={@session_type === :participant_paced}>
-              <label for="student_paced_radio" class="ml-2 mt-0.5 font-semibold">Participant Paced</label>
-              <p class="mt-2">Each Participant completes the quiz independently, without your interference, with the Participant deciding when to move on to the next question and when to submit the quiz</p>
+              <label for="student_paced_radio" class="ml-2 mt-0.5 font-medium">Participant Paced</label>
+              <p class="mt-2 text-gray-600 dark:text-gray-300">Each Participant completes the quiz independently, without your interference, with the Participant deciding when to move on to the next question and when to submit the quiz</p>
             </div>
           </div>
         </form>
