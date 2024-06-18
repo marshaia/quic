@@ -136,7 +136,7 @@
     <div 
       phx-click="change_selected_view"
       phx-value-view="participants"
-      class={["w-1/2 text-center py-1 hover:cursor-pointer rounded-tl-xl border-[var(--border)]", (if @selected_view === :participants, do: "bg-[var(--background-card)] border-x border-t ", else: "bg-[var(--background-view)] border-b")]}
+      class={["w-1/2 text-center py-1 hover:cursor-pointer rounded-tl-xl border-[var(--border)]", (if @selected_view === :participants, do: "bg-[var(--background-card)] border-x border-t hover:bg-[var(--background-card)]", else: "bg-[var(--background-view)] border-b hover:bg-[var(--hover)]")]}
     >
       <h6 class={["font-medium", (if @selected_view === :participants, do: "text-[var(--primary-color)]")]}>
         Participants <span class="text-xs font-normal text-[var(--primary-color-text)]">(<%= Enum.count(@participants) %>)</span>
@@ -145,7 +145,7 @@
     <div 
       phx-click="change_selected_view"
       phx-value-view="stats"
-      class={["w-1/2 text-center py-1 cursor-pointer rounded-tr-xl border-[var(--border)]", (if @selected_view === :stats, do: "bg-[var(--background-card)] border-x border-t ", else: "bg-[var(--background-view)] border-b")]}
+      class={["w-1/2 text-center py-1 cursor-pointer rounded-tr-xl border-[var(--border)] ", (if @selected_view === :stats, do: "bg-[var(--background-card)] border-x border-t hover:bg-[var(--background-card)]", else: "bg-[var(--background-view)] border-b hover:bg-[var(--hover)]")]}
     >
       <h6 class={["font-medium", (if @selected_view === :stats, do: "text-[var(--primary-color)]")]}>Statistics</h6>
     </div>

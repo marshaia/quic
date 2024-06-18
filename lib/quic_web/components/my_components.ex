@@ -182,6 +182,27 @@ defmodule QuicWeb.MyComponents do
 
 
   @doc """
+  Renders a language previewer block.
+
+  ## Examples
+
+      <.language_previewer text="your code here" langugage="c" />
+      <.language_previewer text="your code here" langugage="c" class="mt-20" />
+  """
+  attr :text, :string, default: ""
+  attr :class, :string, default: ""
+  attr :language, :string, default: ""
+
+  def language_previewer(assigns) do
+    ~H"""
+    <div class={"space-y-2 leading-relaxed #{@class}"}>
+      <pre><code class={"language-#{@language}"}><%= @text %></code></pre>
+    </div>
+    """
+  end
+
+
+  @doc """
   Renders a True or False block
 
   ## Examples
@@ -259,6 +280,7 @@ defmodule QuicWeb.MyComponents do
     <.markdown_previewer  answers={question.answers}/>
   """
   attr :answers, :any, default: []
+  attr :type, :atom, default: :open_answer
 
   def markdown_previewer_answers(assigns) do
     ~H"""
@@ -276,10 +298,18 @@ defmodule QuicWeb.MyComponents do
         <div class="flex-1 overflow-auto">
           <div class="flex-1 px-2 mx-3">
             <%= if Map.has_key?(changes, :answer) do %>
-              <.markdown text={changes.answer} />
+              <%= if @type === :fill_the_code || @type === :code do %>
+                <.language_previewer text={changes.answer} language="c" />
+              <% else %>
+                <.markdown text={changes.answer} />
+              <% end %>
             <% else %>
               <%= if answer_changeset.data.answer !== nil do %>
-                <.markdown text={answer_changeset.data.answer} />
+                <%= if @type === :fill_the_code || @type === :code do %>
+                  <.language_previewer text={answer_changeset.data.answer} language="c" />
+                <% else %>
+                  <.markdown text={answer_changeset.data.answer} />
+                <% end %>
               <% end %>
             <% end %>
           </div>
@@ -304,10 +334,11 @@ defmodule QuicWeb.MyComponents do
   attr :answers, :any, default: []
   attr :type, :atom, required: true
   attr :question_changeset, :any, default: %{}
+  attr :class, :string, default: ""
 
   def markdown_previewer_question(assigns) do
     ~H"""
-    <div>
+    <div class={"#{@class}"}>
       <%!-- QUESTION TYPE AND POINTS --%>
       <div class="flex justify-between mt-8">
         <div class={["py-1 px-2 rounded-md", (if is_atom(@type), do: QuicWebAux.get_type_color(@type), else: QuicWebAux.get_type_color(String.to_atom(@type)))]}>
@@ -355,7 +386,7 @@ defmodule QuicWeb.MyComponents do
           <p class="font-bold">Answers</p>
         </div>
 
-        <.markdown_previewer_answers answers={@answers} />
+        <.markdown_previewer_answers answers={@answers} type={@type}/>
       <% end %>
     </div>
     """

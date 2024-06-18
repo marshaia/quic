@@ -31,7 +31,7 @@ defmodule QuicWeb.AuthorSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing..." class="call2actionBtn">Change Email</.button>
+            <.button phx-disable-with="Changing..." class="call2actionBtn"><p class="font-normal text-white">Change Email</p></.button>
           </:actions>
         </.simple_form>
       </div>
@@ -67,7 +67,7 @@ defmodule QuicWeb.AuthorSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing..." class="call2actionBtn">Change Password</.button>
+            <.button phx-disable-with="Changing..." class="call2actionBtn"><p class="font-normal text-white">Change Password</p></.button>
           </:actions>
         </.simple_form>
       </div>

@@ -6,24 +6,19 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import Prism from "../vendor/prism.js"
 
-import { SessionStore } from './session_store_hook.js'
 import { SessionChannelParticipant } from "./channel_participant_hook.js"
 import { SessionChannelMonitor } from "./channel_monitor_hook.js"
 import { ChartJS } from "./charts.js"
+import { AceEditorHook } from "./ace_editor_hook.js"
 
 let Hooks = {}
-Hooks.SessionStore = SessionStore;
 Hooks.SessionChannelParticipant = SessionChannelParticipant;
 Hooks.SessionChannelMonitor = SessionChannelMonitor;
 Hooks.ChartJS = ChartJS;
-
+Hooks.AceEditor = AceEditorHook;
 Hooks.PrismInitializer = {
-  mounted() {
-    Prism.highlightAll();
-  },
-  updated() {
-    Prism.highlightAll();
-  }
+  mounted() {Prism.highlightAll();},
+  updated() {Prism.highlightAll();}
 }
 
 
@@ -47,4 +42,3 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
-

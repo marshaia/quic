@@ -30,7 +30,7 @@ defmodule QuicWeb.QuizLive.NewQuestionForm do
         />
 
         <:actions>
-          <.button disabled={@selected === nil} phx-disable-with="Saving..." class="call2actionBtn"><p class="font-normal text-white">Create Question</p></.button>
+          <.button disabled={@selected === nil} phx-disable-with="Creating..." class="call2actionBtn"><p class="font-normal text-white">Create Question</p></.button>
         </:actions>
       </.simple_form>
     </div>

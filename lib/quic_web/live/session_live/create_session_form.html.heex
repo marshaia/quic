@@ -14,12 +14,12 @@
       </div>
 
       <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step !== 1, do: "gradient-color")]} />
-      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step !== 1, do: "gradient-color border-[var(--primary-color)]")]}>
+      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step !== 1, do: "gradient-color border-none")]}>
         <h6 class={["transition_custom", (if @step !== 1, do: "text-white")]}>2</h6>
       </div>
 
       <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step === 3, do: "gradient-color")]} />
-      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step === 3, do: "gradient-color border-[var(--primary-color)]")]}>
+      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step === 3, do: "gradient-color border-none")]}>
         <h6 class={["transition_custom", (if @step === 3, do: "text-white")]}>3</h6>
       </div>
     </div>

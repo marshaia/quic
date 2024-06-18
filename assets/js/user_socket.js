@@ -93,58 +93,6 @@ function joinChannel(session_code, username, isMonitor, session_id = null) {
 }
 
 
-// Event Listeners
-// Participant Join Session Button
-// join_btn = document.getElementById("join-session-button")
-// if(join_btn) join_btn.addEventListener("click", () => {
-//   code = document.getElementById("join-session-input-code").value.toUpperCase()
-//   username = document.getElementById("join-session-input-username").value
-//   if (code.length === 5 && username.length > 0) joinChannel(code, username, false)
-// });
-
-
-
-// Participant submits answers to question
-// p_submit_answer = document.getElementById("participant-submit-answer-btn")
-// if(p_submit_answer) p_submit_answer.addEventListener("click", () => {
-//   res = window.confirm("Are you sure you want to submit?")
-//   if(res) {
-//     code = localStorage.getItem("session_code")
-//     answer_id = sessionStorage.getItem("answer")
-//     question_id = sessionStorage.getItem("question")
-//     participant_id = localStorage.getItem("participant_token")
-  
-//     if (answer_id) {
-//       joinChannel(code, participant_id, false)
-//       channel.push("participant_submitted_answer", 
-//         {
-//           "participant_id": participant_id,
-//           "session_code" : code,
-//           "question_id" : question_id,
-//           "selected_answer": answer_id,
-//         })
-//     }
-//   }
-// });
-
-// p_send_msg_monitor = document.getElementById("participant-send-msg-monitor-btn")
-// if(p_send_msg_monitor) p_send_msg_monitor.addEventListener("click", () => {
-//   text = document.getElementById("participant-send-msg-monitor-input").value
-//   id = localStorage.getItem("participant_token")
-//   code = localStorage.getItem("session_code")
-//   console.log("entrei no event clicker")
-//   if (text.length > 0) {
-//     joinChannel(code, id, false)
-//     channel.push("participant_msg_to_monitor", 
-//       {
-//         "participant_id": id,
-//         "session_code" : code,
-//         "message": text
-//       })
-//   }
-// });
-
-
 // Author Log Out Button
 log_out_btn = document.getElementById("log-out-button")
 if(log_out_btn) log_out_btn.addEventListener("click", () => {
@@ -154,41 +102,3 @@ log_out_btn_responsive = document.getElementById("log-out-button-responsive")
 if(log_out_btn_responsive) log_out_btn_responsive.addEventListener("click", () => {
   localStorage.removeItem("author_email")
 });
-
-// Monitor Starts Session
-// m_start_session = document.getElementById("start-session-btn")
-// if(m_start_session) m_start_session.addEventListener("click", () => {
-//   res = window.confirm("Are you sure? Once started, no more participants can join the Session!")
-//   if (res) {
-//     email = localStorage.getItem("author_email")
-//     session_id = window.session_id
-//     code = window.session_code
-    
-//     // joinChannel(code, email, true)
-//     channel.push("monitor-start-session", 
-//       {
-//         "session_code" : code,
-//         "session_id": session_id,
-//         "email" : email,
-//       })
-//   }  
-// });
-
-// Monitor Closes Session 
-// m_close_session_btn = document.getElementById("monitor-close-session-btn")
-// if(m_close_session_btn) m_close_session_btn.addEventListener("click", () => {
-//   res = window.confirm("Are you sure? A closed session cannot be opened again!")
-//   if (res) {
-//     email = localStorage.getItem("author_email")
-//     session_id = window.session_id
-//     code = window.session_code
-    
-//     // joinChannel(code, email, true)
-//     channel.push("monitor-close-session", 
-//       {
-//         "session_code" : code,
-//         "session_id": session_id,
-//         "email" : email,
-//       })
-//   }  
-// });

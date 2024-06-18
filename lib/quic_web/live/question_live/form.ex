@@ -107,7 +107,28 @@ defmodule QuicWeb.QuestionLive.Form do
     end
   end
 
+  @impl true
+  def handle_event("update_code", params, socket) do
+    answer_params = Map.put(params, "is_correct", true)
+    changeset =
+      %QuestionAnswer{}
+      |> Questions.change_question_answer(answer_params)
+      |> Map.put(:action, :validate)
 
+    socket = socket |> assign(:answers, [changeset])
+
+    if answer_valid?(changeset) do
+      {:noreply, socket |> assign(:cant_submit_answers, false)}
+    else
+      {:noreply, socket |> assign(:cant_submit_answers, true)}
+    end
+  end
+
+
+
+  defp answer_valid?(changeset) do
+    if Enum.count(changeset.errors) > 0, do: false, else: true
+  end
 
   defp update_question(socket) do
     question = socket.assigns.question

@@ -1,5 +1,5 @@
-
-<div class="flex justify-start mb-8 lg:mb-0">
+          
+<div class="flex justify-start mb-8 -mt-5 lg:mb-0">
   <%= if String.contains?(@page_title, "New") do %>
     <.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back</.my_back>
   <% else %>
@@ -11,11 +11,11 @@
 
 <%!-- LARGE SCREENS --%>
 <div class="hidden lg:block">
-  <.header>
+  <%!-- <.header>
     <h5 class="text-[var(--primary-color)] lg:text-center lg:-mt-3 mb-8 md:mb-3">Question Editor</h5>
-  </.header>
+  </.header> --%>
 
-  <div class="flex w-full mt-4 rounded-md border border-[var(--border)] h-[calc(100vh-15.5rem)] bg-[var(--background-card)]">
+  <div class="flex w-full mt-4 rounded-md border border-[var(--border)] h-[calc(100vh-12.5rem)] bg-[var(--background-card)]">
     <%!-- FORM --%>
     <section class="flex flex-col items-center w-1/2 px-6 py-5 overflow-auto">
       <p :if={@type === :open_answer} class="mt-3 mb-5 text-xs text-justify">
@@ -49,10 +49,21 @@
         <.error :if={@error_answers !== nil}><%= @error_answers %></.error>
         <.live_component id="single-choice-answer-form" module={QuicWeb.QuestionLive.FormSingleMultipleChoice} type={@type} answers={@answers} responsive={false} />
       <% else %>
+        <h6 class="mt-8 font-bold text-[var(--primary-color-text)] text-center">Answer</h6>
         <%= if @type === :fill_the_blanks do %>
-          <h6 class="mt-8 font-bold text-[var(--primary-color-text)] text-center">Answer</h6>
           <p class="mb-2 text-xs text-justify">* The evaluation of answers will be done using case insensitive Regular Expressions (Regex). Be careful of the caracters introduced.</p>
-          <.live_component id="ill-the-blanks-answer-form" module={QuicWeb.QuestionLive.FormFillBlanks} answers={@answers} responsive={false} />
+          <.live_component id="fill-the-blanks-answer-form" module={QuicWeb.QuestionLive.FormFillBlanks} answers={@answers} responsive={false} />
+        <% end %>
+
+        <%= if @type === :code do %>
+          <%!-- <div id="question-form-editor-loading" class="hidden">
+            <div class="flex items-center justify-center gap-3">
+              <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
+              <p>Loading editor</p>
+            </div>
+          </div> --%>
+          
+          <.live_component id="code-form" module={QuicWeb.QuestionLive.FormCode} answers={@answers} id_editor="question-form-editor" />
         <% end %>
       <% end %>
      
@@ -63,9 +74,9 @@
 
     <%!-- PREVIEWER --%>
     <section id="answer-form-page-prism-hook" phx-hook="PrismInitializer" class="w-1/2 px-6 overflow-auto">
-      <h6 class="my-3 text-center">Previewer</h6>
+      <h6 class="my-2 text-center">Previewer</h6>
       <hr class="w-full"/>
-      <.markdown_previewer_question question_changeset={@question_changeset} type={@type} answers={@answers} />
+      <.markdown_previewer_question class="-mt-3" question_changeset={@question_changeset} type={@type} answers={@answers} />
     </section>
   </div>
 </div>
@@ -138,7 +149,7 @@
 
 
 <%!-- SAVE BUTTON --%>
-<div class="flex justify-center mt-5">
+<div class="flex justify-center mt-5 mb-0 lg:mt-3">
   <.button class="call2actionBtn" phx-click="saveQuestion" disabled={@cant_submit_question || @cant_submit_answers}>
     <p class="font-normal text-white">Save Question</p>
   </.button>
