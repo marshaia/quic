@@ -14,9 +14,9 @@ defmodule QuicWeb.QuestionLive.FormCode do
         phx-hook="AceEditor"
         phx-update="ignore"><%= if Map.has_key?(@changeset.changes, :answer), do: @changeset.changes.answer, else: (if Map.has_key?(@changeset.data, :answer), do: @changeset.data.answer, else: "")%></div>
 
-      <.simple_form hidden :let={f} for={@changeset}>
+      <%!-- <.simple_form hidden :let={f} for={@changeset}>
         <.input hidden type="hidden" field={f[:answer]} id={@id <> "-code"} phx-update="ignore"></.input>
-      </.simple_form>
+      </.simple_form> --%>
     </div>
     """
   end

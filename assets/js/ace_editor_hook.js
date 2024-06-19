@@ -17,15 +17,14 @@ function mount_editor(id) {
 
 export const AceEditorHook = {
   mounted() {
-    // document.getElementById(`${this.el.id}-loading`).classList.remove("hidden")
-    
     let id = this.el.id
     let editor = mount_editor(id);
-    // document.getElementById(`${id}-loading`).classList.add("hidden")
+
+    document.getElementById(`${id}-loading`).classList.add("hidden")
     document.getElementById(`${id}`).classList.remove("hidden")
 
     editor.session.on('change', () => {
-      document.getElementById(`${id}-code`).value = editor.getValue();
+      // document.getElementById(`${id}-code`).value = editor.getValue();
       this.pushEvent("update_code", {answer: editor.getValue()})
     });
   },

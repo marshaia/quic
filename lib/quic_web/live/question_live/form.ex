@@ -22,7 +22,8 @@ defmodule QuicWeb.QuestionLive.Form do
           |> assign(:answers, create_answers_changesets(question.type, %{new_question: false, question: question}))
           |> assign(:question_changeset, question_changeset)
           |> assign(:view_selected, :editor)
-          |> assign(:page_title, "Quiz - Edit Question")}
+          |> assign(:page_title, "Quiz - Edit Question")
+          |> assign(:loading, true)}
     else
       {:ok, socket
             |> put_flash(:error, "You can only edit your own quizzes' questions!")
@@ -45,7 +46,8 @@ defmodule QuicWeb.QuestionLive.Form do
             |> assign(:answers, create_answers_changesets(String.to_atom(type), %{new_question: true}))
             |> assign(:question_changeset, question_changeset)
             |> assign(:view_selected, :editor)
-            |> assign(:page_title, "Quiz - New Question")}
+            |> assign(:page_title, "Quiz - New Question")
+            |> assign(:loading, true)}
     else
       {:ok, socket
             |> put_flash(:error, "You can only edit your own quizzes' questions!")
@@ -79,7 +81,7 @@ defmodule QuicWeb.QuestionLive.Form do
       |> Questions.change_question(question_params)
       |> Map.put(:action, :validate)
 
-    socket = assign(socket, question_changeset: changeset)
+    socket = assign(socket, question_changeset: changeset) |> assign(:loading, false)
 
     if Enum.count(changeset.errors) > 0 do
       {:noreply, assign(socket, cant_submit_question: true)}
@@ -115,7 +117,7 @@ defmodule QuicWeb.QuestionLive.Form do
       |> Questions.change_question_answer(answer_params)
       |> Map.put(:action, :validate)
 
-    socket = socket |> assign(:answers, [changeset])
+    socket = socket |> assign(:answers, [changeset]) |> assign(:loading, false)
 
     if answer_valid?(changeset) do
       {:noreply, socket |> assign(:cant_submit_answers, false)}

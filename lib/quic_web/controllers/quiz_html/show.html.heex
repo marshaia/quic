@@ -86,13 +86,17 @@
           </div>
         
         <% else %>
-          <%= if question.type === :fill_the_blanks do %>
+          <%= if question.type === :fill_the_blanks || question.type === :code || question.type === :fill_the_code do %>
             <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
             <div class="flex items-center justify-start w-full gap-2">
-              <%!-- <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" /> --%>
-              <Heroicons.check class="w-4 h-4 text-[var(--primary-color-text)] min-h-4 min-w-4" />
+              <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
+              <%!-- <Heroicons.check class="w-4 h-4 text-[var(--primary-color-text)] min-h-4 min-w-4" /> --%>
               <div class="flex-1">
-                <.markdown class="w-full" text={answer.answer} />
+                <%= if question.type === :fill_the_blanks do %>
+                  <.markdown class="w-full" text={answer.answer} />
+                <% else %>
+                  <.language_previewer text={answer.answer} language="c" />
+                <% end %>
               </div>
             </div>
           <% end %>

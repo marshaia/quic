@@ -53,20 +53,20 @@
         <%= if @type === :fill_the_blanks do %>
           <p class="mb-2 text-xs text-justify">* The evaluation of answers will be done using case insensitive Regular Expressions (Regex). Be careful of the caracters introduced.</p>
           <.live_component id="fill-the-blanks-answer-form" module={QuicWeb.QuestionLive.FormFillBlanks} answers={@answers} responsive={false} />
-        <% end %>
 
-        <%= if @type === :code do %>
-          <%!-- <div id="question-form-editor-loading" class="hidden">
-            <div class="flex items-center justify-center gap-3">
-              <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
-              <p>Loading editor</p>
+        <% else %>
+          <%= if @type === :code || @type === :fill_the_code do %>
+            <div :if={@loading} id="question-form-editor-loading">
+              <div class="flex items-center justify-center gap-3">
+                <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
+                <p>Loading editor</p>
+              </div>
             </div>
-          </div> --%>
-          
-          <.live_component id="code-form" module={QuicWeb.QuestionLive.FormCode} answers={@answers} id_editor="question-form-editor" />
+            
+            <.live_component id="code-form" module={QuicWeb.QuestionLive.FormCode} answers={@answers} id_editor="question-form-editor" />
+          <% end %>
         <% end %>
       <% end %>
-     
     </section>
 
     <%!-- DIVIDER --%>
@@ -137,6 +137,17 @@
         <h6 class="mt-8 font-bold text-[var(--primary-color-text)] text-center">Answer</h6>
         <p class="mb-2 text-xs text-justify">* The evaluation of answers will be done using case insensitive Regular Expressions (Regex). Be careful of the caracters introduced.</p>
         <.live_component id="ill-the-blanks-answer-form-responsive" module={QuicWeb.QuestionLive.FormFillBlanks} answers={@answers} responsive={false} />
+      <% else %>
+        <%= if @type === :code || @type === :fill_the_code do %>
+          <div :if={@loading} id="question-form-editor-responsive-loading">
+            <div class="flex items-center justify-center gap-3">
+              <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
+              <p>Loading editor</p>
+            </div>
+          </div>
+          
+          <.live_component id="code-form-responsive" module={QuicWeb.QuestionLive.FormCode} answers={@answers} id_editor="question-form-editor-responsive" />
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
