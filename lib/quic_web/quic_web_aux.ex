@@ -6,7 +6,7 @@ defmodule QuicWeb.QuicWebAux do
       :multiple_choice -> "Multiple Choice"
       :true_false -> "True or False"
       :open_answer -> "Open Answer"
-      :fill_the_blanks -> "Fill in the Blanks"
+      :fill_the_blanks -> "Fill the Blank"
       :fill_the_code -> "Fill the Code"
       :code -> "Code"
     end

@@ -25,7 +25,7 @@ export const AceEditorHook = {
 
     editor.session.on('change', () => {
       // document.getElementById(`${id}-code`).value = editor.getValue();
-      this.pushEvent("update_code", {answer: editor.getValue()})
+      this.pushEvent("update_code_answer", {answer: editor.getValue()})
     });
   },
 }

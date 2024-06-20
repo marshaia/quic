@@ -9,6 +9,8 @@ defmodule Quic.Repo.Migrations.CreateQuestions do
       add :position, :integer
       add :points, :integer
       add :type, :string
+      add :code, :text
+      add :language, :string
 
       timestamps(type: :utc_datetime)
     end

@@ -405,7 +405,7 @@ defmodule QuicWeb.MyComponents do
   def quiz_summary(assigns) do
     ~H"""
     <div phx-click="clicked_quiz" phx-value-id={@quiz.id}>
-      <p class="-mt-1 text-base font-bold text-[var(--primary-color)]"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></p>
+      <p class="-mt-1 text-base font-semibold text-[var(--primary-color-text)]"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></p>
       <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
       <div class="flex justify-between gap-2 mt-4">
         <div class="flex gap-1">

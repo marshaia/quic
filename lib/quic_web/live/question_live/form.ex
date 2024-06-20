@@ -34,7 +34,7 @@ defmodule QuicWeb.QuestionLive.Form do
   @impl true
   def mount(%{"type" => type, "quiz_id" => quiz_id} = _params, _session, socket) do
     if Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
-      question_changeset = Questions.change_question(%Question{}, %{type: type, points: 0}) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
+      question_changeset = Questions.change_question(%Question{}, %{type: type, points: 0, code: "int sum ([[res1]], int b) {\n  return [[res2]];\n}"}) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
 
       {:ok, socket
             |> assign(:cant_submit_question, true)
@@ -74,8 +74,6 @@ defmodule QuicWeb.QuestionLive.Form do
       |> Map.put("type", socket.assigns.type)
       |> Map.put("position", position)
 
-    question_params = (if socket.assigns.type === :open_answer, do: Map.put(question_params, "points", 0), else: question_params)
-
     changeset =
       %Question{}
       |> Questions.change_question(question_params)
@@ -110,7 +108,7 @@ defmodule QuicWeb.QuestionLive.Form do
   end
 
   @impl true
-  def handle_event("update_code", params, socket) do
+  def handle_event("update_code_answer", params, socket) do
     answer_params = Map.put(params, "is_correct", true)
     changeset =
       %QuestionAnswer{}
@@ -191,10 +189,11 @@ defmodule QuicWeb.QuestionLive.Form do
             Questions.change_question_answer(%QuestionAnswer{}),
             Questions.change_question_answer(%QuestionAnswer{}),
           ]
-
         :true_false -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => false, "answer" => "."})]
         :open_answer -> []
-        _ -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true})]
+        :fill_the_blanks -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true})]
+        :fill_the_code -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => "[[res1]]:int a\n[[res2]]:a+b"})]
+        :code -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => "int sum (int a, int b) {\n  return a+b;\n}"})]
       end
 
     else

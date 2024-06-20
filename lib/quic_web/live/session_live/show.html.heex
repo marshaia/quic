@@ -50,7 +50,7 @@
     <.link class="bg-[var(--background-card)] w-full rounded-md border border-[var(--border)] p-4 flex flex-col hover:bg-[var(--hover)] gap-4" navigate={~p"/sessions/#{@session.id}/quiz"}>
 
       <div class="flex items-center gap-2">
-        <Heroicons.pencil_square class="min-h-5 min-w-5 w-5 h-5 text-[var(--fourth-color)]" />
+        <Heroicons.pencil_square class="min-h-5 min-w-5 w-5 h-5 text-[var(--primary-color)]" />
         <h6 class="font-bold"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></h6>
       </div>
 
@@ -266,7 +266,11 @@
                     <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
                       <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
                       <div class="flex-1">
-                        <.markdown class="w-full" text={q_answer.answer} />
+                        <%= if question.type === :code || question.type === :fill_the_code do %>
+                          <.language_previewer text={q_answer.answer} language="c" />
+                        <% else %>
+                          <.markdown class="w-full" text={q_answer.answer} />
+                        <% end %>
                       </div>
                     </div>
 
