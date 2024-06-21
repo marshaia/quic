@@ -80,4 +80,48 @@ defmodule QuicWeb.QuicWebAux do
     Float.round((participant_question / quiz_total_questions) * 100, 0)
   end
 
+  def question_code_placeholder() do
+    %{
+      code: "int sum (int a, int b) {\n  return a+b;\n}",
+      description: "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on Answer editor."
+    }
+  end
+
+  def question_fill_code_placeholder() do
+    %{
+      code: "int sum ({{res1}}, int b) {\n  return {{res2}};\n}",
+      description: "Choose the programming language you want to evaluate, then, when you want to insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can be anything you want). Then, on the answer, use the syntax like it's exemplified: __`{{<id>}}:<correct_answer>`__"
+    }
+
+  end
+
+  def answer_fill_code_placeholder() do
+    "{{res1}}:int a\n{{res2}}:a+b"
+  end
+
+
+  # Earmark AST Parser
+  @doc"""
+    Transforms every {{id}} found in the AST (in every `code` node) into *id.
+  """
+  require Logger
+  def parse_text(text) do
+    case Earmark.Parser.as_ast(text, code_class_prefix: "lang- language-") do
+      {:error, _, _} -> text
+      {:ok, ast, _} -> parse_AST(ast)
+    end
+  end
+
+  def parse_AST(ast) do
+    transformer =
+      fn
+        {"code", attrs, content, meta} ->
+          new_content = Enum.map(content, fn code -> String.replace(code, ~r/{{(\w+)}}/, "__\\1__") end)
+          {:replace, {"code", attrs, new_content, meta}}
+        other -> other
+      end
+
+    Earmark.Transform.map_ast(ast, transformer)
+  end
+
 end

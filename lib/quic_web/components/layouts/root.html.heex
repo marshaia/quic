@@ -74,7 +74,7 @@
         </style>
         <%= if @current_author do %>
           <button type="button" phx-click={show_modal("sidebar-responsive")} class="hidden-on-medium-and-above">
-            <Heroicons.bars_3 class="w-5 h-5 text-[var(--primary-color-text)]" />
+            <Heroicons.bars_3 class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--primary-color)]" />
           </button>
         <% end %>
         
@@ -84,12 +84,12 @@
           <%= if @current_author do %>
             <a href="/authors" class="flex items-center gap-2">
               <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
-              <Heroicons.computer_desktop class="text-[var(--primary-color)] w-6 h-6"/>
+              <Heroicons.computer_desktop class="stroke-1 text-[var(--primary-color)] w-6 h-6"/>
               <p class="text-lg font-normal">QUIC</p>
             </a>
           <% else %>
             <a href="/" class="flex items-center gap-2">
-              <Heroicons.computer_desktop class="text-[var(--primary-color)] w-6 h-6"/>
+              <Heroicons.computer_desktop class="stroke-1 text-[var(--primary-color)] w-6 h-6"/>
               <p class="text-lg font-normal">QUIC</p>
             </a>
           <% end %>
@@ -101,10 +101,10 @@
 
         <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
           <button onclick="changeThemeToDark(true)">
-            <Heroicons.moon class="w-6 h-6"/>
+            <Heroicons.moon class="w-6 h-6 stroke-1 text-[var(--primary-color-text)] hover:text-[var(--primary-color)]"/>
           </button>
           <button onclick="changeThemeToDark(false)">
-            <Heroicons.sun class="w-6 h-6"/>
+            <Heroicons.sun class="w-7 h-7 stroke-1 text-[var(--primary-color-text)] hover:text-[var(--primary-color)]"/>
           </button>
 
           <%= if @current_author do %>

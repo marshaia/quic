@@ -68,13 +68,6 @@ defmodule Quic.Questions do
     |> Repo.insert()
   end
 
-  # def create_question_with_quiz(attrs \\ %{}, id) do
-  #   quiz = Quizzes.get_quiz!(id)
-  #   %Question{}
-  #   |> Question.changeset(attrs, quiz)
-  #   |> Repo.insert()
-  # end
-
   def create_question(attrs \\ %{}, quiz_id, answers_changesets) do
     quiz = Quizzes.get_quiz!(quiz_id)
 

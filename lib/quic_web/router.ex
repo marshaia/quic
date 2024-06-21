@@ -78,6 +78,7 @@ defmodule QuicWeb.Router do
       on_mount: [{QuicWeb.AuthorAuth, :ensure_authenticated}] do
       live "/authors/settings", AuthorSettingsLive, :edit
       live "/authors/settings/confirm_email/:token", AuthorSettingsLive, :confirm_email
+      live "/authors/profile", AuthorProfile
 
       # QUIZZES
       live "/quizzes", QuizLive.Index, :index

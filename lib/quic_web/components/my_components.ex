@@ -73,6 +73,14 @@ defmodule QuicWeb.MyComponents do
     ~H"""
     <section class="mt-10 sidebar-group">
       <span class="text-sm font-semibold">PERSONAL</span>
+      <%!-- PROFILE --%>
+      <.link href={"/authors/profile"}
+      class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "profile"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
+        <Heroicons.user class="sidebar-icon"/>
+        <span>Profile</span>
+      </.link>
+
+      <%!-- SETTINGS --%>
       <.link href={"/authors/settings"}
       class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "settings"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
         <Heroicons.cog_8_tooth class="sidebar-icon"/>
@@ -152,7 +160,7 @@ defmodule QuicWeb.MyComponents do
 
   def my_back(assigns) do
     ~H"""
-    <div class="mt-2">
+    <div>
       <a href={@navigate} class="flex items-center gap-2 px-2 py-1.5 border border-[var(--primary-color-text)] rounded-full hover:bg-[var(--hover)]">
         <Heroicons.arrow_left class="w-4 h-4" />
         <span class="text-sm font-medium"><%= render_slot(@inner_block) %></span>
@@ -181,6 +189,7 @@ defmodule QuicWeb.MyComponents do
   end
 
 
+
   @doc """
   Renders a language previewer block.
 
@@ -194,10 +203,14 @@ defmodule QuicWeb.MyComponents do
   attr :language, :string, default: ""
 
   def language_previewer(assigns) do
+    text = assigns.text |> String.replace(~r/{{(\w+)}}/, "__\\1__")
+    assigns = Map.put(assigns, :text, text)
+    # text = "```#{assigns.language}\n" <> text <> "\n```"
+    #html = QuicWebAux.parse_text(text) |> Earmark.Transform.transform()
+    # assigns = Map.put(assigns, :html, html)
+    # <%= @html |> raw %>
     ~H"""
-    <div class={"space-y-2 leading-relaxed #{@class}"}>
-      <pre><code class={"language-#{@language}"}><%= @text %></code></pre>
-    </div>
+    <pre><code class={"lang-#{@language} language-#{@language}"}><%= @text %></code></pre>
     """
   end
 
@@ -286,10 +299,10 @@ defmodule QuicWeb.MyComponents do
     ~H"""
     <div
       :for={{answer_changeset, index} <- Enum.with_index(@answers)}
-      class={["mt-4 bg-[var(--background-card)] px-4", (if index !== 0, do: "border-t border-[var(--border)]")]}
+      class={["bg-[var(--background-card)]", (if index !== 0, do: "border-t border-[var(--border)]")]}
     >
       <% changes = answer_changeset.changes %>
-      <div class="flex my-5">
+      <div class="flex my-3">
         <div class="flex flex-col items-center justify-center">
           <.right_or_wrong is_correct={(Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct)} class="w-6 h-6 min-h-6 min-w-6" />
           <%!-- <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
@@ -362,12 +375,24 @@ defmodule QuicWeb.MyComponents do
 
       <%!-- QUESTION DESCRIPTION --%>
       <%!-- <p class="mt-8 font-bold">Description</p> --%>
-      <div class="my-8 bg-[var(--background-card)] rounded-md">
+      <div class="mt-5 mb-8 bg-[var(--background-card)] rounded-md">
         <%= if Map.has_key?(@question_changeset.changes, :description) do %>
           <.markdown text={@question_changeset.changes.description} />
         <% else %>
           <%= if @question_changeset.data.description !== nil do %>
             <.markdown text={@question_changeset.data.description} />
+          <% end %>
+        <% end %>
+      </div>
+
+      <div :if={@type === :fill_the_code} class="-mt-3">
+        <% language = (if Map.has_key?(@question_changeset.changes, :language), do: Atom.to_string(@question_changeset.changes.language), else: (if @question_changeset.data.language !== nil, do: Atom.to_string(@question_changeset.data.language), else: "c")) %>
+
+        <%= if Map.has_key?(@question_changeset.changes, :code) do %>
+          <.language_previewer text={@question_changeset.changes.code} language={language} />
+        <% else %>
+          <%= if @question_changeset.data.code !== nil do %>
+            <.language_previewer text={@question_changeset.data.code} language={language} />
           <% end %>
         <% end %>
       </div>
@@ -382,7 +407,7 @@ defmodule QuicWeb.MyComponents do
       <% end %>
 
       <%= if @type !== :open_answer && @type !== :true_false do %>
-        <div class="mt-8">
+        <div class="mt-8 -mb-2">
           <p class="font-bold">Answers</p>
         </div>
 
@@ -441,7 +466,7 @@ defmodule QuicWeb.MyComponents do
         <div class="flex justify-between">
           <div class="flex items-center gap-2">
             <Heroicons.pencil_square class={["h-5 w-5", QuicWebAux.user_color(@index)]} />
-            <h6 class="font-bold"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></h6>
+            <h6 class="font-medium"><%= if String.length(@quiz.name) > 15, do: String.slice(@quiz.name, 0..15) <> "...", else: @quiz.name %></h6>
           </div>
 
           <.link :if={@isOwner} phx-click={JS.push("delete", value: %{id: @quiz.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">
@@ -511,7 +536,7 @@ defmodule QuicWeb.MyComponents do
         <div class="flex justify-between">
           <div class="flex items-center gap-2">
             <Heroicons.users class={["h-5 w-5", QuicWebAux.user_color(@index)]} />
-            <h6 class="font-bold"><%= if String.length(@team.name) > 15, do: String.slice(@team.name, 0..15) <> "...", else: @team.name %></h6>
+            <h6 class="font-medium"><%= if String.length(@team.name) > 15, do: String.slice(@team.name, 0..15) <> "...", else: @team.name %></h6>
           </div>
 
           <.link phx-click={JS.push("delete", value: %{id: @team.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">

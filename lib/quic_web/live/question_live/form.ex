@@ -1,4 +1,5 @@
 defmodule QuicWeb.QuestionLive.Form do
+  alias QuicWeb.QuicWebAux
   use QuicWeb, :author_live_view
 
   alias Quic.Quizzes
@@ -34,16 +35,19 @@ defmodule QuicWeb.QuestionLive.Form do
   @impl true
   def mount(%{"type" => type, "quiz_id" => quiz_id} = _params, _session, socket) do
     if Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
-      question_changeset = Questions.change_question(%Question{}, %{type: type, points: 0, code: "int sum ([[res1]], int b) {\n  return [[res2]];\n}"}) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
+      type = String.to_atom(type)
+      question_changeset = Map.put(%{}, :type, type) |> Map.put(:points, 0)
+      question_changeset = create_question_placeholders(type, question_changeset)
+      question_changeset = Questions.change_question(%Question{}, question_changeset) |> Ecto.Changeset.put_assoc(:quiz, Quizzes.get_quiz!(quiz_id))
 
       {:ok, socket
             |> assign(:cant_submit_question, true)
-            |> assign(:cant_submit_answers, (if type === "true_false" || type === "open_answer", do: false, else: true))
+            |> assign(:cant_submit_answers, (if type === :true_false || type === :open_answer, do: false, else: true))
             |> assign(:error_answers, nil)
-            |> assign(:type, String.to_atom(type))
+            |> assign(:type, type)
             |> assign(:quiz_id, quiz_id)
             |> assign(:quiz_num_questions, Quizzes.get_quiz_num_questions!(quiz_id))
-            |> assign(:answers, create_answers_changesets(String.to_atom(type), %{new_question: true}))
+            |> assign(:answers, create_answers_changesets(type, %{new_question: true}))
             |> assign(:question_changeset, question_changeset)
             |> assign(:view_selected, :editor)
             |> assign(:page_title, "Quiz - New Question")
@@ -66,28 +70,14 @@ defmodule QuicWeb.QuestionLive.Form do
   end
 
 
-
   @impl true
   def handle_event("validateQuestion", %{"question" => params}, socket) do
-    position = (if Map.has_key?(socket.assigns, :question), do: socket.assigns.question.position, else: socket.assigns.quiz_num_questions)
-    question_params = params
-      |> Map.put("type", socket.assigns.type)
-      |> Map.put("position", position)
+    changeset = socket.assigns.question_changeset
+    code = if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if Map.has_key?(changeset.data, :code), do: changeset.data.code, else: "")
+    question_params = params |> Map.put("code", code)
 
-    changeset =
-      %Question{}
-      |> Questions.change_question(question_params)
-      |> Map.put(:action, :validate)
-
-    socket = assign(socket, question_changeset: changeset) |> assign(:loading, false)
-
-    if Enum.count(changeset.errors) > 0 do
-      {:noreply, assign(socket, cant_submit_question: true)}
-    else
-      {:noreply, assign(socket, cant_submit_question: false)}
-    end
+    validateQuestion(question_params, socket)
   end
-
 
   @impl true
   def handle_event("ignore", _params, socket) do
@@ -105,6 +95,23 @@ defmodule QuicWeb.QuestionLive.Form do
       "previewer" -> {:noreply, assign(socket, :view_selected, :previewer)}
       "editor" -> {:noreply, assign(socket, :view_selected, :editor)}
     end
+  end
+
+
+  # Hook Events
+  @impl true
+  def handle_event("update_code_question", params, socket) do
+    changeset = socket.assigns.question_changeset
+    description = if Map.has_key?(changeset.changes, :description), do: changeset.changes.description, else: (if Map.has_key?(changeset.data, :description), do: changeset.data.description, else: "")
+    points = if Map.has_key?(changeset.changes, :points), do: changeset.changes.points, else: (if Map.has_key?(changeset.data, :points), do: changeset.data.points, else: 0)
+    language = if Map.has_key?(changeset.changes, :language), do: changeset.changes.language, else: (if Map.has_key?(changeset.data, :language), do: changeset.data.language, else: :c)
+
+    question_params = params
+      |> Map.put("description", description)
+      |> Map.put("points", points)
+      |> Map.put("language", language)
+
+    validateQuestion(question_params, socket)
   end
 
   @impl true
@@ -125,6 +132,25 @@ defmodule QuicWeb.QuestionLive.Form do
   end
 
 
+  def validateQuestion(question_params, socket) do
+    position = (if Map.has_key?(socket.assigns, :question), do: socket.assigns.question.position, else: socket.assigns.quiz_num_questions)
+    question_params = question_params
+      |> Map.put("type", socket.assigns.type)
+      |> Map.put("position", position)
+
+    changeset =
+      %Question{}
+      |> Questions.change_question(question_params)
+      |> Map.put(:action, :validate)
+
+    socket = assign(socket, question_changeset: changeset) |> assign(:loading, false)
+
+    if Enum.count(changeset.errors) > 0 do
+      {:noreply, assign(socket, cant_submit_question: true)}
+    else
+      {:noreply, assign(socket, cant_submit_question: false)}
+    end
+  end
 
   defp answer_valid?(changeset) do
     if Enum.count(changeset.errors) > 0, do: false, else: true
@@ -137,7 +163,9 @@ defmodule QuicWeb.QuestionLive.Form do
     question_params = %{
       "description" => (if Map.has_key?(changes_map, :description), do: changes_map.description, else: question.description),
       "points" => (if Map.has_key?(changes_map, :points), do: changes_map.points, else: question.points),
-      "type" => (if Map.has_key?(changes_map, :type), do: changes_map.type, else: question.type),
+      "type" => question.type,
+      "code" => (if Map.has_key?(changes_map, :code), do: changes_map.code, else: question.code),
+      "language" => (if Map.has_key?(changes_map, :language), do: changes_map.language, else: question.language)
     }
 
     case Questions.update_question(question, question_params, question.answers, answers_params) do
@@ -162,7 +190,9 @@ defmodule QuicWeb.QuestionLive.Form do
       "description" => changes_map.description,
       "points" => changes_map.points,
       "type" => changes_map.type,
-      "position" => socket.assigns.quiz_num_questions + 1
+      "position" => socket.assigns.quiz_num_questions + 1,
+      "code" => (if Map.has_key?(changes_map, :code), do: changes_map.description, else: ""),
+      "language" => (if Map.has_key?(changes_map, :language), do: changes_map.language)
     }
 
     case Questions.create_question(question_params, quiz_id, answers_params) do
@@ -178,6 +208,19 @@ defmodule QuicWeb.QuestionLive.Form do
     end
   end
 
+  defp create_question_placeholders(type, changeset) do
+    case type do
+      :fill_the_code ->
+        %{code: code, description: description} = QuicWebAux.question_fill_code_placeholder()
+        changeset |> Map.put(:language, :c) |> Map.put(:code, code) |> Map.put(:description, description)
+      :code ->
+        %{code: code, description: description} = QuicWebAux.question_code_placeholder()
+        changeset |> Map.put(:language, :c) |> Map.put(:code, code) |> Map.put(:description, description)
+      :fill_the_blanks ->
+        changeset |> Map.put(:description, "When you want to insert the piece of text for the Participants to complete, you can choose how to display it on the question. The system will evaluate only the answer, not the question's description.\nFor example:\n\n`We only consider the _____ answers!`")
+      _ -> changeset
+    end
+  end
 
   defp create_answers_changesets(type, %{new_question: new_question} = params) do
     if new_question do
@@ -191,9 +234,9 @@ defmodule QuicWeb.QuestionLive.Form do
           ]
         :true_false -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => false, "answer" => "."})]
         :open_answer -> []
-        :fill_the_blanks -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true})]
-        :fill_the_code -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => "[[res1]]:int a\n[[res2]]:a+b"})]
-        :code -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => "int sum (int a, int b) {\n  return a+b;\n}"})]
+        :fill_the_blanks -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => "correct"})]
+        :fill_the_code -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => QuicWebAux.answer_fill_code_placeholder()})]
+        :code -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => QuicWebAux.question_code_placeholder().code})]
       end
 
     else

@@ -12,15 +12,15 @@
 }
 
 .sidebar-icon {
-  @apply w-5 h-5 md:w-6 md:h-6 font-extralight
+  @apply w-5 h-5 md:w-6 md:h-6 stroke-1
 }
 
 .main-page {
-  @apply p-4 overflow-y-auto h-[calc(100vh-5.3rem)]
+  @apply px-4 overflow-y-auto h-[calc(100vh-5.3rem)]
 }
 
 .question-box-icon {
-  @apply w-5 h-5 hover:text-[var(--primary-color)]
+  @apply w-5 h-5 hover:text-[var(--primary-color)] stroke-1
 }
 
 .transition_custom {

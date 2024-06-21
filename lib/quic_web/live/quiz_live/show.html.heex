@@ -111,6 +111,10 @@
           <%!-- QUESTION DESCRIPTION --%>
           <.markdown class="mt-2" text={question.description} />
 
+          <div :if={question.type === :fill_the_code} class="mt-2">
+            <.language_previewer text={question.code} language={question.language} />
+          </div>
+
           <hr :if={question.type !== :open_answer} class="w-full my-4" />
 
           <%!-- QUESTION ANSWERS --%>

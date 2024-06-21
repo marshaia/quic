@@ -6,14 +6,14 @@ defmodule QuicWeb.AuthorSettingsLive do
   def render(assigns) do
     ~H"""
     <.header class="text-center">
-      <h4>Account Settings</h4>
+      <h5>Account Settings</h5>
       <:subtitle>
         <p>Manage your account email address and password settings</p>
       </:subtitle>
     </.header>
 
-    <div class="space-y-12 divide-y">
-      <div>
+    <div class="flex flex-col w-full gap-8 mt-5 lg:flex-row">
+      <div class="lg:-mt-8 lg:w-1/2">
         <.simple_form
           for={@email_form}
           id="email_form"
@@ -35,7 +35,10 @@ defmodule QuicWeb.AuthorSettingsLive do
           </:actions>
         </.simple_form>
       </div>
-      <div>
+
+      <div class="border-b md:border-l border-[var(--border)] lg:mt-0 lg:mb-0 mt-3 -mb-7"></div>
+
+      <div class="lg:-mt-8 lg:w-1/2">
         <.simple_form
           for={@password_form}
           id="password_form"
@@ -78,11 +81,8 @@ defmodule QuicWeb.AuthorSettingsLive do
   def mount(%{"token" => token}, _session, socket) do
     socket =
       case Accounts.update_author_email(socket.assigns.current_author, token) do
-        :ok ->
-          put_flash(socket, :info, "Email changed successfully.")
-
-        :error ->
-          put_flash(socket, :error, "Email change link is invalid or it has expired.")
+        :ok -> put_flash(socket, :info, "Email changed successfully.")
+        :error -> put_flash(socket, :error, "Email change link is invalid or it has expired.")
       end
 
     {:ok, push_navigate(socket, to: ~p"/authors/settings")}
@@ -93,8 +93,7 @@ defmodule QuicWeb.AuthorSettingsLive do
     email_changeset = Accounts.change_author_email(author)
     password_changeset = Accounts.change_author_password(author)
 
-    socket =
-      socket
+    socket =socket
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
       |> assign(:current_email, author.email)
