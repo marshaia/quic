@@ -24,7 +24,6 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
-
   def question_num_of_answers(type) do
     case type do
       :single_choice -> 4
@@ -37,7 +36,6 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
-
   def session_type_translate(type) do
     case type do
       :monitor_paced -> "Monitor Paced"
@@ -45,7 +43,6 @@ defmodule QuicWeb.QuicWebAux do
       _ -> ""
     end
   end
-
 
   def user_color(number) do
     case rem(number, 5) do
@@ -57,7 +54,6 @@ defmodule QuicWeb.QuicWebAux do
       # _ -> "text-[var(--fifth-color)]"
     end
   end
-
 
   def session_status_color(status) do
     case status do
@@ -75,36 +71,14 @@ defmodule QuicWeb.QuicWebAux do
     end
   end
 
-
   def progress_percentage(participant_question, quiz_total_questions) when quiz_total_questions > 0 do
     Float.round((participant_question / quiz_total_questions) * 100, 0)
   end
 
-  def question_code_placeholder() do
-    %{
-      code: "int sum (int a, int b) {\n  return a+b;\n}",
-      description: "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on Answer editor."
-    }
-  end
-
-  def question_fill_code_placeholder() do
-    %{
-      code: "int sum ({{res1}}, int b) {\n  return {{res2}};\n}",
-      description: "Choose the programming language you want to evaluate, then, when you want to insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can be anything you want). Then, on the answer, use the syntax like it's exemplified: __`{{<id>}}:<correct_answer>`__"
-    }
-
-  end
-
-  def answer_fill_code_placeholder() do
-    "{{res1}}:int a\n{{res2}}:a+b"
-  end
-
-
   # Earmark AST Parser
   @doc"""
-    Transforms every {{id}} found in the AST (in every `code` node) into *id.
+    Transforms every {{id}} found in the AST (in every `code` node) into __id__.
   """
-  require Logger
   def parse_text(text) do
     case Earmark.Parser.as_ast(text, code_class_prefix: "lang- language-") do
       {:error, _, _} -> text

@@ -5,6 +5,7 @@ defmodule Quic.Questions do
 
   import Ecto.Query, warn: false
 
+  alias Quic.Parameters
   alias Quic.Quizzes
   alias Quic.Repo
 
@@ -38,7 +39,7 @@ defmodule Quic.Questions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_question!(id), do: Repo.get!(Question, id) |> Repo.preload(:quiz) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: a.inserted_at)])
+  def get_question!(id), do: Repo.get!(Question, id) |> Repo.preload(:quiz) |> Repo.preload(:parameters) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: a.inserted_at)])
 
   def get_question_answers!(id) do
     question = Repo.get!(Question, id) |> Repo.preload([answers: from(a in QuestionAnswer, order_by: a.inserted_at)])
@@ -68,7 +69,7 @@ defmodule Quic.Questions do
     |> Repo.insert()
   end
 
-  def create_question(attrs \\ %{}, quiz_id, answers_changesets) do
+  def create_question(attrs \\ %{}, quiz_id, answers_changesets, parameters) do
     quiz = Quizzes.get_quiz!(quiz_id)
 
     result = %Question{}
@@ -77,18 +78,27 @@ defmodule Quic.Questions do
 
     case result do
       {:ok, question} ->
-        Enum.each(answers_changesets, fn answer_changeset ->
-                            changes = answer_changeset.changes
-                            params = %{"answer" => changes.answer, "is_correct" => (if Map.has_key?(changes, :is_correct), do: changes.is_correct, else: false)}
-                            {:ok, _} = create_answer_with_question(params, question.id)
-                          end)
+        Enum.each(answers_changesets,
+          fn answer_changeset ->
+            changes = answer_changeset.changes
+            params = %{"answer" => changes.answer, "is_correct" => (if Map.has_key?(changes, :is_correct), do: changes.is_correct, else: false)}
+            {:ok, _} = create_answer_with_question(params, question.id)
+          end)
+
+        if question.type === :fill_the_code || question.type === :code do
+          param_map = %{"code" => parameters.changes.code, "language" => parameters.changes.language, "tests" => parameters.changes.tests}
+          param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", parameters.changes.correct_answers), else: Map.put(param_map, "correct_answers", %{}))
+          {:ok, _} = Parameters.create_parameter_with_question(param_map, question)
+        end
+
+
         {:ok, question}
 
       {:error, _} -> result
     end
   end
 
-  def duplicate_question(attrs \\ %{}, quiz_id, answers) do
+  def duplicate_question(attrs \\ %{}, quiz_id, question) do
     quiz = Quizzes.get_quiz!(quiz_id)
 
     result = %Question{}
@@ -96,11 +106,20 @@ defmodule Quic.Questions do
       |> Repo.insert()
 
     case result do
-      {:ok, question} ->
-        Enum.each(answers, fn answer ->
-                            params = %{"answer" => answer.answer, "is_correct" => answer.is_correct}
-                            {:ok, _} = create_answer_with_question(params, question.id)
-                          end)
+      {:ok, new_question} ->
+        Enum.each(question.answers,
+          fn answer ->
+            params = %{"answer" => answer.answer, "is_correct" => answer.is_correct}
+            {:ok, _} = create_answer_with_question(params, new_question.id)
+          end)
+
+        if question.type === :fill_the_code || question.type === :code do
+          parameters = question.parameters
+          param_map = %{"code" => parameters.code, "language" => parameters.language, "tests" => parameters.tests}
+          param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", parameters.correct_answers), else: Map.put(param_map, "correct_answers", %{}))
+          {:ok, _} = Parameters.create_parameter_with_question(param_map, new_question)
+        end
+
         {:ok, question}
 
       {:error, _} -> result
@@ -125,7 +144,7 @@ defmodule Quic.Questions do
     |> Repo.update()
   end
 
-  def update_question(question, attrs \\ %{}, answers, answers_attrs \\ []) do
+  def update_question(question, attrs \\ %{}, answers_attrs \\ [], parameters_changeset) do
     result = question
       |> Question.changeset(attrs)
       |> Repo.update()
@@ -134,7 +153,7 @@ defmodule Quic.Questions do
       {:ok, question} ->
         Enum.reduce(answers_attrs, 0,
           fn answer_changeset, acc ->
-            answer_bd = Enum.at(answers, acc, %QuestionAnswer{})
+            answer_bd = Enum.at(question.answers, acc, %QuestionAnswer{})
             params = %{
               "answer" => (if Map.has_key?(answer_changeset.changes, :answer), do: answer_changeset.changes.answer, else: answer_bd.answer),
               "is_correct" => (if Map.has_key?(answer_changeset.changes, :is_correct), do: answer_changeset.changes.is_correct, else: answer_bd.is_correct)
@@ -143,6 +162,19 @@ defmodule Quic.Questions do
             acc + 1
           end
         )
+
+        if question.type === :fill_the_code || question.type === :code do
+          parameters = question.parameters
+          param_map = %{
+            "code" =>  (if Map.has_key?(parameters_changeset.changes, :code), do: parameters_changeset.changes.code, else: parameters.code),
+            "language" => (if Map.has_key?(parameters_changeset.changes, :language), do: parameters_changeset.changes.language, else: parameters.language),
+            "tests" => (if Map.has_key?(parameters_changeset.changes, :tests), do: parameters_changeset.changes.tests, else: parameters.tests),
+            "correct_answers" => (if Map.has_key?(parameters_changeset.changes, :correct_answers), do: parameters_changeset.changes.correct_answers, else: parameters.correct_answers)
+          }
+          #param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", (if Map.has_key?(parameters_changeset.changes, :correct_answers), do: parameters_changeset.changes.correct_answers, else: parameters.correct_answers)))
+          {:ok, _} = Parameters.update_parameter(parameters, param_map)
+        end
+
         {:ok, question}
 
       {:error, _} -> result
@@ -282,5 +314,17 @@ defmodule Quic.Questions do
   """
   def change_question_answer(%QuestionAnswer{} = question_answer, attrs \\ %{}) do
     QuestionAnswer.changeset(question_answer, attrs)
+  end
+
+  def create_question_placeholders(type, changeset) do
+    case type do
+      :fill_the_code ->
+        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, when you want to insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can only have 'word' characters).\n\n Then, to insert the correct answers, use the syntax like it's exemplified: __`<id>:<correct_answer>`__.\n\nFinally, in order to test the submitted code, please insert tests with the syntax __`<input>:<output>`__ like exemplified.")
+      :code ->
+        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on Answer editor.\n\nIn order to test the submitted code, please insert tests with the syntax __`<input>:<output>`__ like exemplified.")
+      :fill_the_blanks ->
+        changeset |> Map.put(:description, "When you want to insert the piece of text for the Participants to complete, you can choose how to display it on the question. The system will evaluate only the answer, not the question's description.\nFor example:\n\n`We only consider the _____ answers!`")
+      _ -> changeset
+    end
   end
 end

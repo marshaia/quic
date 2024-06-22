@@ -1,6 +1,7 @@
 defmodule QuicWeb.MyComponents do
   use Phoenix.Component
 
+  alias Quic.Parameters
   alias Phoenix.LiveView.JS
   alias QuicWeb.QuicWebAux
   alias Quic.Sessions
@@ -205,12 +206,11 @@ defmodule QuicWeb.MyComponents do
   def language_previewer(assigns) do
     text = assigns.text |> String.replace(~r/{{(\w+)}}/, "__\\1__")
     assigns = Map.put(assigns, :text, text)
-    # text = "```#{assigns.language}\n" <> text <> "\n```"
-    #html = QuicWebAux.parse_text(text) |> Earmark.Transform.transform()
-    # assigns = Map.put(assigns, :html, html)
-    # <%= @html |> raw %>
+
     ~H"""
-    <pre><code class={"lang-#{@language} language-#{@language}"}><%= @text %></code></pre>
+    <div class="w-full">
+      <pre><code class={"lang-#{@language} language-#{@language}"}><%= @text %></code></pre>
+    </div>
     """
   end
 
@@ -348,6 +348,7 @@ defmodule QuicWeb.MyComponents do
   attr :type, :atom, required: true
   attr :question_changeset, :any, default: %{}
   attr :class, :string, default: ""
+  attr :parameters_changeset, :any, default: %{}
 
   def markdown_previewer_question(assigns) do
     ~H"""
@@ -385,16 +386,8 @@ defmodule QuicWeb.MyComponents do
         <% end %>
       </div>
 
-      <div :if={@type === :fill_the_code} class="-mt-3">
-        <% language = (if Map.has_key?(@question_changeset.changes, :language), do: Atom.to_string(@question_changeset.changes.language), else: (if @question_changeset.data.language !== nil, do: Atom.to_string(@question_changeset.data.language), else: "c")) %>
-
-        <%= if Map.has_key?(@question_changeset.changes, :code) do %>
-          <.language_previewer text={@question_changeset.changes.code} language={language} />
-        <% else %>
-          <%= if @question_changeset.data.code !== nil do %>
-            <.language_previewer text={@question_changeset.data.code} language={language} />
-          <% end %>
-        <% end %>
+      <div :if={@type === :fill_the_code || @type === :code} class="-mt-3">
+        <.fill_code_previewer parameters_changeset={@parameters_changeset} type={@type}/>
       </div>
 
       <%= if @type === :true_false do %>
@@ -406,7 +399,7 @@ defmodule QuicWeb.MyComponents do
         />
       <% end %>
 
-      <%= if @type !== :open_answer && @type !== :true_false do %>
+      <%= if @type === :fill_the_blanks || @type === :single_choice || @type === :multiple_choice do %>
         <div class="mt-8 -mb-2">
           <p class="font-bold">Answers</p>
         </div>
@@ -414,6 +407,51 @@ defmodule QuicWeb.MyComponents do
         <.markdown_previewer_answers answers={@answers} type={@type}/>
       <% end %>
     </div>
+    """
+  end
+
+
+  @doc"""
+  Renders a Fill the Code and Code question types Parameters.
+
+  ## Examples:
+
+    <.fill_code_previewer />
+  """
+  attr :parameters_changeset, :any, default: %{}
+  attr :type, :atom, default: :code
+
+  def fill_code_previewer(assigns) do
+    ~H"""
+    <div class="w-full">
+      <% language = (if Map.has_key?(@parameters_changeset.changes, :language), do: Atom.to_string(@parameters_changeset.changes.language), else: (if @parameters_changeset.data.language !== nil, do: Atom.to_string(@parameters_changeset.data.language), else: "c")) %>
+      <% code = (if Map.has_key?(@parameters_changeset.changes, :code), do: @parameters_changeset.changes.code, else: (if @parameters_changeset.data.code !== nil, do: @parameters_changeset.data.code, else: "")) %>
+
+      <%= if @type === :code do %>
+        <%!-- DIVIDER --%>
+        <hr class="w-full mt-6 mb-4" />
+
+        <%!-- CORECT ANSWER --%>
+        <div class="flex items-center w-full gap-3">
+          <.right_or_wrong is_correct={true} />
+          <.language_previewer text={code} language={language} />
+        </div>
+
+      <% else %>
+        <%!-- CODE --%>
+        <.language_previewer text={code} language={language} />
+
+        <%!-- DIVIDER --%>
+        <hr class="w-full mt-6 mb-4" />
+
+        <%!-- CORECT ANSWER --%>
+        <div class="flex items-center w-full gap-3">
+          <.right_or_wrong is_correct={true} />
+          <.language_previewer text={Parameters.put_correct_answers_in_code_changeset(@parameters_changeset)} language={language} />
+        </div>
+      <% end %>
+    </div>
+
     """
   end
 

@@ -25,10 +25,21 @@ export const AceEditorHook = {
 
     editor.session.on('change', () => {
       // document.getElementById(`${id}-code`).value = editor.getValue();
-      if (id.includes("question")) {
-        this.pushEvent("update_code_question", {code: editor.getValue()})
+      // if (id.includes("question")) {
+      //   this.pushEvent("update_code_question", {code: editor.getValue()})
+      // } else {
+      //   this.pushEvent("update_code_answer", {answer: editor.getValue()})
+      // }
+      if (id.includes("tests")) {
+        this.pushEvent("update_parameter", {tests: editor.getValue()})
       } else {
-        this.pushEvent("update_code_answer", {answer: editor.getValue()})
+        if (id.includes("answers")) {
+          this.pushEvent("update_parameter", {correct_answers: editor.getValue()})
+        } else {
+          if (id.includes("code")) {
+            this.pushEvent("update_parameter", {code: editor.getValue()})
+          }
+        }
       }
     });
   },

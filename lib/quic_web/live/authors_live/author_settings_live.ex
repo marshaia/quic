@@ -6,7 +6,7 @@ defmodule QuicWeb.AuthorSettingsLive do
   def render(assigns) do
     ~H"""
     <.header class="text-center">
-      <h5>Account Settings</h5>
+      <h4>Account Settings</h4>
       <:subtitle>
         <p>Manage your account email address and password settings</p>
       </:subtitle>

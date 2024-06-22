@@ -15,11 +15,11 @@ defmodule QuicWeb.AuthorProfile do
       <div class="flex justify-between w-[85%] md:w-[50%] mt-5">
         <div class="flex items-center gap-2">
           <Heroicons.pencil_square class="w-5 h-5 stroke-1"/>
-          <p class="text-gray-500 dark:text-gray-400"><%= Enum.count([])%> Quizzes</p>
+          <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@quizzes)%> Quizzes</p>
         </div>
         <div class="flex items-center gap-2">
           <Heroicons.user_group class="w-5 h-5 stroke-1"/>
-          <p class="text-gray-500 dark:text-gray-400"><%= Enum.count([])%> Teams</p>
+          <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@teams)%> Teams</p>
         </div>
       </div>
     </div>

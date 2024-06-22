@@ -3,6 +3,7 @@ defmodule QuicWeb.QuizLive.Show do
 
   alias Quic.Quizzes
   alias Quic.Questions
+  alias Quic.Parameters
   alias QuicWeb.QuicWebAux
 
   @impl true
@@ -57,7 +58,7 @@ defmodule QuicWeb.QuizLive.Show do
 
     quiz_id = socket.assigns.quiz.id
 
-    case Questions.duplicate_question(question_params, quiz_id, question.answers) do
+    case Questions.duplicate_question(question_params, quiz_id, question) do
       {:ok, _question} ->
         Quizzes.update_quiz_points(quiz_id)
 

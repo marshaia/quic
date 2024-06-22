@@ -51,7 +51,7 @@
 
       <div class="flex items-center gap-2">
         <Heroicons.pencil_square class="min-h-5 min-w-5 w-5 h-5 text-[var(--primary-color)]" />
-        <h6 class="font-bold"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></h6>
+        <h6 class="font-medium"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></h6>
       </div>
 
       <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>

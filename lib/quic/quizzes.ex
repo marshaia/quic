@@ -84,7 +84,7 @@ defmodule Quic.Quizzes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_quiz!(id), do: Repo.get!(Quiz, id) |> Repo.preload(:author) |> Repo.preload([questions: from(q in Question, order_by: q.position)]) |> Repo.preload(questions: [answers: from(a in QuestionAnswer, order_by: a.inserted_at)])
+  def get_quiz!(id), do: Repo.get!(Quiz, id) |> Repo.preload(:author) |> Repo.preload([questions: from(q in Question, order_by: q.position)]) |> Repo.preload(questions: [answers: from(a in QuestionAnswer, order_by: a.inserted_at)]) |> Repo.preload(questions: :parameters)
 
   def get_quiz_num_questions!(id) do
     quiz = Repo.get!(Quiz, id) |> Repo.preload(:questions)

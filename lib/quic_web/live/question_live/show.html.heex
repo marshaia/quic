@@ -36,7 +36,7 @@
     <p id="question-page-prism-hook" phx-hook="PrismInitializer" class="mt-4 overflow-auto text-justify"><.markdown text={@question.description} /></p>
 
     <div :if={@question.type === :fill_the_code} class="mt-2">
-      <.language_previewer text={@question.code} language={@question.language} />
+      <.language_previewer text={@question.parameters.code} language={@question.parameters.language} />
     </div>
 
     <%= if @question.type === :true_false do %>
@@ -52,35 +52,61 @@
     <%!-- QUIZ ANSWERS --%>
     <%= if @question.type !== :open_answer && @question.type !== :true_false do %>
       <section 
-        :if={@question.type !== :open_answer} 
         id={"question-page-answer-hook"} phx-hook="PrismInitializer"
         class="w-full mt-8"
       >
-        <h6 class="mb-2 font-bold">Answers</h6>
-        <div 
-          :for={answer <- @question.answers}
-          id={"question-page-answer-#{answer.id}-hook"}
-          phx-hook="PrismInitializer"
-          class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]"
-        >
+        
+        <%= if @question.type === :fill_the_code || @question.type === :code do %>
+          <%!-- <%= if @question.type === :fill_the_code do %> --%>
+            <h6 class="mb-2 font-medium">Correct Answer</h6>
+            <div id={"question-page-answer-#{@question.id}-hook"} phx-hook="PrismInitializer" class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]">
+              <div class="flex flex-col items-center justify-start">
+                <.right_or_wrong is_correct={true} class="w-6 h-6 mt-1 min-h-6 min-w-6" />
+              </div> 
 
-          <%!-- ANSWER VALIDITY --%>
-          <div class="flex flex-col items-center justify-start">
-            <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 mt-1 min-h-6 min-w-6" />
-            <%!-- <div class={["min-w-4 w-4 h-4 min-h-4 rounded-full mt-2", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
-          </div> 
+              <%!-- ANSWER INFO --%>
+              <div class="flex-1 ml-3 border-l border-[var(--border)] overflow-auto">
+                <div class="flex-1 px-2 mx-3">
+                  <% code = (if @question.type === :fill_the_code, do: Parameters.put_correct_answers_in_code(@question.parameters), else: @question.parameters.code) %>
+                  <.language_previewer text={code} language={@question.parameters.language} />
+                </div>
+              </div>
+            </div>
+          <%!-- <% end %> --%>
 
-          <%!-- ANSWER INFO --%>
-          <div class="flex-1 ml-3 border-l border-[var(--border)] overflow-auto">
-            <div class="flex-1 px-2 mx-3">
-              <%= if @question.type === :code || @question.type === :fill_the_code do %>
-                <.language_previewer text={answer.answer} language="c" />
-              <% else %>
-                <.markdown text={answer.answer} />
-              <% end %>
+          <h6 class="mb-2 font-medium">Tests</h6>
+          <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]">
+            <div :for={test <- @question.parameters.tests} class="flex items-center gap-5">
+              <p><span class="font-medium">Input:</span> <%= test["input"] %></p>
+              <Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" />
+              <p><span class="font-medium">Output:</span> <%= test["output"] %></p>
             </div>
           </div>
-        </div>
+
+
+        <% else %>
+          <h6 class="mb-2 font-bold">Answers</h6>
+          <div 
+            :for={answer <- @question.answers}
+            id={"question-page-answer-#{answer.id}-hook"}
+            phx-hook="PrismInitializer"
+            class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]"
+          >
+
+            <%!-- ANSWER VALIDITY --%>
+            <div class="flex flex-col items-center justify-start">
+              <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 mt-1 min-h-6 min-w-6" />
+              <%!-- <div class={["min-w-4 w-4 h-4 min-h-4 rounded-full mt-2", (if answer.is_correct, do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
+            </div> 
+
+            <%!-- ANSWER INFO --%>
+            <div class="flex-1 ml-3 border-l border-[var(--border)] overflow-auto">
+              <div class="flex-1 px-2 mx-3">
+                <.markdown text={answer.answer} />
+              </div>
+            </div>
+          </div>
+        <% end %>
       </section>
     <% end %>
   </main>

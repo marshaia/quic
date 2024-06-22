@@ -61,7 +61,8 @@ defmodule Quic.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:earmark, "~> 1.3"},
-      {:calendar, "~> 1.0"}
+      {:calendar, "~> 1.0"},
+      {:httpoison, "~> 2.0"}
     ]
   end
 
@@ -79,11 +80,7 @@ defmodule Quic.MixProject do
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind quic", "esbuild quic"],
-      "assets.deploy": [
-        "tailwind quic --minify",
-        "esbuild quic --minify",
-        "phx.digest"
-      ]
+      "assets.deploy": ["tailwind quic --minify", "esbuild quic --minify", "phx.digest"]
     ]
   end
 end
