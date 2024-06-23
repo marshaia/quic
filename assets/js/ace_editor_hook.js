@@ -4,7 +4,7 @@ import "../vendor/ace_editor/theme-xcode"
 import "../vendor/ace_editor/mode-c_cpp"
 
 function mount_editor(id) {
-  var editor = aceEditor.edit(id, {minLines: 5, maxLines: 20, fontSize: 15});
+  var editor = aceEditor.edit(id, {minLines: 3, maxLines: 20, fontSize: 15});
   if (document.documentElement.classList.contains('dark')) {
     editor.setTheme("ace/theme/one_dark");
   } else {
@@ -36,8 +36,12 @@ export const AceEditorHook = {
         if (id.includes("answers")) {
           this.pushEvent("update_parameter", {correct_answers: editor.getValue()})
         } else {
-          if (id.includes("code")) {
-            this.pushEvent("update_parameter", {code: editor.getValue()})
+          if (id.includes("file")) {
+            this.pushEvent("update_parameter", {test_file: editor.getValue()})
+          } else {
+            if (id.includes("code")) {
+              this.pushEvent("update_parameter", {code: editor.getValue()})
+            } 
           }
         }
       }

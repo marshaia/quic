@@ -27,8 +27,10 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
         />
       </.simple_form>
 
-      <%!-- code --%>
-      <p class="text-left font-bold text-[var(--primary-color-text)] mt-8 mb-2">Question Code</p>
+      <hr class="w-full mt-10 mb-5"/>
+
+      <%!-- CODE/TEMPLATE --%>
+      <p class="text-left font-bold text-[var(--primary-color-text)] mt-8 mb-2"><%= if @type === :code, do: "Participant Template", else: "Question Code" %></p>
       <div :if={@loading} id={"#{@id}-code-loading"}>
         <div class="flex items-center justify-center gap-3">
           <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
@@ -42,7 +44,7 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
         phx-update="ignore"
       ><%= if Map.has_key?(@changeset.changes, :code), do: @changeset.changes.code, else: (if Map.has_key?(@changeset.data, :code), do: @changeset.data.code, else: "") %></div>
 
-      <%!-- answer --%>
+      <%!-- CORRECT ANSWERS --%>
       <%= if @type === :fill_the_code do %>
         <% answer = (if Map.has_key?(@changeset.changes, :correct_answers), do: @changeset.changes.correct_answers, else: (if Map.has_key?(@changeset.data, :correct_answers), do: @changeset.data.correct_answers, else: %{})) %>
         <p class="text-left font-bold text-[var(--primary-color-text)] mt-8 mb-2">Answers Code</p>
@@ -60,7 +62,24 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
         ><%= Parameters.parse_correct_answers_to_string(answer) %></div>
       <% end %>
 
-      <%!-- tests --%>
+      <hr class="w-full mt-10 mb-5"/>
+
+      <%!-- TEST FILE --%>
+      <p class="text-left font-bold text-[var(--primary-color-text)] mt-8 mb-2">Test File</p>
+      <div :if={@loading} id={"#{@id}-test-file-loading"}>
+        <div class="flex items-center justify-center gap-3">
+          <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
+          <p>Loading editor</p>
+        </div>
+      </div>
+      <div
+        class="hidden"
+        id={"#{@id}-test-file"}
+        phx-hook="AceEditor"
+        phx-update="ignore"
+      ><%= if Map.has_key?(@changeset.changes, :test_file), do: @changeset.changes.test_file, else: (if Map.has_key?(@changeset.data, :test_file), do: @changeset.data.test_file, else: "") %></div>
+
+      <%!-- TESTS --%>
       <% tests = (if Map.has_key?(@changeset.changes, :tests), do: @changeset.changes.tests, else: (if Map.has_key?(@changeset.data, :tests), do: @changeset.data.tests, else: [])) %>
       <p class="mt-8 mb-1 font-bold text-left">Tests</p>
       <div :if={@loading} id={"#{@id}-tests-loading"}>

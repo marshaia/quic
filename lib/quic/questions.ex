@@ -86,7 +86,7 @@ defmodule Quic.Questions do
           end)
 
         if question.type === :fill_the_code || question.type === :code do
-          param_map = %{"code" => parameters.changes.code, "language" => parameters.changes.language, "tests" => parameters.changes.tests}
+          param_map = %{"code" => parameters.changes.code, "language" => parameters.changes.language, "tests" => parameters.changes.tests, "test_file" => parameters.changes.test_file}
           param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", parameters.changes.correct_answers), else: Map.put(param_map, "correct_answers", %{}))
           {:ok, _} = Parameters.create_parameter_with_question(param_map, question)
         end
@@ -115,7 +115,7 @@ defmodule Quic.Questions do
 
         if question.type === :fill_the_code || question.type === :code do
           parameters = question.parameters
-          param_map = %{"code" => parameters.code, "language" => parameters.language, "tests" => parameters.tests}
+          param_map = %{"code" => parameters.code, "language" => parameters.language, "tests" => parameters.tests, "test_file" => parameters.test_file}
           param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", parameters.correct_answers), else: Map.put(param_map, "correct_answers", %{}))
           {:ok, _} = Parameters.create_parameter_with_question(param_map, new_question)
         end
@@ -168,6 +168,7 @@ defmodule Quic.Questions do
           param_map = %{
             "code" =>  (if Map.has_key?(parameters_changeset.changes, :code), do: parameters_changeset.changes.code, else: parameters.code),
             "language" => (if Map.has_key?(parameters_changeset.changes, :language), do: parameters_changeset.changes.language, else: parameters.language),
+            "test_file" => (if Map.has_key?(parameters_changeset.changes, :test_file), do: parameters_changeset.changes.test_file, else: parameters.test_file),
             "tests" => (if Map.has_key?(parameters_changeset.changes, :tests), do: parameters_changeset.changes.tests, else: parameters.tests),
             "correct_answers" => (if Map.has_key?(parameters_changeset.changes, :correct_answers), do: parameters_changeset.changes.correct_answers, else: parameters.correct_answers)
           }
@@ -319,11 +320,11 @@ defmodule Quic.Questions do
   def create_question_placeholders(type, changeset) do
     case type do
       :fill_the_code ->
-        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, when you want to insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can only have 'word' characters).\n\n Then, to insert the correct answers, use the syntax like it's exemplified: __`<id>:<correct_answer>`__.\n\nFinally, in order to test the submitted code, please insert tests with the syntax __`<input>:<output>`__ like exemplified.")
+        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, when you want to insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can only have 'word' characters).\n\n Then, to insert the correct answers, use the syntax like it's exemplified: __`<id>:<correct_answer>`__.\n\nFinally, in order to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__ (like exemplified in the Tests box).")
       :code ->
-        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on Answer editor.\n\nIn order to test the submitted code, please insert tests with the syntax __`<input>:<output>`__ like exemplified.")
+        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on the code editor.\n\nIn order to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__ (like exemplified in the Tests box).")
       :fill_the_blanks ->
-        changeset |> Map.put(:description, "When you want to insert the piece of text for the Participants to complete, you can choose how to display it on the question. The system will evaluate only the answer, not the question's description.\nFor example:\n\n`We only consider the _____ answers!`")
+        changeset |> Map.put(:description, "When you want to insert the piece of text for the Participants to complete, you can choose how to display it on the question. The system will evaluate only the answer you insert, not the question's description.\nFor example:\n\n`We only consider the _____ answers!`")
       _ -> changeset
     end
   end

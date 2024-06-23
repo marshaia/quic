@@ -427,20 +427,10 @@ defmodule QuicWeb.MyComponents do
       <% language = (if Map.has_key?(@parameters_changeset.changes, :language), do: Atom.to_string(@parameters_changeset.changes.language), else: (if @parameters_changeset.data.language !== nil, do: Atom.to_string(@parameters_changeset.data.language), else: "c")) %>
       <% code = (if Map.has_key?(@parameters_changeset.changes, :code), do: @parameters_changeset.changes.code, else: (if @parameters_changeset.data.code !== nil, do: @parameters_changeset.data.code, else: "")) %>
 
-      <%= if @type === :code do %>
-        <%!-- DIVIDER --%>
-        <hr class="w-full mt-6 mb-4" />
-
-        <%!-- CORECT ANSWER --%>
-        <div class="flex items-center w-full gap-3">
-          <.right_or_wrong is_correct={true} />
-          <.language_previewer text={code} language={language} />
-        </div>
-
-      <% else %>
         <%!-- CODE --%>
         <.language_previewer text={code} language={language} />
 
+      <%= if @type === :fill_the_code do %>
         <%!-- DIVIDER --%>
         <hr class="w-full mt-6 mb-4" />
 

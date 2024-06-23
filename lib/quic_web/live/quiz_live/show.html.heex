@@ -13,7 +13,7 @@
           :if={isOwner} 
           patch={~p"/quizzes/#{@quiz}/show/edit"} 
           phx-click={JS.push_focus()}
-          class="border-[var(--primary-color-text)] text--[var(--primary-color-text)] hover:text--[var(--primary-color)] hover:border-[var(--primary-color)] border rounded-full p-1.5"
+          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)] p-1.5"
         >
           <Heroicons.pencil class="question-box-icon" />
         </.link>
@@ -111,7 +111,6 @@
           <.markdown class="mt-2" text={question.description} />
 
           <div :if={question.type === :fill_the_code || question.type === :code} class="mt-2">
-            <hr :if={question.type === :code} class="w-full my-4" />
             <.language_previewer text={question.parameters.code} language={question.parameters.language} />
           </div>
 

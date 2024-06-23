@@ -114,47 +114,63 @@ defmodule Quic.Parameters do
       %{
         "language" => (if Map.has_key?(changeset.changes, :language), do: changeset.changes.language, else: (if Map.has_key?(changeset.data, :language), do: changeset.data.language, else: :c)),
         "correct_answers" => (if Map.has_key?(changeset.changes, :correct_answers), do: changeset.changes.correct_answers, else: (if Map.has_key?(changeset.data, :correct_answers), do: changeset.data.correct_answers, else: %{})),
-        "tests" => (if Map.has_key?(changeset.changes, :tests), do: changeset.changes.tests, else: (if Map.has_key?(changeset.data, :tests), do: changeset.data.tests, else: []))
+        "tests" => (if Map.has_key?(changeset.changes, :tests), do: changeset.changes.tests, else: (if Map.has_key?(changeset.data, :tests), do: changeset.data.tests, else: [])),
+        "test_file" => (if Map.has_key?(changeset.changes, :test_file), do: changeset.changes.test_file, else: (if Map.has_key?(changeset.data, :test_file), do: changeset.data.test_file, else: ""))
       }
-    else
-      if Map.has_key?(new_param, "correct_answers") do
+    else if Map.has_key?(new_param, "correct_answers") do
+      %{
+        "language" => (if Map.has_key?(changeset.changes, :language), do: changeset.changes.language, else: (if Map.has_key?(changeset.data, :language), do: changeset.data.language, else: :c)),
+        "code" => (if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if Map.has_key?(changeset.data, :code), do: changeset.data.code, else: "")),
+        "tests" => (if Map.has_key?(changeset.changes, :tests), do: changeset.changes.tests, else: (if Map.has_key?(changeset.data, :tests), do: changeset.data.tests, else: [])),
+        "test_file" => (if Map.has_key?(changeset.changes, :test_file), do: changeset.changes.test_file, else: (if Map.has_key?(changeset.data, :test_file), do: changeset.data.test_file, else: ""))
+      }
+      else if Map.has_key?(new_param, "tests") do
         %{
           "language" => (if Map.has_key?(changeset.changes, :language), do: changeset.changes.language, else: (if Map.has_key?(changeset.data, :language), do: changeset.data.language, else: :c)),
+          "correct_answers" => (if Map.has_key?(changeset.changes, :correct_answers), do: changeset.changes.correct_answers, else: (if Map.has_key?(changeset.data, :correct_answers), do: changeset.data.correct_answers, else: %{})),
+          "code" => (if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if Map.has_key?(changeset.data, :code), do: changeset.data.code, else: "")),
+          "test_file" => (if Map.has_key?(changeset.changes, :test_file), do: changeset.changes.test_file, else: (if Map.has_key?(changeset.data, :test_file), do: changeset.data.test_file, else: ""))
+        }
+      else if Map.has_key?(new_param, "language") do
+        %{
+          "tests" => (if Map.has_key?(changeset.changes, :tests), do: changeset.changes.tests, else: (if Map.has_key?(changeset.data, :tests), do: changeset.data.tests, else: [])),
+          "correct_answers" => (if Map.has_key?(changeset.changes, :correct_answers), do: changeset.changes.correct_answers, else: (if Map.has_key?(changeset.data, :correct_answers), do: changeset.data.correct_answers, else: %{})),
+          "code" => (if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if Map.has_key?(changeset.data, :code), do: changeset.data.code, else: "")),
+          "test_file" => (if Map.has_key?(changeset.changes, :test_file), do: changeset.changes.test_file, else: (if Map.has_key?(changeset.data, :test_file), do: changeset.data.test_file, else: ""))
+        }
+      else if Map.has_key?(new_param, "test_file") do
+        %{
+          "language" => (if Map.has_key?(changeset.changes, :language), do: changeset.changes.language, else: (if Map.has_key?(changeset.data, :language), do: changeset.data.language, else: :c)),
+          "correct_answers" => (if Map.has_key?(changeset.changes, :correct_answers), do: changeset.changes.correct_answers, else: (if Map.has_key?(changeset.data, :correct_answers), do: changeset.data.correct_answers, else: %{})),
           "code" => (if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if Map.has_key?(changeset.data, :code), do: changeset.data.code, else: "")),
           "tests" => (if Map.has_key?(changeset.changes, :tests), do: changeset.changes.tests, else: (if Map.has_key?(changeset.data, :tests), do: changeset.data.tests, else: []))
         }
-      else
-        if Map.has_key?(new_param, "tests") do
-          %{
-            "language" => (if Map.has_key?(changeset.changes, :language), do: changeset.changes.language, else: (if Map.has_key?(changeset.data, :language), do: changeset.data.language, else: :c)),
-            "correct_answers" => (if Map.has_key?(changeset.changes, :correct_answers), do: changeset.changes.correct_answers, else: (if Map.has_key?(changeset.data, :correct_answers), do: changeset.data.correct_answers, else: %{})),
-            "code" => (if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if Map.has_key?(changeset.data, :code), do: changeset.data.code, else: ""))
-          }
-        else
-          %{
-            "tests" => (if Map.has_key?(changeset.changes, :tests), do: changeset.changes.tests, else: (if Map.has_key?(changeset.data, :tests), do: changeset.data.tests, else: [])),
-            "correct_answers" => (if Map.has_key?(changeset.changes, :correct_answers), do: changeset.changes.correct_answers, else: (if Map.has_key?(changeset.data, :correct_answers), do: changeset.data.correct_answers, else: %{})),
-            "code" => (if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if Map.has_key?(changeset.data, :code), do: changeset.data.code, else: ""))
-          }
-        end
+      end
+      end
+      end
       end
     end
   end
 
   def create_parameters_changeset(type, %{new_question: new_question} = params) do
     if new_question do
+      test_file = "#include <stdio.h>\n\nint main() {\n  \n}"
+      tests = [%{"input" => "1,2", "output" => "3"}]
+
       case type do
         :fill_the_code -> change_parameter(%Parameter{}, %{
           "code" => "int sum({{res1}}, int b) {\n  return a+b;\n}",
           "language" => :c,
           "correct_answers" => %{"res1" => "int a"},
-          "tests" => [%{"input" => "1,2", "output" => "3"}]
+          "test_file" => test_file,
+          "tests" => tests
         })
         :code -> change_parameter(%Parameter{}, %{
-          "code" => "int sum(int a, int b) {\n  return a+b;\n}",
+          "code" => "int sum(int a, int b) {\n\n}",
           "language" => :c,
           "correct_answers" => %{},
-          "tests" => [%{"input" => "1,2", "output" => "3"}]
+          "test_file" => test_file,
+          "tests" => tests
         })
       end
     else
@@ -199,18 +215,31 @@ defmodule Quic.Parameters do
 
   def parse_tests_to_string(tests) when is_list(tests) do
     Enum.reduce(tests, "", fn test, acc ->
-      acc <> test["input"] <> ":" <> test["output"] <> "\n"
+      input = (if Map.has_key?(test, "input"), do: test["input"], else: "Empty")
+      output = (if Map.has_key?(test, "output"), do: test["output"], else: "Empty")
+      acc <> input <> ":" <> output <> "\n"
     end)
   end
 
   def parse_tests_to_array(tests) when is_binary(tests) do
     lines = String.split(tests, "\n", trim: true)
     Enum.reduce(lines, [], fn line, acc ->
-      if String.match?(line, ~r/\w+[\w,]*:\w+[\w,]*/) do
-        [input, output] = String.split(line, ":", trim: true)
-        Enum.concat(acc, [%{input: input, output: output}])
+      if String.match?(line, ~r/^:\w+[\w,]*/) do
+        [output] = String.split(line, ":", trim: true)
+        Enum.concat(acc, [%{"output" => output}])
+
       else
-        acc
+        if String.match?(line, ~r/^\w+[\w,]*:$/) do
+          [input] = String.split(line, ":", trim: true)
+          Enum.concat(acc, [%{"input" => input}])
+        else
+          if String.match?(line, ~r/\w+[\w,]*:\w+[\w,]*/) do
+            [input, output] = String.split(line, ":", trim: true)
+            Enum.concat(acc, [%{"input" => input, "output" => output}])
+          else
+            acc
+          end
+        end
       end
     end)
   end

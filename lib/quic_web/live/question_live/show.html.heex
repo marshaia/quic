@@ -25,7 +25,7 @@
       <div class="flex justify-end">
         <.link 
           phx-click="clicked_edit"
-          class="border-[var(--primary-color-text)] text--[var(--primary-color-text)] hover:text--[var(--primary-color)] hover:border-[var(--primary-color)] border rounded-full p-1.5"
+          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)] p-1.5"
         >
           <Heroicons.pencil class="question-box-icon" />
         </.link>
@@ -35,7 +35,7 @@
 
     <p id="question-page-prism-hook" phx-hook="PrismInitializer" class="mt-4 overflow-auto text-justify"><.markdown text={@question.description} /></p>
 
-    <div :if={@question.type === :fill_the_code} class="mt-2">
+    <div :if={@question.type === :fill_the_code || @question.type === :code} class="mt-2">
       <.language_previewer text={@question.parameters.code} language={@question.parameters.language} />
     </div>
 
@@ -57,9 +57,9 @@
       >
         
         <%= if @question.type === :fill_the_code || @question.type === :code do %>
-          <%!-- <%= if @question.type === :fill_the_code do %> --%>
+          <%= if @question.type === :fill_the_code do %>
             <h6 class="mb-2 font-medium">Correct Answer</h6>
-            <div id={"question-page-answer-#{@question.id}-hook"} phx-hook="PrismInitializer" class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]">
+            <div id={"question-page-answer-#{@question.id}-hook"} phx-hook="PrismInitializer" class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)]">
               <div class="flex flex-col items-center justify-start">
                 <.right_or_wrong is_correct={true} class="w-6 h-6 mt-1 min-h-6 min-w-6" />
               </div> 
@@ -72,10 +72,17 @@
                 </div>
               </div>
             </div>
-          <%!-- <% end %> --%>
+          <% end %>
 
+          <%!-- TEST FILE --%>
+          <h6 class="mb-2 font-medium">Test File</h6>
+          <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)]">
+            <.language_previewer text={@question.parameters.test_file} language={@question.parameters.language} />
+          </div>
+
+          <%!-- TESTS --%>
           <h6 class="mb-2 font-medium">Tests</h6>
-          <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]">
+          <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)]">
             <div :for={test <- @question.parameters.tests} class="flex items-center gap-5">
               <p><span class="font-medium">Input:</span> <%= test["input"] %></p>
               <Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" />
