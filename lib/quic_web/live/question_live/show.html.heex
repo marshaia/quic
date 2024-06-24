@@ -25,7 +25,7 @@
       <div class="flex justify-end">
         <.link 
           phx-click="clicked_edit"
-          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)] p-1.5"
+          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
         >
           <Heroicons.pencil class="question-box-icon" />
         </.link>
@@ -83,10 +83,13 @@
           <%!-- TESTS --%>
           <h6 class="mb-2 font-medium">Tests</h6>
           <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)]">
-            <div :for={test <- @question.parameters.tests} class="flex items-center gap-5">
-              <p><span class="font-medium">Input:</span> <%= test["input"] %></p>
-              <Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" />
-              <p><span class="font-medium">Output:</span> <%= test["output"] %></p>
+            <div class="flex flex-col gap-3">
+              <div :for={test <- @question.parameters.tests} class="flex items-center gap-5">
+                <p><span class="font-medium">Input:</span> <%= if test["input"], do: test["input"], else: "Empty" %></p>
+                <Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" />
+                <p><span class="font-medium">Output:</span> <%= if test["output"], do: test["output"], else: "Empty" %></p>
+              </div>
+              
             </div>
           </div>
 

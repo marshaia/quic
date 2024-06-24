@@ -240,6 +240,12 @@
                 </div>
                 
                 <.markdown text={question.description} />
+
+                <%= if question.type === :code || question.type === :fill_the_code do %>
+                  <% parameters = Enum.find(@session.quiz.parameters, fn p -> p.question_id === question.id end) %>
+                  <% code = (if question.type === :fill_the_code, do: Parameters.put_correct_answers_in_code(parameters), else: parameters.code) %>
+                  <.language_previewer text={code} language={parameters.language} />
+                <% end %>
               </div>
             </div>
 

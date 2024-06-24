@@ -13,7 +13,7 @@
           :if={isOwner} 
           patch={~p"/quizzes/#{@quiz}/show/edit"} 
           phx-click={JS.push_focus()}
-          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)] p-1.5"
+          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
         >
           <Heroicons.pencil class="question-box-icon" />
         </.link>
@@ -174,7 +174,7 @@
             phx-click={JS.push("delete", value: %{id: question.id}) |> hide("##{question.id}")}
             data-confirm="Are you sure you want to delete this question?"
           >
-            <Heroicons.trash class="question-box-icon" />
+            <Heroicons.trash class="w-5 h-5 hover:text-[var(--red)] stroke-1" />
           </.link>
           
           <.link phx-click={JS.push("duplicate", value: %{id: question.id})}>

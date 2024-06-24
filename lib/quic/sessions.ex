@@ -153,14 +153,10 @@ defmodule Quic.Sessions do
       "author_name" => quiz.author.display_name,
     }
 
-    answers = Enum.reduce(quiz.questions, [],
-      fn question, acc ->
-        acc =Enum.concat(acc, question.answers)
-        acc
-      end
-    )
+    answers = Enum.reduce(quiz.questions, [], fn question, acc -> Enum.concat(acc, question.answers) end)
+    parameters = Enum.reduce(quiz.questions, [], fn question, acc -> [question.parameters | acc] end)
 
-    quiz_new = Quizzes.EmbeddedQuiz.changeset(%Quizzes.EmbeddedQuiz{}, quiz_new, quiz.questions, answers)
+    quiz_new = Quizzes.EmbeddedQuiz.changeset(%Quizzes.EmbeddedQuiz{}, quiz_new, quiz.questions, answers, parameters)
     %Session{}
     |> Session.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:monitor, monitor)

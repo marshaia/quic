@@ -24,12 +24,6 @@ export const AceEditorHook = {
     document.getElementById(`${id}`).classList.remove("hidden")
 
     editor.session.on('change', () => {
-      // document.getElementById(`${id}-code`).value = editor.getValue();
-      // if (id.includes("question")) {
-      //   this.pushEvent("update_code_question", {code: editor.getValue()})
-      // } else {
-      //   this.pushEvent("update_code_answer", {answer: editor.getValue()})
-      // }
       if (id.includes("tests")) {
         this.pushEvent("update_parameter", {tests: editor.getValue()})
       } else {
@@ -39,9 +33,19 @@ export const AceEditorHook = {
           if (id.includes("file")) {
             this.pushEvent("update_parameter", {test_file: editor.getValue()})
           } else {
-            if (id.includes("code")) {
-              this.pushEvent("update_parameter", {code: editor.getValue()})
-            } 
+            if (id.includes("participant-fill")) {
+              answer_id = id.split('-')[3]
+              this.pushEvent("validate_participant_answer", {answer_id: answer_id, answer: editor.getValue()})
+            } else {
+              if (id.includes("participant")) {
+              this.pushEvent("validate_participant_answer", {answer: editor.getValue()})
+            } else {
+              if (id.includes("code")) {
+                this.pushEvent("update_parameter", {code: editor.getValue()})
+              } 
+            }
+            }
+            
           }
         }
       }

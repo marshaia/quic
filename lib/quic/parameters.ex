@@ -249,8 +249,8 @@ defmodule Quic.Parameters do
     code = (if Map.has_key?(changeset.changes, :code), do: changeset.changes.code, else: (if changeset.data.code !== nil, do: changeset.data.code, else: ""))
     answers = (if Map.has_key?(changeset.changes, :correct_answers), do: changeset.changes.correct_answers, else: (if changeset.data.correct_answers !== nil, do: changeset.data.correct_answers, else: %{}))
 
-    Enum.reduce(answers, "", fn {key, value}, _acc ->
-      String.replace(code, ~r/{{#{key}}}/, "#{value}")
+    Enum.reduce(answers, code, fn {key, value}, acc ->
+      String.replace(acc, ~r/{{#{key}}}/, "#{value}")
     end)
   end
 

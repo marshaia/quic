@@ -1,11 +1,9 @@
 defmodule QuicWeb.ParticipantLive.QuestionForm do
-
   use QuicWeb, :live_view
 
   alias Quic.Sessions
   alias Quic.Participants
   alias QuicWeb.QuicWebAux
-
 
   @impl true
   def mount(%{"participant_id" => participant_id, "question_position" => question_position}, _session, socket) do
@@ -32,6 +30,11 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
         Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
         Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
 
+        parameters = (if question.type === :code || question.type === :fill_the_code, do: Enum.find(session.quiz.parameters, fn p -> p.question_id === question.id end), else: nil)
+        answer_changeset = (if parameters !== nil do
+          if question.type === :fill_the_code, do: Enum.reduce(parameters.correct_answers, %{}, fn {key, _value}, acc -> Map.put(acc, key, "") end), else: parameters.code
+        else "" end)
+
         {:ok, socket
               |> assign(:session, session)
               |> assign(:participant, participant)
@@ -41,7 +44,9 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
               |> assign(:answers, answers)
               |> assign(:has_submitted, has_submitted)
               |> assign(:last_question, last_question)
-              |> assign(:answer_changeset, %{"answer" => ""})}
+              |> assign(:answer_changeset, %{"answer" => answer_changeset})
+              |> assign(:parameters, parameters)
+              |> assign(:loading, true)}
       end
     end
   end
@@ -66,26 +71,26 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   @impl true
   def handle_event("submit-answer-btn", _params, socket) do
     question_type = socket.assigns.question.type
-    if question_type === :true_false || question_type === :single_choice || question_type === :multiple_choice do
-      {:noreply, socket |> push_event("participant-submit-answer", %{
-        code: socket.assigns.session.code,
-        response: socket.assigns.selected_answer,
-        question_id: socket.assigns.question.id,
-        participant_id: socket.assigns.participant.id
-      })}
-    else
-      {:noreply, socket |> push_event("participant-submit-answer", %{
-        code: socket.assigns.session.code,
-        response: Map.get(socket.assigns.answer_changeset, "answer", ""),
-        question_id: socket.assigns.question.id,
-        participant_id: socket.assigns.participant.id
-      })}
-    end
+    response = (if question_type === :true_false || question_type === :single_choice || question_type === :multiple_choice, do: socket.assigns.selected_answer, else: (if question_type === :fill_the_code, do: Map.get(socket.assigns.answer_changeset, "answer", %{}), else: Map.get(socket.assigns.answer_changeset, "answer", "")))
+
+    event_params = %{
+      code: socket.assigns.session.code,
+      response: response,
+      question_id: socket.assigns.question.id,
+      participant_id: socket.assigns.participant.id
+    }
+
+    {:noreply, socket |> push_event("participant-submit-answer", event_params)}
+  end
+
+  @impl true
+  def handle_event("validate_participant_answer", %{"answer_id" => answer_id, "answer" => answer}, socket) do
+    {:noreply, socket |> assign(:answer_changeset, %{"answer" => Map.put(socket.assigns.answer_changeset["answer"], answer_id, answer)}) |> assign(:loading, false)}
   end
 
   @impl true
   def handle_event("validate_participant_answer", %{"answer" => answer}, socket) do
-    {:noreply, socket |> assign(:answer_changeset, %{"answer" => answer})}
+    {:noreply, socket |> assign(:answer_changeset, %{"answer" => answer}) |> assign(:loading, false)}
   end
 
   def handle_event(_, _, socket), do: {:noreply, socket}
@@ -139,7 +144,12 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
     if question_type === :true_false || question_type === :single_choice || question_type === :multiple_choice do
       selected_answer === nil || selected_answer === []
     else
-      String.length(Map.get(changeset, "answer", "")) === 0
+      if question_type === :fill_the_code do
+        %{"answer" => answers} = changeset
+        Enum.reduce(answers, false, fn {_key, value}, acc -> acc || String.length(value) === 0 end)
+      else
+        String.length(Map.get(changeset, "answer", "")) === 0
+      end
     end
   end
 end

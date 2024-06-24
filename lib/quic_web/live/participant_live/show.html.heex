@@ -133,6 +133,18 @@
           </div>
         </div>
       <% end %>
+
+
+      <%= if question.type === :code do %>
+        <% participant_text = Enum.at(participant_answer.answer,0,"") %>
+        <div class="p-1 px-5 overflow-auto">
+          <div class="flex items-center justify-start w-full gap-2">
+            <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
+            <.language_previewer text={participant_text} language="c" />
+          </div>
+        </div>
+      <% end %>
+
     </div>
 
     <% participant_answer = Enum.at(participant_answer.answer,0,"") %>
