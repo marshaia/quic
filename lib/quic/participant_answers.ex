@@ -112,4 +112,17 @@ defmodule Quic.ParticipantAnswers do
   def change_participant_answer(%ParticipantAnswer{} = participant_answer, attrs \\ %{}) do
     ParticipantAnswer.changeset(participant_answer, attrs)
   end
+
+
+  def format_participant_answer(question_type, answer) do
+    case question_type do
+      :fill_the_code ->
+        case Jason.encode(answer) do
+          {:ok, encoded} -> [encoded]
+          {:error, _} -> [inspect(answer)]
+        end
+      :multiple_choice -> answer
+      _ -> [answer]
+    end
+  end
 end

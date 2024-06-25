@@ -6,8 +6,8 @@ defmodule Quic.Sessions do
   import Ecto.Query, warn: false
   alias Quic.Repo
 
-  #alias Quic.Accounts.Author
   alias Quic.Quizzes
+  alias Quic.Participants
   alias Quic.Sessions.Session
   alias Quic.Participants.Participant
 
@@ -25,24 +25,13 @@ defmodule Quic.Sessions do
     Repo.all(Session)
   end
 
-  require Logger
   def list_all_author_sessions(id) do
-    # author = Repo.get(Author, id)
-    #   |> Repo.preload([sessions: from(s in Session, group_by: [s.inserted_at, s.id], order_by: [desc: s.updated_at])])
-    #   |> Repo.preload(sessions: :quiz) #|> Repo.preload(sessions: :participants)
-
-    #   Logger.error("\n\nsessions map: #{inspect Enum.group_by(author.sessions, &(&1.inserted_at))}\n\n")
-
-    # author.sessions
     query = from s in Session,
       where: s.monitor_id == ^id,
-      order_by: [desc: s.start_date], # sorting by full datetime
-      #order_by: [desc: fragment("date(?)", s.start_date)], # Ensure sorting by date part
+      order_by: [desc: s.start_date],
       select: %{date: fragment("date(?)", s.start_date), entity: s}
-      #preload: :quiz
 
     results = Repo.all(query)
-    # Group results by date
     grouped_results = Enum.group_by(results, &(&1.date))
 
     grouped_results
@@ -50,7 +39,7 @@ defmodule Quic.Sessions do
         sessions = Enum.map(entries, &(&1.entity))
         %{date: date, sessions: sessions}
       end)
-      |> Enum.sort_by(& &1.date, {:desc, Date}) # Ensure final sorting by date
+      |> Enum.sort_by(& &1.date, {:desc, Date})
   end
 
   @doc """
@@ -67,7 +56,7 @@ defmodule Quic.Sessions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) #|> Repo.preload(quiz: :questions)
+  def get_session!(id), do: Repo.get!(Session, id) |> Repo.preload(:monitor) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])])
 
   def get_session_participants(id) do
     session = Repo.get!(Session, id) |> Repo.preload([participants: from(p in Participant, order_by: [desc: p.total_points])]) |> Repo.preload(participants: :answers)
@@ -77,7 +66,6 @@ defmodule Quic.Sessions do
   def get_session_quiz(id) do
     session = get_session!(id)
     session.quiz
-    #Quizzes.get_quiz!(session.quiz.id)
   end
 
   def get_open_session_by_code(code) do
@@ -139,7 +127,7 @@ defmodule Quic.Sessions do
       {:error, %Ecto.Changeset{}}
 
   """
-  require Logger
+
   def create_session(attrs \\ %{}, monitor, quiz) do
     attrs = Map.put(attrs, "code", generate_valid_code())
             |> Map.put("status", :open)
@@ -161,7 +149,6 @@ defmodule Quic.Sessions do
     %Session{}
     |> Session.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:monitor, monitor)
-    #|> Ecto.Changeset.put_assoc(:quiz, quiz)
     |> Ecto.Changeset.put_embed(:quiz, quiz_new)
     |> Repo.insert()
   end
@@ -226,5 +213,82 @@ defmodule Quic.Sessions do
   """
   def change_session(%Session{} = session, attrs \\ %{}) do
     Session.changeset(session, attrs)
+  end
+
+
+  def exists_session_with_id?(id) do
+    try do
+      get_session!(id)
+      true
+    rescue
+      _ -> false
+    end
+  end
+
+  def exists_session_with_id_and_code?(id, code) do
+    try do
+      session = get_session!(id)
+      session.code === code
+    rescue
+      _ -> false
+    end
+  end
+
+  def session_belongs_to_monitor?(id, email) do
+    session = get_session!(id)
+    session.monitor.email === email
+  end
+
+  def get_session_by_id(id) do
+    try do
+      get_session!(id)
+    rescue
+      _ -> nil
+    end
+  end
+
+  def close_session(id) do
+    try do
+      session = get_session!(id)
+      update_session(session, %{"status" => :closed, "end_date" => DateTime.utc_now()})
+    rescue
+      _ -> {:error, %{}}
+    end
+  end
+
+  def start_session(id) do
+    try do
+      # alter session status to on_going and current_question to 1
+      session = get_session!(id)
+      update_session(session, %{"status" => :on_going, "current_question" => 1})
+
+      # return first quiz question
+      {:ok, Enum.find(session.quiz.questions, nil, fn q -> q.position === 1 end)}
+    rescue
+      _ -> {:error, nil}
+    end
+  end
+
+  def next_question(id) do
+    try do
+      session = get_session!(id)
+      num_quiz_questions = Enum.count(session.quiz.questions)
+
+      if session.current_question < num_quiz_questions do
+        # increment session current_question
+        {:ok, session} = update_session(session, %{"current_question" => session.current_question + 1})
+        # increment Participant's current_questions
+        if Enum.count(session.participants) > 0 do
+          Enum.each(session.participants, fn p -> (if p.current_question < session.current_question, do: Participants.update_participant(p, %{"current_question" => session.current_question - 1})) end)
+        end
+
+        # return next question
+        {:ok, Enum.find(session.quiz.questions, nil, fn q -> q.position === session.current_question end)}
+      else
+        {:error, nil}
+      end
+    rescue
+      _ -> {:error, nil}
+    end
   end
 end

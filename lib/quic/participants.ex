@@ -6,6 +6,8 @@ defmodule Quic.Participants do
   import Ecto.Query, warn: false
   alias Quic.Repo
 
+  alias Quic.Sessions
+  alias Quic.ParticipantAnswers
   alias Quic.Participants.Participant
 
   @doc """
@@ -118,5 +120,58 @@ defmodule Quic.Participants do
 
   def change_participant_validate(%Participant{} = participant, attrs \\ %{}, code) do
     Participant.changeset_validate(participant, attrs, code)
+  end
+
+
+  # Utils
+  def channel_create_participant(session, username) do
+    participant = %{"name" => username}
+    create_participant(participant, session)
+  end
+
+  def get_participant_name(id) do
+    get_participant!(id).name
+  end
+
+  def participant_already_in_session?(id, session_code) do
+    case get_participant_session_code!(id) do
+      nil ->  false
+      code -> session_code === code
+    end
+  end
+
+  def update_participant_current_question(participant_id) do
+    participant = get_participant!(participant_id)
+    participant |> update_participant(%{"current_question" => participant.current_question + 1})
+  end
+
+  def update_participant_results(participant_id, question_id, results) do
+    participant = get_participant!(participant_id)
+    question = Enum.find(participant.session.quiz.questions, fn q -> q.id === question_id end)
+    participant_answer = Enum.find(participant.answers, nil, fn a -> a.question_id === question_id end)
+
+    if results do
+      participant |> update_participant(%{"total_points" => participant.total_points + question.points})
+      ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :correct})
+    else
+      ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :incorrect})
+    end
+  end
+
+  def get_participant_next_question(participant_id, current_question) do
+    participant = get_participant!(participant_id)
+    session = Sessions.get_session!(participant.session.id)
+    quiz_questions = session.quiz.questions
+
+    if Enum.count(quiz_questions) === current_question do
+      {:error_max_questions, participant}
+    else
+      if current_question >= 1 && current_question < Enum.count(quiz_questions) do
+        next_question = Enum.find(quiz_questions, nil, fn q -> q.position === current_question + 1 end)
+        if next_question !== nil, do: {:ok, next_question}, else: {:error_invalid_question, participant}
+      else
+        {:error, participant}
+      end
+    end
   end
 end

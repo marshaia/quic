@@ -154,7 +154,7 @@ defmodule Quic.Parameters do
 
   def create_parameters_changeset(type, %{new_question: new_question} = params) do
     if new_question do
-      test_file = "#include <stdio.h>\n\nint main() {\n  \n}"
+      test_file = "#include <stdio.h>\n\nint sum(int a, int b);\n\nint main() {\n  \n}"
       tests = [%{"input" => "1,2", "output" => "3"}]
 
       case type do

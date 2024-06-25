@@ -5,12 +5,8 @@ defmodule Quic.Questions do
 
   import Ecto.Query, warn: false
 
-  alias Quic.Parameters
-  alias Quic.Quizzes
-  alias Quic.Repo
-
-  alias Quic.Questions.Question
-  alias Quic.Questions.QuestionAnswer
+  alias Quic.{Repo, Quizzes, Parameters, Participants, ParticipantAnswers}
+  alias Quic.Questions.{Question, QuestionAnswer}
 
   @doc """
   Returns the list of questions.
@@ -320,12 +316,69 @@ defmodule Quic.Questions do
   def create_question_placeholders(type, changeset) do
     case type do
       :fill_the_code ->
-        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, when you want to insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can only have 'word' characters).\n\n Then, to insert the correct answers, use the syntax like it's exemplified: __`<id>:<correct_answer>`__.\n\nFinally, in order to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__ (like exemplified in the Tests box).")
+        changeset |> Map.put(:description, "To insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can only have 'word' characters). To associate the correct answers, use the syntax: __`<id>:<correct_answer>`__.\n\nFinally, to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__.")
       :code ->
-        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on the code editor.\n\nIn order to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__ (like exemplified in the Tests box).")
+        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on the code editor.\n\nIn order to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__.")
       :fill_the_blanks ->
         changeset |> Map.put(:description, "When you want to insert the piece of text for the Participants to complete, you can choose how to display it on the question. The system will evaluate only the answer you insert, not the question's description.\nFor example:\n\n`We only consider the _____ answers!`")
       _ -> changeset
+    end
+  end
+
+
+  def assess_submission(participant_id, question_id, answer) do
+    participant = Participants.get_participant!(participant_id)
+    question = Enum.find(participant.session.quiz.questions, fn q -> q.id === question_id end)
+    question_answers = Enum.filter(participant.session.quiz.answers, fn a -> a.question_id === question_id end)
+
+    participant_answer = ParticipantAnswers.format_participant_answer(question.type, answer)
+    ParticipantAnswers.create_participant_answer(%{"answer" => participant_answer}, participant_id, question_id)
+
+    #if answer.question.id === question_id do
+      case question.type do
+        :single_choice -> assess_single_choice(question_answers, answer)
+        :multiple_choice -> assess_multiple_choice(question_answers, answer)
+        :true_false -> assess_true_false(question_answers, answer)
+        :fill_the_blanks -> assess_fill_the_blanks(question_answers, answer)
+        :open_answer -> true
+        _ -> false
+      end
+    #else
+    #  false
+    #end
+  end
+
+  def assess_single_choice(question_answers, answer) do
+    selected_answer = Enum.find(question_answers, fn a -> a.id === answer end)
+    selected_answer.is_correct
+  end
+
+  def assess_multiple_choice(question_answers, selected_answers) do
+    # question correct answers
+    correct_answers = Enum.reduce(question_answers, [], fn a, acc -> if a.is_correct, do: [a.id | acc], else: acc end)
+    how_many_true = Enum.count(correct_answers)
+
+    # check participant didn't select incorrect answers
+    participant_correct_answers = Enum.reduce(selected_answers, true, fn answer_id, acc -> if !Enum.member?(correct_answers, answer_id), do: false, else: acc end)
+
+    # check if participant selected only correct answers and all correct answers possible
+    participant_correct_answers && how_many_true === Enum.count(selected_answers)
+  end
+
+  def assess_true_false(question_answers, participant_answer) do
+    participant_answer = (if participant_answer === "true", do: true, else: false)
+    question_answer = Enum.at(question_answers, 0, nil)
+    case question_answer do
+      nil -> false
+      answer -> answer.is_correct === participant_answer
+    end
+  end
+
+  def assess_fill_the_blanks(question_answers, participant_answer) do
+    question_answer = Enum.at(question_answers, 0, nil)
+    case question_answer do
+      nil -> false
+      answer -> String.match?(participant_answer, ~r/^ *#{answer.answer} *$/i)
     end
   end
 end
