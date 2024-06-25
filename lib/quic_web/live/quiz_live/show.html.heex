@@ -19,10 +19,8 @@
         </.link>
       </div>
       
-
       <h4 class="mt-1 text-center text-gradient"> <%= @quiz.name %> </h4>
       <p class="mt-4 text-justify "><%= @quiz.description %></p>
-
 
       <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
         <div class="flex gap-1">
@@ -38,11 +36,7 @@
         <div class="flex gap-1">
           <Heroicons.user_circle class="w-5 h-5" />
           <p class="text-gray-400">
-            <%= if @quiz.author_id === @current_author.id do %>
-              You
-            <% else %>
-              <%= @quiz.author.display_name %>
-            <% end %> 
+            <%= if @quiz.author_id === @current_author.id, do: "You", else: @quiz.author.display_name %>
           </p>
         </div>
       </div>

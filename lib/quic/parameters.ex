@@ -172,6 +172,7 @@ defmodule Quic.Parameters do
           "test_file" => test_file,
           "tests" => tests
         })
+        _ -> nil
       end
     else
       case type do
@@ -255,8 +256,14 @@ defmodule Quic.Parameters do
   end
 
   def put_correct_answers_in_code(parameter) do
-    Enum.reduce(parameter.correct_answers, "", fn {key, value}, _acc ->
-      String.replace(parameter.code, ~r/{{#{key}}}/, "#{value}")
+    Enum.reduce(parameter.correct_answers, parameter.code, fn {key, value}, acc ->
+      String.replace(acc, ~r/{{#{key}}}/, "#{value}")
+    end)
+  end
+
+  def put_correct_answers_participant_in_code(code, answers) do
+    Enum.reduce(answers, code, fn {key, value}, acc ->
+      String.replace(acc, ~r/{{#{key}}}/, "#{value}")
     end)
   end
 end

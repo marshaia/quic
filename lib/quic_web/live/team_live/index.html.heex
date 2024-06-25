@@ -8,7 +8,6 @@
 </.header>
 
 
-
 <div class="flex justify-center w-full mt-5 lg:mt-0">
   <form phx-change="form_team_changed" class="flex lg:w-[50%] w-full rounded-full px-4 py-1 gap-2 bg-[var(--background-card)] border border-[var(--border)]">
     <div class="flex items-center justify-center">
@@ -17,7 +16,6 @@
     <input type="text" id="team_name_input" name="team_input" class="bg-[var(--background-card)] border-none focus:ring-0 text-sm w-full md:w-80" placeholder="Search by name or description"/>
   </form>
 </div>
-
 
 
 <%= if Enum.count(@teams) === 0 do %>
@@ -34,67 +32,6 @@
 <% end %>
 
   
-
-<%!-- 
-<div class="mt-8 overflow-auto">
-  <table class="w-full p-2 rounded-t-3xl">
-    <tr class="bg-[var(--border)] h-10">
-      <th>Name</th>
-      <th>Description</th>
-      <th></th>
-    </tr>
-    
-    
-    <tr :for={team <- @teams} class="h-12 text-center hover:cursor-pointer hover:bg-[var(--hover)]" phx-click="clicked_team" phx-value-id={team.id}>
-
-      <td class="border-b border-b-[var(--border)]">
-        <p class="font-bold"> <%= team.name %> </p>
-      </td>
-
-      <td class="border-b border-b-[var(--border)] px-6 overflow-hidden text-clip">
-        <p class="text-left">
-          <%= if String.length(team.description) > 50, do: String.slice(team.description, 0..50) <> "...", else: team.description %>
-        </p>
-      </td>
-
-      <td class="border-b border-b-[var(--border)]">
-        <.link
-          class="flex p-1.5 w-10 items-center justify-center text-white bg-red-700 rounded-full hover:bg-red-900"
-          phx-click={JS.push("delete", value: %{id: team.id})}
-          data-confirm="Are you sure? Once deleted, it cannot be recovered!"
-        >
-          <Heroicons.trash class="w-5 h-5" />
-        </.link>
-      </td>
-    </tr>
-  </table>
-</div>
- --%>
-
-
-<%!-- <.table
-  id="teams"
-  rows={@streams.teams}
-  row_click={fn {_id, team} -> JS.push("clicked_team", value: %{id: team.id}) end}
->
-  <:col :let={{_id, team}} label="Name"><%= team.name %></:col>
-  <:col :let={{_id, team}} label="Description"><%= team.description %></:col>
-  <:action :let={{_id, team}}>
-    <div class="sr-only">
-      <.link navigate={~p"/teams/#{team}"}>Show</.link>
-    </div>
-    <.link class="normalLink" patch={~p"/teams/#{team}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={{id, team}}>
-    <.link
-      class="redLink"
-      phx-click={JS.push("delete", value: %{id: team.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?">
-      Delete
-    </.link>
-  </:action>
-</.table> --%>
-
 <.modal :if={@live_action in [:new, :edit]} id="team-modal" show on_cancel={JS.patch(~p"/teams")}>
   <.live_component
     module={QuicWeb.TeamLive.FormComponent}

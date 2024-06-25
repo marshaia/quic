@@ -139,6 +139,7 @@ defmodule Quic.Sessions do
       {:error, %Ecto.Changeset{}}
 
   """
+  require Logger
   def create_session(attrs \\ %{}, monitor, quiz) do
     attrs = Map.put(attrs, "code", generate_valid_code())
             |> Map.put("status", :open)
@@ -154,7 +155,7 @@ defmodule Quic.Sessions do
     }
 
     answers = Enum.reduce(quiz.questions, [], fn question, acc -> Enum.concat(acc, question.answers) end)
-    parameters = Enum.reduce(quiz.questions, [], fn question, acc -> [question.parameters | acc] end)
+    parameters = Enum.reduce(quiz.questions, [], fn question, acc -> if question.type === :code || question.type === :fill_the_code, do: [question.parameters | acc], else: acc end)
 
     quiz_new = Quizzes.EmbeddedQuiz.changeset(%Quizzes.EmbeddedQuiz{}, quiz_new, quiz.questions, answers, parameters)
     %Session{}

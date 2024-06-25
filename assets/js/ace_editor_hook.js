@@ -4,7 +4,7 @@ import "../vendor/ace_editor/theme-xcode"
 import "../vendor/ace_editor/mode-c_cpp"
 
 function mount_editor(id) {
-  var editor = aceEditor.edit(id, {minLines: 3, maxLines: 20, fontSize: 15});
+  var editor = aceEditor.edit(id, {minLines: 3, maxLines: 20, fontSize: 15, showPrintMargin: false});
   if (document.documentElement.classList.contains('dark')) {
     editor.setTheme("ace/theme/one_dark");
   } else {

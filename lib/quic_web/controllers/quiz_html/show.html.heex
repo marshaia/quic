@@ -70,12 +70,17 @@
 
             <%!-- QUESTION DESCRIPTION --%>
             <.markdown class="mt-2" text={question.description} />
+
+            <%= if question.type === :fill_the_code || question.type === :code do %>
+              <% parameters = Enum.find(@quiz.parameters, %{}, fn p -> p.question_id === question.id end) %>
+              <.language_previewer text={parameters.code} language={parameters.language} />
+            <% end %>
           </div>
         </div>
 
 
         <%!-- DIVIDER --%>
-        <hr :if={question.type !== :open_answer} class="w-full my-4" />
+        <hr :if={question.type !== :open_answer && question.type !== :code} class="w-full my-4" />
 
 
         <%!-- QUESTION ANSWERS --%>
@@ -86,7 +91,7 @@
           </div>
         
         <% else %>
-          <%= if question.type === :fill_the_blanks || question.type === :code || question.type === :fill_the_code do %>
+          <%= if question.type === :fill_the_blanks || question.type === :fill_the_code do %>
             <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
             <div class="flex items-center justify-start w-full gap-2">
               <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
@@ -95,7 +100,8 @@
                 <%= if question.type === :fill_the_blanks do %>
                   <.markdown class="w-full" text={answer.answer} />
                 <% else %>
-                  <.language_previewer text={answer.answer} language="c" />
+                  <% parameters = Enum.find(@quiz.parameters, %{}, fn p -> p.question_id === question.id end) %>
+                  <.language_previewer text={Quic.Parameters.put_correct_answers_in_code(parameters)} language={parameters.language} />
                 <% end %>
               </div>
             </div>

@@ -1,20 +1,15 @@
-
 <%!-- GREETINGS + SESSION CODE --%>
 <%= if @session.status === :open do %>
   <div class="flex justify-center mt-5">
     <div class="flex w-full mx-3 flex-col items-center bg-[var(--background-card)] p-3 rounded-xl border border-[var(--border)]">
       <%!-- SESSION CODE --%>
       <div class="flex items-center justify-center w-full px-5 md:px-10">
-        <%!-- <Heroicons.rocket_launch class="hidden sm:block w-12 h-12 text-[var(--second-color)]" /> --%>
         <h1 class="text-gradient text-7xl"><%= @session.code %></h1>
-        <%!-- <Heroicons.pencil_square class="hidden sm:block w-12 h-12 text-[var(--fifth-color)]" /> --%>
       </div>
 
       <%!-- WHERE TO JOIN --%>
       <div class="flex w-full justify-evenly">
-        <%!-- <Heroicons.code_bracket_square class="hidden sm:block w-12 h-12 text-[var(--green)]" /> --%>
         <p class="mt-5 text-center">Join at <b><%= QuicWeb.Endpoint.url() %>/enter-session</b></p>
-        <%!-- <Heroicons.computer_desktop class="hidden sm:block w-12 h-12 text-[var(--blue)]" /> --%>
       </div>
     </div>
   </div>
@@ -57,36 +52,12 @@
     </div>
   <% end %>
 
-
-
-
 <%!-- QUIZ QUESTIONS --%>
 <% else %>
   <%= if @session.status === :on_going do %>
   <div id="full-screen-on-going-session-section" phx-hook="SessionChannelMonitor">
-    <%!-- <div class="flex justify-end p-2">
-      <.button
-        id="finish_btn_monitor_full_screen_responsive"
-        phx-click="close_session_btn" 
-        data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
-        class="block md:hidden redBtn"
-      >
-        <p class="font-normal text-white">Close</p>
-      </.button>
-    </div> --%>
-
-
     <div class="flex justify-between px-2 mt-3 md:mt-8 md:px-0">
       <h4 class="text-[var(--primary-color-text)] font-medium"><%= @quiz.name %></h4>
-
-      <%!-- <.button
-        id="finish_btn_monitor_full_screen"
-        phx-click="close_session_btn" 
-        data-confirm="Are you sure? A closed session cannot be opened again! All Participants will be kicked out."
-        class="hidden md:block redBtn"
-      >
-        <p class="font-normal text-white">Close</p>
-      </.button> --%>
     </div>
 
     <div class="flex items-center justify-center gap-4 my-3 mb-5">
@@ -109,13 +80,7 @@
     <%!-- QUESTION --%>
     <div class="w-full px-2 mt-3 md:px-0">
       <% question = Enum.find(@quiz.questions, fn q -> q.position === @session.current_question end) %>
-      <%!-- <h5 class="px-4 mt-8 mb-3 font-medium lg:px-0">Question <%= question.position %></h5> --%>
-      <div class="">
-        <%!-- <div class="rounded-full border-2 border-[var(--primary-color)] w-12 h-12 flex items-center justify-center">
-          <h6 class="font-medium text-[var(--primary-color-text)] text-lg"><%= question.position %></h6>
-        </div> --%>
-        
-        
+      <div>
         <%= if question !== nil do %>
           <section id="monitor_paced_full_screen_question" phx-hook="PrismInitializer" class="increment_font_size bg-[var(--background-card)] border border-[var(--border)] pt-3 px-5 pb-5 rounded-xl w-full">
             <%!-- QUESTION TYPE --%>
@@ -147,7 +112,6 @@
           </p>
         </.button>
       </div>
-
 
       <div id="monitor_paced_full_screen_answers" phx-hook="PrismInitializer" class="grid w-full grid-cols-1 gap-4 md:grid-cols-2 increment_font_size" style="grid-auto-rows: 1fr">
         <% question_answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>

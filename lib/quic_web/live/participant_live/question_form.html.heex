@@ -1,17 +1,12 @@
-
 <div id="participant-question-form-section" phx-hook="SessionChannelParticipant">
   <%= if !@has_submitted do %>
     <div id="participant-question-form" phx-hook="PrismInitializer">
       <%!-- PARTICIPANT PROGRESS --%>
-      <.participant_progress_bar class="my-8" progress={QuicWebAux.progress_percentage(@participant.current_question, Enum.count(@session.quiz.questions))} current_question={@participant.current_question} num_quiz_questions={Enum.count(@session.quiz.questions)} />
+      <.participant_progress_bar class="my-6" progress={QuicWebAux.progress_percentage(@participant.current_question, Enum.count(@session.quiz.questions))} current_question={@participant.current_question} num_quiz_questions={Enum.count(@session.quiz.questions)} />
 
       <%!-- QUESTION DESCRIPTION --%>
-      <h5 class="px-4 mt-8 mb-3 font-medium lg:px-0">Question <%= @question.position %></h5>
-      <div class="px-4 mb-8 lg:px-0">
-        <%!-- <div class="rounded-full border border-[var(--primary-color)] w-12 h-12 flex items-center justify-center font-medium text-[var(--primary-color-text)] text-lg">
-          <%= @question.position %>
-        </div> --%>
-        
+      <h5 class="px-4 mt-5 mb-3 font-medium lg:px-0">Question <%= @question.position %></h5>
+      <div class="px-4 mb-8 lg:px-0">        
         <section class="bg-[var(--background-card)] border border-[var(--border)] pt-3 px-5 pb-5 rounded-xl w-full">
           <%!-- QUESTION TYPE --%>
           <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(@question.type)]}>
@@ -26,26 +21,27 @@
       </div>
 
       <%!-- DIVIDER --%>
-      <hr class="border border-[var(--border)] my-5 w-full" />
+      <hr class="border border-[var(--border)] my-8 w-full" />
 
       <%!-- ANSWERS --%>
       <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2" style="grid-auto-rows: 1fr">
         <%= if @question.type === :true_false do %>
-          <div class="w-full h-full p-3">
-            <div 
-              phx-click="selected-answer"
-              phx-value-answer="true"
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if @selected_answer === "true", do: "border-[var(--primary-color)]")]}
-            >
+          <div class="w-full h-full p-3 mt-2">
+            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+              <form id="true-participant-form">
+                <input type="checkbox" id="true-participant-form-checkbox" phx-click="selected-answer" phx-value-answer="true" class="checkbox" checked={@selected_answer === "true"}>
+              </form>
+              
               <p>True</p>
             </div>
           </div>
-          <div class="w-full h-full p-3">
-            <div 
-              phx-click="selected-answer"
-              phx-value-answer="false"
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if @selected_answer === "false", do: "border-[var(--primary-color)]")]}
-            >
+
+          <div class="w-full h-full p-3 mt-2">
+            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+              <form id="false-participant-form">
+                <input type="checkbox" id="false-participant-form-checkbox" phx-click="selected-answer" phx-value-answer="false" class="checkbox" checked={@selected_answer === "false"}>
+              </form>
+              
               <p>False</p>
             </div>
           </div>
@@ -53,70 +49,69 @@
 
         <%= if @question.type === :single_choice do %>
           <div :for={answer <- @answers} class="w-full h-full p-3">
-            <div 
-              phx-click="selected-answer"
-              phx-value-answer={answer.id}
-              class={["py-2 px-4 rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)] h-full", (if @selected_answer === answer.id, do: "border-[var(--primary-color)]")]}
-            >
-              <.markdown class="mt-2" text={answer.answer} />
+            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+              <form id={"single-choice-participant-form-#{answer.id}"}>
+                <input type="checkbox" id={answer.id} phx-click="selected-answer" phx-value-answer={answer.id} class="checkbox" checked={@selected_answer === answer.id}>
+              </form>
+              
+              <div>
+                <.markdown class="mt-2" text={answer.answer} />
+              </div>
             </div>
           </div>
         <% end %>
 
         <%= if @question.type === :multiple_choice do %>
           <div :for={answer <- @answers} class="w-full h-full p-3">
-            <div 
-              phx-click="selected-answer"
-              phx-value-answer={answer.id}
-              class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] border border-[var(--border)]", (if Enum.member?(@selected_answer, answer.id), do: "border-[var(--primary-color)]")]}
-            >
-              <.markdown class="mt-2" text={answer.answer} />
+            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+              <form id={"multiple-choice-participant-form-#{answer.id}"}>
+                <input type="checkbox" id={answer.id} phx-click="selected-answer" phx-value-answer={answer.id} class="checkbox" checked={Enum.member?(@selected_answer, answer.id)}>
+              </form>
+                
+              <div>
+                <.markdown class="mt-2" text={answer.answer} />
+              </div>
             </div>
           </div>
         <% end %>
       </div>
 
       <%= if @question.type === :fill_the_blanks do %>
-        <.simple_form
-          class="w-full"
-          :let={f}
-          for={@answer_changeset}
-          id={"participant-question-blanks-answer-form"}
-          phx-change="validate_participant_answer"
-          phx-submit="ignore"
-        >
-          <.input field={f[:answer]} type="text" class="w-full"/>
-        </.simple_form>
+      <div class="flex justify-center mx-4 -mt-12">
+          <.simple_form
+            class="w-full lg:w-[70%]"
+            :let={f}
+            for={@answer_changeset}
+            id={"participant-question-blanks-answer-form"}
+            phx-change="validate_participant_answer"
+            phx-submit="ignore"
+          >
+            <.input field={f[:answer]} type="text" label="Answer" />
+          </.simple_form>
+        </div>
       <% end %>
 
       <%= if @question.type === :open_answer do %>
-        <.simple_form
-          class="w-full"
-          :let={f}
-          for={@answer_changeset}
-          id={"participant-question-open-answer-form"}
-          phx-change="validate_participant_answer"
-          phx-submit="ignore"
-        >
-          <.input field={f[:answer]} type="textarea" rows="1" class="flex-1 w-full"/>
-        </.simple_form>
+        <div class="flex justify-center mx-4 -mt-12">
+          <.simple_form
+            class="w-full lg:w-[70%]"
+            :let={f}
+            for={@answer_changeset}
+            id={"participant-question-open-answer-form"}
+            phx-change="validate_participant_answer"
+            phx-submit="ignore"
+          >
+            <.input field={f[:answer]} type="textarea" rows="1" label="Answer"/>
+          </.simple_form>
+        </div>
+        
       <% end %>
 
       <%= if @question.type === :code do %>
         <div class="flex justify-center mx-[5%] lg:mx-[20%]">
           <div class="w-full">
-            <div :if={@loading} id="participant-code-answer-editor-loading">
-              <div class="flex items-center justify-center gap-3">
-                <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
-                <p>Loading editor</p>
-              </div>
-            </div>
-            <div
-              class="hidden"
-              id="participant-code-answer-editor"
-              phx-hook="AceEditor"
-              phx-update="ignore"
-            ><%= @answer_changeset["answer"] %></div>
+            <h6 class="font-medium">Answer</h6>
+            <.code_editor editor_id="participant-code-answer-editor" loading={@loading} text={@answer_changeset["answer"]} />
           </div>
           
         </div>
@@ -126,18 +121,7 @@
         <div class="flex flex-col gap-8 items-center mx-[5%] lg:mx-[20%]">
           <div :for={{key, value} <- @answer_changeset["answer"]} class="w-full">
             <h6 class="font-medium"><%= key %></h6>
-            <div :if={@loading} id={"participant-fill-code-#{key}-loading"}>
-              <div class="flex items-center justify-center gap-3">
-                <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
-                <p>Loading editor</p>
-              </div>
-            </div>
-            <div
-              class="hidden"
-              id={"participant-fill-code-#{key}"}
-              phx-hook="AceEditor"
-              phx-update="ignore"
-            ><%= value %></div>
+            <.code_editor editor_id={"participant-fill-code-#{key}"} loading={@loading} text={value} />
           </div>
         </div>
       <% end %>

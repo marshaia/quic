@@ -68,7 +68,6 @@ defmodule QuicWeb.TeamLive.FormComponent do
   end
 
   defp save_team(socket, :new, team_params) do
-    #case Teams.create_team(team_params, socket.assigns.current_author.id) do
     case Teams.create_team_with_author(team_params, socket.assigns.current_author.id) do
       {:ok, team} ->
         notify_parent({:saved, team})

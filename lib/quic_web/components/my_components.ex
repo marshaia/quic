@@ -208,7 +208,7 @@ defmodule QuicWeb.MyComponents do
     assigns = Map.put(assigns, :text, text)
 
     ~H"""
-    <div class="w-full">
+    <div class={"w-full #{@class}"}>
       <pre><code class={"lang-#{@language} language-#{@language}"}><%= @text %></code></pre>
     </div>
     """
@@ -400,7 +400,7 @@ defmodule QuicWeb.MyComponents do
       <% end %>
 
       <%= if @type === :fill_the_blanks || @type === :single_choice || @type === :multiple_choice do %>
-        <div class="mt-8 -mb-2">
+        <div class="mt-8 -mb-2 mb-5">
           <p class="font-bold">Answers</p>
         </div>
 
@@ -608,9 +608,9 @@ defmodule QuicWeb.MyComponents do
     ~H"""
     <div class={"flex items-center justify-center w-full gap-2 #{@class}"}>
       <div class="bg-[var(--border)] rounded-full w-[80%]">
-        <div class={["gradient text-white py-1 text-right rounded-full", (if @current_question !== 0, do: "px-4" )]} style={"width: #{@progress}%"}
+        <div class={["gradient text-white py-0.5 text-right rounded-full", (if @current_question !== 0, do: "px-4" )]} style={"width: #{@progress}%"}
         >
-          <p class={["text-white",(if @current_question === 0, do: "py-2.5")]}><%= if @current_question === @num_quiz_questions, do: "Completed", else: (if @current_question > 0, do: @current_question) %></p>
+          <p class={["text-white",(if @current_question === 0, do: "py-2")]}><%= if @current_question === @num_quiz_questions, do: "Completed", else: (if @current_question > 0, do: @current_question) %></p>
         </div>
       </div>
       <p :if={@current_question !== @num_quiz_questions}><%= @num_quiz_questions %></p>
@@ -695,6 +695,33 @@ defmodule QuicWeb.MyComponents do
         data-points={Jason.encode!(@points)}
         data-labels={Jason.encode!(@labels)}
       ></canvas>
+    </div>
+    """
+  end
+
+
+  @doc"""
+
+  """
+  attr :editor_id, :string, default: ""
+  attr :text, :string, default: ""
+  attr :loading, :boolean, default: false
+
+  def code_editor(assigns) do
+    ~H"""
+    <div>
+      <div :if={@loading} id={"#{@editor_id}-loading"}>
+        <div class="flex items-center justify-center gap-3">
+          <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
+          <p>Loading editor</p>
+        </div>
+      </div>
+      <div
+        class="hidden"
+        id={@editor_id}
+        phx-hook="AceEditor"
+        phx-update="ignore"
+      ><%= @text %></div>
     </div>
     """
   end

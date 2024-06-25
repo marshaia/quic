@@ -1,16 +1,8 @@
-<div
-  id="participant-enter-session-section" 
-  phx-hook="SessionChannelParticipant" 
-  class="max-w-md px-4 py-4 mx-auto mt-10"
->
-
+<div id="participant-enter-session-section" phx-hook="SessionChannelParticipant" class="max-w-md px-4 py-4 mx-auto mt-10">
   <div class="flex items-center justify-center gap-2">
     <Heroicons.bolt class="text-[var(--primary-color)] w-11 h-11"/>
     <h4>Join a Live Session</h4>
   </div>
-
-  <%!-- <p>message: <%= inspect @participant %></p> --%>
-  <%!-- <p>Code inserted: <%= @code %></p> --%>
 
   <.simple_form
     :let={f}
@@ -32,6 +24,4 @@
       <.button class="call2actionBtn" id="join-session-button" phx-disable-with="Joining..." disabled={String.length(@error_name) > 0}><p class="font-normal text-white">Join Session</p></.button>
     </:actions>
   </.simple_form>
-
-
 </div>

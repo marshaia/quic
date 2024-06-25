@@ -134,14 +134,14 @@ li { @apply text-sm }
 ::-webkit-scrollbar-track {
   /* background: #f1f1f1; */
   background: var(--background-card);
-  border-radius: 0px; 
+  border-radius: 5px; 
   overflow: hidden;
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888; 
-  border-radius: 0px; 
+  border-radius: 5px; 
   overflow-y: auto;
 }
 
@@ -164,4 +164,8 @@ li { @apply text-sm }
   h6 { @apply text-3xl };
   p  { @apply text-lg };
   code[class*="language-"], pre[class*="language-"] {font-size: 1.1rem;};
+}
+
+.checkbox {
+  @apply w-4 h-4 text-[var(--primary-color)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--primary-color)] dark:ring-offset-gray-800 focus:ring dark:bg-gray-700 dark:border-gray-600
 }

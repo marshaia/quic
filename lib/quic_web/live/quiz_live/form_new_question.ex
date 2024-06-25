@@ -54,12 +54,6 @@ defmodule QuicWeb.QuizLive.NewQuestionForm do
 
   @impl true
   def handle_event("validate", %{"type" => type} = params, socket) do
-    # changeset =
-    #   socket.assigns.quiz
-    #   |> Quizzes.change_quiz(quiz_params)
-    #   |> Map.put(:action, :validate)
-
-    # {:noreply, assign_form(socket, changeset)}
     {:noreply, socket |> assign(:selected, type) |> assign(:changeset, params)}
   end
 
@@ -67,25 +61,4 @@ defmodule QuicWeb.QuizLive.NewQuestionForm do
     {:noreply, socket |> redirect(to: ~p"/quizzes/#{socket.assigns.quiz_id}/new-question/#{type}")}
   end
 
-  # defp save_quiz(socket, :new, quiz_params) do
-  #   quiz_params = Map.put(quiz_params, "total_points", 0)
-  #   case Quizzes.create_quiz_with_author(quiz_params, socket.assigns.current_author.id) do
-  #     {:ok, quiz} ->
-  #       notify_parent({:saved, quiz})
-
-  #       {:noreply,
-  #        socket
-  #        |> put_flash(:info, "Quiz created successfully")
-  #        |> push_patch(to: socket.assigns.patch)}
-
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       {:noreply, assign_form(socket, changeset)}
-  #   end
-  # end
-
-  # defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-  #   assign(socket, :form, to_form(changeset))
-  # end
-
-  #defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

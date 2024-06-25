@@ -54,7 +54,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
 
   # SELECTED ANSWER
   @impl true
-  def handle_event("selected-answer", %{"answer" => answer}, socket) do
+  def handle_event("selected-answer", %{"answer" => answer} = params, socket) do
     if socket.assigns.question.type === :multiple_choice do
       previous_selected_answers = socket.assigns.selected_answer
       if Enum.member?(previous_selected_answers, answer) do
@@ -64,7 +64,11 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
       end
 
     else
-      {:noreply, socket |> assign(:selected_answer, answer)}
+      if Map.has_key?(params, "value") do
+        {:noreply, socket |> assign(:selected_answer, answer)}
+      else
+        {:noreply, socket |> assign(:selected_answer, nil)}
+      end
     end
   end
 

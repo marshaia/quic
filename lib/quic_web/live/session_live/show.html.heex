@@ -55,7 +55,6 @@
       </div>
 
       <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
-
       <div class="flex-1"></div>
       
       <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
@@ -130,8 +129,6 @@
   </div>
   
   
-  
-
   <div class="flex">
     <div 
       phx-click="change_selected_view"
@@ -243,8 +240,7 @@
 
                 <%= if question.type === :code || question.type === :fill_the_code do %>
                   <% parameters = Enum.find(@session.quiz.parameters, fn p -> p.question_id === question.id end) %>
-                  <% code = (if question.type === :fill_the_code, do: Parameters.put_correct_answers_in_code(parameters), else: parameters.code) %>
-                  <.language_previewer text={code} language={parameters.language} />
+                  <.language_previewer text={parameters.code} language={parameters.language} />
                 <% end %>
               </div>
             </div>
@@ -279,22 +275,13 @@
                         <% end %>
                       </div>
                     </div>
-
-                    <%!-- <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
-                    <div class="">
-                      <.markdown class="w-full" text={q_answer.answer} />
-                    </div> --%>
                   </div>
                 <% end %>
               </div>
 
               <%!-- DOUGHNUT GRAPH --%>
               <div class="flex justify-center">
-                <.doughnut_chart
-                  id={"doughnut-chart-question-#{question.id}"} 
-                  points={Sessions.calculate_quiz_question_stats(@session.id, question.id)} 
-                  labels={["Correct", "Incorrect", "Blank"]} 
-                />
+                <.doughnut_chart id={"doughnut-chart-question-#{question.id}"} points={Sessions.calculate_quiz_question_stats(@session.id, question.id)} labels={["Correct", "Incorrect", "Blank"]} />
               </div>
             </div>
           </div>

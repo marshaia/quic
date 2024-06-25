@@ -29,30 +29,45 @@ defmodule QuicWeb.SessionParticipant do
     participant |> Participants.update_participant(%{"current_question" => participant.current_question + 1})
   end
 
+  def format_participant_answer(question_type, answer) do
+    case question_type do
+      :fill_the_code ->
+        case Jason.encode(answer) do
+          {:ok, encoded} -> [encoded]
+          {:error, _} -> [inspect(answer)]
+        end
+      :multiple_choice -> answer
+      _ -> [answer]
+    end
+  end
+
   def assess_submission(participant_id, question_id, answer) do
     participant = Participants.get_participant!(participant_id)
     question = Enum.find(participant.session.quiz.questions, fn q -> q.id === question_id end)
     question_answers = Enum.filter(participant.session.quiz.answers, fn a -> a.question_id === question_id end)
 
+    participant_answer = format_participant_answer(question.type, answer)
+    ParticipantAnswers.create_participant_answer(%{"answer" => participant_answer}, participant_id, question_id)
+
     #if answer.question.id === question_id do
       case question.type do
         :single_choice ->
-          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          #ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           assess_single_choice(question_answers, answer)
         :multiple_choice ->
-          ParticipantAnswers.create_participant_answer(%{"answer" => answer}, participant_id, question_id)
+          #ParticipantAnswers.create_participant_answer(%{"answer" => answer}, participant_id, question_id)
           assess_multiple_choice(question_answers, answer)
         :true_false ->
-          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          #ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           assess_true_false(question_answers, answer)
         :fill_the_blanks ->
-          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          #ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           assess_fill_the_blanks(question_answers, answer)
         :open_answer ->
-          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          #ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           true
         _ ->
-          ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
+          #ParticipantAnswers.create_participant_answer(%{"answer" => [answer]}, participant_id, question_id)
           false
       end
     #else

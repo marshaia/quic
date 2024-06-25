@@ -1,20 +1,24 @@
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-class Name(BaseModel):
-  name: str
+class Parameters(BaseModel):
+  participant_id: str
+  participant_answer: str
+  test_file: str
+
 
 app = FastAPI()
 
-@app.get("/")
-def hello():
-  return "Hello World!"
-
 @app.post("/")
-def hello(name: Name):
-  return "Hello " + name.name + "!"
+def hello(parameters: Parameters):
+  if parameters.participant_answer == "":
+    raise HTTPException(status_code=400, detail="Invalid Participant Answer!")  
+  elif parameters.test_file == "":
+    raise HTTPException(status_code=400, detail="Invalid Test File!")  
+  else:
+    return parameters
 
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: Union[str, None] = None):
-#   return {"item_id": item_id, "q": q}
+# @app.get("/")
+# def hello():
+#   return "Hello World!"

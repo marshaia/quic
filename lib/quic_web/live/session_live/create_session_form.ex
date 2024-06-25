@@ -77,11 +77,9 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
       session_params = %{"type" => socket.assigns.session_type}
       case Sessions.create_session(session_params, socket.assigns.current_author, socket.assigns.quiz) do
       {:ok, session} ->
-        #notify_parent({:saved, session})
-
-      {:noreply, socket
-                |> put_flash(:info, "Session created successfully")
-                |> redirect(to: ~p"/sessions/#{session.id}")}
+        {:noreply, socket
+                  |> put_flash(:info, "Session created successfully")
+                  |> redirect(to: ~p"/sessions/#{session.id}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, socket |> assign(:changeset, changeset) |> put_flash(:error, "Something went wrong :(")}

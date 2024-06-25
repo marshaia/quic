@@ -31,69 +31,25 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
 
       <%!-- CODE/TEMPLATE --%>
       <p class="text-left font-bold text-[var(--primary-color-text)] mt-8 mb-2"><%= if @type === :code, do: "Participant Template", else: "Question Code" %></p>
-      <div :if={@loading} id={"#{@id}-code-loading"}>
-        <div class="flex items-center justify-center gap-3">
-          <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
-          <p>Loading editor</p>
-        </div>
-      </div>
-      <div
-        class="hidden"
-        id={"#{@id}-code"}
-        phx-hook="AceEditor"
-        phx-update="ignore"
-      ><%= if Map.has_key?(@changeset.changes, :code), do: @changeset.changes.code, else: (if Map.has_key?(@changeset.data, :code), do: @changeset.data.code, else: "") %></div>
+      <.code_editor editor_id={"#{@id}-code"} loading={@loading} text={if Map.has_key?(@changeset.changes, :code), do: @changeset.changes.code, else: (if Map.has_key?(@changeset.data, :code), do: @changeset.data.code, else: "")} />
 
       <%!-- CORRECT ANSWERS --%>
       <%= if @type === :fill_the_code do %>
         <% answer = (if Map.has_key?(@changeset.changes, :correct_answers), do: @changeset.changes.correct_answers, else: (if Map.has_key?(@changeset.data, :correct_answers), do: @changeset.data.correct_answers, else: %{})) %>
         <p class="text-left font-bold text-[var(--primary-color-text)] mt-8 mb-2">Answers Code</p>
-        <div :if={@loading} id={"#{@id}-answers-loading"}>
-          <div class="flex items-center justify-center gap-3">
-            <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
-            <p>Loading editor</p>
-          </div>
-        </div>
-        <div
-          class="hidden"
-          id={"#{@id}-answers"}
-          phx-hook="AceEditor"
-          phx-update="ignore"
-        ><%= Parameters.parse_correct_answers_to_string(answer) %></div>
+        <.code_editor editor_id={"#{@id}-answers"} loading={@loading} text={Parameters.parse_correct_answers_to_string(answer)} />
       <% end %>
 
       <hr class="w-full mt-10 mb-5"/>
 
       <%!-- TEST FILE --%>
       <p class="text-left font-bold text-[var(--primary-color-text)] mt-8 mb-2">Test File</p>
-      <div :if={@loading} id={"#{@id}-test-file-loading"}>
-        <div class="flex items-center justify-center gap-3">
-          <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
-          <p>Loading editor</p>
-        </div>
-      </div>
-      <div
-        class="hidden"
-        id={"#{@id}-test-file"}
-        phx-hook="AceEditor"
-        phx-update="ignore"
-      ><%= if Map.has_key?(@changeset.changes, :test_file), do: @changeset.changes.test_file, else: (if Map.has_key?(@changeset.data, :test_file), do: @changeset.data.test_file, else: "") %></div>
+      <.code_editor editor_id={"#{@id}-test-file"} loading={@loading} text={if Map.has_key?(@changeset.changes, :test_file), do: @changeset.changes.test_file, else: (if Map.has_key?(@changeset.data, :test_file), do: @changeset.data.test_file, else: "")} />
 
       <%!-- TESTS --%>
       <% tests = (if Map.has_key?(@changeset.changes, :tests), do: @changeset.changes.tests, else: (if Map.has_key?(@changeset.data, :tests), do: @changeset.data.tests, else: [])) %>
       <p class="mt-8 mb-1 font-bold text-left">Tests</p>
-      <div :if={@loading} id={"#{@id}-tests-loading"}>
-        <div class="flex items-center justify-center gap-3">
-          <Heroicons.arrow_path class="w-5 h-5 text-[var(--primary-color)] animate-spin"/>
-          <p>Loading editor</p>
-        </div>
-      </div>
-      <div
-        class="hidden"
-        id={"#{@id}-tests"}
-        phx-hook="AceEditor"
-        phx-update="ignore"
-      ><%= Parameters.parse_tests_to_string(tests) %></div>
+      <.code_editor editor_id={"#{@id}-tests"} loading={@loading} text={Parameters.parse_tests_to_string(tests)} />
     </div>
     """
   end

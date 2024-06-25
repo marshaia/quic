@@ -1,9 +1,5 @@
-
-<%!-- <% isOwner = isOwner?(@quiz.id, @current_author) %> --%>
-<%!-- .link patch: patch={~p"/quizzes/#{@quiz_id}/question/#{@question.id}/edit"} --%>
-
 <div class="flex justify-center w-full">
-  <main class="w-full"> <%!-- max-w-3xl --%>
+  <main class="w-full">
 
   <div class="flex justify-start">
     <.my_back navigate={~p"/quizzes/#{@quiz_id}"}>Back</.my_back>
@@ -15,7 +11,6 @@
       <div class={["rounded-md px-2", QuicWebAux.get_type_color(@question.type)]}>
         <span class="text-xs text-white"> <%= QuicWebAux.readable_name(@question.type) %> </span>
       </div>
-
 
       <div class="flex gap-1">
         <Heroicons.trophy class="w-5 h-5" />
@@ -32,7 +27,6 @@
       </div>
     </div>
 
-
     <p id="question-page-prism-hook" phx-hook="PrismInitializer" class="mt-4 overflow-auto text-justify"><.markdown text={@question.description} /></p>
 
     <div :if={@question.type === :fill_the_code || @question.type === :code} class="mt-2">
@@ -41,9 +35,7 @@
 
     <%= if @question.type === :true_false do %>
       <hr class="mt-8" />
-      <.true_or_false
-        class="mt-3 ml-2"
-        is_true={Enum.at(@question.answers, 0, %{}).is_correct}
+      <.true_or_false class="mt-3 ml-2" is_true={Enum.at(@question.answers, 0, %{}).is_correct}
       />
     <% end %>
   </section>
@@ -51,11 +43,7 @@
 
     <%!-- QUIZ ANSWERS --%>
     <%= if @question.type !== :open_answer && @question.type !== :true_false do %>
-      <section 
-        id={"question-page-answer-hook"} phx-hook="PrismInitializer"
-        class="w-full mt-8"
-      >
-        
+      <section id={"question-page-answer-hook"} phx-hook="PrismInitializer" class="w-full mt-8">
         <%= if @question.type === :fill_the_code || @question.type === :code do %>
           <%= if @question.type === :fill_the_code do %>
             <h6 class="mb-2 font-medium">Correct Answer</h6>
@@ -82,15 +70,20 @@
 
           <%!-- TESTS --%>
           <h6 class="mb-2 font-medium">Tests</h6>
-          <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)]">
-            <div class="flex flex-col gap-3">
-              <div :for={test <- @question.parameters.tests} class="flex items-center gap-5">
-                <p><span class="font-medium">Input:</span> <%= if test["input"], do: test["input"], else: "Empty" %></p>
-                <Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" />
-                <p><span class="font-medium">Output:</span> <%= if test["output"], do: test["output"], else: "Empty" %></p>
-              </div>
-              
-            </div>
+          <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)] overflow-auto">
+            <table class="w-full p-2 overflow-auto">
+              <tr class="border-b border-[var(--border)] h-10">
+                <th class="min-w-max">Input</th>
+                <th class="min-w-8"></th>
+                <th class="min-w-max">Ouput</th>
+              </tr>
+
+              <tr :for={test <- @question.parameters.tests} class="h-10 text-center">
+                <td><p><%= if test["input"], do: test["input"], else: "Empty" %></p></td>
+                <td class="flex items-center justify-center mt-2"><Heroicons.arrow_right_circle class="w-5 h-5" /></td>
+                <td><p><%= if test["output"], do: test["output"], else: "Empty" %></p></td>
+              </tr>
+            </table>
           </div>
 
 
@@ -102,7 +95,6 @@
             phx-hook="PrismInitializer"
             class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]"
           >
-
             <%!-- ANSWER VALIDITY --%>
             <div class="flex flex-col items-center justify-start">
               <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 mt-1 min-h-6 min-w-6" />

@@ -2,6 +2,7 @@ defmodule QuicWeb.ParticipantLive.Show do
   use QuicWeb, :author_live_view
 
   alias Quic.Participants
+  alias Quic.Parameters
   alias QuicWeb.QuicWebAux
 
   @impl true
