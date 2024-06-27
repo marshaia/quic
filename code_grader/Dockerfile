@@ -22,4 +22,4 @@ CMD ["fastapi", "run", "main.py"]
 # para executar:
 # não esquecer de ir para a diretoria /code_grader 1º
 # docker build -t code_grader_image .
-# docker run -d (--restart always) --name code_grader_container -p 5000:8000 code_grader_image
+# docker run -d --restart always --name code_grader_container -p 5000:8000 code_grader_image

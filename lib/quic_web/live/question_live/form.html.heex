@@ -11,13 +11,20 @@
 <div class="hidden lg:block">
   <div class="flex w-full mt-4 rounded-md border border-[var(--border)] h-[calc(100vh-11.5rem)] bg-[var(--background-card)]">
     <%!-- FORM --%>
-    <section class="flex flex-col items-center w-1/2 px-6 py-5 overflow-auto">
-      <p :if={@type === :open_answer} class="mt-3 mb-5 text-xs text-justify">
+    <section class="flex flex-col items-center w-1/2 px-6 py-3 overflow-auto">
+      <p :if={@type === :open_answer} class="mt-2 mb-8 text-xs text-justify">
         <span class="font-semibold">NOTE:</span> Open Answers aren't automatically evaluated by the system. So, the points are only assigned if the Participant submits an answer.
       </p>
 
+      <div :if={(@type === :fill_the_code || @type === :code) && @parameters_changeset.data.id === nil} class="flex justify-end w-full gap-1 p-2 -mt-2 -mb-4">
+        <Heroicons.trash class="w-3.5 h-3.5 text-gray-400" />
+        <button phx-click="clear"> 
+          <p class="text-xs text-gray-400 hover:underline">Clear All</p>
+        </button>
+      </div>
+
       <.simple_form
-        class="w-full -mt-10"
+        class={["w-full", (if @type !== :fill_the_code && @type !== :code, do: "-mt-10"), (if (@type === :fill_the_code || @type === :code) && @parameters_changeset.data.id !== nil, do: "-mt-10")]}
         :if={@view_selected === :editor}
         :let={f}
         for={@question_changeset}

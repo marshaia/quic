@@ -5,7 +5,8 @@ defmodule Quic.ParticipantAnswers.ParticipantAnswer do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "participant_answers" do
-    field :result, Ecto.Enum, values: [:correct, :incorrect, :assessing]
+    field :result, Ecto.Enum, values: [:correct, :incorrect, :assessing, :error]
+    field :error_reason, :string
     field :answer, {:array, :string}
     field :question_id, :string
 
@@ -18,23 +19,15 @@ defmodule Quic.ParticipantAnswers.ParticipantAnswer do
   @doc false
   def changeset(participant_answer, attrs) do
     participant_answer
-    |> cast(attrs, [:answer, :result, :question_id])
+    |> cast(attrs, [:answer, :result, :question_id, :error_reason])
     |> validate_required([:answer, :result, :question_id])
   end
 
   @doc false
   def changeset(participant_answer, attrs, participant) do
     participant_answer
-    |> cast(attrs, [:answer, :result, :question_id])
+    |> cast(attrs, [:answer, :result, :question_id, :error_reason])
     |> put_assoc(:participant, participant)
-    #|> put_assoc(:question, question)
     |> validate_required([:answer, :result, :question_id])
   end
-  # def changeset(participant_answer, attrs, participant, question) do
-  #   participant_answer
-  #   |> cast(attrs, [:answer, :result, :question_id_new])
-  #   |> put_assoc(:participant, participant)
-  #   |> put_assoc(:question, question)
-  #   |> validate_required([:answer, :result, :question_id_new])
-  # end
 end

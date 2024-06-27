@@ -4,11 +4,9 @@ defmodule Quic.Participants do
   """
 
   import Ecto.Query, warn: false
-  alias Quic.Repo
-
-  alias Quic.Sessions
-  alias Quic.ParticipantAnswers
   alias Quic.Participants.Participant
+  alias Quic.{Repo, Sessions, ParticipantAnswers}
+
 
   @doc """
   Returns the list of participants.
@@ -150,11 +148,14 @@ defmodule Quic.Participants do
     question = Enum.find(participant.session.quiz.questions, fn q -> q.id === question_id end)
     participant_answer = Enum.find(participant.answers, nil, fn a -> a.question_id === question_id end)
 
-    if results do
-      participant |> update_participant(%{"total_points" => participant.total_points + question.points})
-      ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :correct})
-    else
-      ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :incorrect})
+    case results[:result] do
+      :correct ->
+        participant |> update_participant(%{"total_points" => participant.total_points + question.points})
+        ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :correct})
+      :incorrect ->
+        ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :incorrect})
+      :error ->
+        ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :error, "error_reason" => results[:error_reason]})
     end
   end
 

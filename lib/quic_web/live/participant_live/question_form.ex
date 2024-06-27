@@ -1,9 +1,8 @@
 defmodule QuicWeb.ParticipantLive.QuestionForm do
   use QuicWeb, :live_view
 
-  alias Quic.Sessions
-  alias Quic.Participants
   alias QuicWeb.QuicWebAux
+  alias Quic.{Sessions, Participants}
 
   @impl true
   def mount(%{"participant_id" => participant_id, "question_position" => question_position}, _session, socket) do
@@ -64,11 +63,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
       end
 
     else
-      if Map.has_key?(params, "value") do
-        {:noreply, socket |> assign(:selected_answer, answer)}
-      else
-        {:noreply, socket |> assign(:selected_answer, nil)}
-      end
+      if Map.has_key?(params, "value"), do: {:noreply, socket |> assign(:selected_answer, answer)}, else: {:noreply, socket |> assign(:selected_answer, nil)}
     end
   end
 
@@ -84,7 +79,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
       participant_id: socket.assigns.participant.id
     }
 
-    {:noreply, socket |> push_event("participant-submit-answer", event_params)}
+    {:noreply, socket |> push_event("participant-submit-answer", event_params) |> assign(:has_submitted, true)}
   end
 
   @impl true
@@ -104,7 +99,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   # SESSION CHANNEL MESSAGES
   @impl true
   def handle_info({"submission_results", %{"answer" => _results}}, socket) do
-    socket = socket |> assign(:has_submitted, true) |> assign(:participant, Participants.get_participant!(socket.assigns.participant.id))
+    socket = socket |> assign(:participant, Participants.get_participant!(socket.assigns.participant.id)) |> assign(:results, true)
     if socket.assigns.session.type === :participant_paced && (socket.assigns.last_question === false) do
       {:noreply, socket |> push_event("participant-next-question", %{participant_id: socket.assigns.participant.id, current_question: socket.assigns.question.position, code: socket.assigns.session.code})}
     else

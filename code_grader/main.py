@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Dict
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
@@ -6,7 +6,7 @@ class Parameters(BaseModel):
   participant_id: str
   participant_answer: str
   test_file: str
-
+  tests: List[Dict[str, str]]  # Declare tests as a list of dictionaries
 
 app = FastAPI()
 
@@ -17,7 +17,7 @@ def hello(parameters: Parameters):
   elif parameters.test_file == "":
     raise HTTPException(status_code=400, detail="Invalid Test File!")  
   else:
-    return parameters
+    return {"result": "correct"}
 
 # @app.get("/")
 # def hello():

@@ -5,7 +5,7 @@ defmodule Quic.Questions do
 
   import Ecto.Query, warn: false
 
-  alias Quic.{Repo, Quizzes, Parameters, Participants, ParticipantAnswers}
+  alias Quic.{Repo, Quizzes, Parameters, Participants, ParticipantAnswers, CodeGrader}
   alias Quic.Questions.{Question, QuestionAnswer}
 
   @doc """
@@ -332,7 +332,7 @@ defmodule Quic.Questions do
     question_answers = Enum.filter(participant.session.quiz.answers, fn a -> a.question_id === question_id end)
 
     participant_answer = ParticipantAnswers.format_participant_answer(question.type, answer)
-    ParticipantAnswers.create_participant_answer(%{"answer" => participant_answer}, participant_id, question_id)
+    ParticipantAnswers.create_participant_answer(%{"answer" => participant_answer, "result" => :assessing}, participant_id, question_id)
 
     #if answer.question.id === question_id do
       case question.type do
@@ -340,8 +340,14 @@ defmodule Quic.Questions do
         :multiple_choice -> assess_multiple_choice(question_answers, answer)
         :true_false -> assess_true_false(question_answers, answer)
         :fill_the_blanks -> assess_fill_the_blanks(question_answers, answer)
-        :open_answer -> true
-        _ -> false
+        :open_answer -> %{result: :correct}
+        :fill_the_code ->
+          parameters = Enum.find(participant.session.quiz.parameters, fn p -> p.question_id === question_id end)
+          assess_fill_the_code(parameters, participant_id, answer)
+        :code ->
+          parameters = Enum.find(participant.session.quiz.parameters, fn p -> p.question_id === question_id end)
+          assess_code(parameters, participant_id, answer)
+        _ -> %{result: :error, error_reason: "Question type not supported"}
       end
     #else
     #  false
@@ -350,7 +356,7 @@ defmodule Quic.Questions do
 
   def assess_single_choice(question_answers, answer) do
     selected_answer = Enum.find(question_answers, fn a -> a.id === answer end)
-    selected_answer.is_correct
+    if selected_answer.is_correct, do: %{result: :correct}, else: %{result: :incorrect}
   end
 
   def assess_multiple_choice(question_answers, selected_answers) do
@@ -362,23 +368,38 @@ defmodule Quic.Questions do
     participant_correct_answers = Enum.reduce(selected_answers, true, fn answer_id, acc -> if !Enum.member?(correct_answers, answer_id), do: false, else: acc end)
 
     # check if participant selected only correct answers and all correct answers possible
-    participant_correct_answers && how_many_true === Enum.count(selected_answers)
+    if participant_correct_answers && how_many_true === Enum.count(selected_answers), do: %{result: :correct}, else: %{result: :incorrect}
   end
 
   def assess_true_false(question_answers, participant_answer) do
     participant_answer = (if participant_answer === "true", do: true, else: false)
     question_answer = Enum.at(question_answers, 0, nil)
     case question_answer do
-      nil -> false
-      answer -> answer.is_correct === participant_answer
+      nil -> %{result: :incorrect}
+      answer -> if answer.is_correct === participant_answer, do: %{result: :correct}, else: %{result: :incorrect}
     end
   end
 
   def assess_fill_the_blanks(question_answers, participant_answer) do
     question_answer = Enum.at(question_answers, 0, nil)
     case question_answer do
-      nil -> false
-      answer -> String.match?(participant_answer, ~r/^ *#{answer.answer} *$/i)
+      nil -> %{result: :incorrect}
+      answer -> if String.match?(participant_answer, ~r/^ *#{answer.answer} *$/i), do: %{result: :correct}, else: %{result: :incorrect}
+    end
+  end
+
+  def assess_fill_the_code(parameters, participant_id, participant_answer) do
+    participant_answer = Parameters.put_correct_answers_participant_in_code(parameters.code, participant_answer)
+    case CodeGrader.get_response(participant_id, participant_answer, parameters.test_file, parameters.tests) do
+      {:ok, result} -> %{result: result}
+      {:error, msg} -> %{result: :error, error_reason: msg}
+    end
+  end
+
+  def assess_code(parameters, participant_id, participant_answer) do
+    case CodeGrader.get_response(participant_id, participant_answer, parameters.test_file, parameters.tests) do
+      {:ok, result} -> %{result: result}
+      {:error, msg} -> %{result: :error, error_reason: msg}
     end
   end
 end

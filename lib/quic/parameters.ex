@@ -216,8 +216,8 @@ defmodule Quic.Parameters do
 
   def parse_tests_to_string(tests) when is_list(tests) do
     Enum.reduce(tests, "", fn test, acc ->
-      input = (if Map.has_key?(test, "input"), do: test["input"], else: "Empty")
-      output = (if Map.has_key?(test, "output"), do: test["output"], else: "Empty")
+      input = (if Map.has_key?(test, "input"), do: test["input"], else: "")
+      output = (if Map.has_key?(test, "output"), do: test["output"], else: "")
       acc <> input <> ":" <> output <> "\n"
     end)
   end

@@ -400,7 +400,7 @@ defmodule QuicWeb.MyComponents do
       <% end %>
 
       <%= if @type === :fill_the_blanks || @type === :single_choice || @type === :multiple_choice do %>
-        <div class="mt-8 -mb-2 mb-5">
+        <div class="mt-8 mb-5 -mb-2">
           <p class="font-bold">Answers</p>
         </div>
 
@@ -427,8 +427,8 @@ defmodule QuicWeb.MyComponents do
       <% language = (if Map.has_key?(@parameters_changeset.changes, :language), do: Atom.to_string(@parameters_changeset.changes.language), else: (if @parameters_changeset.data.language !== nil, do: Atom.to_string(@parameters_changeset.data.language), else: "c")) %>
       <% code = (if Map.has_key?(@parameters_changeset.changes, :code), do: @parameters_changeset.changes.code, else: (if @parameters_changeset.data.code !== nil, do: @parameters_changeset.data.code, else: "")) %>
 
-        <%!-- CODE --%>
-        <.language_previewer text={code} language={language} />
+      <%!-- CODE --%>
+      <.language_previewer :if={String.length(code) > 0} text={code} language={language} />
 
       <%= if @type === :fill_the_code do %>
         <%!-- DIVIDER --%>

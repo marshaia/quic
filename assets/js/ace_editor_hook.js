@@ -21,7 +21,11 @@ export const AceEditorHook = {
     let editor = mount_editor(id);
 
     document.getElementById(`${id}-loading`).classList.add("hidden")
-    document.getElementById(`${id}`).classList.remove("hidden")
+    document.getElementById(id).classList.remove("hidden")
+
+    this.handleEvent("clear_editor", () => {
+      editor.setValue("")
+    })
 
     editor.session.on('change', () => {
       if (id.includes("tests")) {

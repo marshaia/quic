@@ -100,6 +100,15 @@ defmodule QuicWeb.QuestionLive.Form do
     end
   end
 
+  @impl true
+  def handle_event("clear", _params, socket) do
+    question = %Question{} |> Questions.change_question(%{"points" => 0, "description" => ""})
+    parameters = %Parameter{} |> Parameters.change_parameter(%{"language" => :c, "code" => "", "test_file" => "", "correct_answers" => %{}, "tests" => []})
+
+    socket = push_event(socket, "clear_editor", %{})
+    {:noreply, socket |> assign(parameters_changeset: parameters, question_changeset: question, loading: false)}
+  end
+
   # Hook Events
   @impl true
   def handle_event("update_parameter", params, socket) do
