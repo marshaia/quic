@@ -154,19 +154,19 @@ defmodule Quic.Parameters do
 
   def create_parameters_changeset(type, %{new_question: new_question} = params) do
     if new_question do
-      test_file = "#include <stdio.h>\n\nint sum(int a, int b);\n\nint main() {\n  \n}"
+      test_file = "#include <stdio.h>\n#include <stdlib.h>\n\nint sum(int a, int b);\n\nint main(int argc, char *argv[]) {\n  int num1, num2;\n  scanf(\"%d %d\", &num1, &num2);\n\n  int result = sum(num1, num2);\n\n  printf(\"%d\", result);\n\n  return 0;\n}"
       tests = [%{"input" => "1,2", "output" => "3"}]
 
       case type do
         :fill_the_code -> change_parameter(%Parameter{}, %{
-          "code" => "int sum({{res1}}, int b) {\n  return a+b;\n}",
+          "code" => "int sum({{res1}}, int b) {\n  return a + {{res2}};\n}",
           "language" => :c,
-          "correct_answers" => %{"res1" => "int a"},
+          "correct_answers" => %{"res1" => "int a", "res2" => "b"},
           "test_file" => test_file,
           "tests" => tests
         })
         :code -> change_parameter(%Parameter{}, %{
-          "code" => "int sum(int a, int b) {\n\n}",
+          "code" => "int sum(int a, int b) {\n  //...\n}",
           "language" => :c,
           "correct_answers" => %{},
           "test_file" => test_file,

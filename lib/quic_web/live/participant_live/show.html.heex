@@ -117,19 +117,21 @@
       <%= if question.type === :fill_the_blanks do %>
         <% question_answer = Enum.at(question_answers, 0, nil) %>
         <% participant_text = Enum.at(participant_answer.answer,0,"") %>
-        <%!-- QUESTION ANSWER --%>
-        <div class="h-full p-1 px-5 overflow-auto border-b border-[var(--border)] md:border-0">
-          <div class="flex items-center justify-start w-full gap-2">
-            <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" />
-            <p><.markdown class="w-full" text={question_answer.answer} /></p>
-          </div>
-        </div>
 
         <%!-- PARTICIPANT ANSWER --%>
-        <div class="h-full p-1 px-5 overflow-auto">
+        <div class="h-full p-1 px-5 overflow-auto border-b border-[var(--border)] md:border-0">
           <div class="flex items-center justify-start w-full gap-2">
             <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
             <.markdown class="w-full" text={participant_text} />
+          </div>
+        </div>
+
+        <%!-- QUESTION ANSWER --%>
+        <div :if={participant_answer.result === :incorrect} class="h-full p-1 px-5 overflow-auto">
+          <div class="w-full">
+            <p class="text-xs font-medium">Correct Answer: </p>
+            <%!-- <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" /> --%>
+            <p><.markdown class="w-full" text={question_answer.answer} /></p>
           </div>
         </div>
       <% end %>
