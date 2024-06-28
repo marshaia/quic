@@ -154,8 +154,23 @@ defmodule Quic.Parameters do
 
   def create_parameters_changeset(type, %{new_question: new_question} = params) do
     if new_question do
-      test_file = "#include <stdio.h>\n#include <stdlib.h>\n\nint sum(int a, int b);\n\nint main(int argc, char *argv[]) {\n  int num1, num2;\n  scanf(\"%d %d\", &num1, &num2);\n\n  int result = sum(num1, num2);\n\n  printf(\"%d\", result);\n\n  return 0;\n}"
-      tests = [%{"input" => "1,2", "output" => "3"}]
+      tests = [%{"input" => "1,2", "output" => "3"}, %{"input" => "3,-1", "output" => "2"}]
+      test_file = """
+      #include <stdio.h>
+      #include <stdlib.h>
+
+      int sum(int a, int b);
+
+      int main(int argc, char *argv[]) {
+        int num1, num2;
+        scanf("%d %d", &num1, &num2);
+
+        int result = sum(num1, num2);
+        printf("%d", result);
+
+        return 0;
+      }
+      """
 
       case type do
         :fill_the_code -> change_parameter(%Parameter{}, %{
@@ -225,16 +240,16 @@ defmodule Quic.Parameters do
   def parse_tests_to_array(tests) when is_binary(tests) do
     lines = String.split(tests, "\n", trim: true)
     Enum.reduce(lines, [], fn line, acc ->
-      if String.match?(line, ~r/^:\w+[\w,]*/) do
+      if String.match?(line, ~r/^:.+[.+,]*/) do
         [output] = String.split(line, ":", trim: true)
         Enum.concat(acc, [%{"output" => output}])
 
       else
-        if String.match?(line, ~r/^\w+[\w,]*:$/) do
+        if String.match?(line, ~r/^.+[.+,]*:$/) do
           [input] = String.split(line, ":", trim: true)
           Enum.concat(acc, [%{"input" => input}])
         else
-          if String.match?(line, ~r/\w+[\w,]*:\w+[\w,]*/) do
+          if String.match?(line, ~r/.+[.*,]*:.+[.+,]*/) do
             [input, output] = String.split(line, ":", trim: true)
             Enum.concat(acc, [%{"input" => input, "output" => output}])
           else

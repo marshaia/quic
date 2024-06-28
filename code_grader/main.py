@@ -44,10 +44,7 @@ def test_compiled_code(parameters: Parameters, path):
   os.chdir(path)
 
   for test in parameters.tests:
-    input_data = []
-    expected_output = test["output"]
-    if "input" in test:
-     input_data = test["input"].replace(',', ' ')
+    input_data, expected_output = format_input_output(test)
 
     try:
       result = subprocess.run(["./main"], input=input_data.encode(), check=True, capture_output=True, timeout=5,)
@@ -73,3 +70,17 @@ def test_compiled_code(parameters: Parameters, path):
 def clean(path):
   if os.path.exists(path):
     shutil.rmtree(path)
+
+
+def format_input_output(test):
+  input_data = ""
+  expected_output = "" 
+
+  if "input" in test:
+    split = test["input"].split(',')
+    input_data = ' '.join(split)
+  if "output" in test:
+    split = test["output"].split(',')
+    expected_output = ' '.join(split)
+
+  return input_data, expected_output

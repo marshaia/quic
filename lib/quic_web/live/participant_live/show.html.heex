@@ -58,7 +58,7 @@
   </div>
 
   <%!-- DIVIDER --%>
-  <hr class="border border-[var(--border)] mt-7 mb-2 w-full" />
+  <hr class="border border-[var(--border)] mb-2 w-full" />
 
   <%!-- ANSWERS --%>
   <%= if has_answered do %> 
@@ -119,7 +119,7 @@
         <% participant_text = Enum.at(participant_answer.answer,0,"") %>
 
         <%!-- PARTICIPANT ANSWER --%>
-        <div class="h-full p-1 px-5 overflow-auto border-b border-[var(--border)] md:border-0">
+        <div class={["w-full p-1 px-5 overflow-auto", (if participant_answer.result === :correct, do: "lg:col-span-2", else: "border-b border-[var(--border)] md:border-0")]}>
           <div class="flex items-center justify-start w-full gap-2">
             <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
             <.markdown class="w-full" text={participant_text} />
@@ -141,22 +141,22 @@
         <% {:ok, answers} = Jason.decode(participant_text) %>
         <% parameters = Enum.find(@quiz.parameters, fn p -> p.question_id === question.id end) %>
 
-        <%!-- QUESTION ANSWER --%>
-        <div class="h-full p-1 px-5 overflow-auto border-b border-[var(--border)] md:border-0">
-          <div class="flex items-center justify-start w-full gap-2">
-            <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" />
-            <div class="flex-1">
-              <.language_previewer text={Parameters.put_correct_answers_in_code(parameters)} language={parameters.language} />
-            </div>
-          </div>
-        </div>
-
         <%!-- PARTICIPANT ANSWER --%>
-        <div class="w-full p-1 px-5 overflow-auto">
+        <div class={["w-full p-1 px-5 overflow-auto", (if participant_answer.result === :correct, do: "lg:col-span-2", else: "border-b border-[var(--border)] md:border-0")]}>
           <div class="flex items-center justify-start w-full gap-2">
             <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
             <div class="flex-1">
               <.language_previewer text={Parameters.put_correct_answers_participant_in_code(parameters.code, answers)} language={parameters.language} />
+            </div>
+          </div>
+        </div>
+
+        <%!-- QUESTION ANSWER --%>
+        <div class={["h-full p-1 px-5 overflow-auto", (if participant_answer.result === :correct, do: "hidden")]}>
+          <div class="flex items-center justify-start w-full gap-2">
+            <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" />
+            <div class="flex-1">
+              <.language_previewer text={Parameters.put_correct_answers_in_code(parameters)} language={parameters.language} />
             </div>
           </div>
         </div>

@@ -87,7 +87,6 @@ defmodule Quic.Questions do
           {:ok, _} = Parameters.create_parameter_with_question(param_map, question)
         end
 
-
         {:ok, question}
 
       {:error, _} -> result
@@ -168,7 +167,7 @@ defmodule Quic.Questions do
             "tests" => (if Map.has_key?(parameters_changeset.changes, :tests), do: parameters_changeset.changes.tests, else: parameters.tests),
             "correct_answers" => (if Map.has_key?(parameters_changeset.changes, :correct_answers), do: parameters_changeset.changes.correct_answers, else: parameters.correct_answers)
           }
-          #param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", (if Map.has_key?(parameters_changeset.changes, :correct_answers), do: parameters_changeset.changes.correct_answers, else: parameters.correct_answers)))
+
           {:ok, _} = Parameters.update_parameter(parameters, param_map)
         end
 
@@ -316,9 +315,9 @@ defmodule Quic.Questions do
   def create_question_placeholders(type, changeset) do
     case type do
       :fill_the_code ->
-        changeset |> Map.put(:description, "To insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can only have 'word' characters). To associate the correct answers, use the syntax: __`<id>:<correct_answer>`__.\n\nFinally, to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__.")
+        changeset |> Map.put(:description, "To insert a segment of code to complete, simply add __`{{<id>}}`__ in the intended place (the __`<id>`__ can only have 'word' characters). To associate the correct answers, use the syntax: __`<id>:<correct_answer>`__.\n\nFinally, to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__ (strings don't need the double quotes).")
       :code ->
-        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on the code editor.\n\nIn order to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__.")
+        changeset |> Map.put(:description, "Choose the programming language you want to evaluate, then, add the complete code you want your Participants to submit on the code editor.\n\nIn order to test the submitted code, please complete the Test File and insert input/output tests with the syntax __`<input>:<output>`__ (strings don't need the double quotes).")
       :fill_the_blanks ->
         changeset |> Map.put(:description, "When you want to insert the piece of text for the Participants to complete, you can choose how to display it on the question. The system will evaluate only the answer you insert, not the question's description.\nFor example:\n\n`We only consider the _____ answers!`")
       _ -> changeset

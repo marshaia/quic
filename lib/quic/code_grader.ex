@@ -4,8 +4,6 @@ defmodule Quic.CodeGrader do
     "http://localhost:5000/test"
   end
 
-  require Logger
-
   def get_response(participant_id, participant_answer, test_file, tests) do
     case HTTPoison.post(url(), Jason.encode!(%{
       "id" => participant_id,
