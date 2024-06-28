@@ -8,10 +8,10 @@ defmodule Quic.Quizzes.Quiz do
     field :name, :string
     field :description, :string
     field :total_points, :integer
+    field :public, :boolean
 
     belongs_to :author, Quic.Accounts.Author, foreign_key: :author_id
     has_many :questions, Quic.Questions.Question, foreign_key: :quiz_id
-    #has_many :sessions, Quic.Sessions.Session, foreign_key: :quiz_id
 
     timestamps(type: :utc_datetime)
   end
@@ -19,14 +19,14 @@ defmodule Quic.Quizzes.Quiz do
   @doc false
   def changeset(quiz, attrs) do
     quiz
-    |> cast(attrs, [:name, :description, :total_points])
-    |> validate_required([:name, :description, :total_points])
+    |> cast(attrs, [:name, :description, :total_points, :public])
+    |> validate_required([:name, :description, :total_points, :public])
   end
 
   def changeset(quiz, attrs, author) do
     quiz
-    |> cast(attrs, [:name, :description, :total_points])
+    |> cast(attrs, [:name, :description, :total_points, :public])
     |> put_assoc(:author, author)
-    |> validate_required([:name, :description, :total_points])
+    |> validate_required([:name, :description, :total_points, :public])
   end
 end

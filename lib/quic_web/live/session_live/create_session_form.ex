@@ -43,7 +43,6 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
 
   @impl true
   def handle_event("form_type_changed", %{"type" => type}, socket) do
-    # Sessions.change_session(%Session{}, %{type: type}) |> Map.put(:action, :validate)
     {:noreply, socket |> assign(session_type: String.to_atom(type))}
   end
 

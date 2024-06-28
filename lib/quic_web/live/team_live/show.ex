@@ -2,6 +2,7 @@ defmodule QuicWeb.TeamLive.Show do
   use QuicWeb, :author_live_view
 
   alias Quic.Teams
+  alias Quic.Quizzes
   alias QuicWeb.QuicWebAux
 
   @impl true
@@ -30,7 +31,7 @@ defmodule QuicWeb.TeamLive.Show do
 
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
+  def handle_event("delete_team", %{"id" => id}, socket) do
     team = Teams.get_team!(id)
     case Teams.delete_team(team) do
       {:ok, _} ->
@@ -67,8 +68,33 @@ defmodule QuicWeb.TeamLive.Show do
     end
   end
 
+  # REMOVE QUIZ
+  @impl true
+  def handle_event("delete", %{"id" => quiz_id}, socket) do
+    case Teams.remove_quiz_from_team(socket.assigns.team.id, quiz_id) do
+      {1, nil} ->
+        {:noreply, socket
+          |> assign(:team, Teams.get_team!(socket.assigns.team.id))
+          |> put_flash(:info, "Quiz successfully removed from team!")}
+
+      {_, _} ->
+        {:noreply, socket |> put_flash(:info, "Something went wrong! :(")}
+    end
+  end
+
+  @impl true
+  def handle_event("clicked_quiz", %{"id" => quiz_id}, socket) do
+    {:noreply, socket |> redirect(to: ~p"/quizzes/#{quiz_id}")}
+  end
+
+  @impl true
+  def handle_event("clicked_user", %{"id" => author_id}, socket) do
+    {:noreply, socket |> redirect(to: ~p"/authors/profile/#{author_id}")}
+  end
+
 
   defp page_title(:show), do: "Show Team"
   defp page_title(:edit), do: "Edit Team"
   defp page_title(:add_collaborator), do: "Add Collaborator"
+  defp page_title(:add_quiz), do: "Add Quiz"
 end

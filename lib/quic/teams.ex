@@ -45,7 +45,7 @@ defmodule Quic.Teams do
       ** (Ecto.NoResultsError)
 
   """
-  def get_team!(id), do: Repo.get!(Team, id) |> Repo.preload(:authors)
+  def get_team!(id), do: Repo.get!(Team, id) |> Repo.preload(:authors) |> Repo.preload(:quizzes)
 
   @doc """
   Creates a team.
@@ -101,6 +101,15 @@ defmodule Quic.Teams do
     |> Repo.update()
   end
 
+  def insert_quiz_in_team(team \\ %Team{}, quiz_id) do
+    quiz = Quic.Quizzes.get_quiz!(quiz_id)
+
+    team
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(:quizzes, [quiz | team.quizzes])
+    |> Repo.update()
+  end
+
 
   def remove_author_from_team(team_id, author_id) do
     team_bin = Ecto.UUID.dump!(team_id)
@@ -109,6 +118,16 @@ defmodule Quic.Teams do
     Repo.delete_all(
       from r in "teams_authors",
       where: r.team_id == ^team_bin and r.author_id == ^author_bin
+    )
+  end
+
+  def remove_quiz_from_team(team_id, quiz_id) do
+    team_bin = Ecto.UUID.dump!(team_id)
+    quiz_bin = Ecto.UUID.dump!(quiz_id)
+
+    Repo.delete_all(
+      from r in "teams_quizzes",
+      where: r.team_id == ^team_bin and r.quiz_id == ^quiz_bin
     )
   end
 

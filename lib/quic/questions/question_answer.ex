@@ -6,7 +6,7 @@ defmodule Quic.Questions.QuestionAnswer do
   @foreign_key_type :binary_id
   schema "question_answers" do
     field :answer, :string
-    field :is_correct, :boolean #, default: false
+    field :is_correct, :boolean
 
     belongs_to :question, Quic.Questions.Question, foreign_key: :question_id
 

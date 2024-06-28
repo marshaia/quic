@@ -1,16 +1,17 @@
 defmodule QuicWeb.AuthorProfile do
-  alias Quic.Teams
   use QuicWeb, :author_live_view
 
+  alias Quic.Teams
   alias Quic.Quizzes
+  alias Quic.Accounts
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="bg-[var(--background-card)] gap-1 py-4 p-2 rounded-md flex flex-col justify-center items-center border border-[var(--border)]">
-      <h4 class="text-gradient"><%= @current_author.display_name %></h4>
-      <p>@<%= @current_author.username %></p>
-      <p><%= @current_author.email %></p>
+      <h4 class="text-gradient"><%= @author.display_name %></h4>
+      <p>@<%= @author.username %></p>
+      <%!-- <p><%= @author.email %></p> --%>
 
       <div class="flex justify-between w-[85%] md:w-[50%] mt-5">
         <div class="flex items-center gap-2">
@@ -31,19 +32,32 @@ defmodule QuicWeb.AuthorProfile do
         <.quiz_box
           index={index + 1}
           quiz={quiz}
-          isOwner={Quizzes.is_owner?(quiz.id, @current_author)}
-          current_author_id={@current_author.id}
+          isOwner={Quizzes.is_owner?(quiz.id, @author)}
+          current_author_id={@author.id}
         />
       </div>
     </div>
     """
   end
 
+
+  @impl true
+  def mount(%{"id" => author_id}, _session, socket) do
+    author = Accounts.get_author!(author_id)
+    {:ok, socket
+          |> assign(:author, author)
+          |> assign(:quizzes, Quizzes.list_all_author_public_quizzes(author_id))
+          |> assign(:teams, Teams.list_all_author_teams(author_id))
+          |> assign(:page_title, "#{author.display_name}'s Profile")
+          |> assign(:current_path, "/authors/profile")}
+  end
+
   @impl true
   def mount(_params, _session, socket) do
     author_id = socket.assigns.current_author.id
     {:ok, socket
-        |> assign(:quizzes, Quizzes.list_all_author_quizzes(author_id))
+        |> assign(:author, socket.assigns.current_author)
+        |> assign(:quizzes, Quizzes.list_all_author_public_quizzes(author_id))
         |> assign(:teams, Teams.list_all_author_teams(author_id))
         |> assign(:page_title, "Author Profile")
         |> assign(:current_path, "/authors/profile")}

@@ -15,13 +15,13 @@
 
             <div class="flex flex-col items-center gap-4 mt-5 md:flex-row md:justify-evenly">
               <div class="flex gap-2">
-                <Heroicons.pencil_square class="w-5 h-5" />
-                <p> <%= %> Quizzes </p>
+                <Heroicons.pencil_square class="w-5 h-5 stroke-1" />
+                <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@team.quizzes) %> Quizzes</p>
               </div>
 
               <div class="flex gap-2">
-                <Heroicons.users class="w-5 h-5" />
-                <p> <%= Enum.count(@team.authors) %> Collaborators</p>
+                <Heroicons.users class="w-5 h-5 stroke-1" />
+                <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@team.authors) %> Collaborators</p>
               </div>
             </div>
           </div>
@@ -34,7 +34,7 @@
           </.link>
           
           <.link
-            phx-click={JS.push("delete", value: %{id: @team.id})}
+            phx-click={JS.push("delete_team", value: %{id: @team.id})}
             data-confirm="Are you sure? Once deleted, it cannot be retrived!">
               <Heroicons.trash class="question-box-icon" />
           </.link>
@@ -56,7 +56,8 @@
 
         <div
           :for={{colaborator, index} <- Enum.with_index(@team.authors)}
-          class="rounded-md relative border border-[var(--border)] bg-[var(--background-card)] py-2 pb-4 px-4 mb-4"
+          phx-click={"clicked_user"} phx-value-id={colaborator.id}
+          class="rounded-md relative border border-[var(--border)] bg-[var(--background-card)] hover:cursor-pointer hover:bg-[var(--hover)] py-2 pb-4 px-4 mb-4"
         >
           <div class="absolute right-2.5 -top-2.5">
             <.link
@@ -83,20 +84,20 @@
         <div class="flex items-center justify-between mb-5">
           <h6>Quizzes</h6>
 
-          <.link class="flex items-center gap-2 px-3 py-2 bg-[var(--background-card)] hover:bg-[var(--background-view)] rounded-full border border-[var(--primary-color)]">
+          <.link patch={~p"/teams/#{@team}/add_quiz"} class="flex items-center gap-2 px-3 py-2 bg-[var(--background-card)] hover:bg-[var(--background-view)] rounded-full border border-[var(--primary-color)]">
             <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
             <p>Add Quiz</p>
           </.link>
         </div>
 
 
-        <div :for={{_quiz, _index} <- Enum.with_index(@team.authors)}>
-          <%!-- <.quiz_box
+        <div :for={{quiz, index} <- Enum.with_index(@team.quizzes)}>
+          <.quiz_box
             index={index + 1}
             quiz={Quizzes.get_quiz!(quiz.id)}
             isOwner={Quizzes.is_owner?(quiz.id, @current_author)}
             current_author_id={@current_author.id}
-          />   --%>
+          />  
         </div>
       </section>
     </div>
@@ -111,6 +112,18 @@
     title={@page_title}
     action={@live_action}
     team={@team}
+    patch={~p"/teams/#{@team}"}
+  />
+</.modal>
+
+<.modal :if={@live_action == :add_quiz} id="add-quiz-modal" show on_cancel={JS.patch(~p"/teams/#{@team}")} width_class="max-w-lg">
+  <.live_component
+    module={QuicWeb.TeamLive.AddQuizForm}
+    id={@team.id}
+    title={@page_title}
+    action={@live_action}
+    team={@team}
+    current_author={@current_author}
     patch={~p"/teams/#{@team}"}
   />
 </.modal>

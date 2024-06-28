@@ -4,13 +4,12 @@ defmodule Quic.Quizzes do
   """
 
   import Ecto.Query, warn: false
-  alias Quic.Questions.QuestionAnswer
-  alias Quic.Accounts.Author
   alias Quic.Repo
-
   alias Quic.Questions
   alias Quic.Quizzes.Quiz
-  alias Quic.Questions.Question
+  alias Quic.Accounts.Author
+  alias Quic.Questions.{QuestionAnswer, Question}
+
 
 
   @doc """
@@ -26,35 +25,21 @@ defmodule Quic.Quizzes do
     Repo.all(Quiz)
   end
 
-  # def list_all_author_quizzes(id) do
-  #   author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])])
-  #   author.quizzes
-  # end
-
   def list_all_author_quizzes(id) do
-    # add quizzes owned by author, shared within teams or with privacy set to :public
-    query = from q in Quiz, preload: :questions, preload: :author,
-      join: a in Author, on: a.id == q.author_id,
-      where: q.author_id == ^id,
-      order_by: [desc: q.inserted_at]
-      #select: %{id: q.id}
-
-    Repo.all(query)
+    author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])]) |> Repo.preload(quizzes: [:questions, :author])
+    author.quizzes
   end
 
-  # def list_all_author_quizzes_filtered(id, filter) do
-  #   search_pattern = "%#{filter}%"
-  #   query = from q in Quiz, preload: :questions, preload: :author,
-  #     join: a in Author, on: a.id == q.author_id,
-  #     where: q.author_id == ^id and (
-  #       ilike(q.name, ^search_pattern) or
-  #       ilike(q.description, ^search_pattern) or
-  #       ilike(a.display_name, ^search_pattern)
-  #     )
-  #     #select: %{id: q.id}
+  def list_all_author_public_quizzes(id) do
+    author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])]) |> Repo.preload(quizzes: [:questions, :author])
 
-  #   Repo.all(query)
-  # end
+    Enum.filter(author.quizzes, fn q -> q.public === true end)
+  end
+
+  def list_all_author_teams_quizzes(id) do
+    author = Repo.get(Author, id) |> Repo.preload(teams: :quizzes)
+    Enum.reduce(author.teams, [], fn team, acc ->  Enum.concat(team.quizzes, acc) end)
+  end
 
   def filter_author_quizzes(author_id, input) do
     if String.length(input) === 0 do
@@ -216,8 +201,19 @@ defmodule Quic.Quizzes do
 
   def is_allowed_to_access?(quiz_id, author) do
     author_quizzes = list_all_author_quizzes(author.id)
-    cond1 = Enum.any?(author_quizzes, fn quiz -> quiz.id === quiz_id end)
+    belongs_to_author = Enum.any?(author_quizzes, fn quiz -> quiz.id === quiz_id end)
 
-    cond1
+    author_team_quizzes = list_all_author_teams_quizzes(author.id)
+    is_in_author_teams = Enum.any?(author_team_quizzes, fn quiz -> quiz.id === quiz_id end)
+
+    quiz_is_public =
+      try do
+        quiz = get_quiz!(quiz_id)
+        quiz.public
+      rescue
+        _ -> false
+      end
+
+    belongs_to_author || is_in_author_teams || quiz_is_public
   end
 end

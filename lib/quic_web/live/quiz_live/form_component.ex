@@ -20,6 +20,7 @@ defmodule QuicWeb.QuizLive.FormComponent do
       >
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="textarea" label="Description" />
+        <.input field={@form[:public]} type="checkbox" label="Public?" />
         <:actions>
           <.button phx-disable-with="Saving..." class="call2actionBtn"><p class="font-normal text-white">Save Quiz</p></.button>
         </:actions>

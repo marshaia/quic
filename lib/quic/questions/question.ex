@@ -9,8 +9,6 @@ defmodule Quic.Questions.Question do
     field :position, :integer
     field :points, :integer
     field :type, Ecto.Enum, values: [:single_choice, :multiple_choice, :true_false, :open_answer, :fill_the_blanks, :fill_the_code, :code]
-    # field :code, :string
-    # field :language, Ecto.Enum, values: [:c]
 
     belongs_to :quiz, Quic.Quizzes.Quiz, foreign_key: :quiz_id
     has_many :answers, Quic.Questions.QuestionAnswer, foreign_key: :question_id

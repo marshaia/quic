@@ -648,12 +648,12 @@ defmodule QuicWeb.MyComponents do
 
           <div class={["flex flex-col items-center justify-center rounded-full",
             (if has_answered && answer.result === :correct, do: "bg-[var(--light-green)]",
-            else: (if has_answered && answer.result === :incorrect, do: "bg-[var(--light-red)]"))
+            else: (if has_answered, do: "bg-[var(--light-red)]"))
           ]}>
             <%= if has_answered && answer.result === :correct do %>
               <Heroicons.check class="w-5 h-5 text-[var(--dark-green)]"/>
             <% else %>
-              <%= if has_answered && answer.result === :incorrect do %>
+              <%= if has_answered do %>
                 <Heroicons.x_mark class="w-5 h-5 text-[var(--dark-red)]"/>
               <% else %>
                 <p class="text-gray-500">--</p>

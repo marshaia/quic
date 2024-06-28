@@ -47,18 +47,18 @@ def test_compiled_code(parameters: Parameters, path):
     input_data, expected_output = format_input_output(test)
 
     try:
-      result = subprocess.run(["./main"], input=input_data.encode(), check=True, capture_output=True, timeout=5,)
+      result = subprocess.run(["./main"], input=input_data.encode(), check=True, capture_output=True, timeout=5)
       actual_output = result.stdout.decode()
 
       if actual_output != expected_output:
-        return {"result": "incorrect"}
+        return {"result": "incorrect", "detail": "Failed test with input " + test["input"] + ".\nExpected: " + expected_output + ", but got: " + actual_output}
 
     except subprocess.TimeoutExpired:
       clean(path)
       raise HTTPException(status_code=400, detail="Timeout on Test: {input: " + test["input"] + " - output: " + expected_output + "}")
     except subprocess.CalledProcessError:
       clean(path)
-      raise HTTPException(status_code=400, detail="Error Running Test: {input: " + test["input"] + " - output: " + expected_output + "}")
+      raise HTTPException(status_code=400, detail="Error running test with input " + test["input"] + ".\nExpected: " + expected_output + ", but got: " + actual_output)
     except UnicodeDecodeError:
       clean(path)
       raise HTTPException(status_code=400, detail="Output Encode Error on Test: {input: " + test["input"] + " - output: " + expected_output + "}")
@@ -80,7 +80,8 @@ def format_input_output(test):
     split = test["input"].split(',')
     input_data = ' '.join(split)
   if "output" in test:
-    split = test["output"].split(',')
-    expected_output = ' '.join(split)
+    #split = test["output"].split(',')
+    #expected_output = ' '.join(split)
+    expected_output = test["output"]
 
   return input_data, expected_output

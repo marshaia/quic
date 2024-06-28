@@ -128,9 +128,9 @@
 
         <%!-- QUESTION ANSWER --%>
         <div :if={participant_answer.result === :incorrect} class="h-full p-1 px-5 overflow-auto">
-          <div class="w-full">
-            <p class="text-xs font-medium">Correct Answer: </p>
-            <%!-- <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" /> --%>
+          <div class="flex items-center w-full gap-1">
+            <%!-- <p class="text-xs font-medium">Correct Answer: </p> --%>
+            <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" />
             <p><.markdown class="w-full" text={question_answer.answer} /></p>
           </div>
         </div>
@@ -142,13 +142,19 @@
         <% parameters = Enum.find(@quiz.parameters, fn p -> p.question_id === question.id end) %>
 
         <%!-- PARTICIPANT ANSWER --%>
-        <div class={["w-full p-1 px-5 overflow-auto", (if participant_answer.result === :correct, do: "lg:col-span-2", else: "border-b border-[var(--border)] md:border-0")]}>
+        <div class={["w-full p-1 px-5 overflow-auto", (if participant_answer.result === :correct, do: "lg:col-span-2")]}>
           <div class="flex items-center justify-start w-full gap-2">
             <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
             <div class="flex-1">
               <.language_previewer text={Parameters.put_correct_answers_participant_in_code(parameters.code, answers)} language={parameters.language} />
             </div>
           </div>
+
+          <div :if={participant_answer.result === :error || participant_answer.result === :incorrect} class="mb-3 -mt-3">
+            <.error> <%= participant_answer.error_reason %> </.error>
+          </div>
+          <hr :if={participant_answer.result === :error || participant_answer.result === :incorrect} class="w-full lg:hidden" />
+
         </div>
 
         <%!-- QUESTION ANSWER --%>
@@ -181,6 +187,10 @@
           <div class="flex-1">
             <.language_previewer text={participant_text} language={parameters.language} />
           </div>
+        </div>
+
+        <div :if={participant_answer.result === :error || participant_answer.result === :incorrect} class="mb-3 -mt-3">
+          <.error> <%= participant_answer.error_reason %> </.error>
         </div>
       </div>
     <% end %>

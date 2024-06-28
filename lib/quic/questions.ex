@@ -342,7 +342,8 @@ defmodule Quic.Questions do
         :open_answer -> %{result: :correct}
         :fill_the_code ->
           parameters = Enum.find(participant.session.quiz.parameters, fn p -> p.question_id === question_id end)
-          assess_fill_the_code(parameters, participant_id, answer)
+          complete_answer = Parameters.put_correct_answers_participant_in_code(parameters.code, answer)
+          assess_code(parameters, participant_id, complete_answer)
         :code ->
           parameters = Enum.find(participant.session.quiz.parameters, fn p -> p.question_id === question_id end)
           assess_code(parameters, participant_id, answer)
@@ -387,17 +388,19 @@ defmodule Quic.Questions do
     end
   end
 
-  def assess_fill_the_code(parameters, participant_id, participant_answer) do
-    participant_answer = Parameters.put_correct_answers_participant_in_code(parameters.code, participant_answer)
-    case CodeGrader.get_response(participant_id, participant_answer, parameters.test_file, parameters.tests) do
-      {:ok, result} -> %{result: result}
-      {:error, msg} -> %{result: :error, error_reason: msg}
-    end
-  end
+  # def assess_fill_the_code(parameters, participant_id, participant_answer) do
+  #   participant_answer = Parameters.put_correct_answers_participant_in_code(parameters.code, participant_answer)
+  #   case CodeGrader.get_response(participant_id, participant_answer, parameters.test_file, parameters.tests) do
+  #     {:ok, _res} -> %{result: :correct}
+  #     {:failed, msg} -> %{result: :incorrect, error_reason: msg}
+  #     {:error, msg} -> %{result: :error, error_reason: msg}
+  #   end
+  # end
 
   def assess_code(parameters, participant_id, participant_answer) do
     case CodeGrader.get_response(participant_id, participant_answer, parameters.test_file, parameters.tests) do
-      {:ok, result} -> %{result: result}
+      {:ok, _res} -> %{result: :correct}
+      {:failed, msg} -> %{result: :incorrect, error_reason: msg}
       {:error, msg} -> %{result: :error, error_reason: msg}
     end
   end

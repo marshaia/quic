@@ -152,10 +152,8 @@ defmodule Quic.Participants do
       :correct ->
         participant |> update_participant(%{"total_points" => participant.total_points + question.points})
         ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :correct})
-      :incorrect ->
-        ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :incorrect})
-      :error ->
-        ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :error, "error_reason" => results[:error_reason]})
+      result ->
+        ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => result, "error_reason" => results[:error_reason]})
     end
   end
 

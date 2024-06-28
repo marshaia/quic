@@ -15,7 +15,7 @@ defmodule Quic.CodeGrader do
         case Jason.decode(response.body) do
           {:ok, response} ->
             if response["result"] do
-              {:ok, String.to_atom(response["result"])}
+              handle_result(response["result"], response)
             else
               if response["detail"] do
                 {:error, response["detail"]}
@@ -24,6 +24,13 @@ defmodule Quic.CodeGrader do
           {:error, _error} -> {:error, "Server Bad Response"}
         end
       {:error, _error} -> {:error, "Server Internal Error"}
+    end
+  end
+
+  def handle_result(result, response) do
+    case result do
+      "correct" -> {:ok, :correct}
+      "incorrect" -> {:failed, response["detail"]}
     end
   end
 

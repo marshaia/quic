@@ -7,6 +7,7 @@ defmodule Quic.Repo.Migrations.CreateQuizzes do
       add :name, :string
       add :description, :text
       add :total_points, :integer
+      add :public, :boolean
 
       timestamps(type: :utc_datetime)
     end

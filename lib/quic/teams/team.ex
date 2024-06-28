@@ -9,6 +9,7 @@ defmodule Quic.Teams.Team do
     field :description, :string
 
     many_to_many :authors, Quic.Accounts.Author, join_through: "teams_authors"
+    many_to_many :quizzes, Quic.Quizzes.Quiz, join_through: "teams_quizzes"
 
     timestamps(type: :utc_datetime)
   end

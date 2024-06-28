@@ -79,6 +79,7 @@ defmodule QuicWeb.Router do
       live "/authors/settings", AuthorSettingsLive, :edit
       live "/authors/settings/confirm_email/:token", AuthorSettingsLive, :confirm_email
       live "/authors/profile", AuthorProfile
+      live "/authors/profile/:id", AuthorProfile
 
       # QUIZZES
       live "/quizzes", QuizLive.Index, :index
@@ -128,6 +129,7 @@ defmodule QuicWeb.Router do
       live "/teams/:id", TeamLive.Show, :show
       live "/teams/:id/show/edit", TeamLive.Show, :edit
       live "/teams/:id/add_collaborator", TeamLive.Show, :add_collaborator
+      live "/teams/:id/add_quiz", TeamLive.Show, :add_quiz
 
 
       # SESSIONS
