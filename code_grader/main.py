@@ -14,13 +14,10 @@ class Parameters(BaseModel):
 
 app = FastAPI()
 
-def language_is_valid(language):
-  language in ["c", "python"]
-
 @app.post("/test")
 def test_participant_code(parameters: Parameters):
   # check language validity
-  if language_is_valid(parameters.language.strip()):
+  if language_is_not_valid(parameters.language.strip()):
     raise HTTPException(status_code=400, detail="Invalid Language")
 
   # create temporary test directory
@@ -75,6 +72,11 @@ def test_compiled_code(parameters: Parameters, path):
   return {"result": "correct"}
 
 
+
+def language_is_not_valid(language):
+  return language not in ["c", "python"]
+
+
 def clean(path):
   if os.path.exists(path):
     shutil.rmtree(path)
@@ -106,7 +108,7 @@ def write_files(parameters: Parameters, path):
 
   elif language == "python":
     with open("main.py", "w") as file:
-      file.write("import sub\n" +parameters.test_file)
+      file.write("exec(open('sub.py').read())\n\n" + parameters.test_file)
     with open("sub.py", "w") as file:
       file.write(parameters.answer)
 
