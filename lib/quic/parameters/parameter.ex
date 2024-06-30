@@ -7,7 +7,7 @@ defmodule Quic.Parameters.Parameter do
   schema "parameters" do
     field :code, :string
     field :test_file, :string
-    field :language, Ecto.Enum, values: [:c]
+    field :language, Ecto.Enum, values: [:c, :python]
     field :correct_answers, :map
     field :tests, {:array, :map}
 

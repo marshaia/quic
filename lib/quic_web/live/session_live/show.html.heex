@@ -240,7 +240,7 @@
 
                 <%= if question.type === :code || question.type === :fill_the_code do %>
                   <% parameters = Enum.find(@session.quiz.parameters, fn p -> p.question_id === question.id end) %>
-                  <.language_previewer text={parameters.code} language={parameters.language} />
+                  <.language_previewer text={parameters.code} language={Atom.to_string(parameters.language)} />
                 <% end %>
               </div>
             </div>
@@ -260,22 +260,29 @@
                   </div>
 
                 <% else %>
-                  <% correct_answers = Enum.filter(question_answers, fn qa -> qa.is_correct end) %>
-                  <div :for={{q_answer, index} <- Enum.with_index(correct_answers)} 
-                    class={["flex items-center justify-start h-full gap-3 px-4 py-2",
-                      (if index !== 0 && question.type === :multiple_choice, do: "border-t border-[var(--border)]")
-                  ]}>
-                    <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
-                      <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
-                      <div class="flex-1">
-                        <%= if question.type === :code || question.type === :fill_the_code do %>
-                          <.language_previewer text={q_answer.answer} language="c" />
-                        <% else %>
-                          <.markdown class="w-full" text={q_answer.answer} />
-                        <% end %>
+                  <%= if question.type === :fill_the_code do %>
+                    <% parameters = Enum.find(@session.quiz.parameters, fn p -> p.question_id === question.id end) %>
+                    <div class="flex items-center justify-start h-full gap-3 px-4 py-2">
+                      <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
+                        <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
+                        <div class="flex-1">
+                          <.language_previewer text={Parameters.put_correct_answers_in_code(parameters)} language={Atom.to_string(parameters.language)} />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                    
+                  <% else %>
+                    <% correct_answers = Enum.filter(question_answers, fn qa -> qa.is_correct end) %>
+                    <div :for={{q_answer, index} <- Enum.with_index(correct_answers)} 
+                      class={["flex items-center justify-start h-full gap-3 px-4 py-2", (if index !== 0 && question.type === :multiple_choice, do: "border-t border-[var(--border)]")]}>
+                      <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
+                        <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
+                        <div class="flex-1">
+                          <.markdown class="w-full" text={q_answer.answer} />
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
                 <% end %>
               </div>
 

@@ -2,6 +2,7 @@ defmodule QuicWeb.SessionLive.Show do
   use QuicWeb, :author_live_view
 
   alias Quic.Sessions
+  alias Quic.Parameters
   alias QuicWeb.QuicWebAux
 
   @impl true

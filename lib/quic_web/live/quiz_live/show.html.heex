@@ -111,7 +111,7 @@
           <.markdown class="mt-2" text={question.description} />
 
           <div :if={question.type === :fill_the_code || question.type === :code} class="mt-2">
-            <.language_previewer text={question.parameters.code} language={question.parameters.language} />
+            <.language_previewer text={question.parameters.code} language={Atom.to_string(question.parameters.language)} />
           </div>
 
           <hr :if={question.type !== :open_answer && question.type !== :code} class="w-full my-4" />
@@ -132,7 +132,7 @@
                   <%= if question.type === :fill_the_blanks do %>
                     <.markdown class="w-full" text={answer.answer} />
                   <% else %>
-                    <.language_previewer text={Parameters.put_correct_answers_in_code(question.parameters)} language={question.parameters.language} />
+                    <.language_previewer text={Parameters.put_correct_answers_in_code(question.parameters)} language={Atom.to_string(question.parameters.language)} />
                   <% end %>
                 </div>
               </div>

@@ -23,7 +23,7 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
           type="select"
           label="Programming Language"
           prompt="Choose a language"
-          options={["C": :c]}
+          options={["C": :c, "Python": :python]}
         />
       </.simple_form>
 

@@ -27,13 +27,13 @@ defmodule QuicWeb.TeamLive.AddQuizForm do
             <p class="-mt-1 font-medium text-[var(--primary-color-text)]"><%= if String.length(quiz.name) > 25, do: String.slice(quiz.name, 0..25) <> "...", else: quiz.name %></p>
             <p class="text-xs"><%= if String.length(quiz.description) > 50, do: String.slice(quiz.description, 0..50) <> "...", else: quiz.description %></p>
             <div class="flex justify-between gap-2 mt-4">
-              <div class="flex gap-1">
-                <Heroicons.list_bullet class="w-5 h-5 stroke-1" />
-                <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(quiz.questions) %> Questions</p>
+              <div class="flex items-center gap-1">
+                <Heroicons.list_bullet class="w-4 h-4 stroke-1" />
+                <p class="text-xs text-gray-500 dark:text-gray-400"><%= Enum.count(quiz.questions) %> Questions</p>
               </div>
-              <div class="flex gap-1">
-                <Heroicons.user class="w-5 h-5 stroke-1"/>
-                <p class="text-gray-500 dark:text-gray-400"><%= quiz.author.display_name %></p>
+              <div class="flex items-center gap-1">
+                <Heroicons.user class="w-4 h-4 stroke-1"/>
+                <p class="text-xs text-gray-500 dark:text-gray-400"><%= quiz.author.display_name %></p>
               </div>
             </div>
           </div>

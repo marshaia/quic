@@ -52,7 +52,7 @@
 
       <%= if question.type === :fill_the_code do %>
         <% parameters = Enum.find(@quiz.parameters, fn p -> p.question_id === question.id end) %>
-        <.language_previewer text={parameters.code} language={parameters.language} class="mt-5" />
+        <.language_previewer text={parameters.code} language={Atom.to_string(parameters.language)} class="mt-5" />
       <% end %>
     </div>
   </div>
@@ -146,7 +146,7 @@
           <div class="flex items-center justify-start w-full gap-2">
             <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
             <div class="flex-1">
-              <.language_previewer text={Parameters.put_correct_answers_participant_in_code(parameters.code, answers)} language={parameters.language} />
+              <.language_previewer text={Parameters.put_correct_answers_participant_in_code(parameters.code, answers)} language={Atom.to_string(parameters.language)} />
             </div>
           </div>
 
@@ -162,7 +162,7 @@
           <div class="flex items-center justify-start w-full gap-2">
             <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" />
             <div class="flex-1">
-              <.language_previewer text={Parameters.put_correct_answers_in_code(parameters)} language={parameters.language} />
+              <.language_previewer text={Parameters.put_correct_answers_in_code(parameters)} language={Atom.to_string(parameters.language)} />
             </div>
           </div>
         </div>
@@ -185,7 +185,7 @@
         <div class="flex items-center justify-start w-full gap-2">
           <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
           <div class="flex-1">
-            <.language_previewer text={participant_text} language={parameters.language} />
+            <.language_previewer text={participant_text} language={Atom.to_string(parameters.language)} />
           </div>
         </div>
 

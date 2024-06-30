@@ -15,7 +15,7 @@
           <.markdown text={@question.description} />
 
           <%= if @question.type === :fill_the_code do %>
-            <.language_previewer text={@parameters.code} language={@parameters.language} />
+            <.language_previewer text={@parameters.code} language={Atom.to_string(@parameters.language)} />
           <% end %>
         </section>
       </div>

@@ -37,6 +37,9 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
               answers = Enum.filter(session.quiz.answers, fn a -> a.question_id === question.id end)
               last_question = (if session.type === :monitor_paced, do: session.current_question === Enum.count(session.quiz.questions), else: (participant.current_question + 1) >= Enum.count(session.quiz.questions))
 
+              parameters =  Enum.find(session.quiz.parameters, fn p -> p.question_id === question.id end)
+              socket = if question.type === :fill_the_code || question.type === :code, do: push_event(socket, "change_language", %{"language" => parameters.language}), else: socket
+
               socket = push_event(socket, "join_session", %{code: code, username: participant.id})
               Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
               Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)

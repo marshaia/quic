@@ -12,6 +12,8 @@ defmodule QuicWeb.QuestionLive.Form do
         question = Questions.get_question!(question_id)
         question_changeset = Questions.change_question(question)
 
+        socket = if question.type === :fill_the_code || question.type === :code, do: push_event(socket, "change_language", %{"language" => question.parameters.language}), else: socket
+
         {:ok, socket
             |> assign(:cant_submit_question, false)
             |> assign(:cant_submit_answers, false)
@@ -204,12 +206,16 @@ defmodule QuicWeb.QuestionLive.Form do
 
 
   @impl true
-  def handle_info({:changed_language, params}, socket) do
+  def handle_info({:changed_language, %{"language" => language} = params}, socket) do
     params = Parameters.get_parameters_map(params, socket.assigns.parameters_changeset) |> Map.merge(params)
     changeset = %Parameter{} |> Parameters.change_parameter(params) |> Map.put(:action, :validate)
     socket = socket |> assign(:loading, false) |> assign(:parameters_changeset, changeset)
 
-    if Enum.count(changeset.errors) > 0, do: {:noreply, assign(socket, cant_submit_answers: true)}, else: {:noreply, assign(socket, cant_submit_answers: false)}
+    if Enum.count(changeset.errors) > 0 do
+      {:noreply, socket |> assign(cant_submit_answers: true)}
+    else
+      {:noreply, socket |> push_event("change_language", %{"language" => language}) |> assign(cant_submit_answers: false)}
+    end
   end
 
   @impl true

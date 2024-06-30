@@ -30,7 +30,7 @@
     <p id="question-page-prism-hook" phx-hook="PrismInitializer" class="mt-4 overflow-auto text-justify"><.markdown text={@question.description} /></p>
 
     <div :if={@question.type === :fill_the_code || @question.type === :code} class="mt-2">
-      <.language_previewer text={@question.parameters.code} language={@question.parameters.language} />
+      <.language_previewer text={@question.parameters.code} language={Atom.to_string(@question.parameters.language)} />
     </div>
 
     <%= if @question.type === :true_false do %>
@@ -56,7 +56,7 @@
               <div class="flex-1 ml-3 border-l border-[var(--border)] overflow-auto">
                 <div class="flex-1 px-2 mx-3">
                   <% code = (if @question.type === :fill_the_code, do: Parameters.put_correct_answers_in_code(@question.parameters), else: @question.parameters.code) %>
-                  <.language_previewer text={code} language={@question.parameters.language} />
+                  <.language_previewer text={code} language={Atom.to_string(@question.parameters.language)} />
                 </div>
               </div>
             </div>
@@ -65,7 +65,7 @@
           <%!-- TEST FILE --%>
           <h6 class="mb-2 font-medium">Test File</h6>
           <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)]">
-            <.language_previewer text={@question.parameters.test_file} language={@question.parameters.language} />
+            <.language_previewer text={@question.parameters.test_file} language={Atom.to_string(@question.parameters.language)} />
           </div>
 
           <%!-- TESTS --%>
@@ -73,7 +73,7 @@
           <div class="flex rounded-md bg-[var(--background-card)] py-2 px-3 mb-4 border border-[var(--border)] overflow-auto">
             <table class="w-full p-2 overflow-auto">
               <tr class="border-b border-[var(--border)] h-10">
-                <th class="w-1/2 min-w-max">Input</th>8
+                <th class="w-1/2 min-w-max">Input</th>
                 <th class="min-w-8"></th>
                 <th class="w-1/2 min-w-max">Output</th>
               </tr>

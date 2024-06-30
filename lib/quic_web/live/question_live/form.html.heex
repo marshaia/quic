@@ -103,6 +103,13 @@
 
   <%!-- QUESTION FORM --%>
   <%= if @view_selected === :editor do %>
+    <div :if={new_question_code} class="flex justify-end w-full gap-1 mt-5 -mb-4">
+      <Heroicons.trash class="w-3.5 h-3.5 text-gray-400" />
+      <button phx-click="clear"> 
+        <p class="text-xs text-gray-400 hover:underline">Clear All</p>
+      </button>
+    </div>
+
     <.simple_form
       :if={@view_selected === :editor}
       :let={f}

@@ -4,12 +4,13 @@ defmodule Quic.CodeGrader do
     "http://localhost:5000/test"
   end
 
-  def get_response(participant_id, participant_answer, test_file, tests) do
+  def get_response(participant_id, participant_answer, parameters) do
     case HTTPoison.post(url(), Jason.encode!(%{
       "id" => participant_id,
       "answer" => participant_answer,
-      "test_file" => test_file,
-      "tests" => tests
+      "test_file" => parameters.test_file,
+      "tests" => parameters.tests,
+      "language" => Atom.to_string(parameters.language)
     }), [{"Content-Type", "application/json"}]) do
       {:ok, response} ->
         case Jason.decode(response.body) do

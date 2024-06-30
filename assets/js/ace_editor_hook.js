@@ -2,6 +2,7 @@ import aceEditor from "../vendor/ace_editor/ace.js"
 import "../vendor/ace_editor/theme-one_dark"
 import "../vendor/ace_editor/theme-xcode"
 import "../vendor/ace_editor/mode-c_cpp"
+import "../vendor/ace_editor/mode-python"
 
 function mount_editor(id) {
   var editor = aceEditor.edit(id, {minLines: 3, maxLines: 20, fontSize: 15, showPrintMargin: false});
@@ -20,12 +21,21 @@ export const AceEditorHook = {
     let id = this.el.id
     let editor = mount_editor(id);
 
-    document.getElementById(`${id}-loading`).classList.add("hidden")
+    loadingElement = document.getElementById(`${id}-loading`)
+    if(loadingElement) loadingElement.classList.add("hidden")
     document.getElementById(id).classList.remove("hidden")
 
     this.handleEvent("clear_editor", () => {
       editor.setValue("")
     })
+    this.handleEvent("change_language", (obj) => {
+      language = obj.language
+      if (language == "c") {
+        editor.session.setMode("ace/mode/c_cpp");
+      } else {
+        editor.session.setMode("ace/mode/" + language);
+      }
+    }),
 
     editor.session.on('change', () => {
       if (id.includes("tests")) {
@@ -43,13 +53,12 @@ export const AceEditorHook = {
             } else {
               if (id.includes("participant")) {
               this.pushEvent("validate_participant_answer", {answer: editor.getValue()})
-            } else {
-              if (id.includes("code")) {
-                this.pushEvent("update_parameter", {code: editor.getValue()})
-              } 
+              } else {
+                if (id.includes("code")) {
+                  this.pushEvent("update_parameter", {code: editor.getValue()})
+                } 
+              }
             }
-            }
-            
           }
         }
       }

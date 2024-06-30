@@ -91,7 +91,7 @@
 
             <%= if question.type === :code || question.type === :fill_the_code do %>
               <% parameters = Enum.find(@session.quiz.parameters, fn p -> p.question_id === question.id end) %>
-              <.language_previewer text={parameters.code} language={parameters.language} />
+              <.language_previewer text={parameters.code} language={Atom.to_string(parameters.language)} />
             <% end %>
           </section>
         <% end %>
