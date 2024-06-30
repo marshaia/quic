@@ -11,27 +11,29 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    session = Sessions.get_session!(id)
-    if session.type === :monitor_paced do
-      quiz = session.quiz
+    if Sessions.exists_session_with_id?(id) && Sessions.is_owner?(id, socket.assigns.current_author) do
+      session = Sessions.get_session!(id)
+      if session.type === :monitor_paced do
+        quiz = session.quiz
 
-      socket = push_event(socket, "join_session", %{code: session.code, email: socket.assigns.current_author.email, session_id: session.id})
+        socket = push_event(socket, "join_session", %{code: session.code, email: socket.assigns.current_author.email, session_id: session.id})
+        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code)
+        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
 
-      Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code)
-      Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
+        {:noreply, socket
+          |> assign(:quiz, quiz)
+          |> assign(:session, session)
+          |> assign(:page_title, "Session #{session.code}")
+          |> assign(:current_path, "/sessions/#{id}/full-screen")
+          |> assign(:participants, Sessions.get_session_participants(id))
+          |> assign(:show_correct_answers, false)}
 
-      {:noreply, socket
-                |> assign(:quiz, quiz)
-                |> assign(:session, session)
-                |> assign(:page_title, "Session #{session.code}")
-                |> assign(:current_path, "/sessions/#{id}/full-screen")
-                |> assign(:participants, Sessions.get_session_participants(id))
-                |> assign(:show_correct_answers, false)}
+      else
+        {:noreply, socket |> put_flash(:error, "Session is not of type Monitor Paced!") |> redirect(to: ~p"/sessions")}
+      end
 
     else
-      {:noreply, socket
-                |> put_flash(:error, "Session is not of type Monitor Paced!")
-                |> redirect(to: ~p"/sessions")}
+      {:noreply, socket |> put_flash(:error, "Invalid Session") |> redirect(to: ~p"/sessions")}
     end
   end
 
@@ -72,8 +74,8 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   @impl true
   def handle_info({"session-started", _params}, socket) do
     {:noreply, socket
-              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
-              |> put_flash(:info, "Session started!")}
+      |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+      |> put_flash(:info, "Session started!")}
   end
 
   @impl true
@@ -84,8 +86,8 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   @impl true
   def handle_info("monitor-closed-session", socket) do
     {:noreply, socket
-              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
-              |> put_flash(:info, "Session closed!")}
+      |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+      |> put_flash(:info, "Session closed!")}
   end
 
   @impl true
@@ -96,9 +98,9 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   @impl true
   def handle_info({"next_question", _params}, socket) do
     {:noreply, socket
-              |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
-              |> assign(:show_correct_answers, false)
-              |> put_flash(:info, "Next question")}
+      |> assign(:session, Sessions.get_session!(socket.assigns.session.id))
+      |> assign(:show_correct_answers, false)
+      |> put_flash(:info, "Next question")}
   end
 
   @impl true

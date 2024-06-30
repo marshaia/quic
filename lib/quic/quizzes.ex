@@ -32,7 +32,6 @@ defmodule Quic.Quizzes do
 
   def list_all_author_public_quizzes(id) do
     author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])]) |> Repo.preload(quizzes: [:questions, :author])
-
     Enum.filter(author.quizzes, fn q -> q.public === true end)
   end
 
@@ -79,6 +78,14 @@ defmodule Quic.Quizzes do
   def get_quiz_questions!(id) do
     quiz = Repo.get!(Quiz, id) |> Repo.preload([questions: from(q in Question, order_by: [asc: q.position])])
     quiz.questions
+  end
+
+  def exists_quiz?(quiz_id) do
+    try do
+      Repo.get(Quiz, quiz_id) !== nil
+    rescue
+      _ -> nil
+    end
   end
 
   @doc """

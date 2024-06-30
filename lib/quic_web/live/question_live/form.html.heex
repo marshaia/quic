@@ -16,7 +16,8 @@
         <span class="font-semibold">NOTE:</span> Open Answers aren't automatically evaluated by the system. So, the points are only assigned if the Participant submits an answer.
       </p>
 
-      <div :if={(@type === :fill_the_code || @type === :code) && @parameters_changeset.data.id === nil} class="flex justify-end w-full gap-1 p-2 -mt-2 -mb-4">
+      <% new_question_code = (@type === :fill_the_code || @type === :code) && assigns[:question] === nil%>
+      <div :if={new_question_code} class="flex justify-end w-full gap-1 p-2 -mt-2 -mb-4">
         <Heroicons.trash class="w-3.5 h-3.5 text-gray-400" />
         <button phx-click="clear"> 
           <p class="text-xs text-gray-400 hover:underline">Clear All</p>
@@ -24,7 +25,7 @@
       </div>
 
       <.simple_form
-        class={["w-full", (if @type !== :fill_the_code && @type !== :code, do: "-mt-10"), (if (@type === :fill_the_code || @type === :code) && @parameters_changeset.data.id !== nil, do: "-mt-10")]}
+        class={["w-full", (if @type !== :fill_the_code && @type !== :code, do: "-mt-10"), (if !new_question_code, do: "-mt-10")]}
         :if={@view_selected === :editor}
         :let={f}
         for={@question_changeset}

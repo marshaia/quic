@@ -1,5 +1,4 @@
 defmodule QuicWeb.Router do
-
   use QuicWeb, :router
 
   import QuicWeb.AuthorAuth
@@ -46,8 +45,7 @@ defmodule QuicWeb.Router do
     end
   end
 
-  ## Authentication routes
-
+  # Authentication routes
   scope "/", QuicWeb do
     pipe_through [:browser, :redirect_if_author_is_authenticated]
 
@@ -78,7 +76,6 @@ defmodule QuicWeb.Router do
       on_mount: [{QuicWeb.AuthorAuth, :ensure_authenticated}] do
       live "/authors/settings", AuthorSettingsLive, :edit
       live "/authors/settings/confirm_email/:token", AuthorSettingsLive, :confirm_email
-      live "/authors/profile", AuthorProfile
       live "/authors/profile/:id", AuthorProfile
 
       # QUIZZES
@@ -90,36 +87,9 @@ defmodule QuicWeb.Router do
       live "/quizzes/:id/show/edit", QuizLive.Show, :edit
       live "/quizzes/:id/new-question", QuizLive.Show, :new_question
 
-      # QUESTIONS
-      # live "/questions", QuestionLive.Index, :index
-      # live "/quizzes/:quiz_id/questions/new", QuestionLive.Index, :new
-      # live "/questions/:id/edit", QuestionLive.Index, :edit
-
-      # live "/questions/:id", QuestionLive.Show, :show
-      # live "/questions/:id/show/edit", QuestionLive.Show, :edit
-      #live "/quizzes/:quiz_id/question/:question_id/edit", QuestionLive.Show, :edit
-
-
       live "/quizzes/:quiz_id/new-question/:type", QuestionLive.Form
       live "/quizzes/:quiz_id/edit-question/:question_id", QuestionLive.Form
       live "/quizzes/:quiz_id/question/:question_id", QuestionLive.Show, :show
-
-      # QUESTION ANSWERS
-      # live "/quizzes/:quiz_id/question/:question_id/answer/new", QuestionAnswerLive.Form
-      # live "/quizzes/:quiz_id/question/:question_id/answer/:answer_id", QuestionAnswerLive.Show, :show
-      # live "/quizzes/:quiz_id/question/:question_id/answer/:answer_id/edit", QuestionAnswerLive.Form
-
-
-
-
-      # QUESTION ANSWERS
-      # live "/question_answers", QuestionAnswerLive.Index, :index
-      # live "/question_answers/new", QuestionAnswerLive.Index, :new
-      # live "/question_answers/:id/edit", QuestionAnswerLive.Index, :edit
-
-      # live "/question_answers/:id", QuestionAnswerLive.Show, :show
-      # live "/question_answers/:id/show/edit", QuestionAnswerLive.Show, :edit
-
 
       # TEAMS
       live "/teams", TeamLive.Index, :index
@@ -131,24 +101,16 @@ defmodule QuicWeb.Router do
       live "/teams/:id/add_collaborator", TeamLive.Show, :add_collaborator
       live "/teams/:id/add_quiz", TeamLive.Show, :add_quiz
 
-
       # SESSIONS
       live "/sessions", SessionLive.Index, :index
       live "/sessions/new", SessionLive.CreateSessionForm
       live "/sessions/new/quiz/:quiz_id", SessionLive.CreateSessionForm
-      #live "/sessions/:id/edit", SessionLive.Index, :edit
 
       live "/sessions/:id", SessionLive.Show, :show
       live "/sessions/:id/full-screen", SessionLive.FullScreenControls
-      #live "/sessions/:id/show/edit", SessionLive.Show, :edit
-
 
       # PARTICIPANT
-      # live "/participants", ParticipantLive.Index, :index
-      # live "/participants/new", ParticipantLive.Index, :new
-      # live "/participants/:id/edit", ParticipantLive.Index, :edit
       live "/session/:session_id/participants/:participant_id", ParticipantLive.Show, :show
-      # live "/participants/:id/show/edit", ParticipantLive.Show, :edit
     end
   end
 

@@ -29,7 +29,7 @@ defmodule QuicWeb.QuizLive.Index do
 
   @impl true
   def handle_info({QuicWeb.QuizLive.FormComponent, {:saved, quiz}}, socket) do
-    {:noreply, redirect(socket, to: ~p"/quizzes/#{quiz.id}")} #assign(socket, :quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id)) |> redirect(to: ~p"/quizzes/#{quiz.id}")}
+    {:noreply, redirect(socket, to: ~p"/quizzes/#{quiz.id}")}
   end
 
   @impl true

@@ -5,7 +5,6 @@ defmodule Quic.Parameters do
 
   import Ecto.Query, warn: false
   alias Quic.Repo
-
   alias Quic.Parameters.Parameter
 
   @doc """

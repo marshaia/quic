@@ -17,7 +17,7 @@
         <p><%= @question.points %> Points</p>
       </div>
 
-      <div class="flex justify-end">
+      <div :if={@isOwner} class="flex justify-end">
         <.link 
           phx-click="clicked_edit"
           class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"

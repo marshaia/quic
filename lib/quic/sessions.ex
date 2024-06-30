@@ -215,6 +215,10 @@ defmodule Quic.Sessions do
     Session.changeset(session, attrs)
   end
 
+  def is_owner?(session_id, author) do
+    session = get_session!(session_id)
+    author && session && author.id === session.monitor.id
+  end
 
   def exists_session_with_id?(id) do
     try do

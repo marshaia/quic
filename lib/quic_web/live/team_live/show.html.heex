@@ -1,7 +1,7 @@
 
 <div class="flex justify-center w-full">
   <main class="w-full ">
-    <div class="flex justify-start mb-10">
+    <div class="flex justify-start mb-5">
       <.my_back navigate={"/teams"}>Back to Teams</.my_back>
     </div>
 
@@ -43,14 +43,14 @@
     </section>
 
 
-    <div class="flex flex-col w-full gap-10 mt-16 lg:flex-row">
+    <div class="flex flex-col w-full gap-10 mt-8 lg:flex-row">
       <%!-- COLLABORATORS --%>
       <section class="lg:w-1/3">
         <div class="flex items-center justify-between mb-5">
-          <h6>Collaborators</h6>
+          <h6 class="text-xl">Collaborators</h6>
 
-          <.link patch={~p"/teams/#{@team}/add_collaborator"} phx-click={JS.push_focus()} class="p-2 bg-[var(--primary-color)] hover:bg-indigo-600 rounded-full">
-            <Heroicons.user_plus class="w-5 h-5 text-white" />
+          <.link patch={~p"/teams/#{@team}/add_collaborator"} phx-click={JS.push_focus()} class="flex items-center justify-center gap-2 px-2 pl-3 py-2 bg-[var(--background-card)] hover:bg-[var(--background-view)] rounded-full border border-[var(--primary-color)]">
+            <Heroicons.user_plus class="w-5 h-5 stroke-1 text-[var(--primary-color-text)]" />
           </.link>
         </div>
 
@@ -69,11 +69,11 @@
           </div>
 
           <div class="flex items-center gap-2 mt-3 md:gap-3 lg:gap-4">
-            <Heroicons.user_circle class={["h-8 w-8 lg:h-11 lg:w-11 xl:h-14 xl:w-14", QuicWebAux.user_color(index + 1)]}/>
+            <Heroicons.user_circle class={["h-8 w-8 lg:h-11 lg:w-11 xl:h-14 xl:w-14 stroke-1", QuicWebAux.user_color(index + 1)]}/>
 
             <div class="flex-1">
-              <p class="font-bold"> <%= colaborator.display_name %> </p>
-              <p> @<%= colaborator.username %> </p>
+              <p class="text-base font-medium"><%= colaborator.display_name %></p>
+              <p class="text-gray-500 dark:text-gray-400">@<%= colaborator.username %></p>
             </div>
           </div>
         </div>
@@ -82,23 +82,61 @@
       <%!-- SHARED QUIZZES --%>
       <section class="lg:w-2/3">
         <div class="flex items-center justify-between mb-5">
-          <h6>Quizzes</h6>
+          <h6 class="text-xl">Quizzes</h6>
 
-          <.link patch={~p"/teams/#{@team}/add_quiz"} class="flex items-center gap-2 px-3 py-2 bg-[var(--background-card)] hover:bg-[var(--background-view)] rounded-full border border-[var(--primary-color)]">
-            <Heroicons.plus class="w-5 h-5 text-[var(--primary-color-text)]" />
-            <p>Add Quiz</p>
+          <.link patch={~p"/teams/#{@team}/add_quiz"} class="flex items-center justify-center gap-1 p-2 px-3 rounded-full gradient">
+            <Heroicons.plus class="w-5 h-5 text-white" />
+            <p class="text-white">Add Quiz</p>
           </.link>
         </div>
 
+        <div :for={{quiz, index} <- Enum.with_index(@team.quizzes)} class="w-full hover:cursor-pointer hover:bg-[var(--hover)] flex rounded-md border border-[var(--border)] bg-[var(--background-card)] py-2 px-4 min-h-32 mb-4" phx-click="clicked_quiz" phx-value-id={quiz.id}>
+          <% isOwner = Quizzes.is_owner?(quiz.id, @current_author) %>
+          <%!-- QUIZ INFO --%>
+          <div class="flex flex-col justify-between flex-1">
+            <div class="flex justify-between">
+              <div class="flex items-center gap-2">
+                <Heroicons.pencil_square class={["h-5 w-5", QuicWebAux.user_color(index)]} />
+                <p class="text-base font-medium"><%= if String.length(quiz.name) > 15, do: String.slice(quiz.name, 0..15) <> "...", else: quiz.name %></p>
+              </div>
 
-        <div :for={{quiz, index} <- Enum.with_index(@team.quizzes)}>
-          <.quiz_box
-            index={index + 1}
-            quiz={Quizzes.get_quiz!(quiz.id)}
-            isOwner={Quizzes.is_owner?(quiz.id, @current_author)}
-            current_author_id={@current_author.id}
-          />  
+              <.link :if={isOwner} phx-click={JS.push("delete_quiz", value: %{id: quiz.id})} data-confirm="Are you sure you want to remove this Quiz from this Team?">
+                <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
+              </.link>
+            </div>
+
+            <p><%= if String.length(quiz.description) > 100, do: String.slice(quiz.description, 0..100) <> "...", else: quiz.description %></p>
+
+            <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
+              <%!-- <div class="flex gap-1">
+                <Heroicons.eye :if={quiz.public} class="w-5 h-5"/>
+                <Heroicons.eye_slash :if={!quiz.public} class="w-5 h-5"/>
+                <p class="text-gray-400"><%= if quiz.public, do: "Public", else: "Private" %></p>
+              </div>
+              <div class="flex gap-1">
+                <Heroicons.list_bullet class="w-5 h-5" />
+                <p class="text-gray-400"><%= Enum.count(quiz.questions) %> Questions</p>
+              </div> --%>
+
+              <div class="flex gap-1">
+                <Heroicons.trophy class="w-5 h-5" />
+                <p class="text-gray-400"><%= quiz.total_points %> Points</p>
+              </div>
+
+              <div class="flex gap-1">
+                <Heroicons.user_circle class="w-5 h-5" />
+                <p class="text-gray-400">
+                  <%= if quiz.author.id === @current_author.id do %>
+                    You
+                  <% else %>
+                    <%= quiz.author.display_name %>
+                  <% end %>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+
       </section>
     </div>
   </main>

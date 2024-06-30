@@ -7,51 +7,64 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   @impl true
   def mount(%{"participant_id" => participant_id, "question_position" => question_position}, _session, socket) do
     {question_position, _} = Integer.parse(question_position)
-    participant = Participants.get_participant!(participant_id)
-    session = Sessions.get_session!(participant.session.id)
-    question = Enum.find(session.quiz.questions, fn q -> q.position === question_position end)
 
-    if participant.session.status === :closed do
-      {:ok, socket |> put_flash(:error, "Session is closed!") |> redirect(to: ~p"/")}
+    case Participants.get_participant(participant_id) do
+      nil -> {:ok, socket |> put_flash(:error, "Invalid Participant") |> redirect(to: ~p"/")}
+      participant ->
+        session = Sessions.get_session!(participant.session.id)
+        question = Enum.find(session.quiz.questions, fn q -> q.position === question_position end)
 
-    else
-      if session.type === :monitor_paced && session.current_question !== question.position do
-        new_question = Enum.find(session.quiz.questions, nil, fn q -> q.position === session.current_question end)
-        {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{new_question.position}")}
+        if participant.session.status === :closed do
+          {:ok, socket |> put_flash(:error, "Session is closed!") |> redirect(to: ~p"/")}
 
-      else
-        code = participant.session.code
-        has_submitted = Enum.any?(participant.answers, fn a -> a.question_id === question.id end)
-        last_question = (if session.type === :monitor_paced, do: session.current_question === Enum.count(session.quiz.questions), else: (participant.current_question + 1) >= Enum.count(session.quiz.questions))
-        answers = Enum.filter(session.quiz.answers, fn a -> a.question_id === question.id end)
+        else
+          question_position = if question === nil, do: -1, else: question.position
 
-        socket = push_event(socket, "join_session", %{code: code, username: participant.id})
-        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
-        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
+          if session.type === :monitor_paced && session.current_question !== question_position do
+            new_question = Enum.find(session.quiz.questions, nil, fn q -> q.position === session.current_question end)
+            {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{new_question.position}")}
 
-        parameters = (if question.type === :code || question.type === :fill_the_code, do: Enum.find(session.quiz.parameters, fn p -> p.question_id === question.id end), else: nil)
-        answer_changeset = (if parameters !== nil do
-          if question.type === :fill_the_code, do: Enum.reduce(parameters.correct_answers, %{}, fn {key, _value}, acc -> Map.put(acc, key, "") end), else: parameters.code
-        else "" end)
+          else
+            has_answered_last_question = participant.current_question === Enum.count(session.quiz.questions)
+            expected_position = if has_answered_last_question, do: participant.current_question, else: participant.current_question + 1
 
-        {:ok, socket
-              |> assign(:session, session)
-              |> assign(:participant, participant)
-              |> assign(:selected_answer, (if question.type === :single_choice, do: nil, else: []))
-              |> assign(:page_title, "Session #{code} - Question #{question.position}")
-              |> assign(:question, question)
-              |> assign(:answers, answers)
-              |> assign(:has_submitted, has_submitted)
-              |> assign(:last_question, last_question)
-              |> assign(:answer_changeset, %{"answer" => answer_changeset})
-              |> assign(:parameters, parameters)
-              |> assign(:loading, true)}
-      end
+            if session.type === :participant_paced && expected_position !== question_position do
+              {:ok, socket |> put_flash(:error, "Wrong question! Sending you to the right one :)") |> redirect(to: ~p"/live-session/#{participant.id}/question/#{expected_position}")}
+
+            else
+              code = participant.session.code
+              has_submitted = Enum.any?(participant.answers, fn a -> a.question_id === question.id end)
+              answers = Enum.filter(session.quiz.answers, fn a -> a.question_id === question.id end)
+              last_question = (if session.type === :monitor_paced, do: session.current_question === Enum.count(session.quiz.questions), else: (participant.current_question + 1) >= Enum.count(session.quiz.questions))
+
+              socket = push_event(socket, "join_session", %{code: code, username: participant.id})
+              Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id)
+              Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> code)
+
+              parameters = (if question.type === :code || question.type === :fill_the_code, do: Enum.find(session.quiz.parameters, fn p -> p.question_id === question.id end), else: nil)
+              answer_changeset = (if parameters !== nil do
+                if question.type === :fill_the_code, do: Enum.reduce(parameters.correct_answers, %{}, fn {key, _value}, acc -> Map.put(acc, key, "") end), else: parameters.code
+              else "" end)
+
+              {:ok, socket
+                    |> assign(:session, session)
+                    |> assign(:participant, participant)
+                    |> assign(:selected_answer, (if question.type === :single_choice, do: nil, else: []))
+                    |> assign(:page_title, "Session #{code} - Question #{question.position}")
+                    |> assign(:question, question)
+                    |> assign(:answers, answers)
+                    |> assign(:has_submitted, has_submitted)
+                    |> assign(:last_question, last_question)
+                    |> assign(:answer_changeset, %{"answer" => answer_changeset})
+                    |> assign(:parameters, parameters)
+                    |> assign(:loading, true)}
+            end
+          end
+        end
     end
   end
 
 
-  # SELECTED ANSWER
   @impl true
   def handle_event("selected-answer", %{"answer" => answer} = params, socket) do
     if socket.assigns.question.type === :multiple_choice do
@@ -93,7 +106,6 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   end
 
   def handle_event(_, _, socket), do: {:noreply, socket}
-
 
 
   # SESSION CHANNEL MESSAGES

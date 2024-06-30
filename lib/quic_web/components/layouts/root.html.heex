@@ -44,7 +44,7 @@
           <%!-- GENERAL --%>
           <.side_bar_items_general page_title={@page_title} />
           <%!-- PERSONAL --%>
-          <.side_bar_items_personal page_title={@page_title} />
+          <.side_bar_items_personal page_title={@page_title} current_author={@current_author} />
 
           <div class="flex-1"></div>
          
@@ -78,27 +78,14 @@
           </button>
         <% end %>
         
-
-
         <div class="flex gap-4">        
-          <%= if @current_author do %>
-            <a href="/authors" class="flex items-center gap-2">
-              <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
-              <Heroicons.computer_desktop class="stroke-1 text-[var(--primary-color)] w-6 h-6"/>
-              <p class="text-lg font-normal">QUIC</p>
-            </a>
-          <% else %>
-            <a href="/" class="flex items-center gap-2">
-              <Heroicons.computer_desktop class="stroke-1 text-[var(--primary-color)] w-6 h-6"/>
-              <p class="text-lg font-normal">QUIC</p>
-            </a>
-          <% end %>
+          <a href={if assigns[:current_author], do: "/authors", else: "/"} class="flex items-center gap-2">
+            <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
+            <Heroicons.computer_desktop class="stroke-1 text-[var(--primary-color)] w-6 h-6"/>
+            <p class="text-lg font-normal">QUIC</p>
+          </a>
         </div>
         
-
-        
-          
-
         <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
           <button onclick="changeThemeToDark(true)">
             <Heroicons.moon class="w-6 h-6 stroke-1 text-[var(--primary-color-text)] hover:text-[var(--primary-color)]"/>
@@ -107,26 +94,7 @@
             <Heroicons.sun class="w-7 h-7 stroke-1 text-[var(--primary-color-text)] hover:text-[var(--primary-color)]"/>
           </button>
 
-          <%= if @current_author do %>
-            <%!-- <%= @current_author.email %> --%>
-            <%!-- <.link
-              href={~p"/authors/settings"}
-              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700">
-              <.icon name="hero-cog-8-tooth" class="text-[var(--primary-color-text)]"/>
-            </.link>
-            <.link
-              href={~p"/authors/log_out"}
-              method="delete"
-              class="text-sm font-semibold text-white loginBtn">
-              Log out
-            </.link> --%>
-        <% else %>
-            <%!-- <.link
-              href={~p"/authors/register"}
-              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-            >
-              Register
-            </.link> --%>
+          <%= if assigns[:current_author] !== nil do %>
             <%= if !String.contains?(@page_title, "Live Session") do %>
             <.link
               href={~p"/authors/log_in"}
@@ -134,13 +102,11 @@
               Sign in
             </.link>
             <% end %>
-        <% end %>
+          <% end %>
         </div>
       </div>
     </header>
 
-  
     <%= @inner_content %>
-      
   </body>
 </html>

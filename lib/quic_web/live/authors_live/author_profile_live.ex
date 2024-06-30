@@ -26,16 +26,20 @@ defmodule QuicWeb.AuthorProfile do
     </div>
 
     <%!-- PUBLIC QUIZZES --%>
-    <h6 class="mt-8 text-xl">Public Quizzes</h6>
+    <h6 class="mt-8 text-xl">Public Quizzes <span class="text-sm font-normal">(<%= Enum.count(@quizzes) %>)</span></h6>
     <div class="grid w-full grid-cols-1 gap-2 mt-2 overflow-auto lg:grid-cols-2" style="grid-auto-rows: 1fr">
-      <div :for={{quiz, index} <- Enum.with_index(@quizzes)}>
-        <.quiz_box
-          index={index + 1}
-          quiz={quiz}
-          isOwner={Quizzes.is_owner?(quiz.id, @author)}
-          current_author_id={@author.id}
-        />
-      </div>
+      <%= if Enum.count(@quizzes) === 0 do %>
+        <p>Nothing to show</p>
+      <% else %>
+        <div :for={{quiz, index} <- Enum.with_index(@quizzes)}>
+          <.quiz_box
+            index={index + 1}
+            quiz={quiz}
+            isOwner={Quizzes.is_owner?(quiz.id, @author)}
+            current_author_id={@current_author.id}
+          />
+        </div>
+      <% end %>
     </div>
     """
   end
@@ -43,25 +47,20 @@ defmodule QuicWeb.AuthorProfile do
 
   @impl true
   def mount(%{"id" => author_id}, _session, socket) do
-    author = Accounts.get_author!(author_id)
-    {:ok, socket
+    my_profile? = author_id === socket.assigns.current_author.id
+    author = if my_profile?, do: socket.assigns.current_author, else: Accounts.get_author(author_id)
+    case author do
+      nil -> {:ok, socket |> put_flash(:error, "Invalid User") |> redirect(to: ~p"/")}
+      author ->
+        {:ok, socket
           |> assign(:author, author)
           |> assign(:quizzes, Quizzes.list_all_author_public_quizzes(author_id))
           |> assign(:teams, Teams.list_all_author_teams(author_id))
-          |> assign(:page_title, "#{author.display_name}'s Profile")
+          |> assign(:page_title, (if my_profile?, do: "Your Profile", else: "#{author.display_name}"))
           |> assign(:current_path, "/authors/profile")}
+    end
   end
 
-  @impl true
-  def mount(_params, _session, socket) do
-    author_id = socket.assigns.current_author.id
-    {:ok, socket
-        |> assign(:author, socket.assigns.current_author)
-        |> assign(:quizzes, Quizzes.list_all_author_public_quizzes(author_id))
-        |> assign(:teams, Teams.list_all_author_teams(author_id))
-        |> assign(:page_title, "Author Profile")
-        |> assign(:current_path, "/authors/profile")}
-  end
 
   @impl true
   def handle_params(_params, _uri, socket) do

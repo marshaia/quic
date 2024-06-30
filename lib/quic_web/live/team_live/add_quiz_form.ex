@@ -24,16 +24,16 @@ defmodule QuicWeb.TeamLive.AddQuizForm do
           <p class="mt-3 text-xs text-center">Nothing to show</p>
         <% else %>
           <div :for={quiz <- @searched_quizzes} class="hover:bg-[var(--background-card)] cursor-pointer px-4 py-5 w-full border-t border-[var(--border)]" phx-target={@myself} phx-click="clicked_quiz" phx-value-id={quiz.id}>
-            <p class="-mt-1 text-base font-semibold text-[var(--primary-color-text)]"><%= if String.length(quiz.name) > 25, do: String.slice(quiz.name, 0..25) <> "...", else: quiz.name %></p>
-            <p><%= if String.length(quiz.description) > 50, do: String.slice(quiz.description, 0..50) <> "...", else: quiz.description %></p>
+            <p class="-mt-1 font-medium text-[var(--primary-color-text)]"><%= if String.length(quiz.name) > 25, do: String.slice(quiz.name, 0..25) <> "...", else: quiz.name %></p>
+            <p class="text-xs"><%= if String.length(quiz.description) > 50, do: String.slice(quiz.description, 0..50) <> "...", else: quiz.description %></p>
             <div class="flex justify-between gap-2 mt-4">
               <div class="flex gap-1">
-                <Heroicons.list_bullet class="w-5 h-5" />
-                <p><%= Enum.count(quiz.questions) %> Questions</p>
+                <Heroicons.list_bullet class="w-5 h-5 stroke-1" />
+                <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(quiz.questions) %> Questions</p>
               </div>
               <div class="flex gap-1">
-                <Heroicons.user class="w-5 h-5"/>
-                <p><%= quiz.author.display_name %></p>
+                <Heroicons.user class="w-5 h-5 stroke-1"/>
+                <p class="text-gray-500 dark:text-gray-400"><%= quiz.author.display_name %></p>
               </div>
             </div>
           </div>

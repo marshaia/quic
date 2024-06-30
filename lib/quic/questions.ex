@@ -265,6 +265,16 @@ defmodule Quic.Questions do
     answer.question.id === question_id
   end
 
+  def question_belongs_to_quiz?(question_id, quiz_id) do
+    try do
+      question = get_question!(question_id)
+      question.quiz.id === quiz_id
+    rescue
+      _ -> false
+    end
+
+  end
+
   @doc """
   Updates a question_answer.
 

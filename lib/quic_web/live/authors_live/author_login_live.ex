@@ -27,7 +27,7 @@ defmodule QuicWeb.AuthorLoginLive do
         </:actions>
         <:actions>
           <.button phx-disable-with="Signing in..." class="w-full call2actionBtn">
-            <p class="text-base font-normal text-white">Sign in <span aria-hidden="true">→</span></p>
+            <p class="text-base font-normal text-white">Sign in</p> <%!-- <span aria-hidden="true">→</span> --%>
           </.button>
         </:actions>
       </.simple_form>

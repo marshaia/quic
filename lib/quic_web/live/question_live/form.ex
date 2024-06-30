@@ -1,42 +1,44 @@
 defmodule QuicWeb.QuestionLive.Form do
   use QuicWeb, :author_live_view
 
-  alias Quic.Quizzes
-  alias Quic.Questions
-  alias Quic.Parameters
-  alias Quic.Questions.Question
   alias Quic.Parameters.Parameter
-  alias Quic.Questions.QuestionAnswer
+  alias Quic.{Quizzes, Questions, Parameters}
+  alias Quic.Questions.{Question, QuestionAnswer}
 
   @impl true
   def mount(%{"question_id" => question_id, "quiz_id" => quiz_id} = _params, _session, socket) do
-    if Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
-      question = Questions.get_question!(question_id)
-      question_changeset = Questions.change_question(question)
+    if Quizzes.exists_quiz?(quiz_id) && Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
+      if Questions.question_belongs_to_quiz?(question_id, quiz_id) do
+        question = Questions.get_question!(question_id)
+        question_changeset = Questions.change_question(question)
 
-      {:ok, socket
-          |> assign(:cant_submit_question, false)
-          |> assign(:cant_submit_answers, false)
-          |> assign(:error_answers, nil)
-          |> assign(:quiz_id, quiz_id)
-          |> assign(:question, question)
-          |> assign(:type, question.type)
-          |> assign(:answers, create_answers_changesets(question.type, %{new_question: false, question: question}))
-          |> assign(:parameters_changeset, Parameters.create_parameters_changeset(question.type, %{new_question: false, question: question}))
-          |> assign(:question_changeset, question_changeset)
-          |> assign(:view_selected, :editor)
-          |> assign(:page_title, "Quiz - Edit Question")
-          |> assign(:loading, true)}
+        {:ok, socket
+            |> assign(:cant_submit_question, false)
+            |> assign(:cant_submit_answers, false)
+            |> assign(:error_answers, nil)
+            |> assign(:quiz_id, quiz_id)
+            |> assign(:question, question)
+            |> assign(:type, question.type)
+            |> assign(:answers, create_answers_changesets(question.type, %{new_question: false, question: question}))
+            |> assign(:parameters_changeset, Parameters.create_parameters_changeset(question.type, %{new_question: false, question: question}))
+            |> assign(:question_changeset, question_changeset)
+            |> assign(:view_selected, :editor)
+            |> assign(:page_title, "Quiz - Edit Question")
+            |> assign(:loading, true)}
+      else
+        {:ok, socket |> put_flash(:error, "Question doesn't belong to Quiz!") |> redirect(to: ~p"/quizzes/#{quiz_id}")}
+      end
+
     else
       {:ok, socket
             |> put_flash(:error, "You can only edit your own quizzes' questions!")
-            |> push_navigate(to: ~p"/quizzes/#{quiz_id}/question/#{question_id}")}
+            |> redirect(to: ~p"/quizzes/#{quiz_id}/question/#{question_id}")}
     end
   end
 
   @impl true
   def mount(%{"type" => type, "quiz_id" => quiz_id} = _params, _session, socket) do
-    if Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
+    if Quizzes.exists_quiz?(quiz_id) && Quizzes.is_owner?(quiz_id, socket.assigns.current_author) do
       type = String.to_atom(type)
       question_changeset = Map.put(%{}, :type, type) |> Map.put(:points, 0)
       question_changeset = Questions.create_question_placeholders(type, question_changeset)
@@ -119,8 +121,6 @@ defmodule QuicWeb.QuestionLive.Form do
 
     if Enum.count(changeset.errors) > 0, do: {:noreply, assign(socket, cant_submit_answers: true)}, else: {:noreply, assign(socket, cant_submit_answers: false)}
   end
-
-
 
 
   def validateQuestion(question_params, socket) do

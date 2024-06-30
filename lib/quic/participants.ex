@@ -7,7 +7,6 @@ defmodule Quic.Participants do
   alias Quic.Participants.Participant
   alias Quic.{Repo, Sessions, ParticipantAnswers}
 
-
   @doc """
   Returns the list of participants.
 
@@ -36,6 +35,23 @@ defmodule Quic.Participants do
 
   """
   def get_participant!(id), do: Repo.get!(Participant, id) |> Repo.preload(:session) |> Repo.preload(:answers)
+
+  def get_participant(id) do
+    try do
+      Repo.get(Participant, id) |> Repo.preload(:session) |> Repo.preload(:answers)
+    rescue
+      _ -> nil
+    end
+  end
+
+  def participant_belongs_to_session?(participant_id, session_id) do
+    case get_participant(participant_id) do
+      nil -> nil
+      participant ->
+        if participant.session.id === session_id, do: participant, else: nil
+    end
+  end
+
 
   def get_participant_session_code!(id)  do
     try do

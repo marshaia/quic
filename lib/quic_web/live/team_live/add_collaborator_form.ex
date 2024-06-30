@@ -23,7 +23,7 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
         <%= if Enum.count(@searched_users) === 0 do %>
           <p class="mt-3 text-xs text-center">Nothing to show</p>
         <% else %>
-          <div :for={user <- @searched_users} class="hover:bg-[var(--background-card)] cursor-pointer px-4 py-5 w-full border-t border-[var(--border)]" phx-target={@myself} phx-click="clicked_user" phx-value-username={user.username}>
+          <div :for={user <- @searched_users} class="hover:bg-[var(--background-card)] cursor-pointer px-4 py-5 w-full border-t border-[var(--border)]" phx-target={@myself} phx-click="clicked_user" phx-value-username={user.username} phx-value-name={user.display_name}>
             <p class="font-semibold">
               <%= user.display_name %>
               <span class="ml-2 text-sm font-normal">@<%= user.username %></span>
@@ -60,12 +60,12 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
   end
 
   @impl true
-  def handle_event("clicked_user", %{"username" => username} = _params, socket) do
+  def handle_event("clicked_user", %{"username" => username, "name" => name} = _params, socket) do
     Teams.insert_author_in_team(socket.assigns.team, username)
     team = Teams.get_team!(socket.assigns.team.id)
     {:noreply, socket
               |> assign(team: team)
-              |> put_flash(:info, "Successfully added #{username} to #{socket.assigns.team.name}!")
+              |> put_flash(:info, "Successfully added #{name} to #{socket.assigns.team.name}!")
               |> push_patch(to: socket.assigns.patch)}
   end
 

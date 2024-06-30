@@ -5,10 +5,7 @@ defmodule Quic.Accounts do
 
   import Ecto.Query, warn: false
   alias Quic.Repo
-
   alias Quic.Accounts.{Author, AuthorToken, AuthorNotifier}
-
-  ## Database getters
 
   @doc """
   Gets a author by email.
@@ -25,7 +22,6 @@ defmodule Quic.Accounts do
   def get_author_by_email(email) when is_binary(email) do
     Repo.get_by(Author, email: email)
   end
-
 
 
   @doc """
@@ -89,6 +85,13 @@ defmodule Quic.Accounts do
 
   """
   def get_author!(id), do: Repo.get!(Author, id)
+  def get_author(id) do
+    try do
+      Repo.get(Author, id)
+    rescue
+      _ -> nil
+    end
+  end
 
   ## Author registration
 

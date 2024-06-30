@@ -61,21 +61,20 @@ defmodule QuicWeb.MyComponents do
         <Heroicons.bolt class="sidebar-icon"/>
           <span>Sessions</span>
       </.link>
-
     </div>
-
-
     """
   end
 
 
   attr :page_title, :string, required: true, doc: "the current page title"
+  attr :current_author, :any, default: %{}
+
   def side_bar_items_personal(assigns) do
     ~H"""
     <section class="mt-10 sidebar-group">
       <span class="text-sm font-semibold">PERSONAL</span>
       <%!-- PROFILE --%>
-      <.link href={"/authors/profile"}
+      <.link href={"/authors/profile/#{@current_author.id}"}
       class={["sidebar-item", (if String.contains?(String.downcase(@page_title), "profile"), do: "text-[var(--primary-color)]", else: "text-[var(--primary-color-text)]")]}>
         <Heroicons.user class="sidebar-icon"/>
         <span>Profile</span>
@@ -305,7 +304,6 @@ defmodule QuicWeb.MyComponents do
       <div class="flex my-3">
         <div class="flex flex-col items-center justify-center">
           <.right_or_wrong is_correct={(Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct)} class="w-6 h-6 min-h-6 min-w-6" />
-          <%!-- <div class={["w-4 h-4 rounded-full", (if (Map.has_key?(changes, :is_correct) && changes.is_correct) || (Map.has_key?(answer_changeset.data, :is_correct) && answer_changeset.data.is_correct), do: "bg-[var(--green)]", else: "bg-red-700")]} /> --%>
         </div>
 
         <div class="flex-1 overflow-auto">
@@ -328,8 +326,6 @@ defmodule QuicWeb.MyComponents do
           </div>
         </div>
       </div>
-
-      <%!-- <hr class="my-5"/> --%>
     </div>
     """
   end
@@ -375,7 +371,6 @@ defmodule QuicWeb.MyComponents do
       </div>
 
       <%!-- QUESTION DESCRIPTION --%>
-      <%!-- <p class="mt-8 font-bold">Description</p> --%>
       <div class="mt-5 mb-8 bg-[var(--background-card)] rounded-md">
         <%= if Map.has_key?(@question_changeset.changes, :description) do %>
           <.markdown text={@question_changeset.changes.description} />
@@ -502,13 +497,13 @@ defmodule QuicWeb.MyComponents do
           </.link>
         </div>
 
-
         <p><%= if String.length(@quiz.description) > 100, do: String.slice(@quiz.description, 0..100) <> "...", else: @quiz.description %></p>
 
         <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
           <div class="flex gap-1">
-            <Heroicons.list_bullet class="w-5 h-5" />
-            <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
+            <Heroicons.eye :if={@quiz.public} class="w-5 h-5"/>
+            <Heroicons.eye_slash :if={!@quiz.public} class="w-5 h-5"/>
+            <p class="text-gray-400"><%= if @quiz.public, do: "Public", else: "Private" %></p>
           </div>
 
           <div class="flex gap-1">
@@ -528,21 +523,6 @@ defmodule QuicWeb.MyComponents do
           </div>
         </div>
       </div>
-
-      <%!-- QUIZ ACTIONS --%>
-      <%!-- <div class="flex flex-col items-center justify-between">
-        <.link navigate={~p"/sessions/new/quiz/#{quiz.id}"}>
-          <Heroicons.bolt class="question-box-icon" />
-        </.link>
-
-        <.link phx-click={JS.push("duplicate", value: %{id: quiz.id})}>
-          <Heroicons.document_duplicate class="question-box-icon" />
-        </.link>
-
-        <.link :if={isOwner} phx-click={JS.push("delete", value: %{id: quiz.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">
-          <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
-        </.link>
-      </div> --%>
     </div>
     """
   end
@@ -579,11 +559,6 @@ defmodule QuicWeb.MyComponents do
             <Heroicons.user_group class="w-5 h-5" />
             <p class="text-gray-400"><%= Enum.count(@team.authors) %> Collaborators</p>
           </div>
-
-          <%!-- <div class="flex gap-1">
-            <Heroicons.trophy class="w-5 h-5" />
-            <p class="text-gray-400"><%= Enum.count(@team.quizzes) %> Quizzes</p>
-          </div> --%>
         </div>
       </div>
     </div>
@@ -725,6 +700,5 @@ defmodule QuicWeb.MyComponents do
     </div>
     """
   end
-
 
 end

@@ -11,21 +11,24 @@ defmodule QuicWeb.SessionLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    session = Sessions.get_session!(id)
+    if Sessions.exists_session_with_id?(id) && Sessions.is_owner?(id, socket.assigns.current_author) do
+      session = Sessions.get_session!(id)
+      socket = push_event(socket, "join_session", %{code: session.code, email: socket.assigns.current_author.email, session_id: session.id})
+      Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code)
+      Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
 
-    socket = push_event(socket, "join_session", %{code: session.code, email: socket.assigns.current_author.email, session_id: session.id})
+      {:noreply, socket
+        |> assign(:session, session)
+        |> assign(:quiz, session.quiz)
+        |> assign(:page_title, "Show Session")
+        |> assign(:current_path, "/sessions/#{id}")
+        |> assign(:participants, Sessions.get_session_participants(id))
+        |> assign(:selected_view, :participants)
+        |> assign(:stats_filter, :participants)}
 
-    Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code)
-    Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
-
-    {:noreply, socket
-              |> assign(:session, session)
-              |> assign(:quiz, session.quiz)
-              |> assign(:page_title, "Show Session")
-              |> assign(:current_path, "/sessions/#{id}")
-              |> assign(:participants, Sessions.get_session_participants(id))
-              |> assign(:selected_view, :participants)
-              |> assign(:stats_filter, :participants)}
+    else
+      {:noreply, socket |> put_flash(:error, "Invalid Session") |> redirect(to: ~p"/sessions")}
+    end
   end
 
 
