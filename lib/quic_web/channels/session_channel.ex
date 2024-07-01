@@ -26,7 +26,7 @@ defmodule QuicWeb.SessionChannel do
       else
         # If Session is still Open
         if Sessions.is_session_open?(code) do
-         # add Participant to Session and respond
+         # add Participant to Session
           session = Sessions.get_open_session_by_code(code)
           {:ok, participant} = Participants.channel_create_participant(session, username)
 
@@ -88,6 +88,7 @@ defmodule QuicWeb.SessionChannel do
   # MONITOR EVENTS
   @impl true
   def handle_in("monitor-start-session", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
+    # verify if Session exists and Monitor ownership
     if Sessions.exists_session_with_id?(session_id) and Sessions.session_belongs_to_monitor?(session_id, email) do
       case Sessions.start_session(session_id) do
         {:ok, first_question} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"session-started", %{"question" => first_question}})
@@ -99,6 +100,7 @@ defmodule QuicWeb.SessionChannel do
 
   @impl true
   def handle_in("monitor-close-session", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
+    # verify if Session exists and Monitor ownership
     if Sessions.exists_session_with_id?(session_id) and Sessions.session_belongs_to_monitor?(session_id, email) do
       case Sessions.close_session(session_id) do
         {:ok, _} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, "monitor-closed-session")
@@ -110,6 +112,7 @@ defmodule QuicWeb.SessionChannel do
 
   @impl true
   def handle_in("monitor-next-question", %{"session_code" => code, "session_id" => session_id, "email" => email}, socket) do
+    # verify if Session exists and Monitor ownership
     if Sessions.exists_session_with_id?(session_id) and Sessions.session_belongs_to_monitor?(session_id, email) do
       case Sessions.next_question(session_id) do
         {:ok, next_question} -> Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code, {"next_question", %{"question" => next_question}})

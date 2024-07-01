@@ -4,14 +4,12 @@ defmodule Quic.Sessions do
   """
 
   import Ecto.Query, warn: false
-  alias Quic.Repo
-
-  alias Quic.Quizzes
-  alias Quic.Participants
   alias Quic.Sessions.Session
-  alias Quic.Participants.Participant
-
   alias Quic.Sessions.CodeGenerator
+  alias Quic.Participants.Participant
+  alias Quic.{Repo, Quizzes, Participants}
+
+
   @doc """
   Returns the list of sessions.
 
@@ -69,12 +67,20 @@ defmodule Quic.Sessions do
   end
 
   def get_open_session_by_code(code) do
-    Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:participants)
+    try do
+      Repo.get_by(Session, code: code, status: :open) |> Repo.preload(:participants)
+    rescue
+      _ -> nil
+    end
   end
 
   def get_open_sessions() do
-    query = from s in "sessions", where: s.status == "open", select: s.code
-    Repo.all(query)
+    try do
+      query = from s in "sessions", where: s.status == "open", select: s.code
+      Repo.all(query)
+    rescue
+      _ -> []
+    end
   end
 
   def is_session_open?(code) do
@@ -155,7 +161,6 @@ defmodule Quic.Sessions do
 
   def generate_valid_code() do
     code = CodeGenerator.generate_code(5)
-
     case get_open_sessions() do
       [] -> code
       codes ->
@@ -165,7 +170,6 @@ defmodule Quic.Sessions do
           code
         end
     end
-
   end
 
   @doc """
@@ -216,14 +220,17 @@ defmodule Quic.Sessions do
   end
 
   def is_owner?(session_id, author) do
-    session = get_session!(session_id)
-    author && session && author.id === session.monitor.id
+    try do
+      session = get_session!(session_id)
+      author && session && author.id === session.monitor.id
+    rescue
+      _ -> false
+    end
   end
 
   def exists_session_with_id?(id) do
     try do
-      get_session!(id)
-      true
+      Repo.get(Session, id) !== nil
     rescue
       _ -> false
     end

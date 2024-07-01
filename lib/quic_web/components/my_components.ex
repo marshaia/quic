@@ -676,7 +676,11 @@ defmodule QuicWeb.MyComponents do
 
 
   @doc"""
+  Renders an Ace Editor component.
 
+  ## Examples:
+
+    <.code_editor editor_id="editor_1" text="int a ..." loading={false} />
   """
   attr :editor_id, :string, default: ""
   attr :text, :string, default: ""
@@ -697,6 +701,34 @@ defmodule QuicWeb.MyComponents do
         phx-hook="AceEditor"
         phx-update="ignore"
       ><%= @text %></div>
+    </div>
+    """
+  end
+
+
+  @doc"""
+  Renders a Tooltip.
+
+  ## Examples:
+
+    <.tooltip />
+  """
+  attr :tooltip_id, :string, default: ""
+  attr :class, :string, default: ""
+  slot :inner_block, required: true
+
+  def tooltip(assigns) do
+    ~H"""
+    <div>
+      <div class="cursor-pointer" phx-click={JS.toggle(to: "#" <> @tooltip_id)}>
+        <Heroicons.question_mark_circle class="w-6 h-6 duration-200 hover:text-[var(--primary-color)]" />
+      </div>
+
+      <div class="relative">
+        <div id={@tooltip_id}hidden class={"absolute z-10 bg-zinc-300 dark:bg-zinc-600 px-4 py-2 rounded-xl select-none shadow-lg #{@class}"}>
+          <%= render_slot(@inner_block) %>
+        </div>
+      </div>
     </div>
     """
   end

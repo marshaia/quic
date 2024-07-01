@@ -4,7 +4,7 @@ defmodule Quic.CodeGrader do
     "http://localhost:5000/test"
   end
 
-  def get_response(participant_id, participant_answer, parameters) do
+  def grade_code(participant_id, participant_answer, parameters) do
     case HTTPoison.post(url(), Jason.encode!(%{
       "id" => participant_id,
       "answer" => participant_answer,

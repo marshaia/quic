@@ -81,11 +81,9 @@ defmodule Quic.Quizzes do
   end
 
   def exists_quiz?(quiz_id) do
-    try do
-      Repo.get(Quiz, quiz_id) !== nil
-    rescue
-      _ -> nil
-    end
+    Repo.get(Quiz, quiz_id) !== nil
+  rescue
+    _ -> false
   end
 
   @doc """
