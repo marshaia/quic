@@ -9,7 +9,7 @@
 
       <%!-- WHERE TO JOIN --%>
       <div class="flex w-full justify-evenly">
-        <p class="mt-5 text-center">Join at <b><%= QuicWeb.Endpoint.url() %>/enter-session</b></p>
+        <p class="mt-5 text-center">Join at <span class="font-medium"><%= QuicWeb.Endpoint.url() %>/enter-session</span></p>
       </div>
     </div>
   </div>
@@ -17,7 +17,7 @@
   <%!-- NUMBER OF PARTICIPANTS SO FAR --%>
   <div class="flex justify-between mx-3 my-5">
     <div class="flex gap-2 bg-[var(--background-card)] rounded-full p-2 px-4 border border-[var(--border)]">
-      <Heroicons.user_group class="w-7 h-7 text-[var(--primary-color-text)]" />
+      <Heroicons.user_group class="w-7 h-7 text-[var(--primary-color-text)] stroke-1" />
       <h6 class="font-normal"><%= Enum.count(@participants) %></h6>
     </div>
 
@@ -30,7 +30,7 @@
       class="flex items-center gap-2 call2actionBtn"
     >
       <Heroicons.play class="w-5 h-5"/>
-      <p class="font-normal text-white">START</p>
+      <p class="text-base font-normal text-white">START</p>
     </.button>
   </div>
 
@@ -46,15 +46,17 @@
         :for={{participant, index} <- Enum.with_index(@participants)}
         class="flex gap-2 bg-[var(--background-card)] p-2 px-4 rounded-xl border border-[var(--border)]"
       >
-        <Heroicons.user class={["w-7 h-7", QuicWebAux.user_color(index + 1)]}/>
-        <h6><%= participant.name %></h6>
+        <Heroicons.user class={["w-7 h-7 stroke-1", QuicWebAux.user_color(index + 1)]}/>
+        <h6 class="font-normal"><%= participant.name %></h6>
       </div>
     </div>
   <% end %>
+<% end %>
 
-<%!-- QUIZ QUESTIONS --%>
-<% else %>
-  <%= if @session.status === :on_going do %>
+
+
+<%!-- MONITOR PACED - QUIZ QUESTIONS --%>
+<%= if @session.type === :monitor_paced && @session.status === :on_going do %>
   <div id="full-screen-on-going-session-section" phx-hook="SessionChannelMonitor">
     <div class="flex justify-between px-2 mt-3 md:mt-8 md:px-0">
       <h4 class="text-[var(--primary-color-text)] font-medium"><%= @quiz.name %></h4>
@@ -139,14 +141,27 @@
       </div>
     </div>
   </div>
-  
-  <%!-- SESSION IS CLOSED --%>
-  <% else %>
-    <div class="flex flex-col items-center justify-center w-full mt-14">
-      <h3>This session is closed</h3>
-      <h6 class="mt-5 font-normal text-center">You can now close this window. To see the results, return to the session's page.</h6>
+<% end %>
 
-      <.button phx-click="back_to_session" class="mt-8 call2actionBtn">Go to Session</.button>
+
+<%!-- PARTICIPANT PACED - LEADERBOARD --%>
+<%= if @session.type === :participant_paced && @session.status === :on_going do %>
+  <div class="flex flex-col items-center w-full h-full">
+    <h4 class="my-8 text-gradient">Leaderboard</h4>
+
+    <div class="bg-[var(--background-card)] p-2 px-6 rounded-xl border border-[var(--border)] mx-10 md:mx-0 md:w-2/3">
+      <.leaderboard participants={@participants} total_questions={Enum.count(@session.quiz.questions)} />
     </div>
-  <% end %>
+  </div>
+<% end %>
+
+
+
+<%!-- SESSION IS CLOSED --%>
+<%= if @session.status === :closed do %>
+  <div class="flex flex-col items-center justify-center w-full mt-14">
+    <h3>This session is closed</h3>
+    <h6 class="mt-5 font-normal text-center">You can now close this window. To see the results, return to the session's page.</h6>
+    <.button phx-click="back_to_session" class="mt-8 call2actionBtn"><p class="font-normal text-white">Go to Session</p></.button>
+  </div>
 <% end %>

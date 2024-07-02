@@ -711,7 +711,9 @@ defmodule QuicWeb.MyComponents do
 
   ## Examples:
 
-    <.tooltip />
+    <.tooltip tooltip_id="id1">
+      <p>This is a tooltip</p>
+    </.tooltip>
   """
   attr :tooltip_id, :string, default: ""
   attr :class, :string, default: ""
@@ -721,7 +723,7 @@ defmodule QuicWeb.MyComponents do
     ~H"""
     <div>
       <div class="cursor-pointer" phx-click={JS.toggle(to: "#" <> @tooltip_id)}>
-        <Heroicons.question_mark_circle class="w-6 h-6 duration-200 hover:text-[var(--primary-color)]" />
+        <Heroicons.information_circle class="w-6 h-6 duration-200 hover:text-[var(--primary-color)]" />
       </div>
 
       <div class="relative">
@@ -733,4 +735,37 @@ defmodule QuicWeb.MyComponents do
     """
   end
 
+
+
+  @doc"""
+  Renders a Participant Leaderboard (in the context of a Session).
+
+  ## Examples:
+
+  """
+  attr :participants, :any, default: []
+  attr :total_questions, :integer, default: 0
+
+  def leaderboard(assigns) do
+    ~H"""
+    <div class="w-full">
+      <table class="w-full p-2 overflow-auto">
+        <tr class="border-b border-[var(--border)] h-10">
+          <th class="min-w-6">#</th>
+          <th class="min-w-40 w-[35%]">Name</th>
+          <th class="flex items-center justify-center mt-1.5 min-w-20">Points</th>
+          <th class="hidden min-w-20 md:block">Progress</th>
+        </tr>
+
+        <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center">
+          <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
+          <td><p><%= participant.name %></p></td>
+          <td><p><%= participant.total_points %></p></td>
+          <td><p class="text-gray-400 dark:text-gray-500"><%= participant.current_question %>/<%= @total_questions %></p></td>
+        </tr>
+      </table>
+    </div>
+
+    """
+  end
 end

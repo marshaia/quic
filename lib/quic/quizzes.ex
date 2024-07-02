@@ -30,6 +30,11 @@ defmodule Quic.Quizzes do
     author.quizzes
   end
 
+  def list_all_public_quizzes() do
+    query = from q in Quiz, where: q.public == true
+    Repo.all(query) |> Repo.preload(:author) |> Repo.preload(:questions)
+  end
+
   def list_all_author_public_quizzes(id) do
     author = Repo.get(Author, id) |> Repo.preload([quizzes: from(q in Quiz, order_by: [desc: q.inserted_at])]) |> Repo.preload(quizzes: [:questions, :author])
     Enum.filter(author.quizzes, fn q -> q.public === true end)
@@ -45,6 +50,20 @@ defmodule Quic.Quizzes do
       list_all_author_quizzes(author_id)
     else
       Enum.reduce(list_all_author_quizzes(author_id), [],
+        fn quiz, acc ->
+          if (String.match?(quiz.name, ~r/\w*#{input}\w*/i) ||
+              String.match?(quiz.description, ~r/\w*#{input}\w*/i) ||
+              String.match?(quiz.author.display_name,  ~r/\w*#{input}\w*/i)),
+          do: [quiz | acc], else: acc
+        end)
+    end
+  end
+
+  def filter_public_quizzes(input) do
+    if String.length(input) === 0 do
+      list_all_public_quizzes()
+    else
+      Enum.reduce(list_all_public_quizzes(), [],
         fn quiz, acc ->
           if (String.match?(quiz.name, ~r/\w*#{input}\w*/i) ||
               String.match?(quiz.description, ~r/\w*#{input}\w*/i) ||

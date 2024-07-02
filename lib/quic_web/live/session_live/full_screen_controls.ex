@@ -13,24 +13,19 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   def handle_params(%{"id" => id}, _, socket) do
     if Sessions.exists_session_with_id?(id) && Sessions.is_owner?(id, socket.assigns.current_author) do
       session = Sessions.get_session!(id)
-      if session.type === :monitor_paced do
-        quiz = session.quiz
+      quiz = session.quiz
 
-        socket = push_event(socket, "join_session", %{code: session.code, email: socket.assigns.current_author.email, session_id: session.id})
-        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code)
-        Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
+      socket = push_event(socket, "join_session", %{code: session.code, email: socket.assigns.current_author.email, session_id: session.id})
+      Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code)
+      Phoenix.PubSub.subscribe(Quic.PubSub, "session:" <> session.code <> ":monitor")
 
-        {:noreply, socket
-          |> assign(:quiz, quiz)
-          |> assign(:session, session)
-          |> assign(:page_title, "Session #{session.code}")
-          |> assign(:current_path, "/sessions/#{id}/full-screen")
-          |> assign(:participants, Sessions.get_session_participants(id))
-          |> assign(:show_correct_answers, false)}
-
-      else
-        {:noreply, socket |> put_flash(:error, "Session is not of type Monitor Paced!") |> redirect(to: ~p"/sessions")}
-      end
+      {:noreply, socket
+        |> assign(:quiz, quiz)
+        |> assign(:session, session)
+        |> assign(:page_title, "Session #{session.code}")
+        |> assign(:current_path, "/sessions/#{id}/full-screen")
+        |> assign(:participants, Sessions.get_session_participants(id))
+        |> assign(:show_correct_answers, false)}
 
     else
       {:noreply, socket |> put_flash(:error, "Invalid Session") |> redirect(to: ~p"/sessions")}
@@ -68,6 +63,11 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   # SERVER MESSAGES
   @impl true
   def handle_info("participant_joined", socket) do
+    {:noreply, socket |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
+  end
+
+  @impl true
+  def handle_info("participant_submitted_answer", socket) do
     {:noreply, socket |> assign(:participants, Sessions.get_session_participants(socket.assigns.session.id))}
   end
 

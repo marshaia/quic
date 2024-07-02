@@ -15,7 +15,7 @@
   <h6 class="mb-2">
     <%!-- <%= if todays_date === date_calendar, do: "Today, ", else: Calendar.strftime(date, "%a, ") %> --%>
     <%= if todays_date === date_calendar do %>
-      <span class="text-[var(--primary-color)]">Today</span>,
+      <span class="text-gradient">Today</span>,
     <% else %>
       <%= Calendar.strftime(date, "%a, ") %>
     <% end %>

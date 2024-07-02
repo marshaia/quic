@@ -114,18 +114,19 @@
           <% end %>
         </div>
       <% end %>
-      
-      <%!-- VISUALIZE SESSION IN FULL SCREEN --%>
-      <.link  
-        :if={@session.status !== :closed}
-        target="_blank"
-        patch={~p"/sessions/#{@session.id}/full-screen"}
-        class="session-form-btn bg-[var(--background-card)] border border-[var(--primary-color)] rounded-full hover:bg-[var(--hover)]" 
-      >
-        <Heroicons.arrows_pointing_out class="w-5 h-5" />
-        Full Screen
-      </.link>
     <% end %>
+
+    <%!-- VISUALIZE SESSION IN FULL SCREEN --%>
+    <.link  
+      :if={@session.status !== :closed}
+      target="_blank"
+      rel="noopener noreferrer"
+      patch={~p"/sessions/#{@session.id}/full-screen"}
+      class="flex items-center gap-1 px-3 py-1.5 bg-[var(--background-card)] border border-[var(--primary-color)] rounded-full hover:bg-[var(--hover)]" 
+    >
+      <Heroicons.arrows_pointing_out class="w-5 h-5" />
+      <p>Full Screen</p>
+    </.link>
   </div>
   
   

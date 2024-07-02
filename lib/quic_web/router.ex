@@ -69,7 +69,6 @@ defmodule QuicWeb.Router do
   scope "/", QuicWeb do
     pipe_through [:browser, :require_authenticated_author]
 
-    get "/authors", AuthorController, :home
     get "/sessions/:session_id/quiz", QuizController, :show
 
     live_session :require_authenticated_author,
@@ -77,6 +76,7 @@ defmodule QuicWeb.Router do
       live "/authors/settings", AuthorSettingsLive, :edit
       live "/authors/settings/confirm_email/:token", AuthorSettingsLive, :confirm_email
       live "/authors/profile/:id", AuthorProfile
+      live "/authors", AuthorHomePage
 
       # QUIZZES
       live "/quizzes", QuizLive.Index, :index

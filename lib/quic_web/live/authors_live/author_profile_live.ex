@@ -8,21 +8,21 @@ defmodule QuicWeb.AuthorProfile do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="bg-[var(--background-card)] gap-1 py-4 p-2 rounded-md flex flex-col justify-center items-center border border-[var(--border)]">
+    <div class="bg-[var(--background-card)] gap-1 py-6 p-2 rounded-md flex flex-col justify-center items-center border border-[var(--border)]">
       <h4 class="text-gradient"><%= @author.display_name %></h4>
       <p>@<%= @author.username %></p>
       <%!-- <p><%= @author.email %></p> --%>
 
-      <div class="flex justify-between w-[85%] md:w-[50%] mt-5">
+      <%!-- <div class="flex justify-between w-[85%] md:w-[50%] mt-5">
         <div class="flex items-center gap-2">
-          <Heroicons.pencil_square class="w-5 h-5 stroke-1"/>
+          <Heroicons.pencil_square class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
           <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@quizzes)%> Quizzes</p>
         </div>
         <div class="flex items-center gap-2">
-          <Heroicons.user_group class="w-5 h-5 stroke-1"/>
+          <Heroicons.user_group class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
           <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@teams)%> Teams</p>
         </div>
-      </div>
+      </div> --%>
     </div>
 
     <%!-- PUBLIC QUIZZES --%>
