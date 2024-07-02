@@ -35,7 +35,7 @@ defmodule QuicWeb.AuthorProfile do
           <.quiz_box
             index={index + 1}
             quiz={quiz}
-            isOwner={Quizzes.is_owner?(quiz.id, @author)}
+            isOwner={Quizzes.is_owner?(quiz.id, @current_author)}
             current_author_id={@current_author.id}
           />
         </div>

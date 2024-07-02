@@ -501,18 +501,18 @@ defmodule QuicWeb.MyComponents do
 
         <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
           <div class="flex gap-1">
-            <Heroicons.eye :if={@quiz.public} class="w-5 h-5"/>
-            <Heroicons.eye_slash :if={!@quiz.public} class="w-5 h-5"/>
+            <Heroicons.eye :if={@quiz.public} class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
+            <Heroicons.eye_slash :if={!@quiz.public} class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
             <p class="text-gray-400"><%= if @quiz.public, do: "Public", else: "Private" %></p>
           </div>
 
           <div class="flex gap-1">
-            <Heroicons.trophy class="w-5 h-5" />
+            <Heroicons.trophy class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
             <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
           </div>
 
           <div class="flex gap-1">
-            <Heroicons.user_circle class="w-5 h-5" />
+            <Heroicons.user_circle class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
             <p class="text-gray-400">
               <%= if @quiz.author.id === @current_author_id do %>
                 You
@@ -556,7 +556,7 @@ defmodule QuicWeb.MyComponents do
 
         <div class="flex flex-col items-center justify-end gap-2 sm:flex-row">
           <div class="flex gap-1">
-            <Heroicons.user_group class="w-5 h-5" />
+            <Heroicons.user_group class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
             <p class="text-gray-400"><%= Enum.count(@team.authors) %> Collaborators</p>
           </div>
         </div>

@@ -111,6 +111,7 @@ defmodule QuicWeb.Router do
 
       # PARTICIPANT
       live "/session/:session_id/participants/:participant_id", ParticipantLive.Show, :show
+      live "/session/:session_id/participants/:participant_id/evaluate-open-answer/:question_position", ParticipantLive.EvaluateOpenAnswerForm
     end
   end
 

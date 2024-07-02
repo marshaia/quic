@@ -166,7 +166,8 @@ defmodule Quic.Participants do
 
     case results[:result] do
       :correct ->
-        participant |> update_participant(%{"total_points" => participant.total_points + question.points})
+        new_points = participant.total_points + (if question.type === :open_answer, do: 0, else: question.points)
+        participant |> update_participant(%{"total_points" => new_points})
         ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => :correct})
       result ->
         ParticipantAnswers.update_participant_answer(participant_answer, %{"result" => result, "error_reason" => results[:error_reason]})
@@ -187,6 +188,13 @@ defmodule Quic.Participants do
       else
         {:error, participant}
       end
+    end
+  end
+
+  def participant_answer_has_been_assessed?(participant, question_id) do
+    case Enum.find(participant.answers, fn a -> a.question_id === question_id end) do
+      nil -> false
+      answer -> answer.points_obtained !== nil
     end
   end
 end

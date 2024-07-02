@@ -30,6 +30,12 @@ defmodule QuicWeb.ParticipantLive.Show do
 
 
   @impl true
+  def handle_event("evaluate_open_answer", %{"position" => position}, socket) do
+    {:noreply, socket |> redirect(to: ~p"/session/#{socket.assigns.participant.session.id}/participants/#{socket.assigns.participant.id}/evaluate-open-answer/#{position}")}
+  end
+
+
+  @impl true
   def handle_info({"submission_results", _}, socket) do
     {:noreply, socket |> assign(:participant, Participants.get_participant!(socket.assigns.participant.id))}
   end

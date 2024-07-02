@@ -1,10 +1,10 @@
-<div class="flex justify-start mb-10">
+<div class="flex justify-start">
   <.my_back navigate={"/sessions/#{@participant.session.id}"}>Back to Session</.my_back>
 </div>
 
 
 <%!-- PROFILE --%>
-<section class="flex justify-center w-full my-10">
+<section class="flex justify-center w-full my-6">
   <div class="flex flex-col items-center w-[90%] md:w-[70%] p-4 pb-6 bg-[var(--background-card)] rounded-xl border border-[var(--border)]">
     <div class="flex flex-col items-center justify-between gap-4">
         <h5><%= @participant.name %></h5>
@@ -18,8 +18,6 @@
     <.participant_progress_bar class="mt-6" progress={QuicWebAux.progress_percentage(@participant.current_question, Enum.count(@quiz.questions))} current_question={@participant.current_question} num_quiz_questions={Enum.count(@quiz.questions)} /> 
   </div>
 </section>
-
-
 
 
 <%!-- ANSWERS & RESULTS --%>
@@ -42,10 +40,26 @@
         </div>
 
         <%!-- POINTS OBTAINED --%>
-        <div class="flex gap-2">
-          <Heroicons.trophy class="w-5 h-5"/>
-          <p><%= (if has_answered && participant_answer.result === :correct, do: question.points, else: 0) %></p>
-        </div>
+        <%= if question.type === :open_answer do %>
+          <%= if not has_answered || participant_answer.points_obtained !== nil do %>
+            <div class="flex gap-1">
+              <Heroicons.trophy class="w-5 h-5 text-[var(--primary-color-text)] stroke-1" />
+              <p><%= (if has_answered && participant_answer.points_obtained !== nil, do: participant_answer.points_obtained, else: 0) %></p>
+            </div>
+          <% else %>
+            <div>
+              <button phx-click={"evaluate_open_answer"} phx-value-position={question.position} class="px-3 py-0.5 gradient rounded-full">
+                <p class="text-white">Assess</p>
+              </button>
+            </div>
+          <% end %>
+          
+        <% else %>
+          <div class="flex gap-1">
+            <Heroicons.trophy class="w-5 h-5 text-[var(--primary-color-text)] stroke-1" />
+            <p><%= (if has_answered && participant_answer.result === :correct, do: question.points, else: 0) %></p>
+          </div>
+        <% end %>
       </div>
       
       <.markdown text={question.description} />
@@ -167,35 +181,49 @@
           </div>
         </div>
       <% end %>
-    </div>
 
-    <%= if question.type === :open_answer do %>
-      <% participant_answer = Enum.at(participant_answer.answer,0,"") %>
-      <div class="px-2 md:px-5 lg:px-8">
-        <p class="text-[var(--primary-color)] font-semibold">Response:</p>
-        <.markdown class="w-full" text={participant_answer} />
-      </div>
-    <% end %>
+      <%= if question.type === :open_answer do %>
+        <% participant_answer = Enum.at(participant_answer.answer,0,"") %>
+        <div class="w-full col-span-2 p-1 px-5 overflow-auto">
+          <p class="text-[var(--primary-color)] font-medium">Response:</p>
+          <.markdown class="w-full" text={participant_answer} />
+        </div>
+      <% end %>
 
-    <%= if question.type === :code do %>
-      <% participant_text = Enum.at(participant_answer.answer,0,"") %>
-      <% parameters = Enum.find(@quiz.parameters, fn p -> p.question_id === question.id end) %>
+      <%= if question.type === :code do %>
+        <% participant_text = Enum.at(participant_answer.answer,0,"") %>
+        <% parameters = Enum.find(@quiz.parameters, fn p -> p.question_id === question.id end) %>
 
-      <div class="w-full p-1 px-5 overflow-auto">
-        <div class="flex items-center justify-start w-full gap-2">
-          <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
-          <div class="flex-1">
-            <.language_previewer text={participant_text} language={Atom.to_string(parameters.language)} />
+        <div class="w-full col-span-2 p-1 px-5 overflow-auto">
+          <div class="flex items-center justify-start w-full gap-2">
+            <.right_or_wrong is_correct={participant_answer.result === :correct} class="w-6 h-6 min-h-6 min-w-6" />
+            <div class="flex-1">
+              <.language_previewer text={participant_text} language={Atom.to_string(parameters.language)} />
+            </div>
+          </div>
+
+          <div :if={participant_answer.result === :error || participant_answer.result === :incorrect} class="mb-3 -mt-3">
+            <.error> <%= participant_answer.error_reason %> </.error>
           </div>
         </div>
-
-        <div :if={participant_answer.result === :error || participant_answer.result === :incorrect} class="mb-3 -mt-3">
-          <.error> <%= participant_answer.error_reason %> </.error>
-        </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
     
   <% else %>
     <p>Participant <%= (if @participant.session.status !== :closed, do: "hasn't submmited", else: "did not submit") %> an answer to this question.</p>
   <% end %>
 </section> 
+
+
+
+<%!-- <.modal :if={@live_action === :evaluate_open_answer} id="evaluate-open-answer-participant-modal" show on_cancel={JS.patch(~p"/session/#{@participant.session.id}/participants/#{@participant.id}")}>
+  <.live_component
+    module={QuicWeb.QuizLive.EvaluateOpenAnswerForm}
+    id="open-answer-participant-modal-form"
+    action={@live_action}
+    current_author={@current_author}
+    participant={@participant}
+    selected_question={@selected_question}
+    patch={~p"/session/#{@participant.session.id}/participants/#{@participant.id}"}
+  />
+</.modal> --%>

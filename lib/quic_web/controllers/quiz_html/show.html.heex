@@ -33,16 +33,6 @@
     </section>
 
 
-    <%!-- LAUNCH DIVIDER
-    <div class="flex flex-col items-center mb-7 mt-14">
-      <hr />
-      <.link :if={Enum.count(@quiz.questions) > 0 && assigns[:current_author]} navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 -mt-5 text-white call2actionBtn">
-        <Heroicons.bolt class="w-5 h-5" />
-        Launch Quiz
-      </.link>
-    </div> --%>
-
-
 
     <%!-- QUIZ QUESTIONS --%>
     <section id="quiz-page-questions-section-prism-hook" phx-hook="PrismInitializer" class="w-full mt-10">
@@ -64,7 +54,7 @@
 
               <div class="hidden gap-1 md:flex">
                 <Heroicons.trophy class="w-5 h-5" />
-                <p><%= question.points %> Points</p>
+                <p><%= question.points %></p>
               </div>
             </div>
 

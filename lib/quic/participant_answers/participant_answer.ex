@@ -9,9 +9,9 @@ defmodule Quic.ParticipantAnswers.ParticipantAnswer do
     field :error_reason, :string
     field :answer, {:array, :string}
     field :question_id, :string
+    field :points_obtained, :integer
 
     belongs_to :participant, Quic.Participants.Participant, foreign_key: :participant_id
-    #belongs_to :question, Quic.Questions.Question, foreign_key: :question_id
 
     timestamps(type: :utc_datetime)
   end
@@ -19,14 +19,14 @@ defmodule Quic.ParticipantAnswers.ParticipantAnswer do
   @doc false
   def changeset(participant_answer, attrs) do
     participant_answer
-    |> cast(attrs, [:answer, :result, :question_id, :error_reason])
+    |> cast(attrs, [:answer, :result, :question_id, :error_reason, :points_obtained])
     |> validate_required([:answer, :result, :question_id])
   end
 
   @doc false
   def changeset(participant_answer, attrs, participant) do
     participant_answer
-    |> cast(attrs, [:answer, :result, :question_id, :error_reason])
+    |> cast(attrs, [:answer, :result, :question_id, :error_reason, :points_obtained])
     |> put_assoc(:participant, participant)
     |> validate_required([:answer, :result, :question_id])
   end

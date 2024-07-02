@@ -14,13 +14,13 @@
             <p class="mt-5"> <%= @team.description %> </p>
 
             <div class="flex flex-col items-center gap-4 mt-5 md:flex-row md:justify-evenly">
-              <div class="flex gap-2">
-                <Heroicons.pencil_square class="w-5 h-5 stroke-1" />
+              <div class="flex items-center gap-2">
+                <Heroicons.pencil_square class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
                 <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@team.quizzes) %> Quizzes</p>
               </div>
 
-              <div class="flex gap-2">
-                <Heroicons.users class="w-5 h-5 stroke-1" />
+              <div class="flex items-center gap-2">
+                <Heroicons.users class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
                 <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@team.authors) %> Collaborators</p>
               </div>
             </div>
@@ -61,9 +61,9 @@
         >
           <div class="absolute right-2.5 -top-2.5">
             <.link
-              class="p-1 hover:text-[var(--primary-color)] rounded-full"
+              class="p-1 hover:text-[var(--red)] rounded-full"
               phx-click={JS.push("remove_author", value: %{team: @team.id, author: colaborator.id})}
-              data-confirm="Are you sure you want to remove this collaborator?">
+              data-confirm="Are you sure you want to remove this collaborator? All their quizzes will be removed too!">
                 <Heroicons.user_minus class="w-4 h-4" />
             </.link>
           </div>
@@ -118,13 +118,13 @@
                 <p class="text-gray-400"><%= Enum.count(quiz.questions) %> Questions</p>
               </div> --%>
 
-              <div class="flex gap-1">
-                <Heroicons.trophy class="w-5 h-5" />
+              <div class="flex items-center gap-1">
+                <Heroicons.trophy class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
                 <p class="text-gray-400"><%= quiz.total_points %> Points</p>
               </div>
 
-              <div class="flex gap-1">
-                <Heroicons.user_circle class="w-5 h-5" />
+              <div class="flex items-center gap-1">
+                <Heroicons.user_circle class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
                 <p class="text-gray-400">
                   <%= if quiz.author.id === @current_author.id do %>
                     You
