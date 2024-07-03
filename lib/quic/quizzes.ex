@@ -4,8 +4,7 @@ defmodule Quic.Quizzes do
   """
 
   import Ecto.Query, warn: false
-  alias Quic.Repo
-  alias Quic.Questions
+  alias Quic.{Repo, Questions, Accounts}
   alias Quic.Quizzes.Quiz
   alias Quic.Accounts.Author
   alias Quic.Questions.{QuestionAnswer, Question}
@@ -130,6 +129,32 @@ defmodule Quic.Quizzes do
     |> Repo.insert()
   end
 
+  def duplicate_quiz(attrs \\ %{}, quiz_id, author_id) do
+    try do
+      Repo.transaction(fn ->
+        quiz = get_quiz!(quiz_id)
+        author = Accounts.get_author!(author_id)
+        {:ok, new_quiz} = %Quiz{} |> Quiz.changeset(attrs, author) |> Repo.insert()
+
+        Enum.each(quiz.questions,
+          fn question ->
+            question_params = %{"description" => question.description, "position" => question.position, "points" => question.points, "type" => question.type}
+            answers = if not Map.has_key?(question, :answers), do: [], else: Enum.reduce(question.answers, [],
+              fn answer, acc ->
+                params = %{"answer" => answer.answer, "is_correct" => answer.is_correct}
+                [params | acc]
+              end)
+            parameters = if question.type !== :fill_the_code && question.type !== :code, do: nil, else: %{"code" => question.parameters.code, "test_file" => question.parameters.test_file, "language" => question.parameters.language, "correct_answers" => question.parameters.correct_answers, "tests" => question.parameters.tests}
+
+            Questions.create_question_from_existing_one(question_params, new_quiz.id, answers, parameters)
+          end)
+      end)
+
+    rescue
+      _ -> {:error, "Error running transaction"}
+    end
+  end
+
   @doc """
   Updates a quiz.
 
@@ -159,30 +184,43 @@ defmodule Quic.Quizzes do
   end
 
   def update_quiz_questions_positions(id, position) do
-    quiz_questions = get_quiz_questions!(id)
-    Enum.each(quiz_questions,
-      fn question ->
-        if (question.position > position) do
-          Questions.update_question(question, %{"position" => question.position - 1})
-        end
+    try do
+      Repo.transaction(fn ->
+        quiz_questions = get_quiz_questions!(id)
+        Enum.each(quiz_questions,
+          fn question ->
+            if (question.position > position) do
+              Questions.update_question(question, %{"position" => question.position - 1})
+            end
+          end)
       end)
+    rescue
+      _ -> {:error, "Error running transaction"}
+    end
   end
 
   def send_quiz_question(direction, quiz_id, question_id, quiz_num_questions) do
-    question = Questions.get_question!(question_id)
-    old_position = question.position
-    new_position = question.position + (if direction === :up, do: -1, else: 1)
+    try do
+      Repo.transaction(fn ->
+        question = Questions.get_question!(question_id)
+        old_position = question.position
+        new_position = question.position + (if direction === :up, do: -1, else: 1)
 
-    if (direction === :up && old_position > 1) || (direction === :down && old_position >= 1 && old_position <= quiz_num_questions) do
-      case Questions.get_question_with_position(quiz_id, new_position) do
-        nil -> {:error, question}
-        switch_question ->
-          Questions.update_question(switch_question, %{"position" => old_position})
-          Questions.update_question(question, %{"position" => new_position})
-          {:ok, question}
-      end
-    else
-      {:error, question}
+        if (direction === :up && old_position > 1) || (direction === :down && old_position >= 1 && old_position <= quiz_num_questions) do
+          case Questions.get_question_with_position(quiz_id, new_position) do
+            nil -> {:error, question}
+            switch_question ->
+              Questions.update_question(switch_question, %{"position" => old_position})
+              Questions.update_question(question, %{"position" => new_position})
+              {:ok, question}
+          end
+        else
+          {:error, question}
+        end
+      end)
+
+    rescue
+      _ -> {:error, "Error running transaction"}
     end
   end
 

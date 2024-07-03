@@ -34,12 +34,18 @@ defmodule QuicWeb.QuizLive.Show do
 
     case Questions.delete_question(question) do
       {:ok, _} ->
-        Quizzes.update_quiz_questions_positions(quiz_id, position)
-        Quizzes.update_quiz_points(quiz_id)
-
-        {:noreply, socket
+        case Quizzes.update_quiz_questions_positions(quiz_id, position) do
+          {:ok, _} ->
+            case Quizzes.update_quiz_points(quiz_id) do
+              {:ok, _} ->
+                {:noreply, socket
                   |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
                   |> put_flash(:info, "Question deleted successfully!")}
+
+              {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+            end
+          {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+        end
 
       {:error, _changeset} ->
         {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
@@ -47,7 +53,23 @@ defmodule QuicWeb.QuizLive.Show do
   end
 
   @impl true
-  def handle_event("duplicate", %{"id" => id}, socket) do
+  def handle_event("duplicate_quiz", _params, socket) do
+    quiz = socket.assigns.quiz
+    quiz_params = %{
+      "name" => quiz.name,
+      "description" => quiz.description,
+      "total_points" => quiz.total_points,
+      "public" => quiz.public,
+    }
+
+    case Quizzes.duplicate_quiz(quiz_params, quiz.id, socket.assigns.current_author.id) do
+      {:ok, _} -> {:noreply, socket |> put_flash(:info, "Quiz duplicated successfully")}
+      {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+    end
+  end
+
+  @impl true
+  def handle_event("duplicate_question", %{"id" => id}, socket) do
     question = Questions.get_question!(id)
     question_params = %{
       "description" => question.description,
@@ -59,12 +81,14 @@ defmodule QuicWeb.QuizLive.Show do
     quiz_id = socket.assigns.quiz.id
 
     case Questions.duplicate_question(question_params, quiz_id, question) do
-      {:ok, _question} ->
-        Quizzes.update_quiz_points(quiz_id)
-
-        {:noreply, socket
-                  |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
-                  |> put_flash(:info, "Question duplicated successfully!")}
+      {:ok, _} ->
+        case Quizzes.update_quiz_points(quiz_id) do
+          {:ok, _} ->
+            {:noreply, socket
+              |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
+              |> put_flash(:info, "Question duplicated successfully!")}
+          {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+        end
 
       {:error, _changeset} ->
         {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
@@ -84,15 +108,19 @@ defmodule QuicWeb.QuizLive.Show do
   @impl true
   def handle_event("send_question_up", %{"id" => id}, socket) do
     quiz_id = socket.assigns.quiz.id
-    Quizzes.send_quiz_question(:up, quiz_id, id, Enum.count(socket.assigns.quiz.questions))
-    {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(quiz_id))}
+    case Quizzes.send_quiz_question(:up, quiz_id, id, Enum.count(socket.assigns.quiz.questions)) do
+      {:ok, _} -> {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(quiz_id))}
+      {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+    end
   end
 
   @impl true
   def handle_event("send_question_down", %{"id" => id}, socket) do
     quiz_id = socket.assigns.quiz.id
-    Quizzes.send_quiz_question(:down, quiz_id, id, Enum.count(socket.assigns.quiz.questions))
-    {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(socket.assigns.quiz.id))}
+    case Quizzes.send_quiz_question(:down, quiz_id, id, Enum.count(socket.assigns.quiz.questions)) do
+      {:ok, _} -> {:noreply, socket |> assign(:quiz, Quizzes.get_quiz!(quiz_id))}
+      {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+    end
   end
 
 

@@ -23,21 +23,21 @@
           <p><%= QuicWebAux.session_status_translate(@session.status) %></p>     
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1">
           <p><%= Enum.count(@session.participants) %></p>
-          <Heroicons.user_group class="w-5 h-5" />
+          <Heroicons.user_group class="w-5 h-5 stroke-1" />
         </div>
       </div>
 
       <div class="flex flex-col items-center justify-center gap-4 mt-3">
         <h2 class="text-gradient"><%= @session.code %></h2>
         <p class="flex gap-2">
-          <Heroicons.computer_desktop class="w-5 h-5" />
+          <Heroicons.computer_desktop class="w-5 h-5 stroke-1" />
           <%= QuicWebAux.session_type_translate(@session.type) %>
         </p>
 
         <p class="flex gap-2">
-          <Heroicons.clock class="w-5 h-5" />
+          <Heroicons.clock class="w-5 h-5 stroke-1" />
           <%= DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %>
         </p>
       </div>
@@ -59,18 +59,18 @@
       
       <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
         <div class="flex gap-1">
-          <Heroicons.list_bullet class="w-5 h-5" />
-          <p><%= quiz_num_questions %> Questions</p>
+          <Heroicons.list_bullet class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+          <p class="text-gray-400"><%= quiz_num_questions %> Questions</p>
         </div>
 
         <div class="flex gap-1">
-          <Heroicons.trophy class="w-5 h-5" />
-          <p><%= @quiz.total_points %> Points</p>
+          <Heroicons.trophy class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+          <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
         </div>
 
         <div class="flex gap-1">
-          <Heroicons.user_circle class="w-5 h-5" />
-          <p>
+          <Heroicons.user_circle class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+          <p class="text-gray-400">
             <%= if @quiz.author_id === @current_author.id do %>
               You
             <% else %>

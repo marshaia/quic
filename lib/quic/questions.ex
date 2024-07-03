@@ -66,45 +66,57 @@ defmodule Quic.Questions do
   end
 
   def create_question(attrs \\ %{}, quiz_id, answers_changesets, parameters) do
-    quiz = Quizzes.get_quiz!(quiz_id)
+    try do
+      Repo.transaction(fn ->
+        quiz = Quizzes.get_quiz!(quiz_id)
+        {:ok, question} = %Question{} |> Question.changeset(attrs, quiz) |> Repo.insert()
 
-    result = %Question{}
-      |> Question.changeset(attrs, quiz)
-      |> Repo.insert()
-
-    case result do
-      {:ok, question} ->
         Enum.each(answers_changesets,
           fn answer_changeset ->
             changes = answer_changeset.changes
             params = %{"answer" => changes.answer, "is_correct" => (if Map.has_key?(changes, :is_correct), do: changes.is_correct, else: false)}
-            {:ok, _} = create_answer_with_question(params, question.id)
+            create_answer_with_question(params, question.id)
           end)
 
         if question.type === :fill_the_code || question.type === :code do
           param_map = %{"code" => parameters.changes.code, "language" => parameters.changes.language, "tests" => parameters.changes.tests, "test_file" => parameters.changes.test_file}
           param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", parameters.changes.correct_answers), else: Map.put(param_map, "correct_answers", %{}))
-          {:ok, _} = Parameters.create_parameter_with_question(param_map, question)
+          Parameters.create_parameter_with_question(param_map, question)
         end
 
         {:ok, question}
+      end)
 
-      {:error, _} -> result
+    rescue
+      _ -> {:error, "Error running transaction"}
+    end
+  end
+
+  def create_question_from_existing_one(attrs \\ %{}, quiz_id, answers_params, parameters_params) do
+    try do
+      Repo.transaction(
+        fn ->
+          quiz = Quizzes.get_quiz!(quiz_id)
+          {:ok, question} = %Question{} |> Question.changeset(attrs, quiz) |> Repo.insert()
+
+          Enum.each(answers_params, fn params -> create_answer_with_question(params, question.id) end)
+          if question.type === :fill_the_code || question.type === :code, do: Parameters.create_parameter_with_question(parameters_params, question)
+        end)
+
+    rescue
+      _ -> {:error, "Error creating question"}
     end
   end
 
   def duplicate_question(attrs \\ %{}, quiz_id, question) do
-    quiz = Quizzes.get_quiz!(quiz_id)
+    try do
+      Repo.transaction(fn ->
+        quiz = Quizzes.get_quiz!(quiz_id)
+        {:ok, new_question} = %Question{} |> Question.changeset(attrs, quiz) |> Repo.insert()
 
-    result = %Question{}
-      |> Question.changeset(attrs, quiz)
-      |> Repo.insert()
-
-    case result do
-      {:ok, new_question} ->
         Enum.each(question.answers,
           fn answer ->
-            params = %{"answer" => answer.answer, "is_correct" => answer.is_correct}
+            params = %{"answers" => answer.answer, "is_correct" => answer.is_correct}
             {:ok, _} = create_answer_with_question(params, new_question.id)
           end)
 
@@ -114,10 +126,10 @@ defmodule Quic.Questions do
           param_map = (if question.type === :fill_the_code, do: Map.put(param_map, "correct_answers", parameters.correct_answers), else: Map.put(param_map, "correct_answers", %{}))
           {:ok, _} = Parameters.create_parameter_with_question(param_map, new_question)
         end
+      end)
 
-        {:ok, question}
-
-      {:error, _} -> result
+    rescue
+      _ -> {:error, "Error running transaction"}
     end
   end
 
@@ -140,12 +152,10 @@ defmodule Quic.Questions do
   end
 
   def update_question(question, attrs \\ %{}, answers_attrs \\ [], parameters_changeset) do
-    result = question
-      |> Question.changeset(attrs)
-      |> Repo.update()
+    try do
+      Repo.transaction(fn ->
+        {:ok, question} = question |> Question.changeset(attrs) |> Repo.update()
 
-    case result do
-      {:ok, question} ->
         Enum.reduce(answers_attrs, 0,
           fn answer_changeset, acc ->
             answer_bd = Enum.at(question.answers, acc, %QuestionAnswer{})
@@ -153,7 +163,7 @@ defmodule Quic.Questions do
               "answer" => (if Map.has_key?(answer_changeset.changes, :answer), do: answer_changeset.changes.answer, else: answer_bd.answer),
               "is_correct" => (if Map.has_key?(answer_changeset.changes, :is_correct), do: answer_changeset.changes.is_correct, else: answer_bd.is_correct)
             }
-            {:ok, _} = update_question_answer(answer_bd, params)
+            update_question_answer(answer_bd, params)
             acc + 1
           end
         )
@@ -167,14 +177,14 @@ defmodule Quic.Questions do
             "tests" => (if Map.has_key?(parameters_changeset.changes, :tests), do: parameters_changeset.changes.tests, else: parameters.tests),
             "correct_answers" => (if Map.has_key?(parameters_changeset.changes, :correct_answers), do: parameters_changeset.changes.correct_answers, else: parameters.correct_answers)
           }
-
-          {:ok, _} = Parameters.update_parameter(parameters, param_map)
+          Parameters.update_parameter(parameters, param_map)
         end
+      end)
 
-        {:ok, question}
-
-      {:error, _} -> result
+    rescue
+      _ -> {:error, "Error running transaction"}
     end
+
   end
 
   @doc """

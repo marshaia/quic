@@ -8,7 +8,14 @@
 
     <%!-- QUIZ SPECS --%>
     <section class="w-full bg-[var(--background-card)] p-4 rounded-md border border-[var(--border)]">
-      <div class="flex justify-end -mt-1">
+      <div class="flex justify-between -mt-1">
+        <.link 
+          phx-click="duplicate_quiz"
+          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
+        >
+          <Heroicons.document_duplicate class="question-box-icon" />
+        </.link>
+
         <.link 
           :if={isOwner} 
           patch={~p"/quizzes/#{@quiz}/show/edit"} 
@@ -177,7 +184,7 @@
             <Heroicons.trash class="w-5 h-5 hover:text-[var(--red)] stroke-1" />
           </.link>
           
-          <.link phx-click={JS.push("duplicate", value: %{id: question.id})}>
+          <.link phx-click={JS.push("duplicate_question", value: %{id: question.id})}>
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
         </div>

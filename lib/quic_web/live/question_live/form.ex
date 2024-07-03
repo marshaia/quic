@@ -146,12 +146,12 @@ defmodule QuicWeb.QuestionLive.Form do
     }
 
     case Questions.update_question(question, question_params, answers_params, socket.assigns.parameters_changeset) do
-      {:ok, question} ->
+      {:ok, _} ->
         Quizzes.update_quiz_points(socket.assigns.quiz_id)
 
         {:noreply, socket
-                  |> put_flash(:info, "Question updated successfully!")
-                  |> redirect(to: ~p"/quizzes/#{socket.assigns.quiz_id}/question/#{question.id}")}
+          |> put_flash(:info, "Question updated successfully!")
+          |> redirect(to: ~p"/quizzes/#{socket.assigns.quiz_id}/question/#{question.id}")}
 
       {:error, _changeset} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
     end
@@ -171,12 +171,12 @@ defmodule QuicWeb.QuestionLive.Form do
     }
 
     case Questions.create_question(question_params, quiz_id, answers_params, parameters) do
-      {:ok, question} ->
+      {:ok, {_, question}} ->
         Quizzes.update_quiz_points(quiz_id)
 
         {:noreply, socket
-                  |> put_flash(:info, "Question created successfully!")
-                  |> redirect(to: ~p"/quizzes/#{quiz_id}/question/#{question.id}")}
+          |> put_flash(:info, "Question created successfully!")
+          |> redirect(to: ~p"/quizzes/#{quiz_id}/question/#{question.id}")}
 
       {:error, _changeset} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
     end

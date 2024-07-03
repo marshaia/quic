@@ -15,13 +15,13 @@
 
             <div class="flex flex-col items-center gap-4 mt-5 md:flex-row md:justify-evenly">
               <div class="flex items-center gap-2">
-                <Heroicons.pencil_square class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
-                <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@team.quizzes) %> Quizzes</p>
-              </div>
-
-              <div class="flex items-center gap-2">
                 <Heroicons.users class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
                 <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@team.authors) %> Collaborators</p>
+              </div>
+              
+              <div class="flex items-center gap-2">
+                <Heroicons.pencil_square class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+                <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@team.quizzes) %> Quizzes</p>
               </div>
             </div>
           </div>
@@ -36,7 +36,7 @@
           <.link
             phx-click={JS.push("delete_team", value: %{id: @team.id})}
             data-confirm="Are you sure? Once deleted, it cannot be retrived!">
-              <Heroicons.trash class="question-box-icon" />
+              <Heroicons.trash class="w-5 h-5 hover:text-[var(--red)] stroke-1" />
           </.link>
         </div>
       </div>

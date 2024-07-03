@@ -723,11 +723,11 @@ defmodule QuicWeb.MyComponents do
     ~H"""
     <div>
       <div class="cursor-pointer" phx-click={JS.toggle(to: "#" <> @tooltip_id)}>
-        <Heroicons.information_circle class="w-6 h-6 duration-200 hover:text-[var(--primary-color)]" />
+        <Heroicons.information_circle class="w-5 h-5 hover:text-[var(--primary-color)]" />
       </div>
 
       <div class="relative">
-        <div id={@tooltip_id}hidden class={"absolute z-10 bg-zinc-300 dark:bg-zinc-600 px-4 py-2 rounded-xl select-none shadow-lg #{@class}"}>
+        <div id={@tooltip_id}hidden class={"absolute z-10 bg-[var(--background-view)] border border-[var(--primary-color)] px-4 py-2 rounded-xl select-none shadow-lg #{@class}"}>
           <%= render_slot(@inner_block) %>
         </div>
       </div>
@@ -753,15 +753,15 @@ defmodule QuicWeb.MyComponents do
         <tr class="border-b border-[var(--border)] h-10">
           <th class="min-w-6">#</th>
           <th class="min-w-40 w-[35%]">Name</th>
-          <th class="flex items-center justify-center mt-1.5 min-w-20">Points</th>
-          <th class="hidden min-w-20 md:block">Progress</th>
+          <th class="min-w-20">Points</th>
+          <th class="hidden min-w-20 md:block md:mt-1.5">Progress</th>
         </tr>
 
         <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center">
           <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
           <td><p><%= participant.name %></p></td>
           <td><p><%= participant.total_points %></p></td>
-          <td><p class="text-gray-400 dark:text-gray-500"><%= participant.current_question %>/<%= @total_questions %></p></td>
+          <td><p class="hidden text-gray-400 md:block dark:text-gray-500"><%= participant.current_question %>/<%= @total_questions %></p></td>
         </tr>
       </table>
     </div>
