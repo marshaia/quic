@@ -33,6 +33,14 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
   end
 
 
+  def how_many_answered?(current_question, questions, participants) do
+    question = Enum.find(questions, fn q -> q.position === current_question end)
+    Enum.reduce(participants, 0, fn p, acc ->
+      if Enum.find(p.answers, fn a -> a.question_id === question.id end), do: acc + 1, else: acc
+    end)
+  end
+
+
   @impl true
   def handle_event("next_question", _params, socket) do
     {:noreply, socket |> push_event("next_question", %{code: socket.assigns.session.code, session_id: socket.assigns.session.id, email: socket.assigns.current_author.email})}

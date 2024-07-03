@@ -101,8 +101,12 @@
 
 
       <%!-- SHOW CORRECT ANSWERS --%>
-      <div :if={question.type === :single_choice || question.type === :multiple_choice || question.type === :true_false} class="flex justify-end mt-8 mb-5">
-        <.button  class="flex items-center gap-2 p-1 px-4 gradient" phx-click="toggle_correct_answers"> 
+      <div class="flex justify-between mt-5 mb-5">
+        <div class="flex items-center p-0.5 px-3 rounded-full bg-[var(--border)]">
+          <p>Answered: <%= how_many_answered?(@session.current_question, @session.quiz.questions, @participants) %> / <%= Enum.count(@participants) %></p>
+        </div>
+
+        <.button :if={question.type === :single_choice || question.type === :multiple_choice || question.type === :true_false} class="flex items-center gap-2 p-1 px-4 gradient" phx-click="toggle_correct_answers"> 
           <%= if @show_correct_answers do %>
             <Heroicons.eye_slash class="w-4 h-4 text-white" />
           <% else %>
@@ -115,16 +119,18 @@
         </.button>
       </div>
 
+
+      <%!-- ANSWERS --%>
       <div id="monitor_paced_full_screen_answers" phx-hook="PrismInitializer" class="grid w-full grid-cols-1 gap-4 md:grid-cols-2 increment_font_size" style="grid-auto-rows: 1fr">
         <% question_answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
         <%= if question.type === :true_false do %>
           <% answer = Enum.at(question_answers, 0, nil) %>
-          <div class="w-full h-full p-3">
+          <div class="w-full h-full">
             <div class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "border-[var(--primary-color)]")]}>
               <p>True</p>
             </div>
           </div>
-          <div class="w-full h-full p-3">
+          <div class="w-full h-full">
             <div  class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && !answer.is_correct, do: "border-[var(--primary-color)]")]}>
               <p>False</p>
             </div>
@@ -132,7 +138,7 @@
         <% end %>
 
         <%= if question.type === :single_choice || question.type === :multiple_choice do %>
-          <div :for={answer <- question_answers} class="w-full h-full p-3">
+          <div :for={answer <- question_answers} class="w-full h-full">
             <div class={["py-2 px-4 h-full rounded-md bg-[var(--background-card)] border border-[var(--border)]", (if @show_correct_answers && answer.is_correct, do: "border-[var(--primary-color)]")]}>
               <.markdown class="mt-2" text={answer.answer} />
             </div>
