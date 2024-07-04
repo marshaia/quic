@@ -27,9 +27,9 @@
       <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2" style="grid-auto-rows: 1fr">
         <%= if @question.type === :true_false do %>
           <div class="w-full h-full p-3 mt-2">
-            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+            <div class="flex items-center gap-4 py-2 px-3 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
               <form id="true-participant-form">
-                <input type="checkbox" id="true-participant-form-checkbox" phx-click="selected-answer" phx-value-answer="true" class="checkbox" checked={@selected_answer === "true"}>
+                <input type="checkbox" id="true-participant-form-checkbox" phx-click="selected-answer" phx-value-answer="true" class="-mt-1 checkbox" checked={@selected_answer === "true"}>
               </form>
               
               <p>True</p>
@@ -37,9 +37,9 @@
           </div>
 
           <div class="w-full h-full p-3 mt-2">
-            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+            <div class="flex items-center gap-4 py-2 px-3 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
               <form id="false-participant-form">
-                <input type="checkbox" id="false-participant-form-checkbox" phx-click="selected-answer" phx-value-answer="false" class="checkbox" checked={@selected_answer === "false"}>
+                <input type="checkbox" id="false-participant-form-checkbox" phx-click="selected-answer" phx-value-answer="false" class="-mt-1 checkbox" checked={@selected_answer === "false"}>
               </form>
               
               <p>False</p>
@@ -49,13 +49,13 @@
 
         <%= if @question.type === :single_choice do %>
           <div :for={answer <- @answers} class="w-full h-full p-3">
-            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+            <div class="flex items-center gap-4 py-2 px-3 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
               <form id={"single-choice-participant-form-#{answer.id}"}>
-                <input type="checkbox" id={answer.id} phx-click="selected-answer" phx-value-answer={answer.id} class="checkbox" checked={@selected_answer === answer.id}>
+                <input type="checkbox" id={answer.id} phx-click="selected-answer" phx-value-answer={answer.id} class="-mt-1 checkbox" checked={@selected_answer === answer.id}>
               </form>
               
-              <div class="w-full">
-                <.markdown class="mt-2" text={answer.answer} />
+              <div class="flex items-center w-full h-full">
+                <.markdown class="w-full" text={answer.answer} />
               </div>
             </div>
           </div>
@@ -63,13 +63,13 @@
 
         <%= if @question.type === :multiple_choice do %>
           <div :for={answer <- @answers} class="w-full h-full p-3">
-            <div class="flex items-center gap-3 py-2 px-4 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
+            <div class="flex items-center gap-4 py-2 px-3 rounded-md bg-[var(--background-card)] border border-[var(--border)]">
               <form id={"multiple-choice-participant-form-#{answer.id}"}>
                 <input type="checkbox" id={answer.id} phx-click="selected-answer" phx-value-answer={answer.id} class="checkbox" checked={Enum.member?(@selected_answer, answer.id)}>
               </form>
                 
-              <div class="w-full">
-                <.markdown class="mt-2" text={answer.answer} />
+              <div class="flex items-center w-full h-full">
+                <.markdown class="w-full" text={answer.answer} />
               </div>
             </div>
           </div>

@@ -171,14 +171,14 @@ defmodule QuicWeb.QuestionLive.Form do
     }
 
     case Questions.create_question(question_params, quiz_id, answers_params, parameters) do
-      {:ok, {_, question}} ->
+      {:ok, {:ok, question}} ->
         Quizzes.update_quiz_points(quiz_id)
 
         {:noreply, socket
           |> put_flash(:info, "Question created successfully!")
           |> redirect(to: ~p"/quizzes/#{quiz_id}/question/#{question.id}")}
 
-      {:error, _changeset} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+      _ -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
     end
   end
 

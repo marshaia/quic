@@ -123,6 +123,11 @@ defmodule QuicWeb.QuizLive.Show do
     end
   end
 
+  @impl true
+  def handle_event("clicked_quiz_author", _params, socket) do
+    {:noreply, socket |> redirect(to: ~p"/authors/profile/#{socket.assigns.quiz.author.id}")}
+  end
+
 
 
   def isOwner?(quiz_id, author) do

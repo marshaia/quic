@@ -107,7 +107,8 @@ defmodule QuicWeb.Router do
       live "/sessions/new/quiz/:quiz_id", SessionLive.CreateSessionForm
 
       live "/sessions/:id", SessionLive.Show, :show
-      live "/sessions/:id/full-screen", SessionLive.FullScreenControls
+      live "/sessions/:id/full-screen", SessionLive.FullScreenControls, :show
+      live "/sessions/:id/full-screen/leaderboard", SessionLive.FullScreenControls, :leaderboard
 
       # PARTICIPANT
       live "/session/:session_id/participants/:participant_id", ParticipantLive.Show, :show

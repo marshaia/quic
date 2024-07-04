@@ -493,7 +493,7 @@ defmodule QuicWeb.MyComponents do
           </div>
 
           <.link :if={@isOwner} phx-click={JS.push("delete", value: %{id: @quiz.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">
-            <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
+            <Heroicons.trash class="w-5 h-5 stroke-1 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
           </.link>
         </div>
 
@@ -548,7 +548,7 @@ defmodule QuicWeb.MyComponents do
           </div>
 
           <.link phx-click={JS.push("delete", value: %{id: @team.id})} data-confirm="Are you sure? Once deleted, it cannot be recovered!">
-            <Heroicons.trash class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
+            <Heroicons.trash class="w-5 h-5 stroke-1 text-[var(--primary-color-text)] hover:text-[var(--red)]" />
           </.link>
         </div>
 

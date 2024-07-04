@@ -26,6 +26,7 @@ defmodule QuicWeb.SessionLive.FullScreenControls do
         |> assign(:current_path, "/sessions/#{id}/full-screen")
         |> assign(:participants, Sessions.get_session_participants(id))
         |> assign(:show_correct_answers, false)}
+        #|> apply_action(socket.assigns.live_action, params)}
 
     else
       {:noreply, socket |> put_flash(:error, "Invalid Session") |> redirect(to: ~p"/sessions")}

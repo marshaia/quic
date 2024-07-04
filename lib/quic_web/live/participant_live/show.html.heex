@@ -64,9 +64,9 @@
       
       <.markdown text={question.description} />
 
-      <%= if question.type === :fill_the_code do %>
+      <%= if question.type === :fill_the_code || question.type === :code do %>
         <% parameters = Enum.find(@quiz.parameters, fn p -> p.question_id === question.id end) %>
-        <.language_previewer text={parameters.code} language={Atom.to_string(parameters.language)} class="mt-5" />
+        <.language_previewer text={parameters.code} language={Atom.to_string(parameters.language)} class="mt-4" />
       <% end %>
     </div>
   </div>

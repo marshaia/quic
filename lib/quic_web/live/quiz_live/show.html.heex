@@ -46,12 +46,12 @@
           <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
         </div>
 
-        <div class="flex gap-1">
+        <.link phx-click="clicked_quiz_author" class="flex gap-1 hover:cursor-pointer py-1 px-2 rounded-xl hover:bg-[var(--background-view)]">
           <Heroicons.user_circle class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
           <p class="text-gray-400">
             <%= if @quiz.author_id === @current_author.id, do: "You", else: @quiz.author.display_name %>
           </p>
-        </div>
+        </.link>
       </div>
     </section>
 

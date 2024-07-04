@@ -58,8 +58,22 @@
 <%!-- MONITOR PACED - QUIZ QUESTIONS --%>
 <%= if @session.type === :monitor_paced && @session.status === :on_going do %>
   <div id="full-screen-on-going-session-section" phx-hook="SessionChannelMonitor">
+    <.link patch={~p"/sessions/#{@session.id}/full-screen/leaderboard"} class="flex justify-end mt-5 mr-2 md:hidden">
+      <.button class="flex items-center gap-1 clearBorderPrimaryBtn">
+        <Heroicons.arrows_pointing_out class="w-5 h-5 stroke-1 text-[var(--primary-color-text)]" />
+        <p class="font-normal text-[var(--primary-color-text)]">Leaderboard</p>
+      </.button>
+    </.link>
+
     <div class="flex justify-between px-2 mt-3 md:mt-8 md:px-0">
       <h4 class="text-[var(--primary-color-text)] font-medium"><%= @quiz.name %></h4>
+      
+      <.link patch={~p"/sessions/#{@session.id}/full-screen/leaderboard"} class="hidden md:block">
+        <.button class="flex items-center gap-1 clearBorderPrimaryBtn">
+          <Heroicons.arrows_pointing_out class="w-5 h-5 stroke-1 text-[var(--primary-color-text)]" />
+          <p class="font-normal text-[var(--primary-color-text)]">Leaderboard</p>
+        </.button>
+      </.link>
     </div>
 
     <div class="flex items-center justify-center gap-4 my-3 mb-5">
@@ -102,7 +116,7 @@
 
       <%!-- SHOW CORRECT ANSWERS --%>
       <div class="flex justify-between mt-5 mb-5">
-        <div class="flex items-center p-0.5 px-3 rounded-full bg-[var(--border)]">
+        <div class="flex items-center p-1 px-3 rounded-full bg-[var(--border)]">
           <p>Answered: <%= how_many_answered?(@session.current_question, @session.quiz.questions, @participants) %> / <%= Enum.count(@participants) %></p>
         </div>
 
@@ -171,3 +185,16 @@
     <.button phx-click="back_to_session" class="mt-8 call2actionBtn"><p class="font-normal text-white">Go to Session</p></.button>
   </div>
 <% end %>
+
+
+<.modal :if={@live_action === :leaderboard} id="full-screen-leaderboard-modal" show on_cancel={JS.patch(~p"/sessions/#{@session.id}/full-screen")}>
+  <.live_component
+    module={QuicWeb.SessionLive.Leaderboard}
+    id="full-screen-leaderboard-component"
+    title={@page_title}
+    action={@live_action}
+    participants={@participants}
+    total_questions={Enum.count(@session.quiz.questions)}
+    patch={~p"/sessions/#{@session.id}/full-screen"}
+  />
+</.modal>

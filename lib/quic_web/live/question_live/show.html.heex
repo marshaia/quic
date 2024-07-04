@@ -85,14 +85,14 @@
           class="flex rounded-md bg-[var(--background-card)] py-2 px-3 min-h-12 mb-4 border border-[var(--border)]"
         >
           <%!-- ANSWER VALIDITY --%>
-          <div class="flex flex-col items-center justify-start">
-            <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 mt-1 min-h-6 min-w-6" />
+          <div class="flex flex-col items-center justify-center">
+            <.right_or_wrong is_correct={answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
           </div> 
 
           <%!-- ANSWER INFO --%>
           <div class="flex-1 ml-3 border-l border-[var(--border)] overflow-auto">
-            <div class="items-center flex-1 px-2 mx-3">
-              <.markdown text={answer.answer} />
+            <div class="flex items-center h-full px-2 mx-3">
+              <.markdown text={answer.answer} class="w-full"/>
             </div>
           </div>
         </div>
