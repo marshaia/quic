@@ -13,14 +13,19 @@
         <h6 class="text-white">1</h6>
       </div>
 
-      <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step !== 1, do: "gradient-color")]} />
-      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step !== 1, do: "gradient-color border-none")]}>
-        <h6 class={["transition_custom", (if @step !== 1, do: "text-white")]}>2</h6>
+      <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step > 1, do: "gradient-color")]} />
+      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step > 1, do: "gradient-color border-none")]}>
+        <h6 class={["transition_custom", (if @step > 1, do: "text-white")]}>2</h6>
       </div>
 
-      <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step === 3, do: "gradient-color")]} />
-      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step === 3, do: "gradient-color border-none")]}>
-        <h6 class={["transition_custom", (if @step === 3, do: "text-white")]}>3</h6>
+      <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step > 2, do: "gradient-color")]} />
+      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step > 2, do: "gradient-color border-none")]}>
+        <h6 class={["transition_custom", (if @step > 2, do: "text-white")]}>3</h6>
+      </div>
+
+      <div class={["session-form-step-line bg-[var(--border)] transition_custom", (if @step === 4, do: "gradient-color")]} />
+      <div class={["session-form-circle border border-[var(--border)] transition_custom", (if @step === 4, do: "gradient-color border-none")]}>
+        <h6 class={["transition_custom", (if @step === 4, do: "text-white")]}>4</h6>
       </div>
     </div>
 
@@ -109,19 +114,54 @@
     <% end %>
 
 
-    <%!-- STEP 3 - SUMMARY --%>
+    <%!-- STEP 3 --%>
     <%= if @step === 3 do %>
+      <h6 class="mt-5 font-bold text-center">Parameters</h6>
+      <p class="text-center">Please select the parameters</p>
+      
+      <.simple_form
+       :let={f}
+        for={@changeset}
+        id="session-parameters-form"
+        phx-change="validate_parameters"
+        phx-submit="ignore"
+        class="flex justify-center mb-10"
+      >
+        <div class="flex gap-2">
+          <.input field={f["immediate_feedback"]} type="checkbox" label="Immediate Feedback" />
+          <.tooltip tooltip_id="immediate-feedback-session-parameter" class={"-left-52 md:-left-32 w-[260px] -top-20"}>
+            <p>Participants receive the results after each question they submit</p>
+          </.tooltip>
+        </div>
+        <div class="flex gap-2">
+          <.input field={f["final_feedback"]} type="checkbox" label="Final Feedback" />
+          <.tooltip tooltip_id="final-feedback-session-parameter" class={"-left-36 w-[260px] -top-20"}>
+            <p>Participants receive their final score at the end of the quiz</p>
+          </.tooltip>
+        </div>
+      </.simple_form>
+    <% end %>
+
+
+    <%!-- STEP 4 - SUMMARY --%>
+    <%= if @step === 4 do %>
       <h6 class="mt-5 font-bold text-center">Summary</h6>
 
-      <div class="flex justify-start gap-1 mt-3">
-        <Heroicons.academic_cap class="w-5 h-5 text-[var(--primary-color)]"/>
-        <p class="text-base"><%= QuicWebAux.session_type_translate(@session_type) %></p>
+      <div class="mt-3">
+        <div class="flex justify-start gap-1 mb-3 ml-4">
+          <Heroicons.academic_cap class="w-5 h-5 text-[var(--primary-color)]"/>
+          <p class="text-base"><%= QuicWebAux.session_type_translate(@session_type) %></p>
+        </div>
+        <ul>
+          <li class="flex"><p class="text-base">Immediate Feedback? <span class="font-semibold"><%= if @changeset["immediate_feedback"], do: "Yes", else: "No" %></span></p></li>
+          <li class="flex"><p class="text-base">Final Feedback? <span class="font-semibold"><%= if @changeset["final_feedback"], do: "Yes", else: "No" %></span></p></li>
+        </ul>
+        
       </div>
 
       <div class="bg-[var(--background-view)] px-4 pt-3 pb-5 mt-5 rounded-xl">
         <.quiz_summary quiz={@quiz} />
       </div>
-
     <% end %>
 
 
@@ -139,7 +179,7 @@
       </.button>
 
       <.button 
-        :if={@step !== 3}
+        :if={@step !== 4}
         disabled={(@step === 1 && @session_type === nil) || (@step === 2 && @quiz === nil)}
         class="flex items-center gap-2 call2actionBtn" 
         phx-click="next_step"
@@ -149,7 +189,7 @@
       </.button>
 
       <.button 
-        :if={@step === 3}
+        :if={@step === 4}
         class="flex items-center gap-2 call2actionBtn" 
         phx-click="save"
       >

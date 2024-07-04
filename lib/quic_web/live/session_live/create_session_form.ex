@@ -15,7 +15,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
         |> assign(:filtered_quizzes, Quizzes.list_all_author_quizzes(socket.assigns.current_author.id))
         |> assign(:page_title, "New Session")
         |> assign(:current_path, "/sessions/new/quiz/#{quiz_id}")
-        |> assign(:back, "/quizzes/#{quiz_id}")}
+        |> assign(:back, "/quizzes/#{quiz_id}")
+        |> assign(:changeset, %{"immediate_feedback" => false, "final_feedback" => false})}
 
     else
       {:ok, socket
@@ -34,7 +35,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
       |> assign(:page_title, "New Session")
       |> assign(:current_path, "/sessions/new")
       |> assign(:back, "/sessions")
-      |> assign(:filtered_quizzes, Enum.reject(Quizzes.list_all_author_quizzes(socket.assigns.current_author.id), fn quiz -> Enum.count(quiz.questions) === 0 end))}
+      |> assign(:filtered_quizzes, Enum.reject(Quizzes.list_all_author_quizzes(socket.assigns.current_author.id), fn quiz -> Enum.count(quiz.questions) === 0 end))
+      |> assign(:changeset, %{"immediate_feedback" => false, "final_feedback" => false})}
   end
 
 
@@ -66,33 +68,42 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   end
 
   @impl true
+  def handle_event("validate_parameters", %{"immediate_feedback" => immediate, "final_feedback" => final}, socket) do
+    {:noreply, socket |> assign(:changeset, %{"immediate_feedback" => immediate === "true", "final_feedback" => final === "true"})}
+  end
+
+  @impl true
   def handle_event("save", _params, socket) do
     if socket.assigns.quiz === nil || socket.assigns.session_type === nil do
       {:noreply, socket |> put_flash(:error, "A Session needs to have both a Type and a Quiz associated!")}
 
     else
-      session_params = %{"type" => socket.assigns.session_type}
+      session_params = Map.merge(%{"type" => socket.assigns.session_type}, socket.assigns.changeset)
       case Sessions.create_session(session_params, socket.assigns.current_author, socket.assigns.quiz) do
-      {:ok, session} ->
-        {:noreply, socket
-          |> put_flash(:info, "Session created successfully")
-          |> redirect(to: ~p"/sessions/#{session.id}")}
+        {:ok, session} ->
+          {:noreply, socket
+            |> put_flash(:info, "Session created successfully")
+            |> redirect(to: ~p"/sessions/#{session.id}")}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, socket |> assign(:changeset, changeset) |> put_flash(:error, "Something went wrong :(")}
+        {:error, %Ecto.Changeset{} = changeset} ->
+          {:noreply, socket |> assign(:changeset, changeset) |> put_flash(:error, "Something went wrong :(")}
       end
     end
 
   end
 
-
   @impl true
   def handle_event("next_step", _params, socket) do
-    if socket.assigns.step < 3 do
+    if socket.assigns.step < 4 do
       {:noreply, socket |> assign(:step, socket.assigns.step + 1)}
     else
       {:noreply, socket}
     end
+  end
+
+  @impl true
+  def handle_event("ignore", _params, socket) do
+    {:noreply, socket}
   end
 
   @impl true

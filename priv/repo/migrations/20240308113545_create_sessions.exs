@@ -11,6 +11,8 @@ defmodule Quic.Repo.Migrations.CreateSessions do
       add :type, :string
       add :current_question, :integer
       add :quiz, :map
+      add :immediate_feedback, :boolean
+      add :final_feedback, :boolean
 
       timestamps(type: :utc_datetime)
     end

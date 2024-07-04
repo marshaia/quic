@@ -108,6 +108,15 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
     {:noreply, socket |> assign(:answer_changeset, %{"answer" => answer}) |> assign(:loading, false)}
   end
 
+  @impl true
+  def handle_event("next_question", _params, socket) do
+    if socket.assigns.session.type === :participant_paced && (socket.assigns.last_question === false) do
+      {:noreply, socket |> push_event("participant-next-question", %{participant_id: socket.assigns.participant.id, current_question: socket.assigns.question.position, code: socket.assigns.session.code})}
+    else
+      {:noreply, socket}
+    end
+  end
+
   def handle_event(_, _, socket), do: {:noreply, socket}
 
 
@@ -115,7 +124,7 @@ defmodule QuicWeb.ParticipantLive.QuestionForm do
   @impl true
   def handle_info({"submission_results", %{"answer" => _results}}, socket) do
     socket = socket |> assign(:participant, Participants.get_participant!(socket.assigns.participant.id)) |> assign(:results, true)
-    if socket.assigns.session.type === :participant_paced && (socket.assigns.last_question === false) do
+    if socket.assigns.session.type === :participant_paced && (socket.assigns.last_question === false) && not socket.assigns.session.immediate_feedback do
       {:noreply, socket |> push_event("participant-next-question", %{participant_id: socket.assigns.participant.id, current_question: socket.assigns.question.position, code: socket.assigns.session.code})}
     else
       {:noreply, socket}

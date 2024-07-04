@@ -754,14 +754,14 @@ defmodule QuicWeb.MyComponents do
           <th class="min-w-6">#</th>
           <th class="min-w-40 w-[35%]">Name</th>
           <th class="min-w-20">Points</th>
-          <th class="hidden min-w-20 md:block md:mt-1.5">Progress</th>
+          <th class="hidden min-w-20 sm:block sm:mt-1.5">Progress</th>
         </tr>
 
         <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center">
           <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
           <td><p><%= participant.name %></p></td>
           <td><p><%= participant.total_points %></p></td>
-          <td><p class="hidden text-gray-400 md:block dark:text-gray-500"><%= participant.current_question %>/<%= @total_questions %></p></td>
+          <td><p class="hidden text-gray-400 sm:block dark:text-gray-500"><%= participant.current_question %>/<%= @total_questions %></p></td>
         </tr>
       </table>
     </div>
