@@ -16,7 +16,7 @@
 }
 
 .main-page {
-  @apply px-4 overflow-y-auto h-[calc(100vh-5.3rem)]
+  @apply md:pl-4 overflow-y-auto h-[calc(100vh-5.3rem)]
 }
 
 .question-box-icon {

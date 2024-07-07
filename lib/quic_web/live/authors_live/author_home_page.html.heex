@@ -1,16 +1,16 @@
-<div class="mt-5 text-center">
-  <h4 class="font-normal tex"> 
+<div class="mt-10 text-center">
+  <h4 class="font-medium tex"> 
     <span class="font-medium text-gradient">Hi, </span>
     <%= @current_author.display_name %>
   </h4>
 
-  <h6 class="mt-2 mb-10 text-base font-light">Want to discover new Quizzes?</h6>
+  <h6 class="mt-2 mb-16 text-base font-normal">Want to discover new Quizzes?</h6>
 </div>
 
 
 <div class="flex items-center justify-center mt-3">
   <%!-- PUBLIC QUIZZES --%>
-  <div class="lg:w-2/3 h-[calc(100vh-13.4rem)] px-4 py-2 bg-[var(--background-card)] rounded-md border border-[var(--border)]">
+  <div class="md:w-2/3 w-full h-[calc(100vh-16.2rem)] px-4 py-2 bg-[var(--background-card)] rounded-md border border-[var(--border)]">
     <h6 class="text-center">Public Quizzes</h6>
     <hr class="w-full my-3" />
 
@@ -21,7 +21,7 @@
       <input type="text" id="search_public_quiz_input" name="input" class="bg-[var(--background-view)] border-none focus:ring-0 text-xs w-full" placeholder="name, description or author"/>
     </form>
 
-    <div class="mt-5 h-[calc(100vh-22rem)] overflow-auto">
+    <div class="mt-5 h-[calc(100vh-25rem)] overflow-auto">
       <%= if Enum.count(@searched_quizzes) === 0 do %>
         <p class="mt-2 text-xs text-center">Nothing to show</p>
       <% else %>

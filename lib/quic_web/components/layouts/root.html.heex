@@ -80,13 +80,12 @@
         
         <div class="flex gap-4">        
           <a href={if assigns[:current_author], do: "/authors", else: "/"} class="flex items-center gap-2">
-            <%!-- <img src={~p"/images/logo.svg"} width="36" /> --%>
             <Heroicons.computer_desktop class="stroke-1 text-[var(--primary-color)] w-6 h-6"/>
             <p class="text-lg font-normal">QUIC</p>
           </a>
         </div>
         
-        <div class="flex items-center gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
+        <div class="flex items-center gap-2 sm:gap-4 font-semibold leading-6 text-[var(--primary-color-text)]">
           <button onclick="changeThemeToDark(true)">
             <Heroicons.moon class="w-6 h-6 stroke-1 text-[var(--primary-color-text)] hover:text-[var(--primary-color)]"/>
           </button>
@@ -95,12 +94,12 @@
           </button>
 
           <%= if assigns[:current_author] === nil do %>
-            <%= if !String.contains?(@page_title, "Live Session") do %>
-            <.link
-              href={~p"/authors/log_in"}
-              class="text-sm font-normal text-white call2actionBtn">
-              Sign in
-            </.link>
+            <%= if !String.match?(@page_title, ~r/Session \w+/) do %>
+              <.link
+                href={~p"/authors/log_in"}
+                class="text-sm font-normal text-white call2actionBtn">
+                Sign in
+              </.link>
             <% end %>
           <% end %>
         </div>

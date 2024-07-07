@@ -14,14 +14,14 @@
           </div>
           <.markdown text={@question.description} />
 
-          <%= if @question.type === :fill_the_code do %>
+          <%= if @question.type === :fill_the_code || @question.type === :code do %>
             <.language_previewer text={@parameters.code} language={Atom.to_string(@parameters.language)} />
           <% end %>
         </section>
       </div>
 
       <%!-- DIVIDER --%>
-      <hr class="border border-[var(--border)] my-8 w-full" />
+      <hr class="border border-[var(--border)] mt-8 mb-6 w-full" />
 
       <%!-- ANSWERS --%>
       <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2" style="grid-auto-rows: 1fr">
@@ -153,7 +153,7 @@
         <h3 class="mt-10 mb-5 font-normal text-center"><%= if @last_question, do: "Quiz Completed!", else: "Answer submitted!" %></h3>
 
         <%= if @session.immediate_feedback do %>
-          <h6 class="font-normal">You answer was assessed as: <span class="text-[var(--primary-color)]"><%= Atom.to_string(answer.result) %></span></h6>
+          <h6 class="my-3 font-normal ">You answer was assessed as <span class="text-[var(--primary-color)]"><%= Atom.to_string(answer.result) %></span></h6>
           <.button 
             :if={not @last_question && @session.type !== :monitor_paced}
             id="participant-next-question-btn" 
@@ -168,7 +168,7 @@
           <h6 :if={not @last_question} class="font-normal text-center">Waiting for the next question...</h6>
         <% end %>
 
-        <h6 :if={@last_question && @session.final_feedback} class="mt-5">Your final score is <span class="text-[var(--primary-color)]"><%= @participant.total_points %></span>  of <%= @session.quiz.total_points %></h6>
+        <h6 :if={@last_question && @session.final_feedback} class="mt-6 p-2 px-4 bg-[var(--border)] rounded-lg font-normal border border-[var(--primary-color)]">Your final score is <span class="text-[var(--primary-color)] dark:text-[var(--second-color)]"><%= @participant.total_points %></span>  out of <%= @session.quiz.total_points %></h6>
         
 
         <div :if={not @last_question && not @session.immediate_feedback} role="status" class="mt-10">
@@ -180,7 +180,7 @@
         </div>
 
       <% else %>
-        <h3 class="my-10 font-normal text-center">Assessing submitted answer!</h3>
+        <h3 class="px-5 my-10 font-normal text-center">Assessing submitted answer!</h3>
 
         <div role="status" class="mt-10">
           <svg aria-hidden="true" class="w-10 h-10 animate-spin text-[var(--border)] fill-[var(--primary-color)]" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

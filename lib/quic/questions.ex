@@ -67,6 +67,7 @@ defmodule Quic.Questions do
 
   def create_question(attrs \\ %{}, quiz_id, answers_changesets, parameters) do
     try do
+      # Start a transaction to ensure atomicity
       Repo.transaction(fn ->
         quiz = Quizzes.get_quiz!(quiz_id)
         {:ok, question} = %Question{} |> Question.changeset(attrs, quiz) |> Repo.insert()
@@ -94,6 +95,7 @@ defmodule Quic.Questions do
 
   def create_question_from_existing_one(attrs \\ %{}, quiz_id, answers_params, parameters_params) do
     try do
+      # Start a transaction to ensure atomicity
       Repo.transaction(
         fn ->
           quiz = Quizzes.get_quiz!(quiz_id)
@@ -110,6 +112,7 @@ defmodule Quic.Questions do
 
   def duplicate_question(attrs \\ %{}, quiz_id, question) do
     try do
+      # Start a transaction to ensure atomicity
       Repo.transaction(fn ->
         quiz = Quizzes.get_quiz!(quiz_id)
         {:ok, new_question} = %Question{} |> Question.changeset(attrs, quiz) |> Repo.insert()
@@ -153,6 +156,7 @@ defmodule Quic.Questions do
 
   def update_question(question, attrs \\ %{}, answers_attrs \\ [], parameters_changeset) do
     try do
+      # Start a transaction to ensure atomicity
       Repo.transaction(fn ->
         {:ok, question} = question |> Question.changeset(attrs) |> Repo.update()
 

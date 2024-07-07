@@ -38,7 +38,7 @@
     <p class="min-w-12 w-[5%] text-left md:text-center text-base mr-3 md:mr-0 font-medium"><%= session.code %></p>
 
     <%!-- QUIZ --%>
-    <p class="hidden md:block min-w-28 w-[5%] ml-5 md:ml-0 text-center"><%= if String.length(session.quiz.name) > 10, do: String.slice(session.quiz.name, 0..10) <> "...", else: session.quiz.name %></p>
+    <p class="hidden sm:block min-w-28 w-[5%] ml-5 md:ml-0 text-center"><%= if String.length(session.quiz.name) > 10, do: String.slice(session.quiz.name, 0..10) <> "...", else: session.quiz.name %></p>
 
     <%!-- TYPE --%>
     <p class="hidden lg:block min-w-32 text-center w-[10%]"><%= if session.type === :monitor_paced, do: "Monitor Paced", else: "Participant Paced" %></p>

@@ -3,7 +3,7 @@
   <.my_back navigate={@back}>Back</.my_back>
 </div>
 
-<h5 class="mt-3 text-center lg:-mt-3">Launch New Session</h5>
+<h5 class="mt-8 text-center md:mt-3 lg:mt-0">Launch New Session</h5>
 
 <main class="flex justify-center w-full mt-4 xl:mt-6">
   <div class="p-6 bg-[var(--background-card)] rounded-md lg:min-w-[600px] max-w-xl border border-[var(--border)]">
@@ -81,19 +81,19 @@
             <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
             <div class="flex justify-between gap-2 mt-4">
               <div class="flex gap-1">
-                <Heroicons.trophy class="w-5 h-5"/>
-                <p><%= @quiz.total_points %> Points</p>
+                <Heroicons.trophy class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
+                <p class="text-gray-500 dark:text-gray-400"><%= @quiz.total_points %> Points</p>
               </div>
               <div class="flex gap-1">
-                <Heroicons.user class="w-5 h-5"/>
-                <p><%= @quiz.author.display_name %></p>
+                <Heroicons.user class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
+                <p class="text-gray-500 dark:text-gray-400"><%= @quiz.author.display_name %></p>
               </div>
             </div>
           </div>
         </div>
       
       <% else %>
-        <form phx-change="form_quiz_changed" class="flex mt-8 rounded-t-xl px-4 py-1 gap-2 bg-[var(--background-view)]">
+        <form phx-change="form_quiz_changed" class="flex mt-8 w-full rounded-t-xl px-4 py-1 gap-2 bg-[var(--background-view)]">
           <div class="flex items-center justify-center">
             <Heroicons.magnifying_glass class="relative w-5 h-5 text-[var(--primary-color)]" />
           </div>
@@ -128,15 +128,15 @@
         class="flex justify-center mb-10"
       >
         <div class="flex gap-2">
-          <.input field={f["immediate_feedback"]} type="checkbox" label="Immediate Feedback" />
+          <.input field={f["immediate_feedback"]} type="checkbox" label="Immediate Feedback?" />
           <.tooltip tooltip_id="immediate-feedback-session-parameter" class={"-left-52 md:-left-32 w-[260px] -top-20"}>
             <p>Participants receive the results after each question they submit</p>
           </.tooltip>
         </div>
         <div class="flex gap-2">
-          <.input field={f["final_feedback"]} type="checkbox" label="Final Feedback" />
+          <.input field={f["final_feedback"]} type="checkbox" label="Show Final Score?" />
           <.tooltip tooltip_id="final-feedback-session-parameter" class={"-left-36 w-[260px] -top-20"}>
-            <p>Participants receive their final score at the end of the quiz</p>
+            <p>Participants receive their final score at the end of the Quiz</p>
           </.tooltip>
         </div>
       </.simple_form>
@@ -147,16 +147,23 @@
     <%= if @step === 4 do %>
       <h6 class="mt-5 font-bold text-center">Summary</h6>
 
-      <div class="mt-3">
-        <div class="flex justify-start gap-1 mb-3 ml-4">
-          <Heroicons.academic_cap class="w-5 h-5 text-[var(--primary-color)]"/>
-          <p class="text-base"><%= QuicWebAux.session_type_translate(@session_type) %></p>
-        </div>
-        <ul>
-          <li class="flex"><p class="text-base">Immediate Feedback? <span class="font-semibold"><%= if @changeset["immediate_feedback"], do: "Yes", else: "No" %></span></p></li>
-          <li class="flex"><p class="text-base">Final Feedback? <span class="font-semibold"><%= if @changeset["final_feedback"], do: "Yes", else: "No" %></span></p></li>
-        </ul>
-        
+      <div class="mt-5 md:w-96 max-w-96">
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2">
+            <Heroicons.arrow_right class="w-4 h-4 text-[var(--primary-color)]"/>
+            <p class="text-base"><%= QuicWebAux.session_type_translate(@session_type) %></p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <Heroicons.arrow_right class="w-4 h-4 text-[var(--primary-color)]"/>
+            <p class="text-base">Immediate Feedback? <span class="font-semibold"><%= if @changeset["immediate_feedback"], do: "Yes", else: "No" %></span></p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <Heroicons.arrow_right class="w-4 h-4 text-[var(--primary-color)]"/>
+            <p class="text-base">Final Feedback? <span class="font-semibold"><%= if @changeset["final_feedback"], do: "Yes", else: "No" %></span></p>
+          </div>
+        </div>        
       </div>
 
       <div class="bg-[var(--background-view)] px-4 pt-3 pb-5 mt-5 rounded-xl">

@@ -421,13 +421,16 @@ defmodule QuicWeb.MyComponents do
     <div class="w-full">
       <% language = (if Map.has_key?(@parameters_changeset.changes, :language), do: Atom.to_string(@parameters_changeset.changes.language), else: (if @parameters_changeset.data.language !== nil, do: Atom.to_string(@parameters_changeset.data.language), else: "c")) %>
       <% code = (if Map.has_key?(@parameters_changeset.changes, :code), do: @parameters_changeset.changes.code, else: (if @parameters_changeset.data.code !== nil, do: @parameters_changeset.data.code, else: "")) %>
+      <% tests = (if Map.has_key?(@parameters_changeset.changes, :tests), do: @parameters_changeset.changes.tests, else: (if @parameters_changeset.data.tests !== nil, do: @parameters_changeset.data.tests, else: [])) %>
 
       <%!-- CODE --%>
       <.language_previewer :if={String.length(code) > 0} text={code} language={language} />
+      <hr class="w-full mt-7" />
 
       <%= if @type === :fill_the_code do %>
         <%!-- DIVIDER --%>
-        <hr class="w-full mt-6 mb-4" />
+        <%!-- <hr class="w-full mt-6 mb-4" /> --%>
+        <h6 class="mt-5 text-base">Correct Answer</h6>
 
         <%!-- CORECT ANSWER --%>
         <div class="flex items-center w-full gap-3">
@@ -435,6 +438,24 @@ defmodule QuicWeb.MyComponents do
           <.language_previewer text={Parameters.put_correct_answers_in_code_changeset(@parameters_changeset)} language={language} />
         </div>
       <% end %>
+
+      <%!-- <hr class="w-full mt-6 mb-4" /> --%>
+
+      <%!-- TESTS --%>
+      <h6 class="mt-8 mb-2 text-base">Tests</h6>
+      <table class="w-full p-2 overflow-auto">
+        <tr class="border-y border-[var(--border)] h-8">
+          <th class="w-1/2 min-w-max"><p>Input</p></th>
+          <th class="min-w-8"></th>
+          <th class="w-1/2 min-w-max"><p>Output</p></th>
+        </tr>
+
+        <tr :for={test <- tests} class="h-8 text-center">
+          <td><p><%= if test["input"], do: test["input"], else: "Empty" %></p></td>
+          <td class="flex items-center justify-center mt-2"><Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" /></td>
+          <td><p><%= if test["output"], do: test["output"], else: "Empty" %></p></td>
+        </tr>
+      </table>
     </div>
 
     """
@@ -457,12 +478,12 @@ defmodule QuicWeb.MyComponents do
       <p><%= if String.length(@quiz.description) > 50, do: String.slice(@quiz.description, 0..50) <> "...", else: @quiz.description %></p>
       <div class="flex justify-between gap-2 mt-4">
         <div class="flex gap-1">
-          <Heroicons.list_bullet class="w-5 h-5" />
-          <p><%= Enum.count(@quiz.questions) %> Questions</p>
+          <Heroicons.list_bullet class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+          <p class="text-gray-500 dark:text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
         </div>
         <div class="flex gap-1">
-          <Heroicons.user class="w-5 h-5"/>
-          <p><%= @quiz.author.display_name %></p>
+          <Heroicons.user class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
+          <p class="text-gray-500 dark:text-gray-400"><%= @quiz.author.display_name %></p>
         </div>
       </div>
     </div>
@@ -554,7 +575,7 @@ defmodule QuicWeb.MyComponents do
 
         <p><%= if String.length(@team.description) > 100, do: String.slice(@team.description, 0..100) <> "...", else: @team.description %></p>
 
-        <div class="flex flex-col items-center justify-end gap-2 sm:flex-row">
+        <div class="flex justify-end">
           <div class="flex gap-1">
             <Heroicons.user_group class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
             <p class="text-gray-400"><%= Enum.count(@team.authors) %> Collaborators</p>
@@ -752,9 +773,9 @@ defmodule QuicWeb.MyComponents do
       <table class="w-full p-2 overflow-auto">
         <tr class="border-b border-[var(--border)] h-10">
           <th class="min-w-6">#</th>
-          <th class="min-w-40 w-[35%]">Name</th>
-          <th class="min-w-20">Points</th>
-          <th class="hidden min-w-20 sm:block sm:mt-1.5">Progress</th>
+          <th class="min-w-40 w-[45%]">Name</th>
+          <th class="min-w-20 md:min-w-24">Points</th>
+          <th class="hidden min-w-28 sm:block sm:mt-1.5">Progress</th>
         </tr>
 
         <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center">

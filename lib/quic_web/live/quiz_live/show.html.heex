@@ -59,7 +59,7 @@
     <%!-- LAUNCH DIVIDER --%>
     <div class="flex flex-col items-center mb-7 mt-14">
       <hr />
-      <.link :if={Enum.count(@quiz.questions) > 0} navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 p-1 px-4 -mt-5 text-white rounded-full gradient gradient-hover">
+      <.link :if={Enum.count(@quiz.questions) > 0} navigate={~p"/sessions/new/quiz/#{@quiz.id}"} class="flex items-center gap-2 p-1 px-4 -mt-4 text-white rounded-full gradient gradient-hover">
         <Heroicons.bolt class="w-5 h-5" />
         Launch Quiz
       </.link>

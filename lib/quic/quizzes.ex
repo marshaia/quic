@@ -131,6 +131,7 @@ defmodule Quic.Quizzes do
 
   def duplicate_quiz(attrs \\ %{}, quiz_id, author_id) do
     try do
+      # Start a transaction to ensure atomicity
       Repo.transaction(fn ->
         quiz = get_quiz!(quiz_id)
         author = Accounts.get_author!(author_id)
@@ -185,6 +186,7 @@ defmodule Quic.Quizzes do
 
   def update_quiz_questions_positions(id, position) do
     try do
+      # Start a transaction to ensure atomicity
       Repo.transaction(fn ->
         quiz_questions = get_quiz_questions!(id)
         Enum.each(quiz_questions,
@@ -201,6 +203,7 @@ defmodule Quic.Quizzes do
 
   def send_quiz_question(direction, quiz_id, question_id, quiz_num_questions) do
     try do
+      # Start a transaction to ensure atomicity
       Repo.transaction(fn ->
         question = Questions.get_question!(question_id)
         old_position = question.position
