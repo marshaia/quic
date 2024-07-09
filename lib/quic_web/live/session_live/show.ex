@@ -25,7 +25,8 @@ defmodule QuicWeb.SessionLive.Show do
         |> assign(:current_path, "/sessions/#{id}")
         |> assign(:participants, Sessions.get_session_participants(id))
         |> assign(:selected_view, :participants)
-        |> assign(:stats_filter, :participants)}
+        |> assign(:stats_filter, :participants)
+        |> assign(:downloading, false)}
 
     else
       {:noreply, socket |> put_flash(:error, "Invalid Session") |> redirect(to: ~p"/sessions")}
@@ -62,6 +63,19 @@ defmodule QuicWeb.SessionLive.Show do
   @impl true
   def handle_event("change_stats_filter", %{"filter" => filter}, socket) do
     {:noreply, socket |> assign(:stats_filter, String.to_atom(filter))}
+  end
+
+  @impl true
+  def handle_event("download_participant_statistics", _params, socket) do
+    orientation = if Enum.count(socket.assigns.session.quiz.questions) > 15, do: "landscape", else: "portrait"
+    code = socket.assigns.session.code
+    {:noreply, socket |> assign(:downloading, true)
+      |> push_event("participant_stats", %{file_name: "session_" <> code <> "_results", orientation: orientation})}
+  end
+
+  @impl true
+  def handle_event("finished_download", _parmas, socket) do
+    {:noreply, socket |> assign(:downloading, false)}
   end
 
 

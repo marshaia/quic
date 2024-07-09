@@ -628,7 +628,7 @@ defmodule QuicWeb.MyComponents do
 
   def participants_statistics(assigns) do
     ~H"""
-    <table class="w-full p-2 overflow-auto">
+    <table id="participant_statistics_table" class="w-full p-2 overflow-auto">
       <tr class="border-b border-[var(--border)] h-10">
         <th class="min-w-40 w-[25%]">Name</th>
         <th class="min-w-[10%] pr-5">Points</th>

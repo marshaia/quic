@@ -74,7 +74,7 @@
             <div class="flex justify-between">
               <p class="-mt-1 text-base font-bold"><%= if String.length(@quiz.name) > 25, do: String.slice(@quiz.name, 0..25) <> "...", else: @quiz.name %></p>
               <Heroicons.x_circle 
-                class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--primary-color)] -mt-2 -mr-2 hover:cursor-pointer"
+                class="w-5 h-5 text-[var(--primary-color-text)] hover:text-[var(--red)] -mt-2 -mr-2 hover:cursor-pointer"
                 phx-click="deselect_quiz"
               />
             </div>

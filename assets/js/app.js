@@ -9,12 +9,14 @@ import Prism from "../vendor/prism.js"
 import { SessionChannelParticipant } from "./channel_participant_hook.js"
 import { SessionChannelMonitor } from "./channel_monitor_hook.js"
 import { ChartJS } from "./charts.js"
+import { JSPDF } from "./download_pdf.js"
 import { AceEditorHook } from "./ace_editor_hook.js"
 
 let Hooks = {}
 Hooks.SessionChannelParticipant = SessionChannelParticipant;
 Hooks.SessionChannelMonitor = SessionChannelMonitor;
 Hooks.ChartJS = ChartJS;
+Hooks.jsPDF = JSPDF;
 Hooks.AceEditor = AceEditorHook;
 Hooks.PrismInitializer = {
   mounted() {Prism.highlightAll();},

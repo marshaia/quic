@@ -57,7 +57,7 @@
     <%!-- DELETE --%>
     <.link
       class="flex p-1.5 w-8 items-center justify-center text-white bg-[var(--red)] rounded-full hover:bg-[var(--dark-red)]"
-      phx-click={JS.push("delete", value: %{id: session.id}) |> hide("##{session.id}")}
+      phx-click={JS.push("delete", value: %{id: session.id})}
       data-confirm="Are you sure? Once deleted, it cannot be recovered!"
     >
       <Heroicons.trash class="w-5 h-5" />

@@ -16,30 +16,9 @@ export const ChartJS = {
           backgroundColor: ['#22c55e', '#B91C1C', '#d1d5db'],
           borderColor: ['#22c55e', '#B91C1C', '#d1d5db'],
           borderWidth: 1,
-          // barThickness: 15,
         }]
       },
       options: {
-        // indexAxis: 'y',
-        // scales: { 
-        //   x: { 
-        //     display: true,
-        //     grid: { display: false },
-        //     ticks: { display: false }
-        //   },
-        //   y: { 
-        //     beginAtZero: true,
-        //     grid: { display: false },
-        //   }
-        //   // y: { beginAtZero: true, display: false}
-        // },
-        // elements: { 
-        //   bar: { 
-        //     // borderWidth: 2,
-        //     // borderColor: 'green',
-        //     backgroundColor: 'green'
-        //   }
-        // },
         responsive: true,
         plugins: {
           legend: {
@@ -49,7 +28,6 @@ export const ChartJS = {
       },
     
     };
-    // const chart = new Chart(ctx, data);
     this.chart = new Chart(ctx, data);
 
     this.handleEvent("update-points", (payload) => {
@@ -59,10 +37,4 @@ export const ChartJS = {
       }
     });
   },
-
-  // updated() {
-  //   this.el.chart.data.datasets[0].data = this.dataset()
-  //   this.el.chart.data.labels = this.labels()
-  //   this.el.chart.update()
-  // }
 } 

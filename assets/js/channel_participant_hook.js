@@ -36,11 +36,6 @@ export const SessionChannelParticipant = {
         this.pushEvent("error_joining_session", params)
         socket.disconnect();
       });
-  
-  
-    // channel.on("test-msg", payload => {
-    //   console.log("recebi test-msg!!! -> " + JSON.stringify(payload))
-    // });
   },
 
   submitAnswer(code, response, question_id, participant_id) {

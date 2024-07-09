@@ -36,11 +36,6 @@ export const SessionChannelMonitor = {
       .receive("error", () => {
         socket.disconnect();
       });
-  
-  
-    // channel.on("test-msg", payload => {
-    //   console.log("recebi test-msg!!! -> " + JSON.stringify(payload))
-    // });
   },
 
   startSession(code, session_id, email) {
@@ -69,6 +64,4 @@ export const SessionChannelMonitor = {
       "email": email,
     })
   }
-
-
 };

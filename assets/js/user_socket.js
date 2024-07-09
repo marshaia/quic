@@ -80,25 +80,7 @@ function joinChannel(session_code, username, isMonitor, session_id = null) {
     )
   }
 
-  
-
   channel.join()
     .receive("ok", () => {window.channel = channel})
     .receive("error", () => socket.disconnect());
-
-
-  // channel.on("participant_joined_session", payload => {
-  //   console.log("js server message --> " + JSON.stringify(payload))
-  // });
 }
-
-
-// Author Log Out Button
-log_out_btn = document.getElementById("log-out-button")
-if(log_out_btn) log_out_btn.addEventListener("click", () => {
-  localStorage.removeItem("author_email")
-});
-log_out_btn_responsive = document.getElementById("log-out-button-responsive")
-if(log_out_btn_responsive) log_out_btn_responsive.addEventListener("click", () => {
-  localStorage.removeItem("author_email")
-});
