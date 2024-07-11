@@ -32,12 +32,25 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
       |> assign(:step, 1)
       |> assign(:quiz, nil)
       |> assign(:session_type, :monitor_paced)
-      |> assign(:page_title, "New Session")
-      |> assign(:current_path, "/sessions/new")
       |> assign(:back, "/sessions")
       |> assign(:filtered_quizzes, filter_author_quizzes(socket.assigns.current_author.id, ""))
       |> assign(:changeset, %{"immediate_feedback" => false, "final_feedback" => false})}
   end
+
+  @impl true
+  def handle_params(%{"quiz_id" => quiz_id}, _uri, socket) do
+    {:noreply, socket
+    |> assign(:page_title, "New Session")
+    |> assign(:current_path, "/sessions/new/quiz/#{quiz_id}")}
+  end
+  @impl true
+  def handle_params(_params, _uri, socket) do
+    {:noreply, socket
+    |> assign(:page_title, "New Session")
+    |> assign(:current_path, "/sessions/new")}
+  end
+
+
 
 
   @impl true
@@ -114,14 +127,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
   def handle_event("ignore", _params, socket), do: {:noreply, socket}
 
 
-
   def filter_author_quizzes(author_id, input) do
     Enum.reject(Quizzes.filter_author_quizzes(author_id, input), fn quiz -> Enum.count(quiz.questions) === 0 end)
-    # if String.length(input) === 0 do
-    #   Enum.reject(Quizzes.list_all_author_quizzes(author_id), fn quiz -> Enum.count(quiz.questions) === 0 end)
-    # else
-    #   Enum.reject(Quizzes.filter_author_quizzes(author_id, input), fn quiz -> Enum.count(quiz.questions) === 0 end)
-    # end
   end
 
 end

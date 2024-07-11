@@ -20,7 +20,6 @@ export const SessionChannelParticipant = {
   joinChannel(session_code, username) {
     let socket = new Socket("/socket", {params: {session: session_code, username: username, isMonitor: false }})
     socket.connect()
-  
     window.channel_socket = socket;
   
     channel = socket.channel(

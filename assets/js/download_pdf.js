@@ -9,9 +9,6 @@ export const JSPDF = {
       let table = document.getElementById("participant_statistics_table");
 
       if (table) {
-        // Wait for the table to fully render if needed
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
         table = p_tag_with_margin_top(table, false)
         theme = localStorage.getItem("theme");
         if (theme && theme === "dark") {
@@ -35,7 +32,7 @@ export const JSPDF = {
 
         // Create a new jsPDF instance
         let doc = new jsPDF({
-          orientation: orientation, //'portrait',
+          orientation: orientation,
           unit: 'mm',
           format: 'a4',
         });

@@ -51,21 +51,10 @@ import {Socket} from "phoenix"
 
 let channel;
 
-
-pathname = window.location.pathname
-if (pathname.startsWith("/sessions/")) {
-  code = window.session_code
-  session_id = window.session_id
-  email = localStorage.getItem("author_email")
-  joinChannel(code, email, true, session_id)
-}
-
-
 // Function for a User to join the channel of a Session
 function joinChannel(session_code, username, isMonitor, session_id = null) {
   let socket = new Socket("/socket", {params: {session: session_code, username: username, isMonitor: isMonitor }})
   socket.connect()
-
   window.channel_socket = socket;
 
   if (session_id) {

@@ -5,7 +5,7 @@ defmodule QuicWeb.AuthorResetPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <div class="max-w-sm mx-auto">
+    <div class="max-w-md px-4 py-4 mx-auto mt-10">
       <.header class="text-center">Reset Password</.header>
 
       <.simple_form
@@ -26,13 +26,13 @@ defmodule QuicWeb.AuthorResetPasswordLive do
           required
         />
         <:actions>
-          <.button phx-disable-with="Resetting..." class="w-full">Reset Password</.button>
+          <.button phx-disable-with="Resetting..." class="w-full call2actionBtn"><p class="font-normal text-white">Reset Password</p></.button>
         </:actions>
       </.simple_form>
 
       <p class="mt-4 text-sm text-center">
-        <.link href={~p"/authors/register"}>Register</.link>
-        | <.link href={~p"/authors/log_in"}>Log in</.link>
+        <.link href={~p"/authors/register"} class="hover:text-gray-500">Register</.link>
+        | <.link href={~p"/authors/log_in"} class="hover:text-gray-500">Log in</.link>
       </p>
     </div>
     """

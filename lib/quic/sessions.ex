@@ -260,6 +260,7 @@ defmodule Quic.Sessions do
 
   def close_session(id) do
     try do
+      # alter session status to closed and set end_date
       session = get_session!(id)
       update_session(session, %{"status" => :closed, "end_date" => DateTime.utc_now()})
     rescue
@@ -288,7 +289,7 @@ defmodule Quic.Sessions do
       if session.current_question < num_quiz_questions do
         # increment session current_question
         {:ok, session} = update_session(session, %{"current_question" => session.current_question + 1})
-        # increment Participant's current_questions
+        # increment Participants current_question
         if Enum.count(session.participants) > 0 do
           Enum.each(session.participants, fn p -> (if p.current_question < session.current_question, do: Participants.update_participant(p, %{"current_question" => session.current_question - 1})) end)
         end

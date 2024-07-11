@@ -10,58 +10,51 @@
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
     <script>
-    function changeThemeToDark(toDark) {
-      if (toDark) {
-        localStorage.theme = 'dark'
-        document.documentElement.classList.add('dark')
+      function changeThemeToDark(toDark) {
+        if (toDark) {
+          localStorage.theme = 'dark'
+          document.documentElement.classList.add('dark')
+        }
+        else {
+          localStorage.theme = 'light'
+          document.documentElement.classList.remove('dark')
+        }
       }
-      else {
-        localStorage.theme = 'light'
-        document.documentElement.classList.remove('dark')
+
+      function checkTheme () {
+        theme = localStorage.getItem('theme')
+        if (theme && theme === 'dark') document.documentElement.classList.add('dark')
+        else document.documentElement.classList.remove('dark')
       }
-    }
 
-    function checkTheme () {
-      theme = localStorage.getItem('theme')
-      if (theme && theme === 'dark') document.documentElement.classList.add('dark')
-      else document.documentElement.classList.remove('dark')
-    }
+      checkTheme()
 
-    checkTheme()
-
-
-    function toggleSidebar () {
-      sidebar = document.getElementById("responsive-sidebar")
-      if (sidebar) sidebar.classList.toggle("hidden")
-    }
+      function toggleSidebar () {
+        sidebar = document.getElementById("responsive-sidebar")
+        if (sidebar) sidebar.classList.toggle("hidden")
+      }
     </script>
   </head>
   <body class="antialiased bg-[var(--background-view)]">
     <%!-- SIDE BAR MEDIUM-SMALL SCREENS--%>
-
     <%= if @current_author do %>
       <.sidebar_responsive id="sidebar-responsive" on_cancel={JS.patch(@current_path)}>
-          <%!-- GENERAL --%>
-          <.side_bar_items_general page_title={@page_title} />
-          <%!-- PERSONAL --%>
-          <.side_bar_items_personal page_title={@page_title} current_author={@current_author} />
+        <.side_bar_items_general page_title={@page_title} />
+        <.side_bar_items_personal page_title={@page_title} current_author={@current_author} />
 
-          <div class="flex-1"></div>
-         
-          <.link
-            id="log-out-button-responsive"
-            href={~p"/authors/log_out"}
-            method="delete"
-            class="flex justify-center mt-10 text-sm text-center normalBtn"
-          >
-            <p class="font-normal text-white">Log out</p>
-          </.link>
-      </.sidebar_responsive>
-      <% end %>
+        <div class="flex-1"></div>
+        
+        <.link
+          id="log-out-button-responsive"
+          href={~p"/authors/log_out"}
+          method="delete"
+          class="flex justify-center px-3 py-1 mt-10 text-sm text-center bg-gray-400 rounded-full dark:bg-gray-500 dark:hover:bg-gray-400 hover:bg-gray-500"
+        >
+          <p class="font-normal text-white">Log out</p>
+        </.link>
+    </.sidebar_responsive>
+    <% end %>
      
-  
-    
-
     <%!-- NAVBAR --%>
     <header class="w-full px-4 screen-padding bg-[var(--background-card)] border-b border-[var(--border)]">
       <div class="flex items-center justify-between py-2.5 text-sm">
@@ -81,7 +74,7 @@
         <div class="flex gap-4">        
           <a href={if assigns[:current_author], do: "/authors", else: "/"} class="flex items-center gap-2">
             <Heroicons.computer_desktop class="stroke-1 text-[var(--primary-color)] w-6 h-6"/>
-            <p class="text-lg font-normal">QUIC</p>
+            <p class="text-lg">QUIC</p>
           </a>
         </div>
         

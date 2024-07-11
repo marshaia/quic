@@ -187,6 +187,8 @@
 <% end %>
 
 
+
+
 <.modal :if={@live_action === :leaderboard} id="full-screen-leaderboard-modal" show on_cancel={JS.patch(~p"/sessions/#{@session.id}/full-screen")}>
   <.live_component
     module={QuicWeb.SessionLive.Leaderboard}

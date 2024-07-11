@@ -1,7 +1,6 @@
 import Chart from 'chart.js/auto';
 
 export const ChartJS = {
-  // this functions will help deserialize the dataset
   dataset() { return JSON.parse(this.el.dataset.points); },
   labels() { return JSON.parse(this.el.dataset.labels); },
 

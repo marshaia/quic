@@ -5,14 +5,14 @@ defmodule QuicWeb.AuthorSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <.header class="text-center">
+    <.header class="mt-8 text-center">
       <h4>Account Settings</h4>
       <:subtitle>
         <p>Manage your account email address and password settings</p>
       </:subtitle>
     </.header>
 
-    <div class="flex flex-col w-full gap-8 mt-5 lg:flex-row">
+    <div class="flex flex-col w-full gap-8 mt-10 lg:flex-row">
       <div class="lg:-mt-8 lg:w-1/2">
         <.simple_form
           for={@email_form}
@@ -93,7 +93,7 @@ defmodule QuicWeb.AuthorSettingsLive do
     email_changeset = Accounts.change_author_email(author)
     password_changeset = Accounts.change_author_password(author)
 
-    socket =socket
+    socket = socket
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
       |> assign(:current_email, author.email)
@@ -101,13 +101,13 @@ defmodule QuicWeb.AuthorSettingsLive do
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
       |> assign(:page_title, "Settings")
-      |> assign(:current_path, "/authors/settings")
+
 
     {:ok, socket}
   end
 
   def handle_params(_params, _uri, socket) do
-    {:noreply, socket}
+    {:noreply, socket |> assign(:current_path, "/authors/settings")}
   end
 
   def handle_event("validate_email", params, socket) do

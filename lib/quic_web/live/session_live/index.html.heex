@@ -13,7 +13,6 @@
   <% date_calendar = Calendar.strftime(date, "%a, %B %d") %>
   <% todays_date = Calendar.strftime(DateTime.utc_now(), "%a, %B %d") %>
   <h6 class="mb-2">
-    <%!-- <%= if todays_date === date_calendar, do: "Today, ", else: Calendar.strftime(date, "%a, ") %> --%>
     <%= if todays_date === date_calendar do %>
       <span class="text-gradient">Today</span>,
     <% else %>

@@ -15,13 +15,13 @@ defmodule QuicWeb.QuizLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     if Quizzes.is_allowed_to_access?(id, socket.assigns.current_author) do
       {:noreply, socket
-                |> assign(:page_title, page_title(socket.assigns.live_action))
-                |> assign(:quiz, Quizzes.get_quiz!(id))
-                |> assign(:current_path, ~p"/quizzes/#{id}")}
+        |> assign(:page_title, page_title(socket.assigns.live_action))
+        |> assign(:quiz, Quizzes.get_quiz!(id))
+        |> assign(:current_path, ~p"/quizzes/#{id}")}
     else
       {:noreply, socket
-            |> put_flash(:error, "You can only access Quizzes shared with/owned by you!")
-            |> push_navigate(to: ~p"/quizzes/")}
+        |> put_flash(:error, "You can only access Quizzes shared with/owned by you!")
+        |> push_navigate(to: ~p"/quizzes/")}
     end
 
   end
@@ -63,8 +63,8 @@ defmodule QuicWeb.QuizLive.Show do
     }
 
     case Quizzes.duplicate_quiz(quiz_params, quiz.id, socket.assigns.current_author.id) do
-      {:ok, _} -> {:noreply, socket |> put_flash(:info, "Quiz duplicated successfully")}
-      {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+      {:ok, {:ok, new_quiz}} -> {:noreply, socket |> put_flash(:info, "Quiz duplicated successfully! Sending you to its page...") |> redirect(to: ~p"/quizzes/#{new_quiz.id}")}
+      _ -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
     end
   end
 
@@ -127,7 +127,6 @@ defmodule QuicWeb.QuizLive.Show do
   def handle_event("clicked_quiz_author", _params, socket) do
     {:noreply, socket |> redirect(to: ~p"/authors/profile/#{socket.assigns.quiz.author.id}")}
   end
-
 
 
   def isOwner?(quiz_id, author) do

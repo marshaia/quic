@@ -51,7 +51,6 @@ defmodule QuicWeb.QuicWebAux do
       3 -> "text-[var(--fourth-color)]"
       4 -> "text-[var(--blue)]"
       _ -> "text-[var(--fifth-color)]"
-      # _ -> "text-[var(--fifth-color)]"
     end
   end
 

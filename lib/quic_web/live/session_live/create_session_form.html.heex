@@ -34,7 +34,6 @@
     <hr class="w-full my-5"/>
 
 
-    <%!-- FORMS --%>
     <%!-- STEP 1 - SESSION TYPE --%>
     <%= if @step === 1 do %>
       <div class="text-center">
@@ -47,7 +46,7 @@
             <div class={["px-4 py-2 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === :monitor_paced, do: "border-[var(--primary-color)] bg-[var(--background-view)]")]}>
               <input type="radio" id="teacher_paced_radio" name="type" value={:monitor_paced} checked={@session_type === :monitor_paced}>
               <label for="teacher_paced_radio" class="ml-2 mt-0.5 font-medium">Monitor Paced</label>
-              <p class="mt-2 text-gray-600 dark:text-gray-300">You control the flow of the questions, i.e., every Participant is answering the same question at the same time, and you decide when it's time to move on to the next question</p>
+              <p class="mt-2 text-gray-600 dark:text-gray-300">You control the flow of the questions, i.e. every Participant is answering the same question at the same time, and you decide when it's time to move on to the next question</p>
             </div>
 
             <div class={["px-4 py-2 rounded-xl bg-[var(--background-card)] border border-[var(--border)]", (if @session_type === :participant_paced, do: "border-[var(--primary-color)] bg-[var(--background-view)]")]}>
@@ -65,7 +64,7 @@
     <%= if @step === 2 do %>
       <div class="text-center">
         <h6 class="mt-5 font-bold">Select Quiz</h6>
-        <p>Please select the Quiz to broadcast</p>
+        <p>Please select the quiz to broadcast</p>
       </div>
       <%= if @quiz !== nil do %>
         <div class="flex mt-8 gap-4 p-4 w-full rounded-xl bg-[var(--background-view)] border border-[var(--border)]">
@@ -117,7 +116,7 @@
     <%!-- STEP 3 --%>
     <%= if @step === 3 do %>
       <h6 class="mt-5 font-bold text-center">Parameters</h6>
-      <p class="text-center">Please select the parameters</p>
+      <p class="text-center">Please select the session parameters</p>
       
       <.simple_form
        :let={f}

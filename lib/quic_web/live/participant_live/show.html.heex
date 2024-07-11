@@ -143,7 +143,6 @@
         <%!-- QUESTION ANSWER --%>
         <div :if={participant_answer.result === :incorrect} class="h-full p-1 px-5 overflow-auto">
           <div class="flex items-center w-full gap-1">
-            <%!-- <p class="text-xs font-medium">Correct Answer: </p> --%>
             <Heroicons.check class="w-4 min-w-4 h-4 min-h-4 text-[var(--primary-color-text)]" />
             <p><.markdown class="w-full" text={question_answer.answer} /></p>
           </div>
@@ -213,17 +212,3 @@
     <p>Participant <%= (if @participant.session.status !== :closed, do: "hasn't submmited", else: "did not submit") %> an answer to this question.</p>
   <% end %>
 </section> 
-
-
-
-<%!-- <.modal :if={@live_action === :evaluate_open_answer} id="evaluate-open-answer-participant-modal" show on_cancel={JS.patch(~p"/session/#{@participant.session.id}/participants/#{@participant.id}")}>
-  <.live_component
-    module={QuicWeb.QuizLive.EvaluateOpenAnswerForm}
-    id="open-answer-participant-modal-form"
-    action={@live_action}
-    current_author={@current_author}
-    participant={@participant}
-    selected_question={@selected_question}
-    patch={~p"/session/#{@participant.session.id}/participants/#{@participant.id}"}
-  />
-</.modal> --%>

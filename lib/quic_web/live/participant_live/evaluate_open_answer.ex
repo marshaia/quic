@@ -2,8 +2,7 @@ defmodule QuicWeb.ParticipantLive.EvaluateOpenAnswerForm do
   use QuicWeb, :author_live_view
 
   alias QuicWeb.QuicWebAux
-  alias Quic.Participants
-  alias Quic.ParticipantAnswers
+  alias Quic.{Participants, ParticipantAnswers}
 
   @impl true
   def render(assigns) do
@@ -77,12 +76,16 @@ defmodule QuicWeb.ParticipantLive.EvaluateOpenAnswerForm do
                 |> assign(:participant_answer, participant_answer)
                 |> assign(:page_title, "Session - Show Participant")
                 |> assign(:back, "/session/#{session_id}/participants/#{participant_id}")
-                |> assign(:changeset, ParticipantAnswers.change_participant_answer(participant_answer))
-                |> assign(:current_path, "/session/#{session_id}/participants/#{participant_id}/evaluate-open-answer/#{question_position}")}
+                |> assign(:changeset, ParticipantAnswers.change_participant_answer(participant_answer))}
           end
         end
       end
     end
+  end
+
+  @impl true
+  def handle_params(%{"session_id" => session_id, "participant_id" => participant_id, "question_position" => question_position}, _uri, socket) do
+    {:noreply, socket |> assign(:current_path, "/session/#{session_id}/participants/#{participant_id}/evaluate-open-answer/#{question_position}")}
   end
 
   @impl true

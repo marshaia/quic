@@ -1,11 +1,10 @@
-
 <div class="flex justify-start">
   <.my_back navigate={~p"/sessions/#{@session_id}"}>Back to session</.my_back>
 </div>
 
 
 <div class="flex justify-center w-full px-2 mt-5">
-  <main class="w-full "> <%!-- max-3-xl --%>
+  <main class="w-full ">
 
     <%!-- QUIZ SPECS --%>
     <section class="px-3 md:px-10">
@@ -31,8 +30,6 @@
         </div>
       </div>
     </section>
-
-
 
     <%!-- QUIZ QUESTIONS --%>
     <section id="quiz-page-questions-section-prism-hook" phx-hook="PrismInitializer" class="w-full mt-10">
@@ -68,10 +65,8 @@
           </div>
         </div>
 
-
         <%!-- DIVIDER --%>
         <hr :if={question.type !== :open_answer && question.type !== :code} class="w-full my-4" />
-
 
         <%!-- QUESTION ANSWERS --%>
         <%= if question.type === :true_false do %>
@@ -85,7 +80,6 @@
             <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
             <div class="flex items-center justify-start w-full gap-2">
               <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
-              <%!-- <Heroicons.check class="w-4 h-4 text-[var(--primary-color-text)] min-h-4 min-w-4" /> --%>
               <div class="flex-1">
                 <%= if question.type === :fill_the_blanks do %>
                   <.markdown class="w-full" text={answer.answer} />

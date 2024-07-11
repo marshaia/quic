@@ -38,8 +38,8 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
   @impl true
   def mount(socket) do
     {:ok, socket
-          |> assign(:input_text, "")
-          |> assign(:searched_users, %{})}
+      |> assign(:input_text, "")
+      |> assign(:searched_users, %{})}
   end
 
 
@@ -64,9 +64,9 @@ defmodule QuicWeb.TeamLive.AddCollaboratorForm do
     Teams.insert_author_in_team(socket.assigns.team, username)
     team = Teams.get_team!(socket.assigns.team.id)
     {:noreply, socket
-              |> assign(team: team)
-              |> put_flash(:info, "Successfully added #{name} to #{socket.assigns.team.name}!")
-              |> push_patch(to: socket.assigns.patch)}
+      |> assign(team: team)
+      |> put_flash(:info, "Successfully added #{name} to #{socket.assigns.team.name}!")
+      |> push_patch(to: socket.assigns.patch)}
   end
 
 

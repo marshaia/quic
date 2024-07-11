@@ -149,6 +149,8 @@ defmodule Quic.Quizzes do
 
             Questions.create_question_from_existing_one(question_params, new_quiz.id, answers, parameters)
           end)
+
+          {:ok, new_quiz}
       end)
 
     rescue

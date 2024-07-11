@@ -1,35 +1,12 @@
 defmodule QuicWeb.MyComponents do
   use Phoenix.Component
 
-  alias Quic.Parameters
+  alias Quic.{Sessions, Parameters}
   alias Phoenix.LiveView.JS
   alias QuicWeb.QuicWebAux
-  alias Quic.Sessions
 
   import QuicWeb.CoreComponents
   import Phoenix.HTML
-
-  # import QuicWeb.Gettext
-
-
-  @doc """
-  Renders a box with the author information.
-
-  ## Examples
-      <.author_box username="pg12345" display_name="John Doe" />
-  """
-  attr :username, :string, required: true, doc: "the username of the author"
-  attr :display_name, :string, required: true, doc: "the display_name of the author"
-
-  def author_box(assigns) do
-    ~H"""
-    <div class="flex flex-col items-center text-center justify-center bg-[var(--background-card)] border border-[var(--border)] p-4 rounded-md gap-4 hover:bg-[--hover]">
-      <p class="font-semibold"><%= @username %></p>
-      <p class="text-sm"><%= @display_name %></p>
-    </div>
-    """
-  end
-
 
 
   attr :page_title, :string, required: true, doc: "title of the current page"
@@ -431,7 +408,7 @@ defmodule QuicWeb.MyComponents do
         <%!-- DIVIDER --%>
         <h6 class="mt-5 text-base">Correct Answer</h6>
 
-        <%!-- CORECT ANSWER --%>
+        <%!-- CORRECT ANSWER --%>
         <div class="flex items-center w-full gap-3">
           <.right_or_wrong is_correct={true} />
           <.language_previewer text={Parameters.put_correct_answers_in_code_changeset(@parameters_changeset)} language={language} />
@@ -457,9 +434,7 @@ defmodule QuicWeb.MyComponents do
           </tr>
         </table>
       <% end %>
-
     </div>
-
     """
   end
 

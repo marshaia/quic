@@ -35,6 +35,7 @@ defmodule QuicWeb.ParticipantLive.Show do
   end
 
 
+  # Channel Events
   @impl true
   def handle_info({"submission_results", _}, socket) do
     {:noreply, socket |> assign(:participant, Participants.get_participant!(socket.assigns.participant.id))}

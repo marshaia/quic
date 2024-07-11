@@ -5,7 +5,7 @@ defmodule QuicWeb.AuthorForgotPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <div class="max-w-sm mx-auto">
+    <div class="max-w-md px-4 py-4 mx-auto mt-10">
       <.header class="text-center">
         <h6 class="font-bold">Forgot your password?</h6>
         <:subtitle><p>We'll send a password reset link to your inbox</p></:subtitle>
@@ -15,13 +15,13 @@ defmodule QuicWeb.AuthorForgotPasswordLive do
         <.input field={@form[:email]} type="email" placeholder="Email" required />
         <:actions>
           <.button phx-disable-with="Sending..." class="w-full call2actionBtn">
-            Send password reset instructions
+            <p class="font-normal text-white">Send password reset instructions</p>
           </.button>
         </:actions>
       </.simple_form>
-      <p class="mt-4 text-sm text-center">
-        <.link href={~p"/authors/register"}>Register</.link>
-        | <.link href={~p"/authors/log_in"}>Log in</.link>
+      <p class="mt-8 text-sm text-center">
+        <.link href={~p"/authors/register"} class="hover:text-gray-500">Register</.link>
+        | <.link href={~p"/authors/log_in"} class="hover:text-gray-500">Log in</.link>
       </p>
     </div>
     """

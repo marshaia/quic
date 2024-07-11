@@ -24,8 +24,8 @@
         </div>
 
         <div class="flex items-center gap-1">
-          <p><%= Enum.count(@session.participants) %></p>
-          <Heroicons.user_group class="w-5 h-5 stroke-1" />
+          <Heroicons.calendar class="w-4 h-4 stroke-1" />
+          <p class="text-xs"><%= Calendar.strftime(@session.start_date, "%B %d, %y") %> @ <%= @session.start_date.hour %>:<%= @session.start_date.minute %></p>
         </div>
       </div>
 
@@ -38,7 +38,8 @@
 
         <p class="flex gap-2">
           <Heroicons.clock class="w-5 h-5 stroke-1" />
-          <%= DateTime.to_date(@session.start_date) %> @ <%= DateTime.to_time(@session.start_date) %>
+          <% end_date = (if @session.end_date !== nil, do: @session.end_date, else: DateTime.utc_now()) %>
+          <%= DateTime.diff(end_date, @session.start_date, :minute) %> minutes
         </p>
       </div>
     </div>
@@ -160,14 +161,14 @@
         <table class="w-full p-2">
           <tr class="border-b border-[var(--border)] h-10">
             <th>#</th>
-            <th class="pl-4 min-w-40 w-[25%] text-left">Name</th>
+            <th class="pl-4 min-w-40 w-[25%]">Name</th>
             <th class="min-w-40">Progress</th>
             <th>Points</th>
           </tr>
           
           <tr :for={{participant, index} <- Enum.with_index(@participants)} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
             <td class="text-[var(--second-color)] font-bold"><%= index + 1 %></td>
-            <td class="pl-4 text-left"><p><%= participant.name %></p></td>
+            <td class="pl-4"><p><%= participant.name %></p></td>
             <td>
               <%= if participant.current_question === quiz_num_questions do %>
                 <p class="text-gray-400">100%</p>

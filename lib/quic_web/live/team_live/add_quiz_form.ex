@@ -46,8 +46,8 @@ defmodule QuicWeb.TeamLive.AddQuizForm do
   @impl true
   def mount(socket) do
     {:ok, socket
-          |> assign(:input_text, "")
-          |> assign(:searched_quizzes, %{})}
+      |> assign(:input_text, "")
+      |> assign(:searched_quizzes, %{})}
   end
 
 
@@ -72,9 +72,9 @@ defmodule QuicWeb.TeamLive.AddQuizForm do
     Teams.insert_quiz_in_team(socket.assigns.team, quiz_id)
     team = Teams.get_team!(socket.assigns.team.id)
     {:noreply, socket
-              |> assign(team: team)
-              |> put_flash(:info, "Successfully added Quiz to #{socket.assigns.team.name}!")
-              |> push_patch(to: socket.assigns.patch)}
+      |> assign(team: team)
+      |> put_flash(:info, "Successfully added Quiz to #{socket.assigns.team.name}!")
+      |> push_patch(to: socket.assigns.patch)}
   end
 
 

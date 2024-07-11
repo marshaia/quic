@@ -12,6 +12,7 @@
           <div class={["rounded-md px-2 max-w-fit mb-3", QuicWebAux.get_type_color(@question.type)]}>
             <span class="text-xs text-white"> <%= QuicWebAux.readable_name(@question.type) %> </span>
           </div>
+
           <.markdown text={@question.description} />
 
           <%= if @question.type === :fill_the_code || @question.type === :code do %>
@@ -153,7 +154,10 @@
         <h3 class="mt-10 mb-5 font-normal text-center"><%= if @last_question, do: "Quiz Completed!", else: "Answer submitted!" %></h3>
 
         <%= if @session.immediate_feedback do %>
-          <h6 class="my-3 font-normal ">You answer was assessed as <span class="text-[var(--primary-color)]"><%= Atom.to_string(answer.result) %></span></h6>
+          <h6 class="mt-3 mb-1 font-normal ">You answer was assessed as <span class="text-[var(--primary-color)]"><%= Atom.to_string(answer.result) %></span></h6>
+          <p :if={answer.result !== :correct && (@question.type === :code || @question.type === :fill_the_code)} class="mb-5 text-gray-500 dark:text-gray-400">(<%= answer.error_reason %>)</p>
+
+
           <.button 
             :if={not @last_question && @session.type !== :monitor_paced}
             id="participant-next-question-btn" 

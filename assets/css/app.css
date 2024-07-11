@@ -10,23 +10,11 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;700;900&display=swap');
 
-
-
-/* This file is for your main application CSS */
-
 body {
   font-family: "Poppins", sans-serif;
   font-size: 100%;
   color: var(--primary-color-text);
 }
-
-/* h1 { font-size: 10vw;}
-h2 { font-size: 7vw; }
-h3 { font-size: 6vw; }
-h4 { font-size: 5vw; }
-h5 { font-size: 4vw; }
-h6 { font-size: 3vw; } 
-p { font-size: 2.5vw;} */
 
 h1 { @apply text-6xl}
 h2 { @apply text-5xl }
@@ -58,52 +46,36 @@ hr {
   height: 1px;
 }
 
-
-/* If the screen size is 768px wide or more, set the font-size of <div> to 80px */
-/* @media screen and (min-width: 601px) {
-  h1 { @apply text-8xl}
-  h2 { @apply text-7xl }
-  h3 { @apply text-6xl }
-  h4 { @apply text-5xl }
-  h5 { @apply text-4xl }
-  h6 { @apply text-3xl } 
-  p  { @apply text-base}
-} */
-
-
-/* Customizing bullet points */
 ul {
-  list-style-type: none; /* Remove default bullets */
-  padding-left: 20px; /* Add indentation */
+  list-style-type: none;
+  padding-left: 20px;
 }
 
 ul li::before {
-  content: "\2022"; /* Unicode for bullet character (•) */
-  color: var(--primary-color); /* Change bullet color */
-  font-size: 1.2em; /* Adjust bullet size */
-  margin-right: 5px; /* Add space between bullet and text */
+  content: "\2022";
+  color: var(--primary-color);
+  font-size: 1.2em;
+  margin-right: 5px;
 }
 
-/* Customizing enumeration */
 ol {
-  list-style-type: none; /* Remove default numbering */
-  counter-reset: custom-counter; /* Reset counter for custom numbering */
-  padding-left: 20px; /* Add indentation */
+  list-style-type: none;
+  counter-reset: custom-counter;
+  padding-left: 20px;
 }
 
 ol li {
-  counter-increment: custom-counter; /* Increment counter for each list item */
+  counter-increment: custom-counter;
 }
 
 ol li::before {
-  content: counter(custom-counter) ". "; /* Use the counter value as the enumeration */
-  color: var(--primary-color); /* Change enumeration color */
-  font-weight: bold; /* Make enumeration bold */
-  margin-right: 5px; /* Add space between enumeration and text */
+  content: counter(custom-counter) ". ";
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-right: 5px;
 }
 
 li { @apply text-sm }
-
 
 .input {
   @apply bg-[var(--background-card)] 
@@ -111,8 +83,6 @@ li { @apply text-sm }
   text-[var(--primary-color-text)] text-sm
   rounded-md p-2
 }
-
-
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
@@ -132,7 +102,6 @@ li { @apply text-sm }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  /* background: #f1f1f1; */
   background: var(--background-card);
   border-radius: 5px; 
   overflow: hidden;
@@ -147,7 +116,6 @@ li { @apply text-sm }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  /* background: #555;  */
   background: var(--primary-color);
 }
 

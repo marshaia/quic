@@ -1,9 +1,7 @@
 defmodule QuicWeb.SessionChannel do
   use QuicWeb, :channel
 
-  alias Quic.Questions
-  alias Quic.Sessions
-  alias Quic.Participants
+  alias Quic.{Sessions, Questions, Participants}
 
   @impl true
   def join("session:" <> code = channel, payload, socket) do
@@ -48,15 +46,11 @@ defmodule QuicWeb.SessionChannel do
   def handle_in("participant_submitted_answer", %{"participant_id" => participant_id, "session_code" => code, "question_id" => question_id, "answer" => answer}, socket) do
     # verify if participant belongs to session
     if Participants.participant_already_in_session?(participant_id, code) do
-      # evaluate participant's submission
       results = Questions.assess_submission(participant_id, question_id, answer)
 
-      # update data base with Participant's results
       Participants.update_participant_results(participant_id, question_id, results)
-      # update participant's current question
       Participants.update_participant_current_question(participant_id)
 
-      # send results to the Participant and Session Monitor
       Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":monitor", "participant_submitted_answer")
       Phoenix.PubSub.broadcast(Quic.PubSub, "session:" <> code <> ":participant:" <> participant_id, {"submission_results", %{"answer" => results}})
 

@@ -3,9 +3,7 @@
   
   <%!-- SIDE BAR LARGE SCREENS--%>
   <nav class="sidebar">
-    <%!-- GENERAL --%>
     <.side_bar_items_general page_title={@page_title} />
-    <%!-- PERSONAL --%>
     <.side_bar_items_personal page_title={@page_title} current_author={@current_author} />
 
     <div class="flex-1"></div>
@@ -14,18 +12,15 @@
       id="log-out-button"
       href={~p"/authors/log_out"}
       method="delete"
-      class="text-sm text-center normalBtn"
+      class="px-3 py-1 mt-10 text-sm text-center bg-gray-400 rounded-full dark:bg-gray-500 dark:hover:bg-gray-400 hover:bg-gray-500"
     >
       <p class="font-normal text-white">Log out</p>
     </.link>
   </nav>
-
 
   <%!-- MAIN CONTENT --%>
   <main class="flex-1 main-page no-scrollbar">
     <.flash_group flash={@flash} />
     <%= @inner_content %>
   </main>
-
 </div>
-

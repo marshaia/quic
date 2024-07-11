@@ -136,11 +136,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
   defp only_one_correct_option?(changesets) do
     res = Enum.reduce(changesets, 0,
       fn changeset, acc ->
-        if (Map.has_key?(changeset.changes, :is_correct) && changeset.changes.is_correct) || (Map.has_key?(changeset.data, :is_correct) && changeset.data.is_correct) do
-          acc + 1
-        else
-          acc
-        end
+        if (Map.has_key?(changeset.changes, :is_correct) && changeset.changes.is_correct) || (Map.has_key?(changeset.data, :is_correct) && changeset.data.is_correct), do: acc + 1, else: acc
       end)
 
     res === 1
@@ -149,11 +145,7 @@ defmodule QuicWeb.QuestionLive.FormSingleMultipleChoice do
   defp more_than_one_correct_option?(changesets) do
     res = Enum.reduce(changesets, 0,
       fn changeset, acc ->
-        if (Map.has_key?(changeset.changes, :is_correct) && changeset.changes.is_correct) || (Map.has_key?(changeset.data, :is_correct) && changeset.data.is_correct) do
-          acc + 1
-        else
-          acc
-        end
+        if (Map.has_key?(changeset.changes, :is_correct) && changeset.changes.is_correct) || (Map.has_key?(changeset.data, :is_correct) && changeset.data.is_correct), do: acc + 1, else: acc
       end)
 
     res > 1
