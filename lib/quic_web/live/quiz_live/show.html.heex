@@ -179,7 +179,7 @@
           
           <.link
             phx-click={JS.push("delete", value: %{id: question.id})}
-            data-confirm="Are you sure you want to delete this question?"
+            data-confirm="Are you sure you want to delete this question? Once deleted, it cannot be retrived!"
           >
             <Heroicons.trash class="w-5 h-5 hover:text-[var(--red)] stroke-1" />
           </.link>

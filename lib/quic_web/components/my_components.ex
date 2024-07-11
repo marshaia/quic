@@ -429,7 +429,6 @@ defmodule QuicWeb.MyComponents do
 
       <%= if @type === :fill_the_code do %>
         <%!-- DIVIDER --%>
-        <%!-- <hr class="w-full mt-6 mb-4" /> --%>
         <h6 class="mt-5 text-base">Correct Answer</h6>
 
         <%!-- CORECT ANSWER --%>
@@ -439,23 +438,26 @@ defmodule QuicWeb.MyComponents do
         </div>
       <% end %>
 
-      <%!-- <hr class="w-full mt-6 mb-4" /> --%>
-
       <%!-- TESTS --%>
       <h6 class="mt-8 mb-2 text-base">Tests</h6>
-      <table class="w-full p-2 overflow-auto">
-        <tr class="border-y border-[var(--border)] h-8">
-          <th class="w-1/2 min-w-max"><p>Input</p></th>
-          <th class="min-w-8"></th>
-          <th class="w-1/2 min-w-max"><p>Output</p></th>
-        </tr>
+      <%= if Enum.count(tests) === 0 do %>
+        <p class="-mt-2 text-gray-500 dark:text-gray-400">Nothing to show</p>
+      <% else %>
+        <table class="w-full p-2 overflow-auto">
+          <tr class="border-y border-[var(--border)] h-8">
+            <th class="w-1/2 min-w-max"><p>Input</p></th>
+            <th class="min-w-8"></th>
+            <th class="w-1/2 min-w-max"><p>Output</p></th>
+          </tr>
 
-        <tr :for={test <- tests} class="h-8 text-center">
-          <td><p><%= if test["input"], do: test["input"], else: "Empty" %></p></td>
-          <td class="flex items-center justify-center mt-2"><Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" /></td>
-          <td><p><%= if test["output"], do: test["output"], else: "Empty" %></p></td>
-        </tr>
-      </table>
+          <tr :for={test <- tests} class="h-8 text-center">
+            <td><p><%= if test["input"], do: test["input"], else: "Empty" %></p></td>
+            <td class="flex items-center justify-center mt-2"><Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" /></td>
+            <td><p><%= if test["output"], do: test["output"], else: "Empty" %></p></td>
+          </tr>
+        </table>
+      <% end %>
+
     </div>
 
     """
@@ -635,12 +637,12 @@ defmodule QuicWeb.MyComponents do
         <th :for={question <- @questions} class="min-w-14">Q<%= question.position %></th>
       </tr>
 
-      <tr :for={participant <- @participants} class="h-10 text-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
-        <td><p><%= participant.name %></p></td>
-        <td class="pr-5"><p><%= participant.total_points %></p></td>
-        <td :for={question <- @questions} class="">
-        <% answer = Enum.find(participant.answers, nil, fn a -> a.question_id === question.id end) %>
-        <% has_answered = answer !== nil %>
+      <tr :for={participant <- @participants} class="h-10 text-center align-center hover:bg-[var(--hover)] hover:cursor-pointer" phx-click="clicked_participant" phx-value-id={participant.id}>
+        <td><p class="flex flex-col items-center justify-center"><%= participant.name %></p></td>
+        <td class="pr-5"><p class="flex flex-col items-center justify-center"><%= participant.total_points %></p></td>
+        <td :for={question <- @questions}>
+          <% answer = Enum.find(participant.answers, nil, fn a -> a.question_id === question.id end) %>
+          <% has_answered = answer !== nil %>
 
           <div class={["flex flex-col items-center justify-center rounded-full",
             (if has_answered && answer.result === :correct, do: "bg-[var(--light-green)]",
@@ -659,7 +661,7 @@ defmodule QuicWeb.MyComponents do
         </td>
       </tr>
 
-      <tr>
+      <tr class="h-10 border-t border-[var(--border)]">
         <td></td>
         <td><p class="font-bold text-right">Accuracy:</p></td>
         <td :for={question <- @questions}>

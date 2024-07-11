@@ -362,7 +362,7 @@ defmodule Quic.Questions do
       :multiple_choice -> assess_multiple_choice(question_answers, answer)
       :true_false -> assess_true_false(question_answers, answer)
       :fill_the_blanks -> assess_fill_the_blanks(question_answers, answer)
-      :open_answer -> %{result: :correct}
+      :open_answer -> %{result: :incorrect}
       :fill_the_code ->
         parameters = Enum.find(participant.session.quiz.parameters, fn p -> p.question_id === question_id end)
         complete_answer = Parameters.put_correct_answers_participant_in_code(parameters.code, answer)

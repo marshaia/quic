@@ -56,21 +56,26 @@
 
           <%!-- TESTS --%>
           <h6 class="mb-2 font-medium">Tests</h6>
-          <div class="flex px-3 py-2 overflow-auto rounded-md">
-            <table class="w-full p-2 overflow-auto">
-              <tr class="border-b border-t border-[var(--border)] h-10">
-                <th class="w-1/2 min-w-max">Input</th>
-                <th class="min-w-8"></th>
-                <th class="w-1/2 min-w-max">Output</th>
-              </tr>
+          <%= if Enum.count(@question.parameters.tests) === 0 do %>
+            <p class="-mt-2 text-gray-500 dark:text-gray-400">Nothing to show</p>
+          <% else %>
+            <div class="flex px-3 py-2 overflow-auto rounded-md">
+              <table class="w-full p-2 overflow-auto">
+                <tr class="border-b border-t border-[var(--border)] h-10">
+                  <th class="w-1/2 min-w-max">Input</th>
+                  <th class="min-w-8"></th>
+                  <th class="w-1/2 min-w-max">Output</th>
+                </tr>
 
-              <tr :for={test <- @question.parameters.tests} class="h-10 text-center">
-                <td><p><%= if test["input"], do: test["input"], else: "Empty" %></p></td>
-                <td class="flex items-center justify-center mt-2"><Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" /></td>
-                <td><p><%= if test["output"], do: test["output"], else: "Empty" %></p></td>
-              </tr>
-            </table>
-          </div>
+                <tr :for={test <- @question.parameters.tests} class="h-10 text-center">
+                  <td><p><%= if test["input"], do: test["input"], else: "Empty" %></p></td>
+                  <td class="flex items-center justify-center mt-2"><Heroicons.arrow_right_circle class="w-5 h-5 stroke-1" /></td>
+                  <td><p><%= if test["output"], do: test["output"], else: "Empty" %></p></td>
+                </tr>
+              </table>
+            </div>
+          <% end %>
+          
         </section>
       <% end %>
     </section>

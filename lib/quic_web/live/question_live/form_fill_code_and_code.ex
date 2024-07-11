@@ -67,9 +67,10 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
       <div class="flex items-center gap-2 mt-8 mb-2">
         <p class="font-bold text-left">Test File</p>
         <% test_file_id = if @responsive, do: "test-file-tooltip-responsive", else: "test-file-answers-tooltip" %>
-        <.tooltip tooltip_id={test_file_id} class={"-left-16 w-[300px] -top-44"}>
+        <.tooltip tooltip_id={test_file_id} class={"-left-16 w-[300px] -top-56"}>
           <p class="text-xs">Here you enter the code to test the Participant's submission.</p>
-          <p class="text-xs">When using <b>C</b>, don't forget to define the function's header so that it uses the function defined by the Participant when compiled.</p>
+          <p class="text-xs">When using <b>C</b>, don't forget to define the function's header so that it uses the function defined by the Participant when compiled, like so: <code>int sum(int a, int b);</code></p>
+          <p class="text-xs">You also have to capture the arguments via stdin, so use functions like <code>scanf</code>, <code>fgets</code>, etc.</p>
           <p class="text-xs">When using <b>Python</b>, dont' forget to retrieve the test arguments using the library <code>argparse</code>.</p>
         </.tooltip>
       </div>

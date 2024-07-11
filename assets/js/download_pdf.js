@@ -11,7 +11,8 @@ export const JSPDF = {
       if (table) {
         // Wait for the table to fully render if needed
         await new Promise(resolve => setTimeout(resolve, 1000));
-
+        
+        table = p_tag_with_margin_top(table, false)
         theme = localStorage.getItem("theme");
         if (theme && theme === "dark") {
           table = change_text_color(table, true)
@@ -24,6 +25,7 @@ export const JSPDF = {
           willReadFrequently: true,
         });
 
+        table = p_tag_with_margin_top(table, true)
         if (theme && theme === "dark") {
           change_text_color(table, false);
         }
@@ -67,18 +69,38 @@ function change_text_color(table, to_black) {
   remove_class = to_black ? "text-[var(--primary-color-text)]" : "text-black";
   new_class = to_black ? "text-black" : "text-[var(--primary-color-text)]";
 
+  var rows = table.getElementsByTagName("tr");
+  for (var i = 0; i < rows.length; i++) {
+    if (to_black) {
+      rows[i].classList.replace("border-[var(--border)]", "border-[#dfe7ef]");
+    } else {
+      rows[i].classList.replace("border-[#dfe7ef]", "border-[var(--border)]");
+    }
+  }
+
   var headers = table.getElementsByTagName("th");
   for (var i = 0; i < headers.length; i++) {
     headers[i].classList.remove(remove_class);
     headers[i].classList.add(new_class);
   }
 
-  var cells = table.getElementsByTagName("td");
-  for (var i = 0; i < cells.length; i++) {
-    var paragraphs = cells[i].getElementsByTagName("p");
-    for (var j = 0; j < paragraphs.length; j++) {
-      paragraphs[j].classList.remove(remove_class);
-      paragraphs[j].classList.add(new_class);
+  var paragraphs = table.getElementsByTagName("p");
+  for (var i = 0; i < paragraphs.length; i++) {
+    paragraphs[i].classList.remove(remove_class);
+    paragraphs[i].classList.add(new_class);
+  }
+
+  return table
+}
+
+
+function p_tag_with_margin_top(table, remove_margin) {
+  var paragraphs = table.getElementsByTagName("p");
+  for (var i = 0; i < paragraphs.length; i++) {
+    if (remove_margin) {
+      paragraphs[i].classList.add("mt-0");
+    } else {
+      paragraphs[i].classList.add("-mt-5");
     }
   }
   return table

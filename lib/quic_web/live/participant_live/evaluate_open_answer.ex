@@ -100,11 +100,13 @@ defmodule QuicWeb.ParticipantLive.EvaluateOpenAnswerForm do
 
   @impl true
   def handle_event("save", %{"participant_answer" => points}, socket) do
-    case ParticipantAnswers.update_participant_answer(socket.assigns.participant_answer, points) do
+    {integer_points, _} = Integer.parse(points["points_obtained"])
+    attrs = if integer_points > 0, do: Map.put(points, "result", :correct), else: Map.put(points, "result", :incorrect)
+
+    case ParticipantAnswers.update_participant_answer(socket.assigns.participant_answer, attrs) do
       {:ok, _} ->
         participant = socket.assigns.participant
-        {points, _} = Integer.parse(points["points_obtained"])
-        case Participants.update_participant(participant, %{"total_points" => participant.total_points + points}) do
+        case Participants.update_participant(participant, %{"total_points" => participant.total_points + integer_points}) do
           {:ok, _} -> {:noreply, socket |> put_flash(:info, "Points assigned successully!") |> redirect(to: socket.assigns.back)}
           {:error, _} -> {:noreply, socket |> put_flash(:error, "Error updating Participant's total points. Please try again!")}
         end
