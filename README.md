@@ -2,8 +2,7 @@
 
 To start your Phoenix server:
 
-  * /assets and run `npm install chartjs`
-  * /assets and run `npm install jspdf --save`
+  * /assets and run `npm install`
   * Run `mix setup` to install and setup dependencies
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
