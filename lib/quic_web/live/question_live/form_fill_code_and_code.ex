@@ -71,7 +71,7 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
           <p class="text-xs">Here you enter the code to test the Participant's submission.</p>
           <p class="text-xs">When using <b>C</b>, don't forget to define the function's header so that it uses the function defined by the Participant when compiled, like so: <code>int sum(int a, int b);</code></p>
           <p class="text-xs">You also have to capture the arguments via stdin, so use functions like <code>scanf</code>, <code>fgets</code>, etc.</p>
-          <p class="text-xs">When using <b>Python</b>, dont' forget to retrieve the test arguments using the library <code>argparse</code>.</p>
+          <p class="text-xs">When using <b>Python</b>, dont' forget to retrieve the test arguments using <code>sys</code> or <code>argparse</code>.</p>
         </.tooltip>
       </div>
       <.code_editor editor_id={"#{@id}-test-file"} loading={@loading} text={if Map.has_key?(@changeset.changes, :test_file), do: @changeset.changes.test_file, else: (if Map.has_key?(@changeset.data, :test_file), do: @changeset.data.test_file, else: "")} />

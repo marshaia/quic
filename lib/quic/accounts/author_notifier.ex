@@ -8,7 +8,7 @@ defmodule Quic.Accounts.AuthorNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Quic", "contact@example.com"})
+      |> from({"Quic", "admin@quic.com"})
       |> subject(subject)
       |> text_body(body)
 

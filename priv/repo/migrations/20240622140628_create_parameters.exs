@@ -13,5 +13,9 @@ defmodule Quic.Repo.Migrations.CreateParameters do
 
       timestamps(type: :utc_datetime)
     end
+
+    alter table(:questions) do
+      add :parameter_id, references(:parameters, on_delete: :delete_all, type: :binary_id)
+    end
   end
 end

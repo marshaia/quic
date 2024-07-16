@@ -35,3 +35,6 @@ quic-*.tar
 npm-debug.log
 /assets/node_modules/
 
+quic.env
+
+compose.yaml

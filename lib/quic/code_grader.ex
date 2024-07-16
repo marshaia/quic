@@ -1,7 +1,7 @@
 defmodule Quic.CodeGrader do
 
   defp url() do
-    "http://localhost:5000/test"
+    "http://localhost:5000"
   end
 
   def grade_code(participant_id, participant_answer, parameters) do

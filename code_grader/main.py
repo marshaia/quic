@@ -14,7 +14,7 @@ class Parameters(BaseModel):
 
 app = FastAPI()
 
-@app.post("/test")
+@app.post("/")
 def test_participant_code(parameters: Parameters):
   # check language validity
   if language_is_not_valid(parameters.language.strip()):

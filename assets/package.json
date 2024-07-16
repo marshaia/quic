@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "chart.js": "4.4.3",
+    "jspdf": "2.5.1"
+  }
+}

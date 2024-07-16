@@ -87,7 +87,8 @@ defmodule QuicWeb.QuizLive.Show do
             {:noreply, socket
               |> assign(:quiz, Quizzes.get_quiz!(quiz_id))
               |> put_flash(:info, "Question duplicated successfully!")}
-          {:error, _} -> {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
+          {:error, _} ->
+            {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
         end
 
       {:error, _changeset} ->

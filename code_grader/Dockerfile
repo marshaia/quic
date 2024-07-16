@@ -21,7 +21,3 @@ EXPOSE 8000
 
 # Run the FastAPI server (using Uvicorn) when the container launches
 CMD ["fastapi", "run", "main.py"]
-
-# para executar:
-# docker build -t PG50457-QUIC-code-grader-image .
-# docker run -d --restart always --name PG50457-QUIC-code-grader-container -p 5000:8000 PG50457-QUIC-code-grader-image

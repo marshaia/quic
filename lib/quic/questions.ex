@@ -119,7 +119,7 @@ defmodule Quic.Questions do
 
         Enum.each(question.answers,
           fn answer ->
-            params = %{"answers" => answer.answer, "is_correct" => answer.is_correct}
+            params = %{"answer" => answer.answer, "is_correct" => answer.is_correct}
             {:ok, _} = create_answer_with_question(params, new_question.id)
           end)
 

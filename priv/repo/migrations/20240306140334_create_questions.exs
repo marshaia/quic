@@ -4,13 +4,10 @@ defmodule Quic.Repo.Migrations.CreateQuestions do
   def change do
     create table(:questions, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      #add :title, :string
       add :description, :text
       add :position, :integer
       add :points, :integer
       add :type, :string
-      add :code, :text
-      add :language, :string
 
       timestamps(type: :utc_datetime)
     end
