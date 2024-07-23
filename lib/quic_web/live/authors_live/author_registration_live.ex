@@ -62,11 +62,11 @@ defmodule QuicWeb.AuthorRegistrationLive do
   def handle_event("save", %{"author" => author_params}, socket) do
     case Accounts.register_author(author_params) do
       {:ok, author} ->
-        {:ok, _} =
-          Accounts.deliver_author_confirmation_instructions(
-            author,
-            &url(~p"/authors/confirm/#{&1}")
-          )
+        # {:ok, _} =
+        #   Accounts.deliver_author_confirmation_instructions(
+        #     author,
+        #     &url(~p"/authors/confirm/#{&1}")
+        #   )
 
         changeset = Accounts.change_author_registration(author)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}

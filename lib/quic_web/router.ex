@@ -69,7 +69,7 @@ defmodule QuicWeb.Router do
   scope "/", QuicWeb do
     pipe_through [:browser, :require_authenticated_author]
 
-    get "/sessions/:session_id/quiz", QuizController, :show
+    # get "/sessions/:session_id/quiz", QuizController, :show
 
     live_session :require_authenticated_author,
       on_mount: [{QuicWeb.AuthorAuth, :ensure_authenticated}] do
@@ -107,6 +107,7 @@ defmodule QuicWeb.Router do
       live "/sessions/new/quiz/:quiz_id", SessionLive.CreateSessionForm
 
       live "/sessions/:id", SessionLive.Show, :show
+      live "/sessions/:session_id/quiz", QuizLive.ShowSessionQuiz
       live "/sessions/:id/full-screen", SessionLive.FullScreenControls, :show
       live "/sessions/:id/full-screen/leaderboard", SessionLive.FullScreenControls, :leaderboard
 

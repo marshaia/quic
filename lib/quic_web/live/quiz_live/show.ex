@@ -23,7 +23,6 @@ defmodule QuicWeb.QuizLive.Show do
         |> put_flash(:error, "You can only access Quizzes shared with/owned by you!")
         |> push_navigate(to: ~p"/quizzes/")}
     end
-
   end
 
   @impl true

@@ -1,7 +1,9 @@
 defmodule Quic.CodeGrader do
 
   defp url() do
-    "http://localhost:5000"
+    host = System.get_env("CODE_GRADER_HOST") || "0.0.0.0"
+    port = System.get_env("CODE_GRADER_PORT") || 50747
+    "http://#{host}:#{port}"
   end
 
   def grade_code(participant_id, participant_answer, parameters) do

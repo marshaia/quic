@@ -3,13 +3,13 @@
 </div>
 
 
-<div class="flex justify-center w-full px-2 mt-5">
-  <main class="w-full ">
+<div id="session_quiz_page" phx-hook="jsPDF" class="flex justify-center w-full px-2 mt-5">
+  <main class="w-full">
 
     <%!-- QUIZ SPECS --%>
     <section class="px-3 md:px-10">
       <div class="bg-[var(--background-card)] px-5 py-5 rounded-md border border-[var(--border)]">
-        <h5 class="text-center text-gradient"><%= @quiz.name %></h5>
+        <h5 id="session_quiz_name" class="text-center text-gradient"><%= @quiz.name %></h5>
         <p class="mt-4 text-justify "><%= @quiz.description %></p>
 
         <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
@@ -31,10 +31,24 @@
       </div>
     </section>
 
+
     <%!-- QUIZ QUESTIONS --%>
     <section id="quiz-page-questions-section-prism-hook" phx-hook="PrismInitializer" class="w-full mt-10">
-      <h6 class="mb-2 font-medium">Questions</h6>
-      <div 
+      <div class="flex justify-between gap-3 mb-2">
+        <div class="flex gap-2">
+          <h6 class="font-medium">Questions</h6>
+
+          <div class="flex items-center text-xs">
+            (<p phx-click="hide_correct_answers" class="text-xs hover:cursor-pointer hover:text-gray-400">Blank</p>
+            <p class="mx-1 text-xs">|</p>
+            <p phx-click="show_correct_answers" class="text-xs hover:cursor-pointer hover:text-gray-400">Filled</p>)
+          </div>
+        </div>
+
+        <.download downloading={@downloading} />
+      </div>
+
+      <div
         :for={question<- @quiz.questions}
         class="flex flex-col border border-[var(--border)] rounded-md bg-[var(--background-card)] py-2 px-4 mb-4"
       >
@@ -65,18 +79,20 @@
           </div>
         </div>
 
+
         <%!-- DIVIDER --%>
-        <hr :if={question.type !== :open_answer && question.type !== :code} class="w-full my-4" />
+        <hr :if={(@show_correct_answers && question.type !== :open_answer && question.type !== :code) || (@show_correct_answers === false && (question.type === :single_choice || question.type === :multiple_choice))} class="w-full my-4" />
+
 
         <%!-- QUESTION ANSWERS --%>
-        <%= if question.type === :true_false do %>
+        <%= if question.type === :true_false && @show_correct_answers do %>
           <div class="px-2">
             <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
             <.true_or_false is_true={answer.is_correct} />
           </div>
-        
+
         <% else %>
-          <%= if question.type === :fill_the_blanks || question.type === :fill_the_code do %>
+          <%= if (question.type === :fill_the_blanks || question.type === :fill_the_code) && @show_correct_answers do %>
             <% answer = Enum.find(@quiz.answers, %{}, fn a -> a.question_id === question.id end) %>
             <div class="flex items-center justify-start w-full gap-2">
               <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
@@ -94,13 +110,13 @@
 
         <div :if={question.type === :single_choice || question.type === :multiple_choice} class="grid w-full grid-cols-1 gap-2 px-3 overflow-auto lg:grid-cols-2" >
           <% answers = Enum.filter(@quiz.answers, fn a -> a.question_id === question.id end) %>
-          <div :for={{answer, index} <- Enum.with_index(answers)} 
-            class={["h-full p-1 pb-2 px-5 overflow-auto", 
-              (if index + 1 !== Enum.count(answers), do: "border-b border-[var(--border)] lg:border-0"), 
+          <div :for={{answer, index} <- Enum.with_index(answers)}
+            class={["h-full p-1 pb-2 px-5 overflow-auto",
+              (if index + 1 !== Enum.count(answers), do: "border-b border-[var(--border)] lg:border-0"),
               (if index === 0 || index === 1, do: "lg:border-b lg:border-[var(--border)]")
           ]}>
             <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
-              <%= if answer.is_correct do %>
+              <%= if answer.is_correct && @show_correct_answers do %>
                 <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
               <% else %>
                 <.blank_square class="w-6 h-6 min-h-6 min-w-6" />

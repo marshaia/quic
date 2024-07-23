@@ -8,7 +8,7 @@ I was supervised by Professor Pedro Rangel Henriques and Sofia Santos.
 
 ## What is QUIC?
 QUIC, short for Quiz Creation (Tool), is a web application for creating quizzes (with multiple question types) and sharing them online through live sessions.
-Its main goal is to assist programming classes, so the feature that makes this tool stand out is precisely the possibillity of editing, compiling, and evaluating code.
+Its main goal is to assist programming classes, so the feature that makes this tool stand out is the ability to edit, compile and evaluate code. The latter is done by means of input/output test cases.
 
 
 ## Phoenix

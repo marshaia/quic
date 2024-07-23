@@ -24,7 +24,8 @@ defmodule QuicWeb.ParticipantLive.Show do
                 |> assign(:page_title, "Session - Show Participant")
                 |> assign(:participant, participant)
                 |> assign(:quiz, participant.session.quiz)
-                |> assign(:back, "/sessions/#{session_id}")}
+                |> assign(:back, "/sessions/#{session_id}")
+                |> assign(:downloading, false)}
     end
   end
 
@@ -32,6 +33,19 @@ defmodule QuicWeb.ParticipantLive.Show do
   @impl true
   def handle_event("evaluate_open_answer", %{"position" => position}, socket) do
     {:noreply, socket |> redirect(to: ~p"/session/#{socket.assigns.participant.session.id}/participants/#{socket.assigns.participant.id}/evaluate-open-answer/#{position}")}
+  end
+
+  @impl true
+  def handle_event("download", _params, socket) do
+    participant_name = socket.assigns.participant.name
+    {:noreply, socket
+      |> assign(:downloading, true)
+      |> push_event("download_page", %{file_name: "participant_" <> participant_name <> "_results", html_element: "participant_page", is_table: false})}
+  end
+
+  @impl true
+  def handle_event("finished_download", _parmas, socket) do
+    {:noreply, socket |> assign(:downloading, false)}
   end
 
 

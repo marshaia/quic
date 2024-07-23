@@ -62,7 +62,7 @@ defmodule Quic.Accounts.Author do
   defp validate_username(changeset, opts) do
     changeset
     |> validate_required([:username])
-    |> validate_length(:username, min: 5, max: 20)
+    |> validate_length(:username, min: 3, max: 20)
     |> validate_format(:username, ~r/^[A-Za-z0-9_]+$/, message: "only letters (uppercase and/or lowercase), numbers, and underscores")
     |> maybe_validate_unique_username(opts)
   end

@@ -38,29 +38,21 @@ export const AceEditorHook = {
     }),
 
     editor.session.on('change', () => {
+      const value = editor.getValue();
+      
       if (id.includes("tests")) {
-        this.pushEvent("update_parameter", {tests: editor.getValue()})
-      } else {
-        if (id.includes("answers")) {
-          this.pushEvent("update_parameter", {correct_answers: editor.getValue()})
-        } else {
-          if (id.includes("file")) {
-            this.pushEvent("update_parameter", {test_file: editor.getValue()})
-          } else {
-            if (id.includes("participant-fill")) {
-              answer_id = id.split('-')[3]
-              this.pushEvent("validate_participant_answer", {answer_id: answer_id, answer: editor.getValue()})
-            } else {
-              if (id.includes("participant")) {
-              this.pushEvent("validate_participant_answer", {answer: editor.getValue()})
-              } else {
-                if (id.includes("code")) {
-                  this.pushEvent("update_parameter", {code: editor.getValue()})
-                } 
-              }
-            }
-          }
-        }
+        this.pushEvent("update_parameter", { tests: value });
+      } else if (id.includes("answers")) {
+        this.pushEvent("update_parameter", { correct_answers: value });
+      } else if (id.includes("file")) {
+        this.pushEvent("update_parameter", { test_file: value });
+      } else if (id.includes("participant-fill")) {
+        const answer_id = id.split('-')[3];
+        this.pushEvent("validate_participant_answer", { answer_id: answer_id, answer: value });
+      } else if (id.includes("participant")) {
+        this.pushEvent("validate_participant_answer", { answer: value });
+      } else if (id.includes("code")) {
+        this.pushEvent("update_parameter", { code: value });
       }
     });
   },
