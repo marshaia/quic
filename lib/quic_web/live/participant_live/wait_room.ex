@@ -51,7 +51,7 @@ defmodule QuicWeb.ParticipantLive.WaitRoom do
     Phoenix.PubSub.unsubscribe(Quic.PubSub, "session:" <> code <> ":participant:" <> socket.assigns.participant.id)
 
     {:noreply, socket
-              |> put_flash(:info, "Session started!")
+              #|> put_flash(:info, "Session started!")
               |> redirect(to: ~p"/live-session/#{socket.assigns.participant.id}/question/#{question.position}")}
   end
 

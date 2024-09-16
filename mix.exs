@@ -46,6 +46,7 @@ defmodule Quic.MixProject do
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:heroicons, "~> 0.5.5"},
       {:swoosh, "~> 1.5"},
+      {:phoenix_swoosh, "~> 1.0"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},

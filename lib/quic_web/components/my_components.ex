@@ -289,14 +289,22 @@ defmodule QuicWeb.MyComponents do
               <%= if @type === :fill_the_code || @type === :code do %>
                 <.language_previewer text={changes.answer} language="c" />
               <% else %>
-                <.markdown text={changes.answer} />
+                <%= if @type === :fill_the_blanks do %>
+                  <p><%= changes.answer %></p>
+                <% else %>
+                  <.markdown text={changes.answer} />
+                <% end %>
               <% end %>
             <% else %>
               <%= if answer_changeset.data.answer !== nil do %>
                 <%= if @type === :fill_the_code || @type === :code do %>
                   <.language_previewer text={answer_changeset.data.answer} language="c" />
                 <% else %>
-                  <.markdown text={answer_changeset.data.answer} />
+                  <%= if @type === :fill_the_blanks do %>
+                    <p><%= answer_changeset.data.answer %></p>
+                  <% else %>
+                    <.markdown text={answer_changeset.data.answer} />
+                  <% end %>
                 <% end %>
               <% end %>
             <% end %>

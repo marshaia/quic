@@ -34,8 +34,7 @@
 
       <%= if @question.type === :true_false do %>
         <hr class="mt-8" />
-        <.true_or_false class="mt-3 ml-2" is_true={Enum.at(@question.answers, 0, %{}).is_correct}
-        />
+        <.true_or_false class="mt-3 ml-2" is_true={Enum.at(@question.answers, 0, %{}).is_correct} />
       <% end %>
 
 
@@ -97,7 +96,11 @@
           <%!-- ANSWER INFO --%>
           <div class="flex-1 ml-3 border-l border-[var(--border)] overflow-auto">
             <div class="flex items-center h-full px-2 mx-3">
-              <.markdown text={answer.answer} class="w-full"/>
+              <%= if @question.type === :fill_the_blanks do %>
+                <p><%= answer.answer %></p>
+              <% else %>
+                <.markdown text={answer.answer} class="w-full"/>
+              <% end %>
             </div>
           </div>
         </div>

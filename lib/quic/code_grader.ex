@@ -2,7 +2,7 @@ defmodule Quic.CodeGrader do
 
   defp url() do
     host = System.get_env("CODE_GRADER_HOST") || "0.0.0.0"
-    port = System.get_env("CODE_GRADER_PORT") || 50747
+    port = System.get_env("CODE_GRADER_PORT") || 5000
     "http://#{host}:#{port}"
   end
 

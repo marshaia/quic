@@ -28,9 +28,10 @@ defmodule QuicWeb.QuizLive.ShowSessionQuiz do
 
   @impl true
   def handle_event("download", _unsigned_params, socket) do
+    file_name = "quiz_" <> socket.assigns.quiz.name <> (if socket.assigns.show_correct_answers, do: "_filled", else: "_blank")
     {:noreply, socket
       |> assign(:downloading, true)
-      |> push_event("download_page", %{file_name: "quiz_" <> socket.assigns.quiz.name <> "_filled", html_element: "session_quiz_page", is_table: false})}
+      |> push_event("download_page", %{file_name: file_name, html_element: "session_quiz_page", is_table: false})}
   end
 
   @impl true
