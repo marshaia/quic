@@ -25,8 +25,17 @@ defmodule QuicWeb.QuizLive.Show do
     end
   end
 
+
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
+  def handle_event("delete_quiz", _params, socket) do
+    quiz = socket.assigns.quiz
+    {:ok, _} = Quizzes.delete_quiz(quiz)
+
+    {:noreply, socket |> put_flash(:info, "Quiz deleted successfully!") |> redirect(to: ~p"/quizzes")}
+  end
+
+  @impl true
+  def handle_event("delete_question", %{"id" => id}, socket) do
     question = Questions.get_question!(id)
     position = question.position
     quiz_id = socket.assigns.quiz.id
@@ -55,7 +64,7 @@ defmodule QuicWeb.QuizLive.Show do
   def handle_event("duplicate_quiz", _params, socket) do
     quiz = socket.assigns.quiz
     quiz_params = %{
-      "name" => quiz.name,
+      "name" => "(COPY) " <> quiz.name,
       "description" => quiz.description,
       "total_points" => quiz.total_points,
       "public" => quiz.public,
@@ -71,7 +80,7 @@ defmodule QuicWeb.QuizLive.Show do
   def handle_event("duplicate_question", %{"id" => id}, socket) do
     question = Questions.get_question!(id)
     question_params = %{
-      "description" => question.description,
+      "description" => "(COPY) " <> question.description,
       "points" => question.points,
       "type" => question.type,
       "position" => Enum.count(socket.assigns.quiz.questions) + 1

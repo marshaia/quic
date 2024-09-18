@@ -125,8 +125,8 @@
       patch={~p"/sessions/#{@session.id}/full-screen"}
       class="flex items-center gap-1 px-3 py-1.5 bg-[var(--background-card)] border border-[var(--primary-color)] rounded-full hover:bg-[var(--hover)]" 
     >
-      <Heroicons.arrows_pointing_out class="w-5 h-5" />
-      <p>Full Screen</p>
+      <Heroicons.arrows_pointing_out class="w-4 h-4 stroke-1" />
+      <p>Presentation</p>
     </.link>
   </div>
   
@@ -286,7 +286,11 @@
                       <div class="flex items-center justify-start w-full h-full gap-2 lg:gap-3">
                         <.right_or_wrong is_correct={q_answer.is_correct} class="w-6 h-6 min-h-6 min-w-6" />
                         <div class="flex-1">
-                          <.markdown class="w-full" text={q_answer.answer} />
+                          <%= if question.type === :fill_the_blanks do %>
+                            <p><%= q_answer.answer %></p>
+                          <% else %>
+                            <.markdown class="w-full" text={q_answer.answer} />
+                          <% end %>
                         </div>
                       </div>
                     </div>

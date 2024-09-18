@@ -1,57 +1,70 @@
 <% isOwner = isOwner?(@quiz.id, @current_author) %>
 
 <div class="flex justify-center w-full">
-  <main class="w-full ">
+  <main class="w-full">
     <div class="flex justify-start mb-5">
       <.my_back navigate={~p"/quizzes"}>Back to quizzes</.my_back>
     </div>
 
     <%!-- QUIZ SPECS --%>
     <section class="w-full bg-[var(--background-card)] p-4 rounded-md border border-[var(--border)]">
-      <div class="flex justify-between -mt-1">
-        <.link 
-          phx-click="duplicate_quiz"
-          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
-        >
-          <Heroicons.document_duplicate class="question-box-icon" />
-        </.link>
+      <div class="flex min-h-24">
+        <div class="justify-center flex-1 pr-3">
+          <h4 class="mt-1 text-center text-gradient"> <%= @quiz.name %> </h4>
+          <p class="mt-4 text-justify "><%= @quiz.description %></p>
 
-        <.link 
-          :if={isOwner} 
-          patch={~p"/quizzes/#{@quiz}/show/edit"} 
-          phx-click={JS.push_focus()}
-          class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
-        >
-          <Heroicons.pencil class="question-box-icon" />
-        </.link>
-      </div>
+          <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
+            <div class="flex gap-1">
+              <Heroicons.eye :if={@quiz.public} class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
+              <Heroicons.eye_slash :if={!@quiz.public} class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
+              <p class="text-gray-400"><%= if @quiz.public, do: "Public", else: "Private" %></p>
+            </div>
+
+            <div class="flex gap-1">
+              <Heroicons.list_bullet class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+              <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
+            </div>
+
+            <div class="flex gap-1">
+              <Heroicons.trophy class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+              <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
+            </div>
+
+            <.link phx-click="clicked_quiz_author" class="flex gap-1 hover:cursor-pointer py-0.5 px-1 rounded-xl hover:bg-[var(--background-view)]">
+              <Heroicons.user_circle class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
+              <p class="text-gray-400">
+                <%= if @quiz.author_id === @current_author.id, do: "You", else: @quiz.author.display_name %>
+              </p>
+            </.link>
+          </div>
+        </div>
+
+        <div class="flex flex-col justify-between border-l pl-3 border-[var(--border)]">
+          <.link 
+            :if={isOwner} 
+            patch={~p"/quizzes/#{@quiz}/show/edit"} 
+            phx-click={JS.push_focus()}
+            class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
+          >
+            <Heroicons.pencil class="question-box-icon" />
+          </.link>
+
+          <.link 
+            phx-click="duplicate_quiz"
+            class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
+          >
+            <Heroicons.document_duplicate class="question-box-icon" />
+          </.link>
+
+          <.link 
+            phx-click="delete_quiz"
+            data-confirm="Are you sure you want to delete this quiz? Once deleted, it cannot be retrived!"
+            class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
+          >
+            <Heroicons.trash class="question-box-icon" />
+          </.link>
+        </div>
       
-      <h4 class="mt-1 text-center text-gradient"> <%= @quiz.name %> </h4>
-      <p class="mt-4 text-justify "><%= @quiz.description %></p>
-
-      <div class="flex flex-col items-center justify-between gap-2 mt-8 sm:flex-row">
-        <div class="flex gap-1">
-          <Heroicons.eye :if={@quiz.public} class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
-          <Heroicons.eye_slash :if={!@quiz.public} class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400"/>
-          <p class="text-gray-400"><%= if @quiz.public, do: "Public", else: "Private" %></p>
-        </div>
-
-        <div class="flex gap-1">
-          <Heroicons.list_bullet class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
-          <p class="text-gray-400"><%= Enum.count(@quiz.questions) %> Questions</p>
-        </div>
-
-        <div class="flex gap-1">
-          <Heroicons.trophy class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
-          <p class="text-gray-400"><%= @quiz.total_points %> Points</p>
-        </div>
-
-        <.link phx-click="clicked_quiz_author" class="flex gap-1 hover:cursor-pointer py-1 px-2 rounded-xl hover:bg-[var(--background-view)]">
-          <Heroicons.user_circle class="w-5 h-5 text-gray-500 stroke-1 dark:text-gray-400" />
-          <p class="text-gray-400">
-            <%= if @quiz.author_id === @current_author.id, do: "You", else: @quiz.author.display_name %>
-          </p>
-        </.link>
       </div>
     </section>
 
@@ -136,7 +149,7 @@
                 <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
                 <div class="flex-1">
                   <%= if question.type === :fill_the_blanks do %>
-                    <.markdown class="w-full" text={answer.answer} />
+                    <p><%= answer.answer %></p>
                   <% else %>
                     <.language_previewer text={Parameters.put_correct_answers_in_code(question.parameters)} language={Atom.to_string(question.parameters.language)} />
                   <% end %>
@@ -177,7 +190,7 @@
           </.link>
           
           <.link
-            phx-click={JS.push("delete", value: %{id: question.id})}
+            phx-click={JS.push("delete_question", value: %{id: question.id})}
             data-confirm="Are you sure you want to delete this question? Once deleted, it cannot be retrived!"
           >
             <Heroicons.trash class="w-5 h-5 hover:text-[var(--red)] stroke-1" />

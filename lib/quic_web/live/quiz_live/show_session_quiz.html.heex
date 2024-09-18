@@ -98,7 +98,7 @@
               <.right_or_wrong is_correct={true} class="w-6 h-6 min-h-6 min-w-6" />
               <div class="flex-1">
                 <%= if question.type === :fill_the_blanks do %>
-                  <.markdown class="w-full" text={answer.answer} />
+                  <p><%= answer.answer %></p>
                 <% else %>
                   <% parameters = Enum.find(@quiz.parameters, %{}, fn p -> p.question_id === question.id end) %>
                   <.language_previewer text={Quic.Parameters.put_correct_answers_in_code(parameters)} language={parameters.language} />
