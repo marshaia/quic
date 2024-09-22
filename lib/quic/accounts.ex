@@ -123,7 +123,7 @@ defmodule Quic.Accounts do
 
   """
   def change_author_registration(%Author{} = author, attrs \\ %{}) do
-    Author.registration_changeset(author, attrs, hash_password: false, validate_email: false)
+    Author.registration_changeset(author, attrs, hash_password: false, validate_email: true)
   end
 
   ## Settings
@@ -382,5 +382,20 @@ defmodule Quic.Accounts do
       {:ok, %{author: author}} -> {:ok, author}
       {:error, :author, changeset, _} -> {:error, changeset}
     end
+  end
+
+
+  def delete_author(%Author{} = author) do
+    Repo.delete(author)
+  end
+
+  def author_settings_changeset(author, attrs) do
+    Author.settings_changeset(author, attrs)
+  end
+
+  def update_settings_info(%Author{} = author, attrs) do
+    author
+    |> author_settings_changeset(attrs)
+    |> Repo.update()
   end
 end

@@ -51,12 +51,14 @@
 
           <.link 
             phx-click="duplicate_quiz"
+            data-confirm="Are you sure you want to duplicate this quiz?"
             class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
           >
             <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
 
           <.link 
+            :if={isOwner}
             phx-click="delete_quiz"
             data-confirm="Are you sure you want to delete this quiz? Once deleted, it cannot be retrived!"
             class="text--[var(--primary-color-text)] hover:text--[var(--primary-color)]"
@@ -189,15 +191,15 @@
             <Heroicons.pencil class="question-box-icon" />
           </.link>
           
+          <.link phx-click={JS.push("duplicate_question", value: %{id: question.id})}>
+            <Heroicons.document_duplicate class="question-box-icon" />
+          </.link>
+
           <.link
             phx-click={JS.push("delete_question", value: %{id: question.id})}
             data-confirm="Are you sure you want to delete this question? Once deleted, it cannot be retrived!"
           >
             <Heroicons.trash class="w-5 h-5 hover:text-[var(--red)] stroke-1" />
-          </.link>
-          
-          <.link phx-click={JS.push("duplicate_question", value: %{id: question.id})}>
-            <Heroicons.document_duplicate class="question-box-icon" />
           </.link>
         </div>
       </div>

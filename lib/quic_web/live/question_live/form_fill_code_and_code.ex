@@ -33,7 +33,7 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
         <p class="font-bold text-left"><%= if @type === :code, do: "Participant Template", else: "Question Code" %></p>
 
         <% code_id = if @responsive, do: "code-tooltip-responsive", else: "code-tooltip" %>
-        <.tooltip tooltip_id={code_id} class={"w-[300px] #{if @type === :code, do: "-top-20 -left-32", else: "-top-28 -left-28"}"}>
+        <.tooltip tooltip_id={code_id} class={"w-[300px] #{if @type === :code, do: "-top-24 -left-32", else: "-top-32 -left-28"}"}>
           <p class="text-xs">
             <%= if @type === :fill_the_code do %>
               This is the code to be completed by the Participants.
@@ -41,6 +41,7 @@ defmodule QuicWeb.QuestionLive.FormFillCodeAndCode do
             <% else %>
               This is the code template that will be shown to the Participants.
             <% end %>
+            Don't forget to include/import the needed packages.
           </p>
         </.tooltip>
       </div>

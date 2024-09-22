@@ -12,8 +12,8 @@ export const ChartJS = {
         labels: this.labels(),
         datasets: [{
           data: this.dataset(), 
-          backgroundColor: ['#22c55e', '#B91C1C', '#d1d5db'],
-          borderColor: ['#22c55e', '#B91C1C', '#d1d5db'],
+          backgroundColor: ['#22c55e', '#d62020', '#d1d5db'],
+          borderColor: ['#126e33', '#570d0d', '#78797a'],
           borderWidth: 1,
         }]
       },

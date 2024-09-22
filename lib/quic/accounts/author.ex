@@ -51,6 +51,14 @@ defmodule Quic.Accounts.Author do
     |> validate_display_name()
   end
 
+  def settings_changeset(author, attrs, opts \\ []) do
+    author
+    |> cast(attrs, [:email, :username, :display_name])
+    |> validate_email([{:validate_email, true}])
+    |> validate_username(opts)
+    |> validate_display_name()
+  end
+
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])
