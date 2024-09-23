@@ -70,6 +70,7 @@ defmodule QuicWeb.Router do
     pipe_through [:browser, :require_authenticated_author]
 
     # get "/sessions/:session_id/quiz", QuizController, :show
+    get "/csv/download/:session_id", CSVController, :download
 
     live_session :require_authenticated_author,
       on_mount: [{QuicWeb.AuthorAuth, :ensure_authenticated}] do

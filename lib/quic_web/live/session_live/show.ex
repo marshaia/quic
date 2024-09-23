@@ -65,15 +65,13 @@ defmodule QuicWeb.SessionLive.Show do
     {:noreply, socket |> assign(:stats_filter, String.to_atom(filter))}
   end
 
-  @impl true
-  def handle_event("download", _params, socket) do
-    # orientation = if Enum.count(socket.assigns.session.quiz.questions) > 12, do: "landscape", else: "portrait"
-    code = socket.assigns.session.code
-    {:noreply, socket
-      |> assign(:downloading, true)
-      |> push_event("download_page", %{file_name: "session_" <> code <> "_results", html_element: "participant_statistics_table", is_table: true})}
-      #|> push_event("participant_stats", %{file_name: "session_" <> code <> "_results", orientation: orientation})}
-  end
+  # @impl true
+  # def handle_event("download", _params, socket) do
+  #   code = socket.assigns.session.code
+  #   {:noreply, socket
+  #     |> assign(:downloading, true)
+  #     |> push_event("download_page", %{file_name: "session_" <> code <> "_results", html_element: "participant_statistics_table", is_table: true})}
+  # end
 
   @impl true
   def handle_event("finished_download", _parmas, socket) do

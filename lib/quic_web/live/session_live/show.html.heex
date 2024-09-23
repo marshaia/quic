@@ -215,7 +215,10 @@
         </div>
 
         <div :if={@stats_filter === :participants} class="flex justify-end mt-3">
-          <.download downloading={@downloading} />
+          <%!-- <.download downloading={@downloading} /> --%>
+          <a href={~p"/csv/download/#{@session.id}"} target="_blank" class="p-1 px-2 rounded-full hover:bg-[var(--border)]">
+            <Heroicons.arrow_down_tray class="w-4 h-4 stroke-1" />
+          </a>
         </div>
       </div>
 
