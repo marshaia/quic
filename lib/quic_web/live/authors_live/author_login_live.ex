@@ -21,9 +21,9 @@ defmodule QuicWeb.AuthorLoginLive do
 
         <:actions>
           <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
-          <.link href={~p"/authors/reset_password"} class="text-sm font-semibold">
+          <%!-- <.link href={~p"/authors/reset_password"} class="text-sm font-semibold">
             Forgot your password?
-          </.link>
+          </.link> --%>
         </:actions>
         <:actions>
           <.button phx-disable-with="Signing in..." class="w-full call2actionBtn">

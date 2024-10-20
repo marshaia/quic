@@ -19,6 +19,7 @@ defmodule Quic.Teams.Team do
     team
     |> cast(attrs, [:name, :description])
     |> validate_required([:name, :description])
+    |> validate_name()
   end
 
   @doc false
@@ -27,5 +28,10 @@ defmodule Quic.Teams.Team do
     |> cast(attrs, [:name, :description])
     |> put_assoc(:authors, [author])
     |> validate_required([:name, :description])
+    |> validate_name()
+  end
+
+  defp validate_name(changeset) do
+    changeset |> validate_length(:name, max: 255, message: "must have less than 256 characters")
   end
 end

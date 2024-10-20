@@ -21,6 +21,7 @@ defmodule Quic.Quizzes.Quiz do
     quiz
     |> cast(attrs, [:name, :description, :total_points, :public])
     |> validate_required([:name, :description, :total_points, :public])
+    |> validate_name()
   end
 
   def changeset(quiz, attrs, author) do
@@ -28,5 +29,12 @@ defmodule Quic.Quizzes.Quiz do
     |> cast(attrs, [:name, :description, :total_points, :public])
     |> put_assoc(:author, author)
     |> validate_required([:name, :description, :total_points, :public])
+    |> validate_name()
+  end
+
+  defp validate_name(changeset) do
+    changeset
+    |> validate_required([:name])
+    |> validate_length(:name, max: 255, message: "must have less than 256 characters")
   end
 end

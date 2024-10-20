@@ -26,7 +26,7 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
 
         <.input field={f[:code]} id="join-session-input-code" type="text" maxlength="5" minlength="5" style="text-transform: uppercase;" placeholder="CODE" label="Session Code" required/>
         <.input field={f[:name]} id="join-session-input-username" type="text" placeholder="a12345" minlength="1" label="Your Name" required/>
-        <%= if String.length(@error_name) > 0 do%>
+        <%= if String.length(@error_name) > 0 do %>
           <.error> <%= @error_name %> </.error>
         <% end %>
 
@@ -55,7 +55,7 @@ defmodule QuicWeb.ParticipantLive.EnterSessionForm do
     changeset = %Participant{} |> Participants.change_participant_validate(%{"name" => name}, code)
 
     if Enum.count(changeset.errors) > 0 do
-      [name: {msg, []}] = changeset.errors
+      [name: {msg, _}] = changeset.errors
       {:noreply, socket |> assign(error_name: msg, changeset: %{"code" => code, "name" => name})}
     else
       {:noreply, socket}

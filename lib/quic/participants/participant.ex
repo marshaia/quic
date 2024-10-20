@@ -28,6 +28,7 @@ defmodule Quic.Participants.Participant do
     participant
     |> cast(attrs, [:name, :total_points, :current_question])
     |> validate_name(code)
+    |> validate_name_length()
   end
 
   def validate_name(changeset, code) do
@@ -43,6 +44,10 @@ defmodule Quic.Participants.Participant do
           changeset
         end
     end
+  end
+
+  defp validate_name_length(changeset) do
+    changeset |> validate_length(:name, max: 50, message: "must have less than 50 characters")
   end
 
 end

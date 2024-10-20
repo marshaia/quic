@@ -193,7 +193,7 @@ defmodule QuicWeb.QuestionLive.Form do
             Questions.change_question_answer(%QuestionAnswer{}),
           ]
         :true_false -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => false, "answer" => "."})]
-        :fill_the_blanks -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => "correct"})]
+        :fill_the_blanks -> [Questions.change_question_answer(%QuestionAnswer{}, %{"is_correct" => true, "answer" => "(correct|right)"})]
         _ -> []
       end
 

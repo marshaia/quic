@@ -98,8 +98,8 @@ defmodule QuicWeb.SessionLive.CreateSessionForm do
             |> put_flash(:info, "Session created successfully")
             |> redirect(to: ~p"/sessions/#{session.id}")}
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          {:noreply, socket |> assign(:changeset, changeset) |> put_flash(:error, "Something went wrong :(")}
+        {:error, _changeset} ->
+          {:noreply, socket |> put_flash(:error, "Something went wrong :(")}
       end
     end
 
